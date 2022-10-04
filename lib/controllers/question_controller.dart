@@ -45,6 +45,12 @@ class QuestionController extends GetxController
     super.onInit();
   }
 
+  @override
+  dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   void checkAns(Question question, int selectedIndex) {
     _isAnswered = true;
     _correctAns =

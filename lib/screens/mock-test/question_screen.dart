@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/screens/mock-test/components/body.dart';
 import 'package:vnrdn_tai/services/QuestionService.dart';
+import 'package:vnrdn_tai/shared/constants.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -15,6 +17,7 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   late Future<List<Question>> _questions;
   late QuestionController _questionController;
+  GlobalController gc = Get.find<GlobalController>();
   @override
   void initState() {
     // TODO: implement initState
@@ -28,9 +31,9 @@ class _QuizScreenState extends State<QuizScreen> {
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.blue,
           elevation: 0,
-          actions: [TextButton(onPressed: () => {}, child: Text("Skip"))],
+          title: Text('${gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học " : "Chế độ thi"}'),
         ),
         body: FutureBuilder<List<Question>>(
             key: UniqueKey(),

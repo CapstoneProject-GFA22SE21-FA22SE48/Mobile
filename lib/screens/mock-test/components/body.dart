@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/screens/mock-test/components/progress_bar.dart';
@@ -17,6 +18,7 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   int questionNo = 1;
+  GlobalController gc = Get.find<GlobalController>();
 
   @override
   void initState() {
@@ -43,14 +45,14 @@ class _BodyState extends State<Body> {
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: kDefaultPaddingValue),
-              child: ProgressBar(),
+              child: gc.test_mode == TEST_TYPE.TEST ? ProgressBar() : null,
             ),
             SizedBox(height: kDefaultPaddingValue),
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: kDefaultPaddingValue),
               child: Text.rich(TextSpan(
-                text: "$questionNo / ${widget.questions.length}",
+                text: "Câu $questionNo trên tổng số ${widget.questions.length} câu",
                 style: Theme.of(context)
                     .textTheme
                     .headline4

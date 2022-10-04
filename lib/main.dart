@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/question_screen.dart';
+import 'package:vnrdn_tai/shared/bindings.dart';
 
 class MyHttpOverrides extends HttpOverrides {
 @override
@@ -24,12 +27,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const QuizScreen(),
+      home: const ChooseModeScreen(),
+      initialBinding: GlobalBinding(),
     );
   }
 }
