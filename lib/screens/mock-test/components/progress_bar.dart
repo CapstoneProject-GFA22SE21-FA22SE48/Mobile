@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
+import 'package:vnrdn_tai/shared/constants.dart';
 
 class ProgressBar extends StatelessWidget {
   const ProgressBar({
@@ -13,10 +14,17 @@ class ProgressBar extends StatelessWidget {
     return GetBuilder<QuestionController>(
         init: QuestionController(),
         builder: (controller) {
-          return Stack(
-            children: [
-              LayoutBuilder(
-                  builder: (ctx, constraint) => Container(
+          return Stack(children: [
+            Container(
+                width: double.infinity,
+                height: 35,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.orange, width: 3),
+                    borderRadius: BorderRadius.circular(20)),
+                child: Stack(
+                  children: [
+                    LayoutBuilder(
+                      builder: (ctx, constraint) => Container(
                         width: constraint.maxWidth * controller.animation.value,
                         decoration: BoxDecoration(
                             gradient: const LinearGradient(
@@ -27,20 +35,24 @@ class ProgressBar extends StatelessWidget {
                                 Colors.green,
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(50)),
-                      )),
-              Positioned.fill(
-                  child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 6),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('${(controller.animation.value * 60).round()} sec'),
-                          FaIcon(FontAwesomeIcons.clock)
-                        ],
-                      )))
-            ],
-          );
+                            borderRadius: BorderRadius.circular(20)),
+                      ),
+                    ),
+                    Positioned.fill(
+                        child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: kDefaultPaddingValue, vertical: 3),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                    '${(controller.animation.value * 60 * 20).round()} sec'),
+                                FaIcon(FontAwesomeIcons.clock)
+                              ],
+                            )))
+                  ],
+                )),
+          ]);
         });
   }
 }

@@ -32,6 +32,7 @@ dependencies:
   websafe_svg: 
   font_awesome_flutter:
   get:
+  http:
   flutter:
     sdk: flutter
 
