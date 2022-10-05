@@ -11,9 +11,11 @@ class ProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    QuestionController qc = Get.put(QuestionController());
     return GetBuilder<QuestionController>(
-        init: QuestionController(),
+        init: qc,
         builder: (controller) {
+          controller.runTimer();
           return Stack(children: [
             Container(
                 width: double.infinity,

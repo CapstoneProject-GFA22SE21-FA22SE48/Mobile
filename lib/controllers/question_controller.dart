@@ -33,14 +33,6 @@ class QuestionController extends GetxController
 
   @override
   void onInit() {
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(seconds: quizTime));
-    _animation = Tween<double>(begin: 0, end: 1).animate(_animationController);
-    _animation.addListener(() {
-      update();
-    });
-    _animationController.forward();
-
     _pageController = PageController();
     super.onInit();
   }
@@ -49,6 +41,16 @@ class QuestionController extends GetxController
   dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+
+  void runTimer() {
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(seconds: quizTime));
+    _animation = Tween<double>(begin: 0, end: 1).animate(_animationController);
+    _animation.addListener(() {
+      update();
+    });
+    _animationController.forward();
   }
 
   void checkAns(Question question, int selectedIndex) {
