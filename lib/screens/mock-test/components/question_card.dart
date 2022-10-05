@@ -14,10 +14,19 @@ class QuestionCard extends StatelessWidget {
 
   final Question question;
 
-
   @override
   Widget build(BuildContext context) {
-  QuestionController _controller = Get.put(QuestionController());
+    QuestionController _controller = Get.put(QuestionController());
+
+    showQuestionImage(Question question) {
+      if (question.imageUrl != null) {
+        return SizedBox(
+            height: 120,
+            child: Image.network(question.imageUrl as String, fit: BoxFit.contain,));
+      } else {
+        return Container();
+      }
+    }
 
     return Container(
       padding: EdgeInsets.all(kDefaultPaddingValue),
@@ -26,16 +35,20 @@ class QuestionCard extends StatelessWidget {
       decoration: BoxDecoration(
           color: Colors.black, borderRadius: BorderRadius.circular(25)),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          showQuestionImage(question),
           Text(question.content,
               style: Theme.of(context)
                   .textTheme
                   .headline6
-                  ?.copyWith(color: Colors.white)),
+                  ?.copyWith(color: Colors.white), maxLines: 3),
           ...List.generate(
               question.answers.length,
-              (index) =>
-                  Option(text: question.answers[index].description, index: index, 
+              (index) => Option(
+                  question: question,
+                  text: question.answers[index].description,
+                  index: index,
                   press: () {
                     _controller.checkAns(question, index);
                   }))

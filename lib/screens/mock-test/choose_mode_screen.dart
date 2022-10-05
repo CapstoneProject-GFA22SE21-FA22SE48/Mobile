@@ -29,7 +29,7 @@ class ChooseModeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  'Choose your mode',
+                  'Chọn chế độ',
                   style: Theme.of(context).textTheme.headline4?.copyWith(
                       color: Colors.green, fontWeight: FontWeight.bold),
                 ),
@@ -40,7 +40,7 @@ class ChooseModeScreen extends StatelessWidget {
                     Get.to(() => QuizScreen());
                   },
                   child: Text(
-                    'Study',
+                    'Học',
                     style: Theme.of(context).textTheme.headline4?.copyWith(
                         color: Colors.green, fontWeight: FontWeight.bold),
                   ),
@@ -53,7 +53,7 @@ class ChooseModeScreen extends StatelessWidget {
                       Get.to(() => CategoryScreen());
                     },
                     child: Text(
-                      'Test',
+                      'Thi thử',
                       style: Theme.of(context).textTheme.headline4?.copyWith(
                           color: Colors.green, fontWeight: FontWeight.bold),
                     ),

@@ -29,52 +29,54 @@ class CategoryScreen extends StatelessWidget {
           SafeArea(
               child: Padding(
             padding: const EdgeInsets.all(50.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'Choose your mode',
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                      color: Colors.green, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: kDefaultPaddingValue),
-                ElevatedButton(
-                  onPressed: () {
-                    gc.updateTestMode(TEST_TYPE.TEST);
-                    Get.to(QuizScreen(categoryName: "A1"));
-                  },
-                  child: Text(
-                    'A1',
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Chọn loại bằng',
                     style: Theme.of(context).textTheme.headline4?.copyWith(
                         color: Colors.green, fontWeight: FontWeight.bold),
                   ),
-                  style: style,
-                ),
-                SizedBox(height: kDefaultPaddingValue),
-                ElevatedButton(
+                  SizedBox(height: kDefaultPaddingValue),
+                  ElevatedButton(
                     onPressed: () {
                       gc.updateTestMode(TEST_TYPE.TEST);
-                      Get.to(QuizScreen(categoryName: "A2"));
+                      Get.to(QuizScreen(categoryName: "A1"));
                     },
                     child: Text(
-                      'A2',
+                      'A1',
                       style: Theme.of(context).textTheme.headline4?.copyWith(
                           color: Colors.green, fontWeight: FontWeight.bold),
                     ),
-                    style: style),
-                SizedBox(height: kDefaultPaddingValue),
-                ElevatedButton(
-                    onPressed: () {
-                      gc.updateTestMode(TEST_TYPE.TEST);
-                      Get.to(QuizScreen(categoryName: "B1, B2"));
-                    },
-                    child: Text(
-                      'B1, B2',
-                      style: Theme.of(context).textTheme.headline4?.copyWith(
-                          color: Colors.green, fontWeight: FontWeight.bold),
-                    ),
-                    style: style)
-              ],
+                    style: style,
+                  ),
+                  SizedBox(height: kDefaultPaddingValue),
+                  ElevatedButton(
+                      onPressed: () {
+                        gc.updateTestMode(TEST_TYPE.TEST);
+                        Get.to(QuizScreen(categoryName: "A2"));
+                      },
+                      child: Text(
+                        'A2',
+                        style: Theme.of(context).textTheme.headline4?.copyWith(
+                            color: Colors.green, fontWeight: FontWeight.bold),
+                      ),
+                      style: style),
+                  SizedBox(height: kDefaultPaddingValue),
+                  ElevatedButton(
+                      onPressed: () {
+                        gc.updateTestMode(TEST_TYPE.TEST);
+                        Get.to(QuizScreen(categoryName: "B1, B2"));
+                      },
+                      child: Text(
+                        'B1, B2',
+                        style: Theme.of(context).textTheme.headline4?.copyWith(
+                            color: Colors.green, fontWeight: FontWeight.bold),
+                      ),
+                      style: style)
+                ],
+              ),
             ),
           ))
         ],

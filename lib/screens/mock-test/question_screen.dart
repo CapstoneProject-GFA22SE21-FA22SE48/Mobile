@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Question.dart';
+import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/components/body.dart';
 import 'package:vnrdn_tai/services/QuestionService.dart';
@@ -26,15 +27,16 @@ class _QuizScreenState extends State<QuizScreen> {
     if (gc.test_mode == TEST_TYPE.STUDY) {
       _questions = QuestionSerivce().GetQuestionList();
     } else {
-      _questions =
-          QuestionSerivce().GetRandomTestSetBytestCategoryId(widget.categoryName);
+      _questions = QuestionSerivce()
+          .GetRandomTestSetBytestCategoryId(widget.categoryName);
     }
     _questionController = Get.put(QuestionController());
   }
 
   handleError(value) {
-    Get.snackbar('Lỗi', 'Có lỗi xảy ra', colorText: Colors.red);
-    Get.to(() => ChooseModeScreen());
+    print(value);
+    Get.snackbar('Lỗi', '$value', colorText: Colors.red, isDismissible: true);
+    Get.to(() => ContainerScreen());
   }
 
   @override
@@ -42,8 +44,11 @@ class _QuizScreenState extends State<QuizScreen> {
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.white,
           elevation: 0,
+          iconTheme: IconThemeData(
+            color: Colors.black, //change your color here
+          ),
           title: Text(
               '${gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học " : "Chế độ Thi"}'),
         ),
@@ -80,7 +85,12 @@ class _QuizScreenState extends State<QuizScreen> {
               } else {
                 if (snapshot.hasError) {
                   Future.delayed(
-                      Duration.zero, () => {handleError(snapshot.error)});
+                      Duration.zero,
+                      () => {
+                            handleError(snapshot.error
+                                ?.toString()
+                                .replaceFirst('Exception:', ''))
+                          });
                   throw Exception(snapshot.error);
                 } else {
                   return Body(questions: snapshot.data!);

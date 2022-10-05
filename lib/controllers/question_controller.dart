@@ -19,6 +19,12 @@ class QuestionController extends GetxController
   bool _isAnswered = false;
   bool get isAnswered => this._isAnswered;
 
+  late List<Question> _answeredQuestions = [];
+  List<Question> get answeredQuestions => this._answeredQuestions;
+
+  late List<dynamic> _answeredAttempt = [];
+  List<dynamic> get answeredAttempts => this._answeredAttempt;
+
   late Answer _correctAns;
   Answer get correctAns => this._correctAns;
 
@@ -58,6 +64,15 @@ class QuestionController extends GetxController
     _correctAns =
         question.answers.firstWhere((element) => element.isCorrect == true);
     _selectedAns = question.answers[selectedIndex];
+
+    _answeredQuestions.add(question);
+    _answeredAttempt.add({
+      'question': question,
+      'isAnswered': true,
+      'correctAns':
+          question.answers.firstWhere((element) => element.isCorrect == true),
+      'selectedAns': question.answers[selectedIndex]
+    });
 
     if (_correctAns == _selectedAns) ++_numberOfCorrectAns;
 

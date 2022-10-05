@@ -13,8 +13,9 @@ class QuestionSerivce {
 
   Future<List<Question>> GetQuestionList() async {
     try {
-      final res =
-          await http.get(Uri.parse(url + "Questions")).timeout(const Duration(seconds: 10));
+      final res = await http
+          .get(Uri.parse(url + "Questions"))
+          .timeout(const Duration(seconds: 10));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
@@ -22,17 +23,21 @@ class QuestionSerivce {
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.
-        throw Exception('Failed to load');
+        throw Exception('Không tải được dữ liệu.');
       }
     } on TimeoutException {
-      return Future.error('Failed to load');
+      throw Exception('Không tải được dữ liệu.');
+    } on Exception {
+      throw Exception('Không thể kết nối');
     }
   }
 
-  GetRandomTestSetBytestCategoryId(String categoryName) async {
+  Future<List<Question>> GetRandomTestSetBytestCategoryId(
+      String categoryName) async {
     try {
-      final res =
-          await http.get(Uri.parse(url + "TestCategories?categoryName=" + categoryName)).timeout(const Duration(seconds: 10));
+      final res = await http
+          .get(Uri.parse(url + "TestCategories?categoryName=" + categoryName))
+          .timeout(const Duration(seconds: 10));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
@@ -40,10 +45,10 @@ class QuestionSerivce {
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.
-        throw Exception('Failed to load');
+        throw Exception('Không tải được dữ liệu.');
       }
     } on TimeoutException {
-      return Future.error('Failed to load');
+      throw Exception('Không tải được dữ liệu.');
     }
   }
 }

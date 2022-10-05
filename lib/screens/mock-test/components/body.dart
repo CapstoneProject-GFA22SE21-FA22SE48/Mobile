@@ -51,13 +51,16 @@ class _BodyState extends State<Body> {
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: kDefaultPaddingValue),
-              child: Text.rich(TextSpan(
-                text: "Câu $questionNo trên tổng số ${widget.questions.length} câu",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4
-                    ?.copyWith(color: Colors.red),
-              )),
+              child: Text.rich(
+                  TextSpan(
+                    text:
+                        "Câu $questionNo trên tổng số ${widget.questions.length} câu",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5
+                        ?.copyWith(color: Colors.red),
+                  ),
+                  ),
             ),
             Divider(thickness: 1.5),
             SizedBox(height: 20),
