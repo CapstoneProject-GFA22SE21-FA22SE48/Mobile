@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/screens/mock-test/question_screen.dart';
+import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
+import 'package:vnrdn_tai/screens/mock-test/test_set_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});
 
+  getScreen(GlobalController gc, String categoryName) {
+    if (gc.test_mode.value == TEST_TYPE.STUDY) {
+      Get.to(TestSetScreen(categoryName: categoryName));
+    } else {
+      Get.to(QuizScreen(categoryName: categoryName));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final ButtonStyle style = ElevatedButton.styleFrom(
-        textStyle: const TextStyle(fontSize: 20),
-        backgroundColor: Colors.white,
-        shadowColor: Colors.grey,
-        alignment: Alignment.center,
-        minimumSize: Size(200, 100),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)));
     GlobalController gc = Get.find<GlobalController>();
     return Scaffold(
       appBar: AppBar(
@@ -41,8 +43,7 @@ class CategoryScreen extends StatelessWidget {
                   SizedBox(height: kDefaultPaddingValue),
                   ElevatedButton(
                     onPressed: () {
-                      gc.updateTestMode(TEST_TYPE.TEST);
-                      Get.to(QuizScreen(categoryName: "A1"));
+                      getScreen(gc, 'A1');
                     },
                     child: Text(
                       'A1',
@@ -54,8 +55,7 @@ class CategoryScreen extends StatelessWidget {
                   SizedBox(height: kDefaultPaddingValue),
                   ElevatedButton(
                       onPressed: () {
-                        gc.updateTestMode(TEST_TYPE.TEST);
-                        Get.to(QuizScreen(categoryName: "A2"));
+                        getScreen(gc, 'A2');
                       },
                       child: Text(
                         'A2',
@@ -66,8 +66,7 @@ class CategoryScreen extends StatelessWidget {
                   SizedBox(height: kDefaultPaddingValue),
                   ElevatedButton(
                       onPressed: () {
-                        gc.updateTestMode(TEST_TYPE.TEST);
-                        Get.to(QuizScreen(categoryName: "B1, B2"));
+                        getScreen(gc, 'B1, B2');
                       },
                       child: Text(
                         'B1, B2',

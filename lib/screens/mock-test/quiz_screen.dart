@@ -22,7 +22,6 @@ class _QuizScreenState extends State<QuizScreen> {
   GlobalController gc = Get.find<GlobalController>();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (gc.test_mode == TEST_TYPE.STUDY) {
       _questions = QuestionSerivce().GetQuestionList();

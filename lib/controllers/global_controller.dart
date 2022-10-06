@@ -22,6 +22,12 @@ class GlobalController extends GetxController {
       case 1:
         value = TABS.MOCK_TEST;
         break;
+      case 2:
+        value = TABS.ANALYSIS;
+        break;
+      case 3:
+        value = TABS.MINIMAP;
+        break;
     }
     tab(value);
     update();

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
-import 'package:vnrdn_tai/screens/mock-test/question_screen.dart';
+import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
 import 'package:vnrdn_tai/shared/bindings.dart';
 
 class MyHttpOverrides extends HttpOverrides {
