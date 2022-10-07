@@ -4,14 +4,16 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
-import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/components/body.dart';
 import 'package:vnrdn_tai/services/QuestionService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/shared/snippets.dart';
 
 class QuizScreen extends StatefulWidget {
-  QuizScreen({super.key, this.categoryName = ""});
-  String categoryName;
+  QuizScreen({super.key, required this.categoryId, this.separator = 0});
+  String categoryId;
+
+  int separator;
   @override
   State<QuizScreen> createState() => _QuizScreenState();
 }
@@ -24,10 +26,11 @@ class _QuizScreenState extends State<QuizScreen> {
   void initState() {
     super.initState();
     if (gc.test_mode == TEST_TYPE.STUDY) {
-      _questions = QuestionSerivce().GetQuestionList();
+      _questions = QuestionSerivce().GetStudySetByCategoryAndSeparator(
+          widget.categoryId, widget.separator);
     } else {
-      _questions = QuestionSerivce()
-          .GetRandomTestSetBytestCategoryId(widget.categoryName);
+      _questions =
+          QuestionSerivce().GetRandomTestSetBytestCategoryId(widget.categoryId);
     }
     _questionController = Get.put(QuestionController());
   }
@@ -56,31 +59,7 @@ class _QuizScreenState extends State<QuizScreen> {
             future: _questions,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 200.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 200.0,
-                        child: Stack(
-                          children: <Widget>[
-                            Center(
-                              child: Container(
-                                width: 200,
-                                height: 200,
-                                child: new CircularProgressIndicator(
-                                  strokeWidth: 15,
-                                ),
-                              ),
-                            ),
-                            Center(child: Text("Đang tải dữ liệu...")),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                return loadingScreen();
               } else {
                 if (snapshot.hasError) {
                   Future.delayed(

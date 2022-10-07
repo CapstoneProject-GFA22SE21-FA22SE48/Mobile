@@ -1,19 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/controllers/question_controller.dart';
+import 'package:vnrdn_tai/models/Category.dart';
+import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/test_set_screen.dart';
+import 'package:vnrdn_tai/services/TestCategoryService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/shared/snippets.dart';
 
-class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({super.key});
+class CategoryScreen extends StatefulWidget {
+  CategoryScreen({super.key});
 
-  getScreen(GlobalController gc, String categoryName) {
+  @override
+  State<CategoryScreen> createState() => _CategoryScreenState();
+}
+
+class _CategoryScreenState extends State<CategoryScreen> {
+  late Future<List<TestCategory>> categories;
+
+  getScreen(GlobalController gc, String categoryName, String categoryId) {
     if (gc.test_mode.value == TEST_TYPE.STUDY) {
-      Get.to(TestSetScreen(categoryName: categoryName));
+      Get.to(TestSetScreen(
+        categoryName: categoryName,
+        categoryId: categoryId,
+      ));
     } else {
-      Get.to(QuizScreen(categoryName: categoryName));
+      Get.to(QuizScreen(
+        categoryId: categoryId,
+      ));
     }
+  }
+
+  handleError(value) {
+    print(value);
+    Get.snackbar('Lỗi', '$value', colorText: Colors.red, isDismissible: true);
+    Get.to(() => ContainerScreen());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    categories = TestCategoryService().GetTestCategories();
   }
 
   @override
@@ -26,60 +55,76 @@ class CategoryScreen extends StatelessWidget {
         title: Text(
             '${gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học " : "Chế độ thi"}'),
       ),
-      body: Stack(
-        children: [
-          SafeArea(
-              child: Padding(
-            padding: const EdgeInsets.all(50.0),
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Chọn loại bằng',
-                    style: Theme.of(context).textTheme.headline4?.copyWith(
-                        color: Colors.green, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: kDefaultPaddingValue),
-                  ElevatedButton(
-                    onPressed: () {
-                      getScreen(gc, 'A1');
-                    },
-                    child: Text(
-                      'A1',
-                      style: Theme.of(context).textTheme.headline4?.copyWith(
-                          color: Colors.green, fontWeight: FontWeight.bold),
-                    ),
-                    style: style,
-                  ),
-                  SizedBox(height: kDefaultPaddingValue),
-                  ElevatedButton(
-                      onPressed: () {
-                        getScreen(gc, 'A2');
-                      },
-                      child: Text(
-                        'A2',
-                        style: Theme.of(context).textTheme.headline4?.copyWith(
-                            color: Colors.green, fontWeight: FontWeight.bold),
+      body: FutureBuilder<List<TestCategory>>(
+          key: UniqueKey(),
+          future: categories,
+          builder: (context, snapshot) {
+            print(snapshot.data);
+            if (snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.data == null) {
+              return loadingScreen();
+            } else {
+              if (snapshot.hasError) {
+                Future.delayed(
+                    Duration.zero,
+                    () => {
+                          handleError(snapshot.error
+                              ?.toString()
+                              .replaceFirst('Exception:', ''))
+                        });
+                throw Exception(snapshot.error);
+              } else {
+                return Stack(
+                  children: [
+                    SafeArea(
+                        child: Padding(
+                      padding: const EdgeInsets.all(50.0),
+                      child: Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Chọn loại bằng',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4
+                                  ?.copyWith(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold),
+                            ),
+                            ListView.separated(
+                                itemCount: snapshot.data!.length,
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                separatorBuilder: (context, index) =>
+                                    SizedBox(height: kDefaultPaddingValue),
+                                itemBuilder: (context, index) {
+                                  return ElevatedButton(
+                                    onPressed: () {
+                                      getScreen(gc, snapshot.data![index].name,
+                                          snapshot.data![index].id);
+                                    },
+                                    child: Text(
+                                      snapshot.data![index].name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline4
+                                          ?.copyWith(
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    style: style,
+                                  );
+                                })
+                          ],
+                        ),
                       ),
-                      style: style),
-                  SizedBox(height: kDefaultPaddingValue),
-                  ElevatedButton(
-                      onPressed: () {
-                        getScreen(gc, 'B1, B2');
-                      },
-                      child: Text(
-                        'B1, B2',
-                        style: Theme.of(context).textTheme.headline4?.copyWith(
-                            color: Colors.green, fontWeight: FontWeight.bold),
-                      ),
-                      style: style)
-                ],
-              ),
-            ),
-          ))
-        ],
-      ),
+                    ))
+                  ],
+                );
+              }
+            }
+          }),
     );
   }
 }

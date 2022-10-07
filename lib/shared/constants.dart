@@ -16,3 +16,5 @@ final ButtonStyle style = ElevatedButton.styleFrom(
 enum TEST_TYPE { STUDY, TEST }
 
 enum TABS { SEARCH, MOCK_TEST, ANALYSIS, MINIMAP }
+
+const TIME_OUT = 60;

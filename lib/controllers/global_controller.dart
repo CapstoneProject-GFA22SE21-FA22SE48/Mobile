@@ -1,3 +1,5 @@
+import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
@@ -5,6 +7,21 @@ class GlobalController extends GetxController {
   final test_mode = TEST_TYPE.STUDY.obs;
   final is_error = false.obs;
   final tab = TABS.SEARCH.obs;
+  
+  late List<CameraDescription> _cameras;
+  List<CameraDescription> get cameras => this._cameras;
+
+  @override
+  Future<void> onInit() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    _cameras = await availableCameras();
+    super.onInit();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
 
   updateTestMode(value) {
     test_mode(value);
