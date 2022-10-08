@@ -5,7 +5,7 @@ import 'package:vnrdn_tai/models/Category.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
 class TestCategoryService {
-  final String url = "http://10.0.2.2:5000/api/";
+  
   List<TestCategory> parseQuestions(String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed

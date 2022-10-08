@@ -5,7 +5,7 @@ import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
 class QuestionSerivce {
-  final String url = "http://10.0.2.2:5000/api/";
+  
   List<Question> parseQuestions(String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed.map<Question>((json) => Question.fromJson(json)).toList();

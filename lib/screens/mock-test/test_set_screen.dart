@@ -32,20 +32,21 @@ class TestSetScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.blue,
           elevation: 0,
-          title: Text('Chọn đề'),
+          title: Text('Chọn đề (mỗi đề 25 câu)'),
         ),
         body: SafeArea(
           child: GridView.count(
             crossAxisCount: 4,
             children: List.generate(getTotalQuestionNo(categoryName), (index) {
               return Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(4.0),
                 child: ElevatedButton(
                   onPressed: () {
                     Get.to(() => QuizScreen(categoryId: categoryId, separator: index));
                   },
+                  
                   child: Text(
-                    'Đề số ${index + 1}',
+                    "Đề số ${index + 1}",
                     style: Theme.of(context).textTheme.headline6?.copyWith(
                         color: Colors.green, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,

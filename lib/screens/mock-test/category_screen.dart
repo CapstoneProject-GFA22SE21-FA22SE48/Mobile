@@ -33,11 +33,23 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }
   }
 
-  handleError(value) {
-    print(value);
-    Get.snackbar('Lỗi', '$value', colorText: Colors.red, isDismissible: true);
-    Get.to(() => ContainerScreen());
+  getQuestioNo(String categoryName) {
+    String res = "";
+    switch (categoryName) {
+      case 'A1':
+        res = "200 câu / 8 đề";
+        break;
+      case 'A2':
+        res = "200 câu / 8 đề";
+        break;
+      case 'B1, B2':
+        res = "600 câu / 24 đề";
+        break;
+    }
+    return res;
   }
+
+  
 
   @override
   void initState() {
@@ -53,13 +65,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
         backgroundColor: Colors.blue,
         elevation: 0,
         title: Text(
-            '${gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học " : "Chế độ thi"}'),
+            '${gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học " : "Chế độ Thi"}'),
       ),
       body: FutureBuilder<List<TestCategory>>(
           key: UniqueKey(),
           future: categories,
           builder: (context, snapshot) {
-            print(snapshot.data);
             if (snapshot.connectionState == ConnectionState.waiting ||
                 snapshot.data == null) {
               return loadingScreen();
@@ -87,35 +98,56 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               'Chọn loại bằng',
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline4
+                                  .headline3
                                   ?.copyWith(
                                       color: Colors.green,
                                       fontWeight: FontWeight.bold),
                             ),
-                            ListView.separated(
-                                itemCount: snapshot.data!.length,
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                separatorBuilder: (context, index) =>
-                                    SizedBox(height: kDefaultPaddingValue),
-                                itemBuilder: (context, index) {
-                                  return ElevatedButton(
-                                    onPressed: () {
-                                      getScreen(gc, snapshot.data![index].name,
-                                          snapshot.data![index].id);
-                                    },
-                                    child: Text(
-                                      snapshot.data![index].name,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4
-                                          ?.copyWith(
-                                              color: Colors.green,
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    style: style,
-                                  );
-                                })
+                            Padding(
+                              padding: const EdgeInsets.all(18.0),
+                              child: ListView.separated(
+                                  itemCount: snapshot.data!.length,
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(height: kDefaultPaddingValue),
+                                  itemBuilder: (context, index) {
+                                    return ElevatedButton(
+                                      onPressed: () {
+                                        getScreen(
+                                            gc,
+                                            snapshot.data![index].name,
+                                            snapshot.data![index].id);
+                                      },
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            "${snapshot.data![index].name}",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline4
+                                                ?.copyWith(
+                                                    color: Colors.green,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                          ),
+                                          gc.test_mode.value == TEST_TYPE.STUDY
+                                              ? Text(
+                                                  "${getQuestioNo(snapshot.data![index].name)}",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline6
+                                                      ?.copyWith(
+                                                          color: Colors.black,
+                                                          fontSize: 12),
+                                                )
+                                              : Container()
+                                        ],
+                                      ),
+                                      style: style,
+                                    );
+                                  }),
+                            )
                           ],
                         ),
                       ),

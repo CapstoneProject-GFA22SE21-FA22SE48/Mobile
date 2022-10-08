@@ -37,6 +37,9 @@ dependencies:
   path_provider:
   path:
   flutter_vision:
+  sizer:
+  uuid:
+  intl:
   flutter:
     sdk: flutter
 

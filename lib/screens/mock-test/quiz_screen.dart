@@ -4,6 +4,7 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
+import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/components/body.dart';
 import 'package:vnrdn_tai/screens/mock-test/score_screen.dart';
 import 'package:vnrdn_tai/services/QuestionService.dart';
@@ -23,6 +24,8 @@ class _QuizScreenState extends State<QuizScreen> {
   late Future<List<Question>> _questions;
   late bool isLoading = true;
   GlobalController gc = Get.find<GlobalController>();
+  QuestionController qc = Get.put(QuestionController());
+
   @override
   void initState() {
     super.initState();
@@ -35,21 +38,18 @@ class _QuizScreenState extends State<QuizScreen> {
     }
   }
 
-  handleError(value) {
-    print(value);
-    Get.snackbar('Lỗi', '$value', colorText: Colors.red, isDismissible: true);
-    Get.to(() => ContainerScreen());
-  }
-
-  void confirmSubmission() {
+  Future<bool> confirmSubmission() async {
+    if (gc.test_mode.value == TEST_TYPE.STUDY) {
+      return true;
+    }
     Get.dialog(
       AlertDialog(
-        title: const Text('Nộp bài'),
-        content: const Text('Bạn có chắc là bạn muốn nộp bài không?'),
+        title: const Text('Việc thoát sẽ tự động nộp bài'),
+        content: const Text('Bạn có chắc là bạn muốn thoát không?'),
         actions: [
           TextButton(
             child: const Text("Xác nhận"),
-            onPressed: () => Get.to(ScoreScreen()),
+            onPressed: () => Get.to(ContainerScreen()),
           ),
           TextButton(
             child: const Text("Không"),
@@ -58,60 +58,46 @@ class _QuizScreenState extends State<QuizScreen> {
         ],
       ),
     );
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          automaticallyImplyLeading:
-              gc.test_mode == TEST_TYPE.STUDY ? true : false,
-          actions: [
-            gc.test_mode == TEST_TYPE.STUDY && isLoading
-                ? Container()
-                : ButtonTheme(
-                    child: ElevatedButton(
-                        onPressed: () {
-                          confirmSubmission();
-                        },
-                        style: ElevatedButton.styleFrom(
-                            textStyle: const TextStyle(fontSize: 12),
-                            backgroundColor: Colors.green,
-                            shadowColor: Colors.grey,
-                            alignment: Alignment.center,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10))),
-                        child: Text("Nộp bài")))
-          ],
-          iconTheme: IconThemeData(
-            color: Colors.black, //change your color here
+    return WillPopScope(
+      onWillPop: () => confirmSubmission(),
+      child: Scaffold(
+          extendBodyBehindAppBar:
+              gc.test_mode == TEST_TYPE.STUDY ? false : true,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            iconTheme: IconThemeData(
+              color: Colors.black, //change your color here
+            ),
+            title: Text(
+                '${gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học " : "Chế độ Thi"}'),
           ),
-          title: Text(
-              '${gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học " : "Chế độ Thi"}'),
-        ),
-        body: FutureBuilder<List<Question>>(
-            key: UniqueKey(),
-            future: _questions,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return loadingScreen();
-              } else {
-                if (snapshot.hasError) {
-                  Future.delayed(
-                      Duration.zero,
-                      () => {
-                            handleError(snapshot.error
-                                ?.toString()
-                                .replaceFirst('Exception:', ''))
-                          });
-                  throw Exception(snapshot.error);
+          body: FutureBuilder<List<Question>>(
+              key: UniqueKey(),
+              future: _questions,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return loadingScreen();
                 } else {
-                  return Body(questions: snapshot.data!);
+                  if (snapshot.hasError) {
+                    Future.delayed(
+                        Duration.zero,
+                        () => {
+                              handleError(snapshot.error
+                                  ?.toString()
+                                  .replaceFirst('Exception:', ''))
+                            });
+                    throw Exception(snapshot.error);
+                  } else {
+                    return Body(questions: snapshot.data!);
+                  }
                 }
-              }
-            }));
+              })),
+    );
   }
 }

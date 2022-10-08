@@ -1,19 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:uuid/uuid.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
+import 'package:vnrdn_tai/models/TestResult.dart';
+import 'package:vnrdn_tai/models/TestResultDetail.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
+import 'package:vnrdn_tai/services/QuestionService.dart';
+import 'package:vnrdn_tai/services/TestResultService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
 class ScoreScreen extends StatelessWidget {
-  const ScoreScreen({super.key});
+  ScoreScreen({super.key});
+
+  submitScore(QuestionController qc) {
+    if (qc.answeredQuestions.length > 0) {
+      dynamic testAttempDTO = null;
+      List<TestResultDetail> trds = [];
+      var trId = Uuid().v4();
+      qc.answeredAttempts.forEach((element) {
+        TestResultDetail trd = TestResultDetail(
+            Uuid().v4(),
+            trId,
+            element['question'].id,
+            element['selectedAns'].id,
+            element['isCorrect']);
+        trds.add(trd);
+      });
+      TestResult tr = TestResult(trId, userId,
+          qc.answeredQuestions[0].testCategoryId, DateTime.now().toString(), trds);
+
+      TestResultSerivce().saveTestResult(tr);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     QuestionController _qnController = Get.put(QuestionController());
+    submitScore(_qnController);
     return WillPopScope(
       onWillPop: () async {
-        return await false;
+        return await true;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -49,6 +76,7 @@ class ScoreScreen extends StatelessWidget {
                               ?.copyWith(color: Colors.blue),
                           textAlign: TextAlign.center,
                         ),
+                        Divider(),
                         _qnController.numberOfCorrectAns >= 22
                             ? Text(
                                 "Chúc mừng! Bạn đã hoàn thành xuất sắc bài thi!",
@@ -69,7 +97,8 @@ class ScoreScreen extends StatelessWidget {
                         SizedBox(height: 50),
                         ElevatedButton(
                             onPressed: () {
-                              Get.to(() => ContainerScreen());
+                              _qnController.stopTimer();
+                              Get.offAll(() => ContainerScreen());
                             },
                             child: Text("Quay về màn hình chính",
                                 style: TextStyle(color: Colors.black)),

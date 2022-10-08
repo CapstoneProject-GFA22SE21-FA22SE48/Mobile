@@ -69,25 +69,26 @@ class QuestionController extends GetxController
 
   void checkAns(Question question, int selectedIndex) {
     if (_answeredQuestions.firstWhereOrNull((element) => element == question) ==
-        null) {
+            null) {
+      _isAnswered = true;
+      _correctAns =
+          question.answers.firstWhere((element) => element.isCorrect == true);
+      _selectedAns = question.answers[selectedIndex];
+
       _answeredQuestions.add(question);
       _answeredAttempt.add({
         'question': question,
         'isAnswered': true,
-        'correctAns':
-            question.answers.firstWhere((element) => element.isCorrect == true),
-        'selectedAns': question.answers[selectedIndex]
+        'correctAns': _correctAns,
+        'selectedAns': _selectedAns,
+        'isCorrect': _correctAns == _selectedAns
       });
     } else {
-      _answeredAttempt.firstWhere(
-              (element) => element['question'] == question)!['selectedAns'] =
-          question.answers[selectedIndex];
+      dynamic q = _answeredAttempt
+          .firstWhere((element) => element['question'] == question);
+      q!['selectedAns'] = question.answers[selectedIndex];
+      q!['isCorrect'] = question.answers.firstWhere((element) => element.isCorrect == true) == question.answers[selectedIndex];
     }
-
-    _isAnswered = true;
-    _correctAns =
-        question.answers.firstWhere((element) => element.isCorrect == true);
-    _selectedAns = question.answers[selectedIndex];
 
     if (gc.test_mode.value == TEST_TYPE.TEST) {
       if (_correctAns == _selectedAns) {

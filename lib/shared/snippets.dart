@@ -1,5 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:vnrdn_tai/screens/container_screen.dart';
+
+handleError(value) {
+  Get.snackbar('Lỗi', '$value', colorText: Colors.red, isDismissible: true);
+  Get.offAll(() => ContainerScreen());
+}
 
 loadingScreen() {
   return Padding(
