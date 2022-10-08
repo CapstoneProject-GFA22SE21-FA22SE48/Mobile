@@ -5,6 +5,7 @@ import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/components/body.dart';
+import 'package:vnrdn_tai/screens/mock-test/score_screen.dart';
 import 'package:vnrdn_tai/services/QuestionService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
@@ -20,7 +21,7 @@ class QuizScreen extends StatefulWidget {
 
 class _QuizScreenState extends State<QuizScreen> {
   late Future<List<Question>> _questions;
-  late QuestionController _questionController;
+  late bool isLoading = true;
   GlobalController gc = Get.find<GlobalController>();
   @override
   void initState() {
@@ -32,13 +33,31 @@ class _QuizScreenState extends State<QuizScreen> {
       _questions =
           QuestionSerivce().GetRandomTestSetBytestCategoryId(widget.categoryId);
     }
-    _questionController = Get.put(QuestionController());
   }
 
   handleError(value) {
     print(value);
     Get.snackbar('Lỗi', '$value', colorText: Colors.red, isDismissible: true);
     Get.to(() => ContainerScreen());
+  }
+
+  void confirmSubmission() {
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Nộp bài'),
+        content: const Text('Bạn có chắc là bạn muốn nộp bài không?'),
+        actions: [
+          TextButton(
+            child: const Text("Xác nhận"),
+            onPressed: () => Get.to(ScoreScreen()),
+          ),
+          TextButton(
+            child: const Text("Không"),
+            onPressed: () => Get.back(),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -48,6 +67,25 @@ class _QuizScreenState extends State<QuizScreen> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
+          automaticallyImplyLeading:
+              gc.test_mode == TEST_TYPE.STUDY ? true : false,
+          actions: [
+            gc.test_mode == TEST_TYPE.STUDY && isLoading
+                ? Container()
+                : ButtonTheme(
+                    child: ElevatedButton(
+                        onPressed: () {
+                          confirmSubmission();
+                        },
+                        style: ElevatedButton.styleFrom(
+                            textStyle: const TextStyle(fontSize: 12),
+                            backgroundColor: Colors.green,
+                            shadowColor: Colors.grey,
+                            alignment: Alignment.center,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10))),
+                        child: Text("Nộp bài")))
+          ],
           iconTheme: IconThemeData(
             color: Colors.black, //change your color here
           ),

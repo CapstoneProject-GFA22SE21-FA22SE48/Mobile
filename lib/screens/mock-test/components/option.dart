@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
 class Option extends StatelessWidget {
-  const Option({
+  Option({
     Key? key,
     required this.question,
     required this.text,
     required this.index,
     required this.press,
   }) : super(key: key);
+
+  GlobalController gc = Get.find<GlobalController>();
   final Question question;
   final String text;
   final int index;
@@ -27,20 +30,17 @@ class Option extends StatelessWidget {
               var attemp = controller.answeredAttempts.firstWhereOrNull(
                   (element) => element['question'] == question);
               if (attemp['isAnswered']) {
-                if (text == attemp['correctAns'].description) {
-                  return Colors.green;
-                } else if (text == attemp['selectedAns'].description &&
-                    attemp['selectedAns'] != attemp['correctAns']) {
-                  return Colors.red;
-                }
-              }
-            } else {
-              if (controller.isAnswered) {
-                if (text == controller.correctAns.description) {
-                  return Colors.green;
-                } else if (text == controller.selectedAns.description &&
-                    controller.selectedAns != controller.correctAns) {
-                  return Colors.red;
+                if (gc.test_mode == TEST_TYPE.STUDY) {
+                  if (text == attemp['correctAns'].description) {
+                    return Colors.green;
+                  } else if (text == attemp['selectedAns'].description &&
+                      attemp['selectedAns'] != attemp['correctAns']) {
+                    return Colors.red;
+                  }
+                } else {
+                  if (text == attemp['selectedAns'].description) {
+                    return Colors.blue;
+                  }
                 }
               }
             }
@@ -54,7 +54,7 @@ class Option extends StatelessWidget {
           return InkWell(
               onTap: press,
               child: Container(
-                margin: EdgeInsets.only(top: kDefaultPaddingValue),
+                margin: EdgeInsets.only(top: kDefaultPaddingValue / 2),
                 padding: EdgeInsets.all(kDefaultPaddingValue),
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
@@ -73,12 +73,16 @@ class Option extends StatelessWidget {
                         decoration: BoxDecoration(
                             color: getTheRightColour() == Colors.grey
                                 ? Colors.transparent
-                                : getTheRightColour(),
+                                : gc.test_mode == TEST_TYPE.STUDY
+                                    ? getTheRightColour()
+                                    : Colors.blue,
                             borderRadius: BorderRadius.circular(50),
                             border: Border.all(color: getTheRightColour())),
                         child: getTheRightColour() == Colors.grey
                             ? null
-                            : Icon(getTheRightIcon(), size: 16),
+                            : gc.test_mode == TEST_TYPE.STUDY
+                                ? Icon(getTheRightIcon(), size: 16)
+                                : Icon(Icons.done, size: 16),
                       )
                     ]),
               ));

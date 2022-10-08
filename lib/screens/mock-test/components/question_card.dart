@@ -31,7 +31,7 @@ class QuestionCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(kDefaultPaddingValue),
       margin: EdgeInsets.symmetric(
-          horizontal: kDefaultPaddingValue, vertical: kDefaultPaddingValue / 2),
+          horizontal: kDefaultPaddingValue / 2, vertical: kDefaultPaddingValue / 2),
       decoration: BoxDecoration(
           color: Colors.black, borderRadius: BorderRadius.circular(25)),
       child: Column(
@@ -42,7 +42,7 @@ class QuestionCard extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .headline6
-                  ?.copyWith(color: Colors.white), maxLines: 3),
+                  ?.copyWith(color: Colors.white)),
           ...List.generate(
               question.answers.length,
               (index) => Option(
