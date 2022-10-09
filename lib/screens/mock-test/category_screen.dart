@@ -144,7 +144,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                               : Container()
                                         ],
                                       ),
-                                      style: style,
+                                      style: buttonStyle,
                                     );
                                   }),
                             )

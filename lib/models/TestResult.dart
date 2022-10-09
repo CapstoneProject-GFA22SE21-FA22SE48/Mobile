@@ -17,8 +17,13 @@ class TestResult {
         data['testCategoryId'],
         data['createdDate'],
         data['testResultDetails']
-            .map((entry) => TestResultDetail(entry['id'], entry['testResultId'],
-                entry['questionId'], entry['answerId'], entry['isCorrect']))
+            .map((entry) => TestResultDetail(
+                entry['id'],
+                entry['testResultId'],
+                entry['questionId'],
+                entry['answerId'],
+                entry['isCorrect'],
+                ))
             .toList()
             .cast<TestResultDetail>());
   }

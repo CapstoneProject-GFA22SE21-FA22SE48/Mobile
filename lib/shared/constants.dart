@@ -5,7 +5,7 @@ const double kDefaultPaddingValue = 16;
 const kDefaultPadding = EdgeInsets.all(16);
 const quizTime = 60;
 
-final ButtonStyle style = ElevatedButton.styleFrom(
+final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
     textStyle: const TextStyle(fontSize: 20),
     backgroundColor: Colors.white,
     shadowColor: Colors.grey,

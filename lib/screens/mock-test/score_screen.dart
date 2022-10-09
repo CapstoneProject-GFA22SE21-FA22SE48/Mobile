@@ -24,11 +24,16 @@ class ScoreScreen extends StatelessWidget {
             trId,
             element['question'].id,
             element['selectedAns'].id,
-            element['isCorrect']);
+            element['isCorrect'],
+            );
         trds.add(trd);
       });
-      TestResult tr = TestResult(trId, userId,
-          qc.answeredQuestions[0].testCategoryId, DateTime.now().toString(), trds);
+      TestResult tr = TestResult(
+          trId,
+          userId,
+          qc.answeredQuestions[0].testCategoryId,
+          DateTime.now().toString(),
+          trds);
 
       TestResultSerivce().saveTestResult(tr);
     }
@@ -102,7 +107,7 @@ class ScoreScreen extends StatelessWidget {
                             },
                             child: Text("Quay về màn hình chính",
                                 style: TextStyle(color: Colors.black)),
-                            style: style)
+                            style: buttonStyle)
                       ],
                     ),
                   ),

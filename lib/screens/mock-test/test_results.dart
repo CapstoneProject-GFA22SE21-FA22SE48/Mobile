@@ -9,6 +9,7 @@ import 'package:vnrdn_tai/models/TestResult.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/test_set_screen.dart';
+import 'package:vnrdn_tai/screens/mock-test/test_result_detail.dart';
 import 'package:vnrdn_tai/services/TestCategoryService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
@@ -25,7 +26,7 @@ class TestRestulScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.blue,
           elevation: 0,
-          title: Text('Kết quả những lần thi trước'),
+          title: Text('Kết quả 10 lần thi gần nhất'),
         ),
         body: Stack(
           children: [
@@ -48,13 +49,35 @@ class TestRestulScreen extends StatelessWidget {
                             separatorBuilder: (context, index) =>
                                 SizedBox(height: kDefaultPaddingValue),
                             itemBuilder: (context, index) {
-                              return ElevatedButton(
-                                onPressed: () {},
-                                child: Text(
-                                  "Bài thi lúc ${DateFormat('yyyy-MM-dd hh:mm').format(DateTime.parse(testResults[index].createdDate))}",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                style: style,
+                              return Row(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Get.to(() => TestResultDetailScreen(
+                                          title:
+                                              'Bạn đã trả lời ${testResults[index].testResultDetails.length} trên 25 câu.',
+                                          tr: testResults[index]));
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Bài thi lúc ${DateFormat('d/m/yyyy hh:mm').format(DateTime.parse(testResults[index].createdDate))}",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Icon(
+                                              Icons.arrow_circle_right_outlined,
+                                              color: Colors.green,
+                                              size: 30),
+                                        )
+                                      ],
+                                    ),
+                                    style: buttonStyle,
+                                  ),
+                                ],
                               );
                             }),
                       ),

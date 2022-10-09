@@ -83,7 +83,7 @@ class QuestionController extends GetxController
         'selectedAns': _selectedAns,
         'isCorrect': _correctAns == _selectedAns
       });
-    } else {
+    } else if(gc.test_mode.value == TEST_TYPE.TEST) {
       dynamic q = _answeredAttempt
           .firstWhere((element) => element['question'] == question);
       q!['selectedAns'] = question.answers[selectedIndex];

@@ -85,7 +85,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                         color: Colors.green,
                                         fontWeight: FontWeight.bold),
                               ),
-                              style: style,
+                              style: buttonStyle,
                             ),
                             SizedBox(height: kDefaultPaddingValue),
                             ElevatedButton(
@@ -102,7 +102,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                           color: Colors.green,
                                           fontWeight: FontWeight.bold),
                                 ),
-                                style: style),
+                                style: buttonStyle),
                             SizedBox(height: kDefaultPaddingValue),
                             ElevatedButton(
                                 onPressed: () {
@@ -121,7 +121,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                 ),
-                                style: style)
+                                style: buttonStyle)
                           ],
                         ),
                       ),

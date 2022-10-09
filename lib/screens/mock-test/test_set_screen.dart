@@ -51,7 +51,7 @@ class TestSetScreen extends StatelessWidget {
                         color: Colors.green, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
-                  style: style,
+                  style: buttonStyle,
                 ),
               );
             }),
