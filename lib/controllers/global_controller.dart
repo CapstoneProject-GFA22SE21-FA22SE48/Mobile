@@ -7,7 +7,9 @@ class GlobalController extends GetxController {
   final test_mode = TEST_TYPE.STUDY.obs;
   final is_error = false.obs;
   final tab = TABS.SEARCH.obs;
-  
+
+  final query = "".obs;
+
   late List<CameraDescription> _cameras;
   List<CameraDescription> get cameras => this._cameras;
 
@@ -21,6 +23,10 @@ class GlobalController extends GetxController {
   @override
   dispose() {
     super.dispose();
+  }
+
+  updateQuery(value) {
+    query(value);
   }
 
   updateTestMode(value) {
