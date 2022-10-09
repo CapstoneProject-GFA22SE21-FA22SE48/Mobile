@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class Answer {
   final String id;
   final String questionId;
