@@ -1,6 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+const kPrimaryButtonColor = Color.fromARGB(255, 51, 102, 255);
+const kDangerButtonColor = Color.fromARGB(255, 239, 68, 68);
+const kSuccessButtonColor = Color.fromARGB(255, 34, 197, 94);
+const kWarningButtonColor = Color.fromARGB(255, 245, 159, 11);
+const kDisabledButtonColor = Color.fromARGB(255, 108, 117, 125);
+const kPrimaryTextColor = Color.fromARGB(255, 51, 51, 51);
+const kDisabledTextColor = Color.fromARGB(255, 102, 102, 102);
+
 const double kDefaultPaddingValue = 16;
 const kDefaultPadding = EdgeInsets.all(16);
 const quizTime = 60;
@@ -15,7 +23,7 @@ final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
 
 enum TEST_TYPE { STUDY, TEST }
 
-enum TABS { SEARCH, MOCK_TEST, ANALYSIS, MINIMAP }
+enum TABS { WELCOME, LOGIN, SEARCH, MOCK_TEST, ANALYSIS, MINIMAP }
 
 const TIME_OUT = 60;
 
