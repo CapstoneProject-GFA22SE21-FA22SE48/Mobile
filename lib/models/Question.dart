@@ -6,6 +6,7 @@ class Question {
   final String name;
   final String content;
   final String? imageUrl;
+  final String? status;
   final List<Answer> answers;
 
   factory Question.fromJson(Map<String, dynamic> data) {
@@ -15,13 +16,15 @@ class Question {
       data['name'],
       data['content'],
       data['imageUrl'],
+      data['status'],
       data['answers']
           .map((entry) => Answer(entry['id'], entry['questionId'],
               entry['description'], entry['isCorrect']))
-          .toList().cast<Answer>(),
+          .toList()
+          .cast<Answer>(),
     );
   }
 
   Question(this.id, this.testCategoryId, this.name, this.content, this.imageUrl,
-      this.answers);
+      this.status, this.answers);
 }

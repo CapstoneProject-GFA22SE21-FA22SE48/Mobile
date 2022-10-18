@@ -29,33 +29,34 @@ class TestSetScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue,
-          elevation: 0,
-          title: Text('Chọn đề (mỗi đề 25 câu)'),
-        ),
-        body: SafeArea(
-          child: GridView.count(
-            crossAxisCount: 4,
-            children: List.generate(getTotalQuestionNo(categoryName), (index) {
-              return Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Get.to(() => QuizScreen(categoryId: categoryId, separator: index));
-                  },
-                  
-                  child: Text(
-                    "Đề số ${index + 1}",
-                    style: Theme.of(context).textTheme.headline6?.copyWith(
-                        color: Colors.green, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                  style: buttonStyle,
-                ),
-              );
-            }),
-          ),
-        ));
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        elevation: 0,
+        // Chọn đề (mỗi đề 25 câu)
+        title: const Text('Chế độ Học'),
+      ),
+      body: GridView.count(
+        crossAxisCount: 3,
+        children: List.generate(getTotalQuestionNo(categoryName), (index) {
+          return Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: ElevatedButton(
+              onPressed: () {
+                Get.to(
+                    () => QuizScreen(categoryId: categoryId, separator: index));
+              },
+              style: kDefaultButtonStyle,
+              child: Text(
+                "Đề số ${index + 1}",
+                style: Theme.of(context).textTheme.headline6?.copyWith(
+                    color: Colors.blueAccent.shade400,
+                    fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }),
+      ),
+    );
   }
 }

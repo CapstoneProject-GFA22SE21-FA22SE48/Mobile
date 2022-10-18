@@ -55,73 +55,124 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                   SafeArea(
                       child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 100.0),
+                      padding: const EdgeInsets.only(top: 0.0),
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 4.0),
+                        padding: const EdgeInsets.only(left: 0),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              'Bạn muốn làm gì?',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4
-                                  ?.copyWith(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: kDefaultPaddingValue),
+                            Text('Bạn muốn làm gì?',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4
+                                    ?.copyWith(
+                                        color: Colors.blueAccent.shade200,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: FONTSIZES.textHuge)),
+                            const SizedBox(height: kDefaultPaddingValue),
+                            const SizedBox(height: kDefaultPaddingValue),
                             ElevatedButton(
                               onPressed: () {
                                 gc.updateTestMode(TEST_TYPE.STUDY);
                                 Get.to(() => CategoryScreen());
                               },
-                              child: Text(
-                                'Học',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline4
-                                    ?.copyWith(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                alignment: Alignment.center,
                               ),
-                              style: buttonStyle,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: kDefaultPaddingValue / 2),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: const [
+                                    Icon(
+                                      Icons.list_alt_rounded,
+                                      size: 36,
+                                      color: kPrimaryButtonColor,
+                                    ),
+                                    SizedBox(width: kDefaultPaddingValue),
+                                    Text(
+                                      "Vào Học",
+                                      style: TextStyle(
+                                          fontSize: FONTSIZES.textLarge,
+                                          fontWeight: FontWeight.bold,
+                                          color: kPrimaryButtonColor),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                            SizedBox(height: kDefaultPaddingValue),
+                            const SizedBox(height: kDefaultPaddingValue),
                             ElevatedButton(
-                                onPressed: () {
-                                  gc.updateTestMode(TEST_TYPE.TEST);
-                                  Get.to(() => CategoryScreen());
-                                },
-                                child: Text(
-                                  'Thi thử',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline4
-                                      ?.copyWith(
-                                          color: Colors.green,
-                                          fontWeight: FontWeight.bold),
+                              onPressed: () {
+                                gc.updateTestMode(TEST_TYPE.TEST);
+                                Get.to(() => CategoryScreen());
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                alignment: Alignment.center,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: kDefaultPaddingValue / 2),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: const [
+                                    Icon(
+                                      Icons.check_circle,
+                                      size: 36,
+                                      color: kSuccessButtonColor,
+                                    ),
+                                    SizedBox(width: kDefaultPaddingValue),
+                                    Text(
+                                      "Thi thử",
+                                      style: TextStyle(
+                                          fontSize: FONTSIZES.textLarge,
+                                          fontWeight: FontWeight.bold,
+                                          color: kSuccessButtonColor),
+                                    ),
+                                  ],
                                 ),
-                                style: buttonStyle),
-                            SizedBox(height: kDefaultPaddingValue),
+                              ),
+                            ),
+                            const SizedBox(height: kDefaultPaddingValue),
                             ElevatedButton(
-                                onPressed: () {
-                                  gc.updateTestMode(TEST_TYPE.TEST);
-                                  Get.to(() => TestRestulScreen(
-                                      testResults: snapshot.data!));
-                                },
-                                child: Text(
-                                  'Xem kết quả những lần thi trước',
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline4
-                                      ?.copyWith(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                              onPressed: () {
+                                gc.updateTestMode(TEST_TYPE.TEST);
+                                Get.to(() => TestRestulScreen(
+                                    testResults: snapshot.data!));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                alignment: Alignment.center,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: kDefaultPaddingValue / 2),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: const [
+                                    Icon(
+                                      Icons.av_timer_rounded,
+                                      size: 36,
+                                      color: kWarningButtonColor,
+                                    ),
+                                    SizedBox(width: kDefaultPaddingValue),
+                                    Text(
+                                      "Lịch sử",
+                                      style: TextStyle(
+                                          fontSize: FONTSIZES.textLarge,
+                                          fontWeight: FontWeight.bold,
+                                          color: kWarningButtonColor),
+                                    ),
+                                  ],
                                 ),
-                                style: buttonStyle)
+                              ),
+                            ),
                           ],
                         ),
                       ),

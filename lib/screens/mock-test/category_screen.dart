@@ -22,14 +22,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   getScreen(GlobalController gc, String categoryName, String categoryId) {
     if (gc.test_mode.value == TEST_TYPE.STUDY) {
-      Get.to(TestSetScreen(
-        categoryName: categoryName,
-        categoryId: categoryId,
-      ));
+      Get.to(() => TestSetScreen(
+            categoryName: categoryName,
+            categoryId: categoryId,
+          ));
     } else {
-      Get.to(QuizScreen(
-        categoryId: categoryId,
-      ));
+      Get.to(() => QuizScreen(
+            categoryId: categoryId,
+          ));
     }
   }
 
@@ -49,8 +49,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return res;
   }
 
-  
-
   @override
   void initState() {
     super.initState();
@@ -64,8 +62,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         elevation: 0,
-        title: Text(
-            '${gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học " : "Chế độ Thi"}'),
+        title:
+            Text(gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học" : "Chế độ Thi"),
       ),
       body: FutureBuilder<List<TestCategory>>(
           key: UniqueKey(),
@@ -98,19 +96,22 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               'Chọn loại bằng',
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .headline4
                                   ?.copyWith(
-                                      color: Colors.green,
+                                      color: Colors.blueAccent.shade200,
                                       fontWeight: FontWeight.bold),
                             ),
+                            const SizedBox(height: kDefaultPaddingValue * 2),
                             Padding(
-                              padding: const EdgeInsets.all(18.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 10.0),
                               child: ListView.separated(
                                   itemCount: snapshot.data!.length,
                                   scrollDirection: Axis.vertical,
                                   shrinkWrap: true,
                                   separatorBuilder: (context, index) =>
-                                      SizedBox(height: kDefaultPaddingValue),
+                                      const SizedBox(
+                                          height: kDefaultPaddingValue * 1.5),
                                   itemBuilder: (context, index) {
                                     return ElevatedButton(
                                       onPressed: () {
@@ -119,32 +120,38 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                             snapshot.data![index].name,
                                             snapshot.data![index].id);
                                       },
+                                      style: kDefaultButtonStyle,
                                       child: Column(
                                         children: [
                                           Text(
-                                            "${snapshot.data![index].name}",
+                                            snapshot.data![index].name,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headline4
                                                 ?.copyWith(
-                                                    color: Colors.green,
+                                                    color: Colors.blueAccent,
                                                     fontWeight:
                                                         FontWeight.bold),
                                           ),
                                           gc.test_mode.value == TEST_TYPE.STUDY
-                                              ? Text(
-                                                  "${getQuestioNo(snapshot.data![index].name)}",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headline6
-                                                      ?.copyWith(
-                                                          color: Colors.black,
-                                                          fontSize: 12),
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 5),
+                                                  child: Text(
+                                                    "${getQuestioNo(snapshot.data![index].name)}",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline6
+                                                        ?.copyWith(
+                                                            color:
+                                                                Colors.black54,
+                                                            fontSize: 16),
+                                                  ),
                                                 )
                                               : Container()
                                         ],
                                       ),
-                                      style: buttonStyle,
                                     );
                                   }),
                             )

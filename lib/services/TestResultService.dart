@@ -22,7 +22,7 @@ class TestResultSerivce {
     try {
       final res = await http
           .get(Uri.parse(
-              url + "TestResults/GetTestResultByUserId?userId=" + userId))
+              "${url}TestResults/GetTestResultByUserId?userId=" + userId))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
@@ -43,8 +43,8 @@ class TestResultSerivce {
   Future<List<TestAttempDTO>> GetTestAttemptDTOs(testResultId) async {
     try {
       final res = await http
-          .get(Uri.parse(url +
-              "TestResults/GetTestAttemptDTOs?testResultId=" +
+          // ignore: prefer_interpolation_to_compose_strings
+          .get(Uri.parse("${url}TestResults/GetTestAttemptDTOs?testResultId=" +
               testResultId))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
@@ -67,7 +67,7 @@ class TestResultSerivce {
     print(jsonEncode(testResult));
     try {
       final res = await http.post(
-        Uri.parse(url + 'TestResults/'),
+        Uri.parse('${url}TestResults/'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

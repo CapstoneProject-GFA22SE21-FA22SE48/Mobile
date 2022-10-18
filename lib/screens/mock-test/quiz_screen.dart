@@ -29,6 +29,7 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
+    // ignore: unrelated_type_equality_checks
     if (gc.test_mode == TEST_TYPE.STUDY) {
       _questions = QuestionSerivce().GetStudySetByCategoryAndSeparator(
           widget.categoryId, widget.separator);
@@ -71,11 +72,12 @@ class _QuizScreenState extends State<QuizScreen> {
           appBar: AppBar(
             backgroundColor: Colors.white,
             elevation: 0,
-            iconTheme: IconThemeData(
+            iconTheme: const IconThemeData(
               color: Colors.black, //change your color here
             ),
             title: Text(
-                '${gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học " : "Chế độ Thi"}'),
+                // ignore: unrelated_type_equality_checks
+                gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học " : "Chế độ Thi"),
           ),
           body: FutureBuilder<List<Question>>(
               key: UniqueKey(),

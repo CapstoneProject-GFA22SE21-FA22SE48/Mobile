@@ -20,12 +20,12 @@ class ScoreScreen extends StatelessWidget {
       var trId = Uuid().v4();
       qc.answeredAttempts.forEach((element) {
         TestResultDetail trd = TestResultDetail(
-            Uuid().v4(),
-            trId,
-            element['question'].id,
-            element['selectedAns'].id,
-            element['isCorrect'],
-            );
+          Uuid().v4(),
+          trId,
+          element['question'].id,
+          element['selectedAns'].id,
+          element['isCorrect'],
+        );
         trds.add(trd);
       });
       TestResult tr = TestResult(
@@ -107,7 +107,7 @@ class ScoreScreen extends StatelessWidget {
                             },
                             child: Text("Quay về màn hình chính",
                                 style: TextStyle(color: Colors.black)),
-                            style: buttonStyle)
+                            style: kDefaultButtonStyle)
                       ],
                     ),
                   ),

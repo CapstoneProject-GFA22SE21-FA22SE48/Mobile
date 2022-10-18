@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 
 const kPrimaryButtonColor = Color.fromARGB(255, 51, 102, 255);
@@ -9,21 +10,44 @@ const kDisabledButtonColor = Color.fromARGB(255, 108, 117, 125);
 const kPrimaryTextColor = Color.fromARGB(255, 51, 51, 51);
 const kDisabledTextColor = Color.fromARGB(255, 102, 102, 102);
 
+const kPrimaryBackgroundColor = Color.fromARGB(255, 255, 255, 255);
+
 const double kDefaultPaddingValue = 16;
 const kDefaultPadding = EdgeInsets.all(16);
 const quizTime = 60;
 
-final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
-    textStyle: const TextStyle(fontSize: 20),
+final ButtonStyle kDefaultButtonStyle = ElevatedButton.styleFrom(
+    textStyle: const TextStyle(fontSize: FONTSIZES.textPrimary),
     backgroundColor: Colors.white,
     shadowColor: Colors.grey,
     alignment: Alignment.center,
-    minimumSize: Size(200, 100),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)));
+    minimumSize: const Size(200, 100),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)));
+
+final ButtonStyle kModeChoosingButtonStyle = ElevatedButton.styleFrom(
+    textStyle: const TextStyle(fontSize: FONTSIZES.textLarge),
+    backgroundColor: Colors.blueAccent.shade200,
+    shadowColor: Colors.grey,
+    alignment: Alignment.center,
+    minimumSize: const Size(200, 10),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)));
 
 enum TEST_TYPE { STUDY, TEST }
 
-enum TABS { WELCOME, LOGIN, SEARCH, MOCK_TEST, ANALYSIS, MINIMAP }
+enum TABS { SEARCH, MOCK_TEST, ANALYSIS, MINIMAP, WELCOME, LOGIN, SIGNUP }
+
+class FONTSIZES {
+  static const double textTiny = 8;
+  static const double textMini = 10;
+  static const double textSmall = 12;
+  static const double textMedium = 14;
+  static const double textPrimary = 16;
+  static const double textMediumLarge = 18;
+  static const double textLarge = 20;
+  static const double textLarger = 24;
+  static const double textHuge = 28;
+  static const double textVeryHuge = 32;
+}
 
 const TIME_OUT = 60;
 
