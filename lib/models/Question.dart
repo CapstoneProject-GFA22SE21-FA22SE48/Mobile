@@ -3,6 +3,7 @@ import 'package:vnrdn_tai/models/Answer.dart';
 class Question {
   final String id;
   final String testCategoryId;
+  final String questionCategoryId;
   final String name;
   final String content;
   final String? imageUrl;
@@ -13,6 +14,7 @@ class Question {
     return Question(
       data['id'],
       data['testCategoryId'],
+      data['questionCategoryId'],
       data['name'],
       data['content'],
       data['imageUrl'],
@@ -25,6 +27,6 @@ class Question {
     );
   }
 
-  Question(this.id, this.testCategoryId, this.name, this.content, this.imageUrl,
-      this.status, this.answers);
+  Question(this.id, this.testCategoryId, this.questionCategoryId, this.name,
+      this.content, this.imageUrl, this.status, this.answers);
 }
