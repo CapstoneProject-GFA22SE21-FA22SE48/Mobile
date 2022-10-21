@@ -1,10 +1,10 @@
 import 'dart:async';
-
+import 'dart:io' as io;
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_vision/flutter_vision.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/shared/snippets.dart';
 
 class AnalysisController extends GetxController {
   GlobalController gc = Get.find<GlobalController>();
@@ -52,9 +52,9 @@ class AnalysisController extends GetxController {
 
   Future<void> loadYoloModel() async {
     final responseHandler = await vision.loadYoloModel(
-        labels: 'assets/best-fp16.txt',
-        modelPath: 'assets/best-fp16.tflite',
-        numThreads: 1,
+        labels: 'assets/ml/best-fp16.txt',
+        modelPath: 'assets/ml/exp33.tflite',
+        numThreads: 8,
         useGpu: false);
     if (responseHandler.type == 'success') {
       _isLoaded = true;
@@ -67,24 +67,30 @@ class AnalysisController extends GetxController {
       print('controller not initialized');
       return;
     }
-    Timer(Duration(seconds: 3), () {
-      _isDetecting = true;
-    });
-    await _cameraController.startImageStream((image) async {
-      print(_isDetecting);
-      if (!_isDetecting) {
-        return;
-      }
+    _isDetecting = true;
+    final xFile = await _cameraController.takePicture();
+    print('taken');
+    final path = xFile.path;
+    io.File file = io.File(xFile.path);
+    final res = await upload(file);
+    if (res != null) {
+      _isDetecting = false;
+      print(res);
+      return res;
+    }
 
-      try {
-        await yoloOnFrame(image);
-        await _cameraController.stopImageStream();
-      } catch (e) {
-        throw Exception(e);
-      } finally {
-        _isDetecting = false;
-      }
-    });
+    // await _cameraController.startImageStream((image) async {
+    //   print("Running! ");
+    //   if (_isDetecting) {
+    //     return;
+    //   }
+    //   try {
+    //     await yoloOnFrame(image);
+    //     // await _cameraController.stopImageStream();
+    //   } catch (e) {
+    //     throw Exception(e);
+    //   } finally {}
+    // });
 
     update();
   }
@@ -103,7 +109,9 @@ class AnalysisController extends GetxController {
   }
 
   Future<void> yoloOnFrame(CameraImage cameraImage) async {
+    _isDetecting = true;
     print('owo');
+
     final result = await vision.yoloOnFrame(
         bytesList: cameraImage.planes.map((plane) => plane.bytes).toList(),
         imageHeight: cameraImage.height,
@@ -111,9 +119,26 @@ class AnalysisController extends GetxController {
         iouThreshold: 0.6,
         confThreshold: 0.01);
 
-    _modelResults = result.data as List<Map<String, dynamic>>;
-    print("Biển ${modelResults[0]['tag']}");
+    // _modelResults = result.data as List<Map<String, dynamic>>;
+    print(result.type);
+    _isDetecting = false;
   }
+
+  // Future<void> yoloOnFrame(CameraImage cameraImage) async {
+  //   _isDetecting = true;
+  //   print('owo');
+
+  //   final result = await vision.yoloOnFrame(
+  //       bytesList: cameraImage.planes.map((plane) => plane.bytes).toList(),
+  //       imageHeight: cameraImage.height,
+  //       imageWidth: cameraImage.width,
+  //       iouThreshold: 0.6,
+  //       confThreshold: 0.01);
+
+  //   // _modelResults = result.data as List<Map<String, dynamic>>;
+  //   print(result.type);
+  //   _isDetecting = false;
+  // }
 
   runModel() async {
     // updateCameraImage(cameraImage);

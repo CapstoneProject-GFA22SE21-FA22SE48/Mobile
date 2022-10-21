@@ -40,6 +40,7 @@ dependencies:
   sizer:
   uuid:
   intl:
+  image:
   expandable:
   flutter:
     sdk: flutter
@@ -78,6 +79,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/
+    - assets/ml/
     - assets/icons/
     - assets/images/
 

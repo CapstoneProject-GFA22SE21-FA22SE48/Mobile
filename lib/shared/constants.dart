@@ -31,6 +31,11 @@ const userId = "7df14016-d391-4a5b-9151-dc810e98c9aa";
 
 const url = "https://10.0.2.2:5001/api/";
 
+// const ai_url = "http://10.0.2.2:5000/";
+const ai_url = "https://vnrdnt-ai-aimodule.herokuapp.com/";
+
+
+
 
 // {
 //         "id": "7df14016-d391-4a5b-9151-dc810e98c9aa",

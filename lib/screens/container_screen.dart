@@ -54,7 +54,7 @@ class ContainerScreen extends GetView<GlobalController> {
                     label: 'Bản đồ',
                   ),
                 ],
-                currentIndex: controller.tab.value.index,
+                currentIndex: controller.tab.value.index - 2,
                 selectedItemColor: Colors.amber[800],
                 onTap: (value) {
                   controller.updateTab(value);
