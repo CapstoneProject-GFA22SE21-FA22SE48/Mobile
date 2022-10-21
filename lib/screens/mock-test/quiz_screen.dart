@@ -13,8 +13,13 @@ import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:vnrdn_tai/utils/dialogUtil.dart';
 
 class QuizScreen extends StatefulWidget {
-  QuizScreen({super.key, required this.categoryId, this.separator = 0});
+  QuizScreen(
+      {super.key,
+      required this.categoryId,
+      this.questionCategoryId = "",
+      this.separator = 0});
   String categoryId;
+  String questionCategoryId;
 
   int separator;
   @override
@@ -34,7 +39,7 @@ class _QuizScreenState extends State<QuizScreen> {
     if (gc.test_mode == TEST_TYPE.STUDY) {
       // DialogUtil.showAlertDialog(context, 'Log', '${widget.categoryId}');
       _questions = QuestionSerivce().GetStudySetByCategoryAndSeparator(
-          widget.categoryId, widget.separator);
+          widget.categoryId, widget.questionCategoryId, widget.separator);
     } else {
       _questions =
           QuestionSerivce().GetRandomTestSetBytestCategoryId(widget.categoryId);

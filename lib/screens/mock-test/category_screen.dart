@@ -37,13 +37,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
     String res = "";
     switch (categoryName) {
       case 'A1':
-        res = "200 câu / 8 đề";
+        res = "200 câu";
         break;
       case 'A2':
-        res = "200 câu / 8 đề";
+        res = "200 câu";
         break;
       case 'B1, B2':
-        res = "600 câu / 24 đề";
+        res = "600 câu";
         break;
     }
     return res;

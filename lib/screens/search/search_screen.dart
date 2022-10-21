@@ -74,7 +74,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                           SizedBox(
                             width: 100.w,
-                            height: 66.h,
+                            height: 55.h,
                             child: GridView.count(
                               clipBehavior: Clip.hardEdge,
                               crossAxisCount: 2,
@@ -82,7 +82,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 snapshot.data!.length,
                                 (index) {
                                   return Container(
-                                    margin: const EdgeInsets.all(5),
+                                    margin: const EdgeInsets.all(10),
                                     child: ElevatedButton(
                                       onPressed: () {},
                                       style: ElevatedButton.styleFrom(

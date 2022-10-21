@@ -57,12 +57,14 @@ class QuestionSerivce {
   }
 
   Future<List<Question>> GetStudySetByCategoryAndSeparator(
-      String categoryId, int separator) async {
+      String categoryId, String questionCategoryId, int separator) async {
     try {
       final res = await http
           .get(Uri.parse(url +
               "Questions/GetStudySetByCategoryAndSeparator?categoryId=" +
               categoryId +
+              "&questionCategoryId=" +
+              questionCategoryId +
               "&separator=" +
               separator.toString()))
           .timeout(const Duration(seconds: TIME_OUT));

@@ -67,14 +67,14 @@ class AnalysisController extends GetxController {
       print('controller not initialized');
       return;
     }
-    _isDetecting = true;
+    _isDetecting = false;
     final xFile = await _cameraController.takePicture();
     print('taken');
     final path = xFile.path;
     io.File file = io.File(xFile.path);
     final res = await upload(file);
     if (res != null) {
-      _isDetecting = false;
+      _isDetecting = true;
       print(res);
       return res;
     }
