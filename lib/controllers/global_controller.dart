@@ -2,11 +2,15 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'dart:developer';
 
 class GlobalController extends GetxController {
   final test_mode = TEST_TYPE.STUDY.obs;
   final is_error = false.obs;
   final tab = TABS.SEARCH.obs;
+  final sideBar = 0.obs;
+  final username = ''.obs;
+  final userId = ''.obs;
 
   final query = "".obs;
 
@@ -22,6 +26,9 @@ class GlobalController extends GetxController {
 
   @override
   dispose() {
+    // ---
+    log('data: $tab');
+    // ---
     super.dispose();
   }
 
@@ -35,6 +42,18 @@ class GlobalController extends GetxController {
 
   updateError(value) {
     is_error(value);
+  }
+
+  updateUsername(value) {
+    username(value);
+  }
+
+  updateUserId(value) {
+    userId(value);
+  }
+
+  updateSideBar(value) {
+    sideBar(value);
   }
 
   updateTab(value) {
@@ -51,8 +70,18 @@ class GlobalController extends GetxController {
       case 3:
         value = TABS.MINIMAP;
         break;
+      case 4:
+        value = TABS.WELCOME;
+        break;
+      case 5:
+        value = TABS.LOGIN;
+        break;
+      case 6:
+        value = TABS.SIGNUP;
+        break;
     }
     tab(value);
+    log(tab.value.name);
     update();
   }
 }

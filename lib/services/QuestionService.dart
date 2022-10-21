@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
 class QuestionSerivce {
-  
   List<Question> parseQuestions(String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed.map<Question>((json) => Question.fromJson(json)).toList();
@@ -14,7 +14,7 @@ class QuestionSerivce {
   Future<List<Question>> GetQuestionList() async {
     try {
       final res = await http
-          .get(Uri.parse(url + "Questions"))
+          .get(Uri.parse("${url}Questions"))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
@@ -32,9 +32,11 @@ class QuestionSerivce {
     }
   }
 
+  // ignore: non_constant_identifier_names
   Future<List<Question>> GetRandomTestSetBytestCategoryId(
       String categoryId) async {
     try {
+      log(categoryId);
       final res = await http
           .get(Uri.parse(url +
               "Questions/GetRandomTestSetByCategoryId?categoryId=" +
@@ -67,6 +69,7 @@ class QuestionSerivce {
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
+        log(res.body);
         return parseQuestions(res.body);
       } else {
         // If the server did not return a 200 OK response,

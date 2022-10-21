@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/TestResult.dart';
 import 'package:vnrdn_tai/models/TestResultDetail.dart';
@@ -9,6 +10,7 @@ import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
 import 'package:vnrdn_tai/services/QuestionService.dart';
 import 'package:vnrdn_tai/services/TestResultService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/utils/io_utils.dart';
 
 class ScoreScreen extends StatelessWidget {
   ScoreScreen({super.key});
@@ -20,17 +22,18 @@ class ScoreScreen extends StatelessWidget {
       var trId = Uuid().v4();
       qc.answeredAttempts.forEach((element) {
         TestResultDetail trd = TestResultDetail(
-            Uuid().v4(),
-            trId,
-            element['question'].id,
-            element['selectedAns'].id,
-            element['isCorrect'],
-            );
+          Uuid().v4(),
+          trId,
+          element['question'].id,
+          element['selectedAns'].id,
+          element['isCorrect'],
+        );
         trds.add(trd);
       });
+      GlobalController gc = Get.put(GlobalController());
       TestResult tr = TestResult(
           trId,
-          userId,
+          gc.userId.value,
           qc.answeredQuestions[0].testCategoryId,
           DateTime.now().toString(),
           trds);
@@ -107,7 +110,7 @@ class ScoreScreen extends StatelessWidget {
                             },
                             child: Text("Quay về màn hình chính",
                                 style: TextStyle(color: Colors.black)),
-                            style: buttonStyle)
+                            style: kDefaultButtonStyle)
                       ],
                     ),
                   ),

@@ -4,6 +4,9 @@
         android:label="vnrdn_tai"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- TODO: Add your Google Maps API key here -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyBEre7YKax4irpLfr0I2jrkACu_ZiBL3JU"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

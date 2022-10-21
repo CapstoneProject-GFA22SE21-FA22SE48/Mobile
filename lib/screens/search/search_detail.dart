@@ -50,7 +50,7 @@ class _SearchDetailScreenState extends State<SearchDetailScreen> {
                 throw Exception(snapshot.error);
               } else {
                 return Center(
-                  child: Column(
+                  child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         AppBar(
@@ -58,7 +58,7 @@ class _SearchDetailScreenState extends State<SearchDetailScreen> {
                           backgroundColor: Colors.white,
                           iconTheme: IconThemeData(color: Colors.black),
                         ),
-                        Divider(),
+                        const Divider(),
                         Container(
                           width: double.infinity,
                           height: 60.h,

@@ -18,11 +18,10 @@ class SearchBar extends GetView<GlobalController> {
     return Container(
         decoration: BoxDecoration(
             color: Colors.white,
-            boxShadow: [BoxShadow(color: Colors.black)],
+            boxShadow: const [BoxShadow(color: Colors.black)],
             borderRadius: BorderRadius.circular(5)),
-        height: 10.h,
         child: Padding(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(0),
           child: TextField(
             onChanged: (value) {
               gc.updateQuery(value);
@@ -32,24 +31,34 @@ class SearchBar extends GetView<GlobalController> {
             },
             controller: _textController,
             decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
+              prefixIcon: const Icon(
+                Icons.search,
+                color: Colors.blueAccent,
+              ),
               suffixIcon: IconButton(
-                icon: const Icon(Icons.clear),
+                icon: const Icon(
+                  Icons.clear,
+                  color: Colors.blueAccent,
+                ),
                 onPressed: () {
                   gc.updateQuery("");
                 },
               ),
-              enabledBorder: gc.query.value != null
+              enabledBorder: gc.query.value.isNotEmpty
                   ? InputBorder.none
                   : OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                      borderSide: BorderSide(color: Colors.orange, width: 5)),
-              border: gc.query.value != null
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide:
+                          const BorderSide(color: Colors.blueAccent, width: 1)),
+              border: gc.query.value.isNotEmpty
                   ? InputBorder.none
                   : OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                      borderSide: BorderSide(color: Colors.orange, width: 5)),
-              hintText: 'Tra cứu luật...',
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide:
+                          const BorderSide(color: Colors.blueAccent, width: 1)),
+              hintText: ('Tra cứu luật...'),
+              hintStyle: TextStyle(color: Colors.blueAccent.shade200),
+              fillColor: Colors.blueAccent,
             ),
           ),
         ));
