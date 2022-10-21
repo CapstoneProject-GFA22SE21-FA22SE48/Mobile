@@ -8,6 +8,9 @@ class GlobalController extends GetxController {
   final test_mode = TEST_TYPE.STUDY.obs;
   final is_error = false.obs;
   final tab = TABS.SEARCH.obs;
+  final sideBar = 0.obs;
+  final username = ''.obs;
+  final userId = ''.obs;
 
   final query = "".obs;
 
@@ -39,6 +42,18 @@ class GlobalController extends GetxController {
 
   updateError(value) {
     is_error(value);
+  }
+
+  updateUsername(value) {
+    username(value);
+  }
+
+  updateUserId(value) {
+    userId(value);
+  }
+
+  updateSideBar(value) {
+    sideBar(value);
   }
 
   updateTab(value) {

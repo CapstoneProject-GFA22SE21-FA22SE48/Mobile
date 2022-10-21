@@ -67,7 +67,7 @@ class TestResultSerivce {
     print(jsonEncode(testResult));
     try {
       final res = await http.post(
-        Uri.parse('${url}TestResults/'),
+        Uri.parse('${url}TestResults'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

@@ -36,6 +36,7 @@ class QuestionSerivce {
   Future<List<Question>> GetRandomTestSetBytestCategoryId(
       String categoryId) async {
     try {
+      log(categoryId);
       final res = await http
           .get(Uri.parse(url +
               "Questions/GetRandomTestSetByCategoryId?categoryId=" +

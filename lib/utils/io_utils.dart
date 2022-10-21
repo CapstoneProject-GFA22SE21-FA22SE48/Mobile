@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AndroidIO {
+class IOUtils {
   static Future<bool> saveToStorage(String key, String value) async {
     try {
       // obtain shared preferences

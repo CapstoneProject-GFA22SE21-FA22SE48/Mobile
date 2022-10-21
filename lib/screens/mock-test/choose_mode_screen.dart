@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/TestResult.dart';
+import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/category_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/test_results.dart';
@@ -10,6 +11,9 @@ import 'package:vnrdn_tai/screens/mock-test/test_set_screen.dart';
 import 'package:vnrdn_tai/services/TestResultService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
+import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/io_utils.dart';
+import 'package:vnrdn_tai/widgets/buttons.dart';
 
 class ChooseModeScreen extends StatefulWidget {
   ChooseModeScreen({super.key});
@@ -24,6 +28,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
   @override
   void initState() {
     super.initState();
+    IOUtils.getFromStorage('token');
     testResults = TestResultSerivce().GetTestResultList(userId);
   }
 
@@ -71,6 +76,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                         fontSize: FONTSIZES.textHuge)),
                             const SizedBox(height: kDefaultPaddingValue),
                             const SizedBox(height: kDefaultPaddingValue),
+                            // Vào học
                             ElevatedButton(
                               onPressed: () {
                                 gc.updateTestMode(TEST_TYPE.STUDY);
@@ -94,7 +100,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                     ),
                                     SizedBox(width: kDefaultPaddingValue),
                                     Text(
-                                      "Vào Học",
+                                      "Vào học",
                                       style: TextStyle(
                                           fontSize: FONTSIZES.textLarge,
                                           fontWeight: FontWeight.bold,
@@ -105,10 +111,23 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                               ),
                             ),
                             const SizedBox(height: kDefaultPaddingValue),
+                            // Thi thử
                             ElevatedButton(
                               onPressed: () {
-                                gc.updateTestMode(TEST_TYPE.TEST);
-                                Get.to(() => CategoryScreen());
+                                if (gc.userId.value.isNotEmpty) {
+                                  gc.updateTestMode(TEST_TYPE.TEST);
+                                  Get.to(() => CategoryScreen());
+                                } else {
+                                  DialogUtil.showAlertDialog(
+                                      context,
+                                      "Authenticator",
+                                      "You need to logged in to continue.\nGo to login page?",
+                                      [
+                                        TemplatedButtons.yes(
+                                            context, const LoginScreen()),
+                                        TemplatedButtons.no(context),
+                                      ]);
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
@@ -139,11 +158,24 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                               ),
                             ),
                             const SizedBox(height: kDefaultPaddingValue),
+                            // Lịch sử
                             ElevatedButton(
                               onPressed: () {
-                                gc.updateTestMode(TEST_TYPE.TEST);
-                                Get.to(() => TestRestulScreen(
-                                    testResults: snapshot.data!));
+                                if (gc.userId.value.isNotEmpty) {
+                                  gc.updateTestMode(TEST_TYPE.TEST);
+                                  Get.to(() => TestRestulScreen(
+                                      testResults: snapshot.data!));
+                                } else {
+                                  DialogUtil.showAlertDialog(
+                                      context,
+                                      "Authenticator",
+                                      "You need to logged in to continue.\nGo to login page?",
+                                      [
+                                        TemplatedButtons.yes(
+                                            context, const LoginScreen()),
+                                        TemplatedButtons.no(context),
+                                      ]);
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DialogUtil {
-  static void showAlertDialog(BuildContext context, String? title, content) {
+  static void showAlertDialog(
+      BuildContext context, String? title, content, List<Widget>? actions) {
     // set up the button
     Widget okButton = TextButton(
       child: const Text("OK"),
@@ -14,9 +15,10 @@ class DialogUtil {
     AlertDialog alert = AlertDialog(
       title: Text('$title'),
       content: Text('$content'),
-      actions: [
-        okButton,
-      ],
+      actions: actions ??
+          [
+            okButton,
+          ],
     );
 
     // show the dialog

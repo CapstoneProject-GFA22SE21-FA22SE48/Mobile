@@ -51,7 +51,7 @@ class FONTSIZES {
 
 const TIME_OUT = 60;
 
-const userId = "7df14016-d391-4a5b-9151-dc810e98c9aa";
+const userId = "2EA5CE72-5CDD-4247-B325-C30B91D3863A"; // jwt fixed
 
 const url = "https://10.0.2.2:5001/api/";
 

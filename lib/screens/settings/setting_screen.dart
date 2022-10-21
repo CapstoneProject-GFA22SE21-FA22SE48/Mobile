@@ -4,17 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/widgets/switch.dart';
 
-class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    throw UnimplementedError();
-  }
+  State<StatefulWidget> createState() => _SwitchClassState();
 }
 
-class SwitchClass extends State {
+class _SwitchClassState extends State<SettingsScreen> {
   bool isSwitched = false;
   var textValue = 'Switch is OFF';
 
@@ -43,27 +40,38 @@ class SwitchClass extends State {
           title: const Text('Cài đặt'),
         ),
         body: ListView.builder(
+          padding: const EdgeInsets.all(10.0),
           itemBuilder: (context, index) {
             return Container(
+              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
               decoration: BoxDecoration(
-                color: kPrimaryButtonColor,
-                border: Border.all(color: kDisabledButtonColor),
-                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+                border: Border.all(color: Colors.grey.shade200),
+                borderRadius: BorderRadius.circular(20),
                 boxShadow: const [
                   BoxShadow(
-                    color: kDisabledTextColor,
+                    color: Colors.grey,
+                    blurRadius: 10,
                   )
                 ],
               ),
               child: ListTile(
-                contentPadding: EdgeInsets.zero,
+                contentPadding: const EdgeInsets.all(10.0),
                 title: Row(children: [
-                  Text('Thông báo'),
+                  Text(
+                    'Thông báo',
+                    style: TextStyle(
+                      color:
+                          isSwitched ? kPrimaryButtonColor : kPrimaryTextColor,
+                      fontSize: FONTSIZES.textMediumLarge,
+                    ),
+                  ),
                   const Spacer(),
                   CupertinoSwitch(
                     dragStartBehavior: DragStartBehavior.start,
                     value: isSwitched,
                     activeColor: Colors.blueAccent,
+                    trackColor: Colors.grey,
                     onChanged: (value) {
                       print("VALUE : $value");
                       setState(() {

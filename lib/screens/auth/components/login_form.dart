@@ -1,6 +1,8 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
@@ -13,7 +15,7 @@ import 'package:vnrdn_tai/services/AuthService.dart';
 
 import 'package:vnrdn_tai/screens/auth/components/already_have_an_account_acheck.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/android_io.dart';
+import 'package:vnrdn_tai/utils/io_utils.dart';
 import 'package:vnrdn_tai/utils/dialogUtil.dart';
 import '../signup_screen.dart';
 
@@ -30,7 +32,6 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final controller = GlobalController();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -77,22 +78,11 @@ class _LoginFormState extends State<LoginForm> {
           .loginWithUsername(usernameController.text, passwordController.text)
           .then(((value) => {token = value}));
       if (token.length > 1) {
-        afterLoggedIn(token, 0);
-        token = await AndroidIO.getFromStorage("token");
-        // DialogUtil.showAlertDialog(context, "token", token);
-        // ignore: use_build_context_synchronously
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return const ContainerScreen();
-            },
-          ),
-        );
+        afterLoggedIn(token);
       } else {
         // ignore: use_build_context_synchronously
-        DialogUtil.showAlertDialog(
-            context, "Đăng nhập thất bại", "Sai tên đăng nhập hoặc mật khẩu.");
+        DialogUtil.showAlertDialog(context, "Đăng nhập thất bại",
+            "Sai tên đăng nhập hoặc mật khẩu.", null);
       }
     }
   }
@@ -104,35 +94,39 @@ class _LoginFormState extends State<LoginForm> {
           .loginWithGmail(gmail)
           .then(((value) => {token = value}));
       if (token.length > 1) {
-        afterLoggedIn(token, 0);
-        token = await AndroidIO.getFromStorage("token");
-        // DialogUtil.showAlertDialog(context, "token", token);
         // ignore: use_build_context_synchronously
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return const ContainerScreen();
-            },
-          ),
-        );
+        afterLoggedIn(token);
       } else {
         // ignore: use_build_context_synchronously
-        DialogUtil.showAlertDialog(
-            context, "Đăng nhập thất bại", "Sai tên đăng nhập hoặc mật khẩu.");
+        DialogUtil.showAlertDialog(context, "Đăng nhập thất bại",
+            "Sai tên đăng nhập hoặc mật khẩu.", null);
       }
     } else {
       // ignore: use_build_context_synchronously
-      DialogUtil.showAlertDialog(
-          context, "Đăng nhập thất bại", "Sai tên đăng nhập hoặc mật khẩu.");
+      DialogUtil.showAlertDialog(context, "Đăng nhập thất bại",
+          "Sai tên đăng nhập hoặc mật khẩu.", null);
     }
   }
 
   // do after logged in
-  Future<bool> afterLoggedIn(String token, int tabIndex) async {
-    AndroidIO.saveToStorage("token", token);
-    controller.updateTab(tabIndex);
-    return true;
+  void afterLoggedIn(String token) async {
+    await IOUtils.saveToStorage('token', token);
+
+    GlobalController gc = Get.put(GlobalController());
+    Jwt.parseJwt(token).forEach((key, value) {
+      IOUtils.saveToStorage(key, value.toString());
+      if (key == 'Id') {
+        gc.updateUserId(value);
+        print(value);
+      }
+      if (key == 'Username') {
+        gc.updateUsername(value);
+      }
+      Get.to(() => ContainerScreen());
+    });
+    // IOUtils.getFromStorage('Id').then((value) => print(value));
+
+    // return true;
   }
 
   @override
@@ -177,8 +171,14 @@ class _LoginFormState extends State<LoginForm> {
               onPressed: () {
                 handleLogin(context);
               },
-              child: Text(
-                "Đăng nhập".toUpperCase(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: kDefaultPaddingValue),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Đăng nhập".toUpperCase()),
+                  ],
+                ),
               ),
             ),
           ),
@@ -189,7 +189,10 @@ class _LoginFormState extends State<LoginForm> {
             tag: "g_login_btn",
             child: ElevatedButton(
               onPressed: () {
-                handleGLogin(context, "");
+                // handleGLogin(context, "");
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const ContainerScreen();
+                }));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,

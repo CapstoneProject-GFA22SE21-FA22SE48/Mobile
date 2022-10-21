@@ -10,6 +10,7 @@ import 'package:vnrdn_tai/screens/mock-test/score_screen.dart';
 import 'package:vnrdn_tai/services/QuestionService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
+import 'package:vnrdn_tai/utils/dialogUtil.dart';
 
 class QuizScreen extends StatefulWidget {
   QuizScreen({super.key, required this.categoryId, this.separator = 0});
@@ -31,6 +32,7 @@ class _QuizScreenState extends State<QuizScreen> {
     super.initState();
     // ignore: unrelated_type_equality_checks
     if (gc.test_mode == TEST_TYPE.STUDY) {
+      // DialogUtil.showAlertDialog(context, 'Log', '${widget.categoryId}');
       _questions = QuestionSerivce().GetStudySetByCategoryAndSeparator(
           widget.categoryId, widget.separator);
     } else {
@@ -50,7 +52,9 @@ class _QuizScreenState extends State<QuizScreen> {
         actions: [
           TextButton(
             child: const Text("Xác nhận"),
-            onPressed: () => Get.to(ContainerScreen()),
+            onPressed: () => {
+              // chưa có nha
+            },
           ),
           TextButton(
             child: const Text("Không"),

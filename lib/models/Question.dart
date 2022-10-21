@@ -7,7 +7,7 @@ class Question {
   final String name;
   final String content;
   final String? imageUrl;
-  final String? status;
+  final int? status;
   final List<Answer> answers;
 
   factory Question.fromJson(Map<String, dynamic> data) {
