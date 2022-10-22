@@ -4,7 +4,6 @@ class Question {
   final String id;
   final String testCategoryId;
   final String questionCategoryId;
-  final String name;
   final String content;
   final String? imageUrl;
   final int? status;
@@ -15,7 +14,6 @@ class Question {
       data['id'],
       data['testCategoryId'],
       data['questionCategoryId'],
-      data['name'],
       data['content'],
       data['imageUrl'],
       data['status'],
@@ -27,6 +25,6 @@ class Question {
     );
   }
 
-  Question(this.id, this.testCategoryId, this.questionCategoryId, this.name,
+  Question(this.id, this.testCategoryId, this.questionCategoryId,
       this.content, this.imageUrl, this.status, this.answers);
 }
