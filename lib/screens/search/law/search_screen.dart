@@ -7,6 +7,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/models/Keyword.dart';
 import 'package:vnrdn_tai/screens/search/components/search_bar.dart';
 import 'package:vnrdn_tai/services/KeywordService.dart';
@@ -22,6 +23,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   late Future<List<Keyword>> keywords = KeywordSerivce().GetKeywordList();
+
   final List<IconData> iconData = <IconData>[
     Icons.dangerous_outlined,
     Icons.turn_right,
@@ -36,9 +38,17 @@ class _SearchScreenState extends State<SearchScreen> {
     Icons.style,
     Icons.ice_skating
   ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     GlobalController gc = Get.find<GlobalController>();
+    SearchController sc = Get.put(SearchController());
+
     gc.updateQuery(null);
     return Scaffold(
         extendBodyBehindAppBar: true,
@@ -64,7 +74,34 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          SearchBar(),
+                          DefaultTabController(
+                              length: 3,
+                              child: SizedBox(
+                                width: 100.w,
+                                height: 10.h,
+                                child: TabBar(
+                                    onTap: (value) {
+                                      sc.updateVehicleCategory(value);
+                                    },
+                                    indicatorColor: Colors.grey,
+                                    labelColor: Colors.blue,
+                                    unselectedLabelColor: Colors.black,
+                                    tabs: const <Tab>[
+                                      Tab(
+                                          icon: Icon(Icons.motorcycle_outlined),
+                                          text: 'Xe máy'),
+                                      Tab(
+                                          icon: Icon(Icons.car_crash_outlined),
+                                          text: 'Xe ô tô'),
+                                      Tab(
+                                          icon: Icon(Icons.difference_outlined),
+                                          text: 'Khác'),
+                                    ]),
+                              )),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: SearchBar(),
+                          ),
                           const Divider(
                             indent: kDefaultPaddingValue,
                             endIndent: kDefaultPaddingValue,
@@ -74,10 +111,10 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                           SizedBox(
                             width: 100.w,
-                            height: 55.h,
+                            height: 45.h,
                             child: GridView.count(
                               clipBehavior: Clip.hardEdge,
-                              crossAxisCount: 2,
+                              crossAxisCount: 3,
                               children: List.generate(
                                 snapshot.data!.length,
                                 (index) {

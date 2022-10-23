@@ -10,15 +10,15 @@ import 'package:vnrdn_tai/services/SectionService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 
-class SearchDetailScreen extends StatefulWidget {
-  SearchDetailScreen({super.key, required this.query});
+class SearchListScreen extends StatefulWidget {
+  SearchListScreen({super.key, required this.query});
   late String query;
 
   @override
-  State<SearchDetailScreen> createState() => _SearchDetailScreenState();
+  State<SearchListScreen> createState() => _SearchListScreenState();
 }
 
-class _SearchDetailScreenState extends State<SearchDetailScreen> {
+class _SearchListScreenState extends State<SearchListScreen> {
   late Future<List<Section>> sections =
       SectionSerivce().GetSectionListByQuery(widget.query);
 

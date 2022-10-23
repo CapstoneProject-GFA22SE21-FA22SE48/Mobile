@@ -5,15 +5,10 @@ import 'package:vnrdn_tai/screens/analysis/analysis_screen.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
-import 'package:vnrdn_tai/screens/search/search_screen.dart';
+import 'package:vnrdn_tai/screens/search/law/search_screen.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
 import 'package:vnrdn_tai/screens/welcome/welcome_screen.dart';
-import 'package:vnrdn_tai/services/AuthService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/shared/snippets.dart';
-import 'package:vnrdn_tai/utils/future_builder_util.dart';
-import 'package:vnrdn_tai/utils/io_utils.dart';
-import 'package:vnrdn_tai/widgets/custom_paint.dart';
 
 class ContainerScreen extends GetView<GlobalController> {
   const ContainerScreen({super.key});
@@ -49,7 +44,6 @@ class ContainerScreen extends GetView<GlobalController> {
   @override
   Widget build(BuildContext context) {
     String title = 'VNRDnTAI';
-    print(controller.username.value);
     return Scaffold(
         appBar: AppBar(
           title: Text(title),
