@@ -1,7 +1,7 @@
 class UserInfo {
   final String username;
   final String password;
-  final String email;
+  final String? email;
 
   factory UserInfo.fromJson(Map<String, dynamic> data) {
     return UserInfo(data['username'], data['password'], data['email']);

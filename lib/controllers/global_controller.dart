@@ -1,8 +1,12 @@
+import 'dart:ffi';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'dart:developer';
+
+import 'package:vnrdn_tai/utils/io_utils.dart';
 
 class GlobalController extends GetxController {
   final test_mode = TEST_TYPE.STUDY.obs;
@@ -14,6 +18,8 @@ class GlobalController extends GetxController {
 
   final query = "".obs;
 
+  final pushNotiMode = true.obs;
+
   late List<CameraDescription> _cameras;
   List<CameraDescription> get cameras => this._cameras;
 
@@ -21,6 +27,10 @@ class GlobalController extends GetxController {
   Future<void> onInit() async {
     WidgetsFlutterBinding.ensureInitialized();
     _cameras = await availableCameras();
+
+    // init user
+    log('initializing...');
+    //
     super.onInit();
   }
 
@@ -54,6 +64,10 @@ class GlobalController extends GetxController {
 
   updateSideBar(value) {
     sideBar(value);
+  }
+
+  updatePushNotiMode(value) {
+    pushNotiMode(value);
   }
 
   updateTab(value) {

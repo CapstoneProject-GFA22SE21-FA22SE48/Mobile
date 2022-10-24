@@ -52,11 +52,15 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: ^1.24.0
   firebase_auth: ^3.11.2
+
+  getwidget: ^2.0.4
   
   google_maps_flutter: 
   custom_info_window: ^1.0.1 
   
   jwt_decode: ^0.3.1
+  email_auth: ^1.0.0
+  flutter_keyboard_visibility: ^5.4.0
 
 dev_dependencies:
   flutter_test:
@@ -89,6 +93,9 @@ flutter:
     - assets/images/
     # for images
     - assets/images/logo.png
+    - assets/images/snapchat.png
+    - assets/images/auth/login.png
+    - assets/images/auth/signup.png
     - assets/images/auth/main_top.png
     - assets/images/auth/main_bottom.png
     - assets/images/auth/login_bottom.png

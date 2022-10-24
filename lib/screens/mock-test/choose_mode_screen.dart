@@ -13,7 +13,7 @@ import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:vnrdn_tai/utils/dialogUtil.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
-import 'package:vnrdn_tai/widgets/buttons.dart';
+import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class ChooseModeScreen extends StatefulWidget {
   ChooseModeScreen({super.key});
@@ -118,7 +118,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                   gc.updateTestMode(TEST_TYPE.TEST);
                                   Get.to(() => CategoryScreen());
                                 } else {
-                                  DialogUtil.showAlertDialog(
+                                  DialogUtil.showTextDialog(
                                       context,
                                       "Authenticator",
                                       "You need to logged in to continue.\nGo to login page?",
@@ -166,7 +166,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                   Get.to(() => TestRestulScreen(
                                       testResults: snapshot.data!));
                                 } else {
-                                  DialogUtil.showAlertDialog(
+                                  DialogUtil.showTextDialog(
                                       context,
                                       "Authenticator",
                                       "You need to logged in to continue.\nGo to login page?",

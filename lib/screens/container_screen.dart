@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/analysis/analysis_screen.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
+import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
 import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
 import 'package:vnrdn_tai/screens/search/search_screen.dart';
@@ -39,21 +43,54 @@ class ContainerScreen extends GetView<GlobalController> {
     }
   }
 
-  void clearUserInfo() {
+  getActionButton(v) {
+    if (v == TABS.ANALYSIS) {
+      return const Icon(
+        Icons.camera_alt_rounded,
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Future<bool> handleLogout() async {
+    return await clearOnControllers();
+  }
+
+  clearOnControllers() {
     controller.updateUserId('');
     controller.updateUsername('');
     controller.updateTab(0);
     controller.updateSideBar(0);
+    AuthController ac = Get.put(AuthController());
+    ac.updateEmail('');
+    ac.updateStatus(0);
+    return true;
+  }
+
+  clearSharedPreferences() {
+    //need change
+    IOUtils.removeUserData(['Id']);
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
     String title = 'VNRDnTAI';
-    print(controller.username.value);
+
     return Scaffold(
         appBar: AppBar(
           title: Text(title),
           centerTitle: true,
+          actions: [
+            GestureDetector(
+              onTap: () {},
+              child: Padding(
+                padding: const EdgeInsets.only(right: kDefaultPaddingValue),
+                child: Obx(() => getActionButton(controller.tab.value)),
+              ),
+            ),
+          ],
         ),
         drawer: Drawer(
           child: ListView(
@@ -83,11 +120,11 @@ class ContainerScreen extends GetView<GlobalController> {
               controller.userId.value.isNotEmpty
                   ? ListTile(
                       leading: const Icon(Icons.account_circle, size: 36),
-                      title: Text(
-                        'Xin chào, ${controller.username.value}.',
-                        style: const TextStyle(
-                            fontSize: FONTSIZES.textMediumLarge),
-                      ),
+                      title: Obx(() => Text(
+                            'Xin chào, ${controller.username.value}.',
+                            style: const TextStyle(
+                                fontSize: FONTSIZES.textMediumLarge),
+                          )),
                       // enabled: false,
                       iconColor: kPrimaryTextColor,
                       textColor: kPrimaryTextColor,
@@ -114,13 +151,11 @@ class ContainerScreen extends GetView<GlobalController> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       onTap: () {
-                        // Update the state of the app
-                        // ...
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          clearUserInfo();
-                          return const LoginScreen();
-                        })); // close the drawer
+                        handleLogout().then((value) {
+                          if (value) {
+                            Get.to(LoginScreen());
+                          }
+                        }); // close the drawer
                       },
                     )
                   : ListTile(
@@ -148,8 +183,7 @@ class ContainerScreen extends GetView<GlobalController> {
               ListTile(
                 leading: const Icon(Icons.settings),
                 title: const Text('Cài đặt'), // Settings
-                autofocus: true,
-                selected: controller.sideBar.value == 1,
+                // selected: controller.sideBar.value == 1,
                 selectedColor: Colors.white,
                 selectedTileColor: Colors.blueAccent,
                 onTap: () {
@@ -169,20 +203,20 @@ class ContainerScreen extends GetView<GlobalController> {
                 textColor: kWarningButtonColor,
                 leading: const Icon(Icons.flag_rounded),
                 title: const Text('Phản hồi'), // Feedbacks
-                selected: controller.sideBar.value == 1,
+                // selected: controller.sideBar.value == 2,
                 selectedColor: Colors.white,
                 selectedTileColor: Colors.blueAccent,
                 onTap: () {
                   Navigator.pop(context); // close the drawer
                   controller.updateSideBar(2);
-                  // Get.to(const SettingsScreen());
+                  Get.to(const FeedbacksScreen());
                 },
               ),
             ],
           ),
         ),
         body: Obx(() => Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(kDefaultPaddingValue),
               child: Center(child: getScreen(controller.tab.value)),
             )),
         bottomNavigationBar: Obx(() => SizedBox(

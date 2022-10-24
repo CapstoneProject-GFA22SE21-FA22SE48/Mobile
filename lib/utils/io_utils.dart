@@ -20,9 +20,9 @@ class IOUtils {
       // obtain shared preferences
       final prefs = await SharedPreferences.getInstance();
       // get value
-      String value = await prefs.getString(key).toString();
+      String? value = prefs.getString(key);
       log('$value -----------------');
-      return value;
+      return value ?? '';
     } on Exception {
       throw Exception('Getting $key causes error.');
     }
@@ -36,6 +36,23 @@ class IOUtils {
       return await prefs.remove(key);
     } on FormatException {
       throw Exception('Removing $key causes error.');
+    }
+  }
+
+  static Future<bool> removeUserData(List<String> keys) async {
+    try {
+      bool cont = true;
+      // remove vars
+      for (var key in keys) {
+        removeData(key).then((value) => cont = value);
+
+        if (!cont) {
+          return false;
+        }
+      }
+      return cont;
+    } on FormatException {
+      throw Exception('Removing $keys causes error.');
     }
   }
 }
