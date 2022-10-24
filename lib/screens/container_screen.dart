@@ -21,7 +21,7 @@ class ContainerScreen extends GetView<GlobalController> {
       return const LoginScreen();
     }
     if (v == TABS.SEARCH) {
-      return const SearchScreen();
+      return const SearchLawScreen();
     }
     if (v == TABS.MOCK_TEST) {
       return ChooseModeScreen();

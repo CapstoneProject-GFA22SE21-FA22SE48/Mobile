@@ -5,6 +5,7 @@ import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_list.dart';
+import 'package:vnrdn_tai/shared/constants.dart';
 
 class SearchBar extends GetView<GlobalController> {
   SearchBar({
@@ -14,6 +15,7 @@ class SearchBar extends GetView<GlobalController> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalController gc = Get.find<GlobalController>();
     SearchController sc = Get.put(SearchController());
     _textController.text = sc.query.value;
 
@@ -48,18 +50,6 @@ class SearchBar extends GetView<GlobalController> {
                     _textController.text = sc.query.value;
                   },
                 ),
-                enabledBorder: sc.query.value.isNotEmpty
-                    ? InputBorder.none
-                    : OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(
-                            color: Colors.blueAccent, width: 1)),
-                border: sc.query.value.isNotEmpty
-                    ? InputBorder.none
-                    : OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(
-                            color: Colors.blueAccent, width: 1)),
                 hintText: 'Tra cứu luật của ${(sc.vehicleCategory.value)}...',
                 hintStyle: TextStyle(color: Colors.blueAccent.shade200),
                 fillColor: Colors.blueAccent,

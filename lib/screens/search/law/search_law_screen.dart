@@ -14,14 +14,14 @@ import 'package:vnrdn_tai/services/KeywordService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+class SearchLawScreen extends StatefulWidget {
+  const SearchLawScreen({super.key});
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
+  State<SearchLawScreen> createState() => _SearchLawScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchLawScreenState extends State<SearchLawScreen> {
   late Future<List<Keyword>> keywords = KeywordSerivce().GetKeywordList();
 
   final List<IconData> iconData = <IconData>[
@@ -99,19 +99,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ]),
                               )),
                           Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
                             child: SearchBar(),
-                          ),
-                          const Divider(
-                            indent: kDefaultPaddingValue,
-                            endIndent: kDefaultPaddingValue,
-                            color: Colors.blueAccent,
-                            thickness: 3,
-                            // height: kDefaultPaddingValue * 4,
                           ),
                           SizedBox(
                             width: 100.w,
-                            height: 45.h,
+                            height: 48.h,
                             child: GridView.count(
                               clipBehavior: Clip.hardEdge,
                               crossAxisCount: 3,
