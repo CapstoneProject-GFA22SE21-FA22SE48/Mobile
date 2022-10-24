@@ -6,7 +6,7 @@ import 'package:vnrdn_tai/models/Keyword.dart';
 import 'package:vnrdn_tai/models/Section.dart';
 import 'package:vnrdn_tai/screens/search/components/search_bar.dart';
 import 'package:vnrdn_tai/services/KeywordService.dart';
-import 'package:vnrdn_tai/services/SectionService.dart';
+import 'package:vnrdn_tai/services/LawService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 
@@ -20,7 +20,7 @@ class SearchListScreen extends StatefulWidget {
 
 class _SearchListScreenState extends State<SearchListScreen> {
   late Future<List<Section>> sections =
-      SectionSerivce().GetSectionListByQuery(widget.query);
+      LawSerivce().GetSectionListByQuery(widget.query);
 
   @override
   void initState() {
