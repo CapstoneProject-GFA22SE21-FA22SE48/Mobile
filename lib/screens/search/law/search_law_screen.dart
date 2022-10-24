@@ -7,21 +7,23 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/models/Keyword.dart';
 import 'package:vnrdn_tai/screens/search/components/search_bar.dart';
 import 'package:vnrdn_tai/services/KeywordService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+class SearchLawScreen extends StatefulWidget {
+  const SearchLawScreen({super.key});
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
+  State<SearchLawScreen> createState() => _SearchLawScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchLawScreenState extends State<SearchLawScreen> {
   late Future<List<Keyword>> keywords = KeywordSerivce().GetKeywordList();
+
   final List<IconData> iconData = <IconData>[
     Icons.dangerous_outlined,
     Icons.turn_right,
@@ -36,10 +38,18 @@ class _SearchScreenState extends State<SearchScreen> {
     Icons.style,
     Icons.ice_skating
   ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     GlobalController gc = Get.find<GlobalController>();
-    gc.updateQuery(null);
+    SearchController sc = Get.put(SearchController());
+
+    sc.updateQuery(null);
     return Scaffold(
         extendBodyBehindAppBar: true,
         body: SafeArea(
@@ -64,20 +74,40 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          SearchBar(),
-                          const Divider(
-                            indent: kDefaultPaddingValue,
-                            endIndent: kDefaultPaddingValue,
-                            color: Colors.blueAccent,
-                            thickness: 3,
-                            // height: kDefaultPaddingValue * 4,
+                          DefaultTabController(
+                              length: 3,
+                              child: SizedBox(
+                                width: 100.w,
+                                height: 10.h,
+                                child: TabBar(
+                                    onTap: (value) {
+                                      sc.updateVehicleCategory(value);
+                                    },
+                                    indicatorColor: Colors.grey,
+                                    labelColor: Colors.blue,
+                                    unselectedLabelColor: Colors.black,
+                                    tabs: const <Tab>[
+                                      Tab(
+                                          icon: Icon(Icons.motorcycle_outlined),
+                                          text: 'Xe máy'),
+                                      Tab(
+                                          icon: Icon(Icons.car_crash_outlined),
+                                          text: 'Xe ô tô'),
+                                      Tab(
+                                          icon: Icon(Icons.difference_outlined),
+                                          text: 'Khác'),
+                                    ]),
+                              )),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            child: SearchBar(),
                           ),
                           SizedBox(
                             width: 100.w,
-                            height: 55.h,
+                            height: 48.h,
                             child: GridView.count(
                               clipBehavior: Clip.hardEdge,
-                              crossAxisCount: 2,
+                              crossAxisCount: 3,
                               children: List.generate(
                                 snapshot.data!.length,
                                 (index) {

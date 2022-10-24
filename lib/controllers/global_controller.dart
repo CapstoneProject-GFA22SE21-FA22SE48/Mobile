@@ -12,8 +12,6 @@ class GlobalController extends GetxController {
   final username = ''.obs;
   final userId = ''.obs;
 
-  final query = "".obs;
-
   late List<CameraDescription> _cameras;
   List<CameraDescription> get cameras => this._cameras;
 
@@ -30,10 +28,6 @@ class GlobalController extends GetxController {
     log('data: $tab');
     // ---
     super.dispose();
-  }
-
-  updateQuery(value) {
-    query(value);
   }
 
   updateTestMode(value) {

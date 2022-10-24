@@ -10,7 +10,6 @@ import 'package:vnrdn_tai/models/UserInfo.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vnrdn_tai/screens/auth/components/or_divider.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
-import 'package:vnrdn_tai/screens/search/search_screen.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';
 
 import 'package:vnrdn_tai/screens/auth/components/already_have_an_account_acheck.dart';

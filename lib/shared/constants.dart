@@ -32,6 +32,15 @@ final ButtonStyle kModeChoosingButtonStyle = ElevatedButton.styleFrom(
     minimumSize: const Size(200, 10),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)));
 
+// Theme.of(context)
+//                                     .textTheme
+//                                     .headline4
+//                                     ?.copyWith(
+//                                         color: Colors.blueAccent.shade200,
+//                                         fontWeight: FontWeight.bold,
+//                                         fontSize: FONTSIZES.textHuge)
+
+
 enum TEST_TYPE { STUDY, TEST }
 
 enum TABS { SEARCH, MOCK_TEST, ANALYSIS, MINIMAP, WELCOME, LOGIN, SIGNUP }
