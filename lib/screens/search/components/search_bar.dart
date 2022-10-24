@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
-import 'package:vnrdn_tai/screens/search/law/search_list.dart';
+import 'package:vnrdn_tai/screens/search/law/search_law_list.dart';
 
 class SearchBar extends GetView<GlobalController> {
   SearchBar({
@@ -14,10 +14,9 @@ class SearchBar extends GetView<GlobalController> {
 
   @override
   Widget build(BuildContext context) {
-    GlobalController gc = Get.find<GlobalController>();
     SearchController sc = Get.put(SearchController());
+    _textController.text = sc.query.value;
 
-    _textController.text = gc.query.value;
     return Container(
         decoration: BoxDecoration(
             color: Colors.white,
@@ -28,7 +27,7 @@ class SearchBar extends GetView<GlobalController> {
             padding: const EdgeInsets.all(0),
             child: TextField(
               onChanged: (value) {
-                gc.updateQuery(value);
+                sc.updateQuery(value);
               },
               onSubmitted: (value) {
                 Get.to(() => SearchListScreen(query: _textController.text));
@@ -45,16 +44,17 @@ class SearchBar extends GetView<GlobalController> {
                     color: Colors.blueAccent,
                   ),
                   onPressed: () {
-                    gc.updateQuery("");
+                    sc.updateQuery("");
+                    _textController.text = sc.query.value;
                   },
                 ),
-                enabledBorder: gc.query.value.isNotEmpty
+                enabledBorder: sc.query.value.isNotEmpty
                     ? InputBorder.none
                     : OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
                             color: Colors.blueAccent, width: 1)),
-                border: gc.query.value.isNotEmpty
+                border: sc.query.value.isNotEmpty
                     ? InputBorder.none
                     : OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),

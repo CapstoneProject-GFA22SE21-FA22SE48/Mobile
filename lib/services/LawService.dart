@@ -25,13 +25,17 @@ class LawSerivce {
 
   List<SearchLawDTO> parseSearchLawDTO(String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-    return parsed.map<SearchLawDTO>((json) => SearchLawDTO.fromJson(json)).toList();
+    return parsed
+        .map<SearchLawDTO>((json) => SearchLawDTO.fromJson(json))
+        .toList();
   }
 
-  Future<List<SearchLawDTO>> GetSearchListByQuery(String query) async {
+  Future<List<SearchLawDTO>> GetSearchListByQuery(
+      String query, String vehicleCategory) async {
     try {
       final res = await http
-          .get(Uri.parse(url + "Sections/GetSearchListByQuery?query=" + query))
+          .get(Uri.parse(url +
+              "Sections/GetSearchListByQuery?query=$query&&vehicleCategory=$vehicleCategory"))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,

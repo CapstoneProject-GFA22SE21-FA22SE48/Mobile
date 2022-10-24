@@ -49,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
     GlobalController gc = Get.find<GlobalController>();
     SearchController sc = Get.put(SearchController());
 
-    gc.updateQuery(null);
+    sc.updateQuery(null);
     return Scaffold(
         extendBodyBehindAppBar: true,
         body: SafeArea(

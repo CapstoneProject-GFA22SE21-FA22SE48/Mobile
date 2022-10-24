@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 
 class SearchController extends GetxController {
   final vehicleCategory = "xe máy".obs;
+  final query = "".obs;
 
   @override
   Future<void> onInit() async {
@@ -11,6 +12,10 @@ class SearchController extends GetxController {
   @override
   dispose() {
     super.dispose();
+  }
+
+  updateQuery(value) {
+    query(value);
   }
 
   updateVehicleCategory(value) {
