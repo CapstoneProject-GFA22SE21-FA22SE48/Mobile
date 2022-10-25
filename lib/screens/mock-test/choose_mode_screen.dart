@@ -35,9 +35,8 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
   Widget build(BuildContext context) {
     GlobalController gc = Get.find<GlobalController>();
     gc.updateTestMode(TEST_TYPE.STUDY);
-    if (gc.userId.value.isNotEmpty) {
-      testResults = TestResultSerivce().GetTestResultList(gc.userId.value);
-    }
+    testResults = TestResultSerivce().GetTestResultList(
+        gc.userId.value.isNotEmpty ? gc.userId.value : emptyUserId);
     return Scaffold(
       body: FutureBuilder<List<TestResult>>(
           key: UniqueKey(),
@@ -163,7 +162,6 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                             // Lịch sử
                             ElevatedButton(
                               onPressed: () {
-                                print(gc.userId.value.isNotEmpty);
                                 if (gc.userId.value.isNotEmpty) {
                                   gc.updateTestMode(TEST_TYPE.TEST);
                                   Get.to(() => TestRestulScreen(
