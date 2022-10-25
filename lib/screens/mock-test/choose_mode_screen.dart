@@ -29,13 +29,14 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
   void initState() {
     super.initState();
     IOUtils.getFromStorage('token');
-    testResults = TestResultSerivce().GetTestResultList(userId);
   }
 
   @override
   Widget build(BuildContext context) {
     GlobalController gc = Get.find<GlobalController>();
     gc.updateTestMode(TEST_TYPE.STUDY);
+    testResults = TestResultSerivce().GetTestResultList(
+        gc.userId.value.isNotEmpty ? gc.userId.value : emptyUserId);
     return Scaffold(
       body: FutureBuilder<List<TestResult>>(
           key: UniqueKey(),

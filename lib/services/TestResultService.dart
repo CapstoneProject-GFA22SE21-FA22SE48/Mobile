@@ -35,7 +35,7 @@ class TestResultSerivce {
       }
     } on TimeoutException {
       throw Exception('Không tải được dữ liệu.');
-    } on Exception {
+    } catch (ex) {
       throw Exception('Không thể kết nối');
     }
   }

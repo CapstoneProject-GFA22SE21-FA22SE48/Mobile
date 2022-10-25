@@ -42,10 +42,6 @@ class GlobalController extends GetxController {
     super.dispose();
   }
 
-  updateQuery(value) {
-    query(value);
-  }
-
   updateTestMode(value) {
     test_mode(value);
   }

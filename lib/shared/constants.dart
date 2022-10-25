@@ -32,6 +32,15 @@ final ButtonStyle kModeChoosingButtonStyle = ElevatedButton.styleFrom(
     minimumSize: const Size(200, 10),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)));
 
+// Theme.of(context)
+//                                     .textTheme
+//                                     .headline4
+//                                     ?.copyWith(
+//                                         color: Colors.blueAccent.shade200,
+//                                         fontWeight: FontWeight.bold,
+//                                         fontSize: FONTSIZES.textHuge)
+
+
 enum TEST_TYPE { STUDY, TEST }
 
 enum TABS { SEARCH, MOCK_TEST, ANALYSIS, MINIMAP, WELCOME, LOGIN, SIGNUP }
@@ -51,7 +60,7 @@ class FONTSIZES {
 
 const TIME_OUT = 60;
 
-const userId = "2EA5CE72-5CDD-4247-B325-C30B91D3863A"; // jwt fixed
+const emptyUserId = "00000000-0000-0000-0000-000000000000"; // jwt fixed
 
 // const url = "https://10.0.2.2:5001/api/";
 const url = "https://vnrdntaiapi.azurewebsites.net/api/";

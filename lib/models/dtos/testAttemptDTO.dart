@@ -1,8 +1,3 @@
-import 'dart:convert';
-
-import 'package:vnrdn_tai/models/Answer.dart';
-import 'package:vnrdn_tai/models/TestResult.dart';
-import 'package:vnrdn_tai/models/TestResultDetail.dart';
 
 class TestAttempDTO {
   final String? imageUrl;
