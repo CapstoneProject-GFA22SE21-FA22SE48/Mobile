@@ -54,10 +54,10 @@ class TemplatedButtons {
     return TextButton(
       style: TemplatedButtons().cancelStyle,
       onPressed: () {
-        Navigator.pop(context, 'CANCEL');
+        Navigator.pop(context, 'HUỶ BỎ');
       },
       child: const Text(
-        "CANCEL",
+        "HUỶ BỎ",
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
@@ -80,11 +80,11 @@ class TemplatedButtons {
     return TextButton(
       style: TemplatedButtons().confirmStyle,
       onPressed: () {
-        Navigator.pop(context, 'YES');
+        Navigator.pop(context, 'CÓ');
         Get.to(screen);
       },
       child: const Text(
-        "YES",
+        "CÓ",
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
@@ -94,10 +94,10 @@ class TemplatedButtons {
     return TextButton(
       style: TemplatedButtons().disabledStyle,
       onPressed: () {
-        Navigator.pop(context, 'NO');
+        Navigator.pop(context, 'KHÔNG');
       },
       child: const Text(
-        "NO",
+        "KHÔNG",
         style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
       ),
     );

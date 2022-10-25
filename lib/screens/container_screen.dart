@@ -8,6 +8,7 @@ import 'package:vnrdn_tai/screens/analysis/analysis_screen.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
 import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
+import 'package:vnrdn_tai/screens/mock-test/category_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
 import 'package:vnrdn_tai/screens/search/search_screen.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
@@ -33,7 +34,7 @@ class ContainerScreen extends GetView<GlobalController> {
       return const SearchScreen();
     }
     if (v == TABS.MOCK_TEST) {
-      return ChooseModeScreen();
+      return CategoryScreen();
     }
     if (v == TABS.ANALYSIS) {
       return AnalysisScreen();

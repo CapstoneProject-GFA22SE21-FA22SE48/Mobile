@@ -54,7 +54,7 @@ const TIME_OUT = 60;
 const userId = "2EA5CE72-5CDD-4247-B325-C30B91D3863A"; // jwt fixed
 
 // const url = "https://10.0.2.2:5001/api/";
-const url = "https://vnrdntaiapi.azurewebsites.net/api";
+const url = "https://vnrdntaiapi.azurewebsites.net/api/";
 
 // const ai_url = "http://10.0.2.2:5000/";
 const ai_url = "https://vnrdnt-ai-aimodule.herokuapp.com/";

@@ -59,111 +59,100 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Widget build(BuildContext context) {
     GlobalController gc = Get.find<GlobalController>();
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        elevation: 0,
-        title:
-            Text(gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học" : "Chế độ Thi"),
-      ),
       body: FutureBuilder<List<TestCategory>>(
-          key: UniqueKey(),
-          future: categories,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting ||
-                snapshot.data == null) {
-              return loadingScreen();
+        key: UniqueKey(),
+        future: categories,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              snapshot.data == null) {
+            return loadingScreen();
+          } else {
+            if (snapshot.hasError) {
+              Future.delayed(
+                  Duration.zero,
+                  () => {
+                        handleError(snapshot.error
+                            ?.toString()
+                            .replaceFirst('Exception:', ''))
+                      });
+              throw Exception(snapshot.error);
             } else {
-              if (snapshot.hasError) {
-                Future.delayed(
-                    Duration.zero,
-                    () => {
-                          handleError(snapshot.error
-                              ?.toString()
-                              .replaceFirst('Exception:', ''))
-                        });
-                throw Exception(snapshot.error);
-              } else {
-                return Stack(
-                  children: [
-                    SafeArea(
-                        child: Padding(
-                      padding: const EdgeInsets.all(50.0),
-                      child: Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Chọn loại bằng',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4
-                                  ?.copyWith(
-                                      color: Colors.blueAccent.shade200,
-                                      fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: kDefaultPaddingValue * 2),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 10.0),
-                              child: ListView.separated(
-                                  itemCount: snapshot.data!.length,
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  separatorBuilder: (context, index) =>
-                                      const SizedBox(
-                                          height: kDefaultPaddingValue * 1.5),
-                                  itemBuilder: (context, index) {
-                                    return ElevatedButton(
-                                      onPressed: () {
-                                        getScreen(
-                                            gc,
-                                            snapshot.data![index].name,
-                                            snapshot.data![index].id);
-                                      },
-                                      style: kDefaultButtonStyle,
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            snapshot.data![index].name,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline4
-                                                ?.copyWith(
-                                                    color: Colors.blueAccent,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                          ),
-                                          gc.test_mode.value == TEST_TYPE.STUDY
-                                              ? Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 5),
-                                                  child: Text(
-                                                    "${getQuestioNo(snapshot.data![index].name)}",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headline6
-                                                        ?.copyWith(
-                                                            color:
-                                                                Colors.black54,
-                                                            fontSize: 16),
-                                                  ),
-                                                )
-                                              : Container()
-                                        ],
-                                      ),
-                                    );
-                                  }),
-                            )
-                          ],
-                        ),
+              return Stack(
+                children: [
+                  SafeArea(
+                      child: Padding(
+                    padding: const EdgeInsets.all(0.0),
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Chọn loại bằng',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4
+                                ?.copyWith(
+                                    color: Colors.blueAccent.shade200,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: kDefaultPaddingValue * 2),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: ListView.separated(
+                                itemCount: snapshot.data!.length,
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(
+                                        height: kDefaultPaddingValue * 1.5),
+                                itemBuilder: (context, index) {
+                                  return ElevatedButton(
+                                    onPressed: () {
+                                      getScreen(gc, snapshot.data![index].name,
+                                          snapshot.data![index].id);
+                                    },
+                                    style: kDefaultButtonStyle,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          snapshot.data![index].name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4
+                                              ?.copyWith(
+                                                  color: Colors.blueAccent,
+                                                  fontWeight: FontWeight.bold),
+                                        ),
+                                        gc.test_mode.value == TEST_TYPE.STUDY
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 5),
+                                                child: Text(
+                                                  "${getQuestioNo(snapshot.data![index].name)}",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline6
+                                                      ?.copyWith(
+                                                          color: Colors.black54,
+                                                          fontSize: 16),
+                                                ),
+                                              )
+                                            : Container()
+                                      ],
+                                    ),
+                                  );
+                                }),
+                          )
+                        ],
                       ),
-                    ))
-                  ],
-                );
-              }
+                    ),
+                  ))
+                ],
+              );
             }
-          }),
+          }
+        },
+      ),
     );
   }
 }
