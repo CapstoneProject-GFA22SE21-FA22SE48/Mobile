@@ -42,6 +42,7 @@ dependencies:
   intl:
   image:
   expandable:
+  expandable_text:
   extended_text:
   flutter:
     sdk: flutter

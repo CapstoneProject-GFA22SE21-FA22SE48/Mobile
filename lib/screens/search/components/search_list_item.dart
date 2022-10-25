@@ -54,7 +54,7 @@ class SearchListItem extends StatelessWidget {
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   searchLawDto!.paragraphDesc != ""
-                                      ? '${searchLawDto!.paragraphDesc}'
+                                      ? '${searchLawDto!.paragraphDesc!.replaceAll('\\', '')}'
                                       : '${searchLawDto!.sectionDesc}',
                                   style: Theme.of(context)
                                       .textTheme

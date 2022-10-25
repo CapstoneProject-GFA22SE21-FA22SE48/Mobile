@@ -14,15 +14,16 @@ import 'package:vnrdn_tai/services/LawService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 
-class SearchListScreen extends StatefulWidget {
-  SearchListScreen({super.key, required this.query});
-  late String query;
+class SearchLawListScreen extends StatefulWidget {
+  SearchLawListScreen({super.key, this.query, this.keywordId});
+  late String? query;
+  late String? keywordId;
 
   @override
-  State<SearchListScreen> createState() => _SearchListScreenState();
+  State<SearchLawListScreen> createState() => _SearchLawListScreenState();
 }
 
-class _SearchListScreenState extends State<SearchListScreen> {
+class _SearchLawListScreenState extends State<SearchLawListScreen> {
   @override
   void initState() {
     super.initState();
@@ -31,8 +32,11 @@ class _SearchListScreenState extends State<SearchListScreen> {
   @override
   Widget build(BuildContext context) {
     SearchController sc = Get.put(SearchController());
-    late Future<List<SearchLawDTO>> searchRes = LawSerivce()
-        .GetSearchListByQuery(widget.query, sc.vehicleCategory.value);
+    late Future<List<SearchLawDTO>> searchRes = widget.query != null
+        ? LawSerivce()
+            .GetSearchListByQuery(widget.query!, sc.vehicleCategory.value)
+        : LawSerivce().GetSearchListByKeywordId(
+            widget.keywordId!, sc.vehicleCategory.value);
     return Scaffold(
         body: SafeArea(
       child: FutureBuilder<List<SearchLawDTO>>(
@@ -64,15 +68,17 @@ class _SearchListScreenState extends State<SearchListScreen> {
                       Padding(
                         padding:
                             const EdgeInsets.only(left: kDefaultPaddingValue),
-                        child: Text(
-                            'Có ${snapshot.data!.length} kết quả được tìm thấy',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4
-                                ?.copyWith(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: FONTSIZES.textMedium)),
+                        child: Obx(
+                          () => Text(
+                              'Có ${snapshot.data!.length} kết quả được tìm thấy trong hạng mục ${sc.vehicleCategory.value}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4
+                                  ?.copyWith(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: FONTSIZES.textMedium)),
+                        ),
                       ),
                       SizedBox(
                         width: 100.w,

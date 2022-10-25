@@ -10,6 +10,7 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/models/Keyword.dart';
 import 'package:vnrdn_tai/screens/search/components/search_bar.dart';
+import 'package:vnrdn_tai/screens/search/law/search_law_list.dart';
 import 'package:vnrdn_tai/services/KeywordService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
@@ -132,7 +133,11 @@ class _SearchLawScreenState extends State<SearchLawScreen> {
                                             iconSize: 48,
                                             padding: const EdgeInsets.only(
                                                 bottom: 5),
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Get.to(() => SearchLawListScreen(
+                                                  keywordId: snapshot
+                                                      .data![index].id));
+                                            },
                                             // color: Colors.accents[index],
                                             color: Colors.blueAccent,
                                             icon: Icon(iconData[index]),

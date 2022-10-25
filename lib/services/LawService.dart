@@ -23,11 +23,61 @@ class LawSerivce {
     return parsed.map<Paragraph>((json) => Paragraph.fromJson(json)).toList();
   }
 
-  List<SearchLawDTO> parseSearchLawDTO(String responseBody) {
+  List<SearchLawDTO> parseListSearchLawDTO(String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed
         .map<SearchLawDTO>((json) => SearchLawDTO.fromJson(json))
         .toList();
+  }
+
+  SearchLawDTO parseSearchLawDTO(String responseBody) {
+    final parsed = json.decode(responseBody).cast<String, dynamic>();
+    return SearchLawDTO.fromJson(json.decode(responseBody));
+  }
+
+  Future<SearchLawDTO> GetSearchParagraphDTOAsync(String paragraphId) async {
+    try {
+      final res = await http
+          .get(Uri.parse(url +
+              "Paragraphs/GetSearchParagraphDTOAsync?paragraphId=$paragraphId"))
+          .timeout(const Duration(seconds: TIME_OUT));
+      if (res.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        return parseSearchLawDTO(res.body);
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Không tải được dữ liệu.');
+      }
+    } on TimeoutException {
+      throw Exception('Không tải được dữ liệu.');
+    } on Exception {
+      throw Exception('Không thể kết nối');
+    }
+  }
+
+  Future<List<SearchLawDTO>> GetSearchListByKeywordId(
+      String keywordId, String vehicleCategory) async {
+    try {
+      final res = await http
+          .get(Uri.parse(url +
+              "Sections/GetSearchListByKeywordId?keywordId=$keywordId&&vehicleCategory=$vehicleCategory"))
+          .timeout(const Duration(seconds: TIME_OUT));
+      if (res.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        return parseListSearchLawDTO(res.body);
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Không tải được dữ liệu.');
+      }
+    } on TimeoutException {
+      throw Exception('Không tải được dữ liệu.');
+    } on Exception {
+      throw Exception('Không thể kết nối');
+    }
   }
 
   Future<List<SearchLawDTO>> GetSearchListByQuery(
@@ -40,7 +90,7 @@ class LawSerivce {
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
-        return parseSearchLawDTO(res.body);
+        return parseListSearchLawDTO(res.body);
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.

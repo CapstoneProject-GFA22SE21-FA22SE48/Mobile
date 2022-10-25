@@ -32,7 +32,8 @@ class SearchBar extends GetView<GlobalController> {
                 sc.updateQuery(value);
               },
               onSubmitted: (value) {
-                Get.to(() => SearchListScreen(query: _textController.text));
+                Get.to(() => SearchLawListScreen(query: _textController.text),
+                    preventDuplicates: false);
               },
               controller: _textController,
               decoration: InputDecoration(
