@@ -1,3 +1,4 @@
+import 'package:vnrdn_tai/models/Paragraph.dart';
 class SearchLawDTO {
   final String statueDesc;
   final String sectionDesc;
@@ -5,6 +6,7 @@ class SearchLawDTO {
   final String minPenalty;
   final String maxPenalty;
   final String? additionalPenalty;
+  final List<Paragraph>? referenceParagraphs;
 
   factory SearchLawDTO.fromJson(Map<String, dynamic> data) {
     return SearchLawDTO(
@@ -13,7 +15,17 @@ class SearchLawDTO {
         data['paragraphDesc'],
         data['minPenalty'],
         data['maxPenalty'],
-        data['additionalPenalty']);
+        data['additionalPenalty'],
+        data['referenceParagraphs']
+            .map((entry) => Paragraph(
+                  entry['id'],
+                  entry['name'],
+                  entry['sectionId'],
+                  entry['description'],
+                  entry['additionalPenalty'],
+                ))
+            .toList()
+            .cast<Paragraph>());
   }
 
   Map<String, dynamic> toJson() {
@@ -24,9 +36,16 @@ class SearchLawDTO {
       'minPenalty': minPenalty,
       'maxPenalty': maxPenalty,
       'additionalPenalty': additionalPenalty,
+      'referenceParagraphs': referenceParagraphs,
     };
   }
 
-  SearchLawDTO(this.statueDesc, this.sectionDesc, this.paragraphDesc,
-      this.minPenalty, this.maxPenalty, this.additionalPenalty);
+  SearchLawDTO(
+      this.statueDesc,
+      this.sectionDesc,
+      this.paragraphDesc,
+      this.minPenalty,
+      this.maxPenalty,
+      this.additionalPenalty,
+      this.referenceParagraphs);
 }
