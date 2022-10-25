@@ -52,13 +52,13 @@ class _QuizScreenState extends State<QuizScreen> {
     }
     Get.dialog(
       AlertDialog(
-        title: const Text('Việc thoát sẽ tự động nộp bài'),
+        title: const Text('Nếu thoát, kết quả sẽ không được lưu'),
         content: const Text('Bạn có chắc là bạn muốn thoát không?'),
         actions: [
           TextButton(
             child: const Text("Xác nhận"),
             onPressed: () => {
-              // chưa có nha
+              Get.to(() => ChooseModeScreen())
             },
           ),
           TextButton(

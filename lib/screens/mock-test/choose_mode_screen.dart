@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/TestResult.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/category_screen.dart';
-import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/test_results.dart';
-import 'package:vnrdn_tai/screens/mock-test/test_set_screen.dart';
 import 'package:vnrdn_tai/services/TestResultService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
@@ -29,13 +26,15 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
   void initState() {
     super.initState();
     IOUtils.getFromStorage('token');
-    testResults = TestResultSerivce().GetTestResultList(userId);
   }
 
   @override
   Widget build(BuildContext context) {
     GlobalController gc = Get.find<GlobalController>();
     gc.updateTestMode(TEST_TYPE.STUDY);
+    if (gc.userId.value.isNotEmpty) {
+      testResults = TestResultSerivce().GetTestResultList(gc.userId.value);
+    }
     return Scaffold(
       body: FutureBuilder<List<TestResult>>(
           key: UniqueKey(),
@@ -161,6 +160,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                             // Lịch sử
                             ElevatedButton(
                               onPressed: () {
+                                print(gc.userId.value.isNotEmpty);
                                 if (gc.userId.value.isNotEmpty) {
                                   gc.updateTestMode(TEST_TYPE.TEST);
                                   Get.to(() => TestRestulScreen(
