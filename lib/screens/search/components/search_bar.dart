@@ -51,7 +51,9 @@ class SearchBar extends GetView<GlobalController> {
                     _textController.text = sc.query.value;
                   },
                 ),
-                hintText: 'Tra cứu luật của ${(sc.vehicleCategory.value)}...',
+                hintText: gc.tab == TABS.SEARCH
+                    ? 'Tra cứu luật của ${(sc.vehicleCategory.value)}...'
+                    : 'Tra cứu các ${(sc.signCategory.value)}...',
                 hintStyle: TextStyle(color: Colors.blueAccent.shade200),
                 fillColor: Colors.blueAccent,
               ),
