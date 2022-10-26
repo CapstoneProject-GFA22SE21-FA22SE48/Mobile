@@ -10,6 +10,7 @@ import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/UserInfo.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:vnrdn_tai/screens/auth/components/change_forgot_password.dart';
 import 'package:vnrdn_tai/screens/auth/components/or_divider.dart';
 import 'package:vnrdn_tai/screens/auth/forgot_password_screen.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
@@ -40,11 +41,15 @@ class _LoginFormState extends State<LoginForm> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
+  GlobalController gc = Get.put(GlobalController());
+  bool oldObSecure = true;
+
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
     usernameController.dispose();
     passwordController.dispose();
+    gc.updateOldObSecure(true);
     super.dispose();
   }
 
@@ -83,7 +88,6 @@ class _LoginFormState extends State<LoginForm> {
   void afterLoggedIn(String token) async {
     await IOUtils.saveToStorage('token', token);
 
-    GlobalController gc = Get.put(GlobalController());
     AuthController ac = Get.put(AuthController());
     Jwt.parseJwt(token).forEach((key, value) {
       IOUtils.saveToStorage(key, value.toString());
@@ -105,6 +109,8 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    oldObSecure = gc.oldObSecure.value;
+
     return KeyboardVisibilityBuilder(
       builder: (context, isKeyboardVisible) {
         return Form(
@@ -133,15 +139,26 @@ class _LoginFormState extends State<LoginForm> {
                 child: TextFormField(
                   validator: (value) => FormValidator.validPassword(value),
                   controller: passwordController,
+                  obscureText: gc.oldObSecure.value,
                   textInputAction: TextInputAction.done,
-                  obscureText: true,
                   cursorColor: kPrimaryButtonColor,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: "Mật khẩu",
                     hintText: "Mật khẩu",
-                    prefixIcon: Padding(
+                    prefixIcon: const Padding(
                       padding: EdgeInsets.all(kDefaultPaddingValue / 2),
                       child: Icon(Icons.lock),
+                    ),
+                    suffixIcon: GestureDetector(
+                      onTap: () => setState(
+                        () {
+                          oldObSecure = !oldObSecure;
+                          gc.updateOldObSecure(oldObSecure);
+                        },
+                      ),
+                      child: Icon(oldObSecure
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded),
                     ),
                   ),
                 ),
@@ -150,7 +167,7 @@ class _LoginFormState extends State<LoginForm> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   GestureDetector(
-                    onTap: () => {Get.to(ForgotPasswordScreen())},
+                    onTap: () => {Get.to(ChangeForgotPasswordScreen())},
                     child: const Text(
                       "Quên mật khẩu?",
                       style: TextStyle(

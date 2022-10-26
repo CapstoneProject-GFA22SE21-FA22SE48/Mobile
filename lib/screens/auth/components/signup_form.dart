@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -104,51 +106,62 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   // do after logged in
-  void afterRegistered(String user) async {
-    if (emailController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: const [
-              // CircularProgressIndicator()
-              Text('Registered successful.'),
-            ],
-          ),
+  void afterRegistered(String user) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: const [
+            // CircularProgressIndicator()
+            Text('Đăng ký thành công!'),
+          ],
         ),
-      );
+      ),
+    );
+    Get.to(const LoginScreen());
+    // if (emailController.text.isEmpty) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Row(
+    //         children: const [
+    //           // CircularProgressIndicator()
+    //           Text('Registered successful.'),
+    //         ],
+    //       ),
+    //     ),
+    //   );
 
-      Get.to(const LoginScreen());
-    } else {
-      AuthController ac = Get.put(AuthController());
-      ac.updateEmail(emailController.text);
-      sendEmail().then((value) {
-        if (value) {
-          DialogUtil.showDCDialog(
-              context,
-              const Text(
-                "Thành công",
-                style: TextStyle(
-                  color: kSuccessButtonColor,
-                ),
-              ),
-              "Đăng ký thành công!\nMời bạn xác nhận email để kích hoạt tài khoản",
-              [
-                TemplatedButtons.okWithscreen(context, const MailVerifyScreen())
-              ]);
-        } else {
-          DialogUtil.showDCDialog(
-              context,
-              const Text(
-                "Thất bại",
-                style: TextStyle(
-                  color: kDangerButtonColor,
-                ),
-              ),
-              "Đăng ký thất bại!\nXin thử lại sau.",
-              [TemplatedButtons.ok(context)]);
-        }
-      });
-    }
+    //   Get.to(const LoginScreen());
+    // } else {
+    //   AuthController ac = Get.put(AuthController());
+    //   ac.updateEmail(emailController.text);
+    //   sendEmail().then((value) {
+    //     if (value) {
+    //       DialogUtil.showDCDialog(
+    //           context,
+    //           const Text(
+    //             "Thành công",
+    //             style: TextStyle(
+    //               color: kSuccessButtonColor,
+    //             ),
+    //           ),
+    //           "Đăng ký thành công!\nMời bạn xác nhận email để kích hoạt tài khoản",
+    //           [
+    //             TemplatedButtons.okWithscreen(context, const MailVerifyScreen())
+    //           ]);
+    //     } else {
+    //       DialogUtil.showDCDialog(
+    //           context,
+    //           const Text(
+    //             "Thất bại",
+    //             style: TextStyle(
+    //               color: kDangerButtonColor,
+    //             ),
+    //           ),
+    //           "Đăng ký thất bại!\nXin thử lại sau.",
+    //           [TemplatedButtons.ok(context)]);
+    //     }
+    //   });
+    // }
   }
 
   @override
@@ -170,7 +183,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 onSaved: (username) {},
                 decoration: const InputDecoration(
                   labelText: "Tên đăng nhập",
-                  hintText: "Tên đăng nhập",
+                  hintText: "Tên đăng nhập *",
                   prefixIcon: Padding(
                     padding: EdgeInsets.all(kDefaultPaddingValue / 2),
                     child: Icon(Icons.person),
@@ -185,12 +198,12 @@ class _SignUpFormState extends State<SignUpForm> {
                     return FormValidator.validPassword(value);
                   },
                   controller: passwordController,
-                  textInputAction: TextInputAction.done,
+                  textInputAction: TextInputAction.next,
                   obscureText: true,
                   cursorColor: kPrimaryButtonColor,
                   decoration: const InputDecoration(
                     labelText: "Mật khẩu",
-                    hintText: "Mật khẩu",
+                    hintText: "Mật khẩu *",
                     prefixIcon: Padding(
                       padding: EdgeInsets.all(kDefaultPaddingValue / 2),
                       child: Icon(Icons.lock),
@@ -207,12 +220,12 @@ class _SignUpFormState extends State<SignUpForm> {
                         value, passwordController.text);
                   },
                   controller: passwordConfirmController,
-                  textInputAction: TextInputAction.done,
+                  textInputAction: TextInputAction.next,
                   obscureText: true,
                   cursorColor: kPrimaryButtonColor,
                   decoration: const InputDecoration(
                     labelText: "Xác nhận mật khẩu",
-                    hintText: "Xác nhận mật khẩu",
+                    hintText: "Xác nhận mật khẩu *",
                     prefixIcon: Padding(
                       padding: EdgeInsets.all(kDefaultPaddingValue / 2),
                       child: Icon(Icons.lock),

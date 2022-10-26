@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';
@@ -16,17 +18,23 @@ class ChangeForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordState extends State<ChangeForgotPasswordScreen> {
-  final oldPasswordController = TextEditingController();
   final newPasswordController = TextEditingController();
+  final newPasswordConfirmController = TextEditingController();
+
+  GlobalController gc = Get.put(GlobalController());
+  bool newObSecure = true;
+  bool confirmObSecure = true;
 
   @override
   void dispose() {
-    oldPasswordController.dispose();
     newPasswordController.dispose();
+    newPasswordConfirmController.dispose();
+    gc.updateNewObSecure(true);
+    gc.updateConfirmObSecure(true);
     super.dispose();
   }
 
-  void handleChangePassword(String oldPassword, String newPassword) {
+  void handleChangeForgotPassword(String newPassword) {
     AuthService().forgotPassword(newPassword).then((value) {
       if (value.isNotEmpty) {
         if (value.toLowerCase().contains('thất bại')) {
@@ -69,6 +77,9 @@ class _ChangePasswordState extends State<ChangeForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    newObSecure = gc.newObSecure.value;
+    confirmObSecure = gc.confirmObSecure.value;
+
     return Scaffold(
       backgroundColor: kPrimaryBackgroundColor,
       appBar: AppBar(
@@ -92,14 +103,58 @@ class _ChangePasswordState extends State<ChangeForgotPasswordScreen> {
                 child: TextFormField(
                   validator: (value) => FormValidator.validPassword(value),
                   controller: newPasswordController,
+                  obscureText: gc.newObSecure.value,
                   textInputAction: TextInputAction.done,
                   cursorColor: kPrimaryButtonColor,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: "Mật khẩu mới",
                     hintText: "Mật khẩu mới",
-                    prefixIcon: Padding(
+                    prefixIcon: const Padding(
                       padding: EdgeInsets.all(kDefaultPaddingValue / 2),
                       child: Icon(Icons.lock),
+                    ),
+                    suffixIcon: GestureDetector(
+                      onTap: () => setState(
+                        () {
+                          newObSecure = !newObSecure;
+                          gc.updateNewObSecure(newObSecure);
+                        },
+                      ),
+                      child: Icon(newObSecure
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: kDefaultPaddingValue),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: kDefaultPaddingValue),
+                child: TextFormField(
+                  validator: (value) => FormValidator.validPasswordConfirm(
+                      newPasswordController.text, value),
+                  controller: newPasswordConfirmController,
+                  obscureText: gc.confirmObSecure.value,
+                  textInputAction: TextInputAction.done,
+                  cursorColor: kPrimaryButtonColor,
+                  decoration: InputDecoration(
+                    labelText: "Xác nhận mật khẩu mới",
+                    hintText: "Xác nhận mật khẩu mới",
+                    prefixIcon: const Padding(
+                      padding: EdgeInsets.all(kDefaultPaddingValue / 2),
+                      child: Icon(Icons.lock),
+                    ),
+                    suffixIcon: GestureDetector(
+                      onTap: () => setState(
+                        () {
+                          confirmObSecure = !confirmObSecure;
+                          gc.updateConfirmObSecure(confirmObSecure);
+                        },
+                      ),
+                      child: Icon(confirmObSecure
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded),
                     ),
                   ),
                 ),
@@ -109,8 +164,7 @@ class _ChangePasswordState extends State<ChangeForgotPasswordScreen> {
                 tag: "change_btn",
                 child: ElevatedButton(
                   onPressed: () {
-                    handleChangePassword(
-                        oldPasswordController.text, newPasswordController.text);
+                    handleChangeForgotPassword(newPasswordController.text);
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(

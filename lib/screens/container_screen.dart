@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/screens/analysis/analysis_screen.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
@@ -12,8 +13,10 @@ import 'package:vnrdn_tai/screens/mock-test/category_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_screen.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
+import 'package:vnrdn_tai/screens/signs/signs_screen.dart';
 import 'package:vnrdn_tai/screens/welcome/welcome_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/utils/io_utils.dart';
 
 class ContainerScreen extends GetView<GlobalController> {
   const ContainerScreen({super.key});
@@ -29,10 +32,15 @@ class ContainerScreen extends GetView<GlobalController> {
       return const SearchLawScreen();
     }
     if (v == TABS.MOCK_TEST) {
+      QuestionController qc = Get.put(QuestionController());
+      if (qc.testCategoryId.value.isNotEmpty) {
+        return ChooseModeScreen();
+      }
       return CategoryScreen();
     }
     if (v == TABS.ANALYSIS) {
-      return AnalysisScreen();
+      // return AnalysisScreen();
+      return SignsScreen();
     }
     if (v == TABS.MINIMAP) {
       return const MinimapScreen();
@@ -41,8 +49,13 @@ class ContainerScreen extends GetView<GlobalController> {
 
   getActionButton(v) {
     if (v == TABS.ANALYSIS) {
-      return const Icon(
-        Icons.camera_alt_rounded,
+      return GestureDetector(
+        onTap: () {
+          Get.to(AnalysisScreen());
+        },
+        child: const Icon(
+          Icons.camera_alt_rounded,
+        ),
       );
     } else {
       return Container();
@@ -72,6 +85,7 @@ class ContainerScreen extends GetView<GlobalController> {
 
   @override
   Widget build(BuildContext context) {
+    AuthController ac = Get.put(AuthController());
     String title = 'VNRDnTAI';
     return Scaffold(
         appBar: AppBar(
@@ -116,7 +130,7 @@ class ContainerScreen extends GetView<GlobalController> {
                   ? ListTile(
                       leading: const Icon(Icons.account_circle, size: 36),
                       title: Obx(() => Text(
-                            'Xin chào, ${controller.username.value}.',
+                            'Xin chào, ${controller.username.value.isNotEmpty ? controller.username.value : ac.email.value}.',
                             style: const TextStyle(
                                 fontSize: FONTSIZES.textMediumLarge),
                           )),
@@ -244,21 +258,29 @@ class ContainerScreen extends GetView<GlobalController> {
                         ),
                       ),
                       BottomNavigationBarItem(
-                        icon: Icon(Icons.task_outlined),
-                        label: 'Thi thử',
-                        tooltip: 'Ôn và Thi thử Sát hạch bằng lái xe',
-                        activeIcon: Icon(
-                          Icons.task_rounded,
-                          size: FONTSIZES.textVeryHuge,
+                        icon: Icon(Icons.motorcycle),
+                        label: 'GPLX',
+                        tooltip: 'Ôn và Thi thử Sát hạch giấy phép lái xe',
+                        activeIcon: Padding(
+                          padding:
+                              EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
+                          child: Icon(
+                            Icons.motorcycle_rounded,
+                            size: FONTSIZES.textVeryHuge,
+                          ),
                         ),
                       ),
                       BottomNavigationBarItem(
                         icon: Icon(Icons.warning_amber_outlined),
                         label: 'Biển báo',
                         tooltip: 'Tra cứu biển báo hiệu đường bộ',
-                        activeIcon: Icon(
-                          Icons.warning_rounded,
-                          size: FONTSIZES.textVeryHuge,
+                        activeIcon: Padding(
+                          padding:
+                              EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
+                          child: Icon(
+                            Icons.warning_rounded,
+                            size: FONTSIZES.textVeryHuge,
+                          ),
                         ),
                       ),
                       BottomNavigationBarItem(

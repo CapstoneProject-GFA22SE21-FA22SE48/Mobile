@@ -84,11 +84,12 @@ class ProgressBar extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: ButtonTheme(
                         child: ElevatedButton(
-                            onPressed: () {confirmSubmission();
+                            onPressed: () {
+                              confirmSubmission();
                             },
                             style: ElevatedButton.styleFrom(
                                 textStyle: const TextStyle(fontSize: 12),
-                                backgroundColor: Colors.green,
+                                backgroundColor: Colors.blueAccent,
                                 shadowColor: Colors.grey,
                                 alignment: Alignment.center,
                                 shape: RoundedRectangleBorder(

@@ -84,14 +84,14 @@ class ScoreScreen extends StatelessWidget {
                               ?.copyWith(color: Colors.blue),
                           textAlign: TextAlign.center,
                         ),
-                        Divider(),
+                        const Divider(),
                         _qnController.numberOfCorrectAns >= 22
                             ? Text(
                                 "Chúc mừng! Bạn đã hoàn thành xuất sắc bài thi!",
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline6
-                                    ?.copyWith(color: Colors.greenAccent),
+                                    ?.copyWith(color: Colors.blueAccent),
                                 textAlign: TextAlign.center,
                               )
                             : Text(
@@ -108,7 +108,7 @@ class ScoreScreen extends StatelessWidget {
                               _qnController.stopTimer();
                               Get.offAll(() => ContainerScreen());
                             },
-                            child: Text("Quay về màn hình chính",
+                            child: const Text("Quay về màn hình chính",
                                 style: TextStyle(color: Colors.black)),
                             style: kDefaultButtonStyle)
                       ],

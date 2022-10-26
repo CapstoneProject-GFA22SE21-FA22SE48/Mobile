@@ -92,6 +92,8 @@ flutter:
     - assets/ml/
     - assets/icons/
     - assets/images/
+    - assets/images/quiz/
+    - assets/images/auth/
     # for images
     - assets/images/logo.png
     - assets/images/snapchat.png
@@ -102,6 +104,9 @@ flutter:
     - assets/images/auth/login_bottom.png
     - assets/images/auth/signup_top.png
     - assets/images/auth/google.png
+    - assets/images/quiz/car.png
+    - assets/images/quiz/motorcycle.png
+    - assets/images/quiz/scooter.png
   #   - images/a_dot_ham.jpeg
   #   - images/a_dot_burr.jpeg
 

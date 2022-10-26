@@ -32,7 +32,7 @@ class Option extends StatelessWidget {
               if (attemp['isAnswered']) {
                 if (gc.test_mode == TEST_TYPE.STUDY) {
                   if (text == attemp['correctAns'].description) {
-                    return Colors.green;
+                    return Colors.blueAccent;
                   } else if (text == attemp['selectedAns'].description &&
                       attemp['selectedAns'] != attemp['correctAns']) {
                     return Colors.red;

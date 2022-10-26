@@ -4,6 +4,7 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Category.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
+import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/test_set_screen.dart';
 import 'package:vnrdn_tai/services/TestCategoryService.dart';
@@ -21,16 +22,20 @@ class _CategoryScreenState extends State<CategoryScreen> {
   late Future<List<TestCategory>> categories;
 
   getScreen(GlobalController gc, String categoryName, String categoryId) {
-    if (gc.test_mode.value == TEST_TYPE.STUDY) {
-      Get.to(() => TestSetScreen(
-            categoryName: categoryName,
-            categoryId: categoryId,
-          ));
-    } else {
-      Get.to(() => QuizScreen(
-            categoryId: categoryId,
-          ));
-    }
+    QuestionController qc = Get.put(QuestionController());
+    qc.updateTestCategoryId(categoryId);
+    qc.updateTestCategoryName(categoryName);
+    gc.updateTab(TABS.MOCK_TEST);
+    // if (gc.test_mode.value == TEST_TYPE.STUDY) {
+    //   Get.to(() => TestSetScreen(
+    //         categoryName: categoryName,
+    //         categoryId: categoryId,
+    //       ));
+    // } else {
+    //   Get.to(() => QuizScreen(
+    //         categoryId: categoryId,
+    //       ));
+    // }
   }
 
   getQuestioNo(String categoryName) {

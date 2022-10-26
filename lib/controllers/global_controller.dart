@@ -19,6 +19,9 @@ class GlobalController extends GetxController {
   final query = "".obs;
 
   final pushNotiMode = true.obs;
+  final oldObSecure = true.obs;
+  final newObSecure = true.obs;
+  final confirmObSecure = true.obs;
 
   late List<CameraDescription> _cameras;
   List<CameraDescription> get cameras => this._cameras;
@@ -64,6 +67,18 @@ class GlobalController extends GetxController {
 
   updatePushNotiMode(value) {
     pushNotiMode(value);
+  }
+
+  updateOldObSecure(value) {
+    oldObSecure(value);
+  }
+
+  updateNewObSecure(value) {
+    newObSecure(value);
+  }
+
+  updateConfirmObSecure(value) {
+    confirmObSecure(value);
   }
 
   updateTab(value) {

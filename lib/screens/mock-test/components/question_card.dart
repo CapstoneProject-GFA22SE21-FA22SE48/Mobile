@@ -22,18 +22,30 @@ class QuestionCard extends StatelessWidget {
       if (question.imageUrl != null) {
         return SizedBox(
             height: 120,
-            child: Image.network(question.imageUrl as String, fit: BoxFit.contain,));
+            child: Image.network(
+              question.imageUrl as String,
+              fit: BoxFit.contain,
+            ));
       } else {
         return Container();
       }
     }
 
     return Container(
-      padding: EdgeInsets.all(kDefaultPaddingValue),
-      margin: EdgeInsets.symmetric(
-          horizontal: kDefaultPaddingValue / 2, vertical: kDefaultPaddingValue / 2),
+      padding: const EdgeInsets.all(kDefaultPaddingValue),
+      margin: const EdgeInsets.symmetric(
+          horizontal: kDefaultPaddingValue, vertical: kDefaultPaddingValue * 2),
       decoration: BoxDecoration(
-          color: Colors.black, borderRadius: BorderRadius.circular(25)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(25),
+        boxShadow: const [
+          BoxShadow(
+            color: Color.fromARGB(197, 189, 189, 189),
+            offset: Offset(0, 2),
+            blurRadius: 2,
+          )
+        ],
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -42,7 +54,7 @@ class QuestionCard extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .headline6
-                  ?.copyWith(color: Colors.white)),
+                  ?.copyWith(color: Colors.black54)),
           ...List.generate(
               question.answers.length,
               (index) => Option(

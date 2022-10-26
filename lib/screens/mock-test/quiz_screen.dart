@@ -15,9 +15,11 @@ import 'package:vnrdn_tai/utils/dialogUtil.dart';
 class QuizScreen extends StatefulWidget {
   QuizScreen(
       {super.key,
+      this.questionCategoryName = "",
       required this.categoryId,
       this.questionCategoryId = "",
       this.separator = 0});
+  String questionCategoryName;
   String categoryId;
   String questionCategoryId;
 

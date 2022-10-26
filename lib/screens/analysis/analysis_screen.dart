@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/analysis_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/shared/constants.dart';
 
 class AnalysisScreen extends StatelessWidget {
   AnalysisScreen({super.key});
@@ -17,9 +18,21 @@ class AnalysisScreen extends StatelessWidget {
         builder: (controller) {
           print(controller.isLoaded);
           return Scaffold(
+            key: UniqueKey(),
+            backgroundColor: kPrimaryBackgroundColor,
+            appBar: AppBar(
+              title: const Text("Nhận diện biển báo"),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
             body: !controller.isLoaded
-                ? Center(
-                    child: Text("Model not loaded, waiting for it"),
+                ? const Center(
+                    child: Text(
+                      "Đang tải hệ thống.\nVui lòng chờ trong giây lát.",
+                      textAlign: TextAlign.center,
+                    ),
                   )
                 : controller.modelResults.isEmpty
                     ? Stack(
@@ -33,7 +46,7 @@ class AnalysisScreen extends StatelessWidget {
                               )),
                           ColorFiltered(
                             colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.7),
+                                Colors.black.withOpacity(0.6),
                                 BlendMode.srcOut),
                             child: Stack(
                               children: [

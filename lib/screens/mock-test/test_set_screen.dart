@@ -38,7 +38,7 @@ class _TestSetScreenState extends State<TestSetScreen> {
           title: const Text('Chế độ Học'),
         ),
         body: Padding(
-          padding: const EdgeInsets.only(top: 18.0),
+          padding: const EdgeInsets.all(kDefaultPaddingValue),
           child: FutureBuilder<List<QuestionCategory>>(
               key: UniqueKey(),
               future: _questionCategory,
@@ -67,35 +67,50 @@ class _TestSetScreenState extends State<TestSetScreen> {
                           return ElevatedButton(
                             onPressed: () {
                               Get.to(() => QuizScreen(
+                                    questionCategoryName:
+                                        snapshot.data![index].name,
                                     categoryId: widget.categoryId,
                                     questionCategoryId:
                                         snapshot.data![index].id,
                                   ));
                             },
                             style: kDefaultButtonStyle,
-                            child: Column(
+                            child: Row(
                               children: [
-                                Text(
-                                  snapshot.data![index].name,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline4
-                                      ?.copyWith(
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold),
-                                ),
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 5),
-                                  child: Text(
-                                    "Đã ôn 0 trên ${snapshot.data![index].noOfQuestion} câu",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline6
-                                        ?.copyWith(
-                                            color: Colors.black54,
-                                            fontSize: 16),
+                                  padding: const EdgeInsets.only(
+                                      right: kDefaultPaddingValue),
+                                  child: Image.asset(
+                                    "assets/images/quiz/scooter.png",
+                                    scale: 8,
                                   ),
-                                )
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      snapshot.data![index].name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5
+                                          ?.copyWith(
+                                              color: Colors.blueAccent,
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5),
+                                      child: Text(
+                                        "Đã ôn 0 trên ${snapshot.data![index].noOfQuestion} câu",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline6
+                                            ?.copyWith(
+                                                color: Colors.black54,
+                                                fontSize: 16),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           );

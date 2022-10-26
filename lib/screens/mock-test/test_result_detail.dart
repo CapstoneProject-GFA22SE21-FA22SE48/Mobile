@@ -130,11 +130,12 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                                                     children: [
                                                       Text("Đúng ",
                                                           style: TextStyle(
-                                                              color:
-                                                                  Colors.green,
+                                                              color: Colors
+                                                                  .blueAccent,
                                                               fontSize: 16)),
                                                       Icon(Icons.done,
-                                                          color: Colors.green,
+                                                          color:
+                                                              Colors.blueAccent,
                                                           size: 16),
                                                     ],
                                                   ),

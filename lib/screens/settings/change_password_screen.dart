@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -15,11 +17,21 @@ class ChangePasswordScreen extends StatefulWidget {
 class _ChangePasswordState extends State<ChangePasswordScreen> {
   final oldPasswordController = TextEditingController();
   final newPasswordController = TextEditingController();
+  final newPasswordConfirmController = TextEditingController();
+
+  GlobalController gc = Get.put(GlobalController());
+  bool oldObSecure = true;
+  bool newObSecure = true;
+  bool confirmObSecure = true;
 
   @override
   void dispose() {
     oldPasswordController.dispose();
     newPasswordController.dispose();
+    newPasswordConfirmController.dispose();
+    gc.updateOldObSecure(true);
+    gc.updateNewObSecure(true);
+    gc.updateConfirmObSecure(true);
     super.dispose();
   }
 
@@ -69,7 +81,12 @@ class _ChangePasswordState extends State<ChangePasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    oldObSecure = gc.oldObSecure.value;
+    newObSecure = gc.newObSecure.value;
+    confirmObSecure = gc.confirmObSecure.value;
+
     return Scaffold(
+      key: UniqueKey(),
       backgroundColor: kPrimaryBackgroundColor,
       appBar: AppBar(
         title: const Text("Change Password"),
@@ -93,15 +110,28 @@ class _ChangePasswordState extends State<ChangePasswordScreen> {
               TextFormField(
                 validator: (value) => FormValidator.validPassword(value),
                 controller: oldPasswordController,
+                obscureText: gc.oldObSecure.value,
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
                 cursorColor: kPrimaryButtonColor,
                 onSaved: (username) {},
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
+                  labelText: "Mật khẩu hiện tại",
                   hintText: "Mật khẩu hiện tại",
-                  prefixIcon: Padding(
+                  prefixIcon: const Padding(
                     padding: EdgeInsets.all(kDefaultPaddingValue / 2),
                     child: Icon(Icons.lock),
+                  ),
+                  suffixIcon: GestureDetector(
+                    onTap: () => setState(
+                      () {
+                        oldObSecure = !oldObSecure;
+                        gc.updateOldObSecure(oldObSecure);
+                      },
+                    ),
+                    child: Icon(oldObSecure
+                        ? Icons.visibility_off_rounded
+                        : Icons.visibility_rounded),
                   ),
                 ),
               ),
@@ -111,13 +141,57 @@ class _ChangePasswordState extends State<ChangePasswordScreen> {
                 child: TextFormField(
                   validator: (value) => FormValidator.validPassword(value),
                   controller: newPasswordController,
+                  obscureText: gc.newObSecure.value,
                   textInputAction: TextInputAction.done,
                   cursorColor: kPrimaryButtonColor,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
+                    labelText: "Mật khẩu mới",
                     hintText: "Mật khẩu mới",
-                    prefixIcon: Padding(
+                    prefixIcon: const Padding(
                       padding: EdgeInsets.all(kDefaultPaddingValue / 2),
                       child: Icon(Icons.lock),
+                    ),
+                    suffixIcon: GestureDetector(
+                      onTap: () => setState(
+                        () {
+                          newObSecure = !newObSecure;
+                          gc.updateNewObSecure(newObSecure);
+                        },
+                      ),
+                      child: Icon(newObSecure
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: kDefaultPaddingValue),
+                child: TextFormField(
+                  validator: (value) => FormValidator.validPasswordConfirm(
+                      newPasswordController.text, value),
+                  controller: newPasswordConfirmController,
+                  obscureText: gc.confirmObSecure.value,
+                  textInputAction: TextInputAction.done,
+                  cursorColor: kPrimaryButtonColor,
+                  decoration: InputDecoration(
+                    labelText: "Xác nhận mật khẩu mới",
+                    hintText: "Xác nhận mật khẩu mới",
+                    prefixIcon: const Padding(
+                      padding: EdgeInsets.all(kDefaultPaddingValue / 2),
+                      child: Icon(Icons.lock),
+                    ),
+                    suffixIcon: GestureDetector(
+                      onTap: () => setState(
+                        () {
+                          confirmObSecure = !confirmObSecure;
+                          gc.updateConfirmObSecure(confirmObSecure);
+                        },
+                      ),
+                      child: Icon(confirmObSecure
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded),
                     ),
                   ),
                 ),

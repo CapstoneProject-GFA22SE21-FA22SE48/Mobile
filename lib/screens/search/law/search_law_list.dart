@@ -76,7 +76,7 @@ class _SearchListScreenState extends State<SearchListScreen> {
                       ),
                       SizedBox(
                         width: 100.w,
-                        height: 80.h,
+                        height: 100.h,
                         child: ListView.separated(
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,

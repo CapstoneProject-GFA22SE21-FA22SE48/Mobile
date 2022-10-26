@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/TestResult.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/category_screen.dart';
@@ -16,13 +17,14 @@ import 'package:vnrdn_tai/utils/io_utils.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class ChooseModeScreen extends StatefulWidget {
-  ChooseModeScreen({super.key});
+  const ChooseModeScreen({super.key});
 
   @override
   State<ChooseModeScreen> createState() => _ChooseModeScreenState();
 }
 
 class _ChooseModeScreenState extends State<ChooseModeScreen> {
+  QuestionController qc = Get.put(QuestionController());
   late Future<List<TestResult>> testResults;
 
   @override
@@ -65,9 +67,9 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 0),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text('Bạn muốn làm gì?',
+                            Text(qc.testCategoryName.value,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline4
@@ -81,7 +83,12 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                             ElevatedButton(
                               onPressed: () {
                                 gc.updateTestMode(TEST_TYPE.STUDY);
-                                Get.to(() => CategoryScreen());
+                                if (qc.testCategoryId.value.isNotEmpty) {
+                                  Get.to(() => TestSetScreen(
+                                        categoryName: qc.testCategoryId.value,
+                                        categoryId: qc.testCategoryId.value,
+                                      ));
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
@@ -121,8 +128,8 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                 } else {
                                   DialogUtil.showTextDialog(
                                       context,
-                                      "Authenticator",
-                                      "You need to logged in to continue.\nGo to login page?",
+                                      "Cảnh báo",
+                                      "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
                                       [
                                         TemplatedButtons.yes(
                                             context, const LoginScreen()),
