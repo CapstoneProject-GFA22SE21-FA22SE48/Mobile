@@ -14,15 +14,16 @@ import 'package:vnrdn_tai/services/LawService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 
-class SearchListScreen extends StatefulWidget {
-  SearchListScreen({super.key, required this.query});
-  late String query;
+class SearchLawListScreen extends StatefulWidget {
+  SearchLawListScreen({super.key, this.query, this.keywordId});
+  late String? query;
+  late String? keywordId;
 
   @override
-  State<SearchListScreen> createState() => _SearchListScreenState();
+  State<SearchLawListScreen> createState() => _SearchLawListScreenState();
 }
 
-class _SearchListScreenState extends State<SearchListScreen> {
+class _SearchLawListScreenState extends State<SearchLawListScreen> {
   @override
   void initState() {
     super.initState();
@@ -31,70 +32,82 @@ class _SearchListScreenState extends State<SearchListScreen> {
   @override
   Widget build(BuildContext context) {
     SearchController sc = Get.put(SearchController());
-    late Future<List<SearchLawDTO>> searchRes = LawSerivce()
-        .GetSearchListByQuery(widget.query, sc.vehicleCategory.value);
-    return Scaffold(
-        body: SafeArea(
-      child: FutureBuilder<List<SearchLawDTO>>(
-          key: UniqueKey(),
-          future: searchRes,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return loadingScreen();
-            } else {
-              if (snapshot.hasError) {
-                Future.delayed(
-                    Duration.zero,
-                    () => {
-                          handleError(snapshot.error
-                              ?.toString()
-                              .replaceFirst('Exception:', ''))
-                        });
-                throw Exception(snapshot.error);
+    late Future<List<SearchLawDTO>> searchRes = widget.query != null
+        ? LawSerivce()
+            .GetSearchListByQuery(widget.query!, sc.vehicleCategory.value)
+        : LawSerivce().GetSearchListByKeywordId(
+            widget.keywordId!, sc.vehicleCategory.value);
+    return WillPopScope(
+      onWillPop: () async {
+        sc.updateQuery('');
+        sc.updateVehicleCategory(0);
+        return await true;
+      },
+      child: Scaffold(
+          body: SafeArea(
+        child: FutureBuilder<List<SearchLawDTO>>(
+            key: UniqueKey(),
+            future: searchRes,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return loadingScreen();
               } else {
-                return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      AppBar(
-                        title: SearchBar(),
-                        backgroundColor: Colors.white,
-                        iconTheme: IconThemeData(color: Colors.black),
-                      ),
-                      const Divider(),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: kDefaultPaddingValue),
-                        child: Text(
-                            'Có ${snapshot.data!.length} kết quả được tìm thấy',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4
-                                ?.copyWith(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: FONTSIZES.textMedium)),
-                      ),
-                      SizedBox(
-                        width: 100.w,
-                        height: 80.h,
-                        child: ListView.separated(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            separatorBuilder: (context, index) =>
-                                SizedBox(height: kDefaultPaddingValue),
-                            itemBuilder: ((context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: SearchListItem(
-                                    searchLawDto: snapshot.data![index]),
-                              );
-                            }),
-                            itemCount: snapshot.data!.length),
-                      ),
-                    ]);
+                if (snapshot.hasError) {
+                  Future.delayed(
+                      Duration.zero,
+                      () => {
+                            handleError(snapshot.error
+                                ?.toString()
+                                .replaceFirst('Exception:', ''))
+                          });
+                  throw Exception(snapshot.error);
+                } else {
+                  return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        AppBar(
+                          title: SearchBar(),
+                          backgroundColor: Colors.white,
+                          iconTheme: IconThemeData(color: Colors.black),
+                        ),
+                        const Divider(),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: kDefaultPaddingValue),
+                          child: Obx(
+                            () => Text(
+                                'Có ${snapshot.data!.length} kết quả được tìm thấy trong hạng mục ${sc.vehicleCategory.value}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4
+                                    ?.copyWith(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: FONTSIZES.textMedium)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 100.w,
+                          height: 80.h,
+                          child: ListView.separated(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              separatorBuilder: (context, index) =>
+                                  SizedBox(height: kDefaultPaddingValue),
+                              itemBuilder: ((context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: SearchListItem(
+                                      searchLawDto: snapshot.data![index]),
+                                );
+                              }),
+                              itemCount: snapshot.data!.length),
+                        ),
+                      ]);
+                }
               }
-            }
-          }),
-    ));
+            }),
+      )),
+    );
   }
 }

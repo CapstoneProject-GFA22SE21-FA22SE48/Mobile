@@ -6,6 +6,7 @@ import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_screen.dart';
+import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
 import 'package:vnrdn_tai/screens/welcome/welcome_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -27,7 +28,8 @@ class ContainerScreen extends GetView<GlobalController> {
       return ChooseModeScreen();
     }
     if (v == TABS.ANALYSIS) {
-      return AnalysisScreen();
+      // return AnalysisScreen();
+      return const SearchSignScreen();
     }
     if (v == TABS.MINIMAP) {
       return const MinimapScreen();
