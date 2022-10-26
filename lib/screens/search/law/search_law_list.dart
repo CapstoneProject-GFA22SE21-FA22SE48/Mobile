@@ -37,70 +37,77 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
             .GetSearchListByQuery(widget.query!, sc.vehicleCategory.value)
         : LawSerivce().GetSearchListByKeywordId(
             widget.keywordId!, sc.vehicleCategory.value);
-    return Scaffold(
-        body: SafeArea(
-      child: FutureBuilder<List<SearchLawDTO>>(
-          key: UniqueKey(),
-          future: searchRes,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return loadingScreen();
-            } else {
-              if (snapshot.hasError) {
-                Future.delayed(
-                    Duration.zero,
-                    () => {
-                          handleError(snapshot.error
-                              ?.toString()
-                              .replaceFirst('Exception:', ''))
-                        });
-                throw Exception(snapshot.error);
+    return WillPopScope(
+      onWillPop: () async {
+        sc.updateQuery('');
+        sc.updateVehicleCategory(0);
+        return await true;
+      },
+      child: Scaffold(
+          body: SafeArea(
+        child: FutureBuilder<List<SearchLawDTO>>(
+            key: UniqueKey(),
+            future: searchRes,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return loadingScreen();
               } else {
-                return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      AppBar(
-                        title: SearchBar(),
-                        backgroundColor: Colors.white,
-                        iconTheme: IconThemeData(color: Colors.black),
-                      ),
-                      const Divider(),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: kDefaultPaddingValue),
-                        child: Obx(
-                          () => Text(
-                              'Có ${snapshot.data!.length} kết quả được tìm thấy trong hạng mục ${sc.vehicleCategory.value}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4
-                                  ?.copyWith(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: FONTSIZES.textMedium)),
+                if (snapshot.hasError) {
+                  Future.delayed(
+                      Duration.zero,
+                      () => {
+                            handleError(snapshot.error
+                                ?.toString()
+                                .replaceFirst('Exception:', ''))
+                          });
+                  throw Exception(snapshot.error);
+                } else {
+                  return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        AppBar(
+                          title: SearchBar(),
+                          backgroundColor: Colors.white,
+                          iconTheme: IconThemeData(color: Colors.black),
                         ),
-                      ),
-                      SizedBox(
-                        width: 100.w,
-                        height: 80.h,
-                        child: ListView.separated(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            separatorBuilder: (context, index) =>
-                                SizedBox(height: kDefaultPaddingValue),
-                            itemBuilder: ((context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: SearchListItem(
-                                    searchLawDto: snapshot.data![index]),
-                              );
-                            }),
-                            itemCount: snapshot.data!.length),
-                      ),
-                    ]);
+                        const Divider(),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: kDefaultPaddingValue),
+                          child: Obx(
+                            () => Text(
+                                'Có ${snapshot.data!.length} kết quả được tìm thấy trong hạng mục ${sc.vehicleCategory.value}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4
+                                    ?.copyWith(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: FONTSIZES.textMedium)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 100.w,
+                          height: 80.h,
+                          child: ListView.separated(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              separatorBuilder: (context, index) =>
+                                  SizedBox(height: kDefaultPaddingValue),
+                              itemBuilder: ((context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: SearchListItem(
+                                      searchLawDto: snapshot.data![index]),
+                                );
+                              }),
+                              itemCount: snapshot.data!.length),
+                        ),
+                      ]);
+                }
               }
-            }
-          }),
-    ));
+            }),
+      )),
+    );
   }
 }

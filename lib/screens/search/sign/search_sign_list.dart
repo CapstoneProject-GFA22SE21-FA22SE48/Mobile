@@ -7,6 +7,7 @@ import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/models/Keyword.dart';
 import 'package:vnrdn_tai/models/Section.dart';
 import 'package:vnrdn_tai/models/dtos/searchLawDTO.dart';
+import 'package:vnrdn_tai/models/dtos/searchSignDTO.dart';
 import 'package:vnrdn_tai/screens/search/components/search_bar.dart';
 import 'package:vnrdn_tai/screens/search/components/search_list_item.dart';
 import 'package:vnrdn_tai/services/KeywordService.dart';
@@ -15,9 +16,10 @@ import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 
 class SearchSignListScreen extends StatefulWidget {
-  SearchSignListScreen({super.key, this.query, this.keywordId});
-  late String? query;
-  late String? keywordId;
+  SearchSignListScreen(
+      {super.key, this.searchSignDTOList, this.futureSearchSignDTO});
+  late List<SearchSignDTO>? searchSignDTOList;
+  late Future<List<SearchSignDTO>>? futureSearchSignDTO;
 
   @override
   State<SearchSignListScreen> createState() => _SearchSignListScreenState();
@@ -32,16 +34,12 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
   @override
   Widget build(BuildContext context) {
     SearchController sc = Get.put(SearchController());
-    late Future<List<SearchLawDTO>> searchRes = widget.query != null
-        ? LawSerivce()
-            .GetSearchListByQuery(widget.query!, sc.vehicleCategory.value)
-        : LawSerivce().GetSearchListByKeywordId(
-            widget.keywordId!, sc.vehicleCategory.value);
     return Scaffold(
         body: SafeArea(
-      child: FutureBuilder<List<SearchLawDTO>>(
+      child: FutureBuilder<List<SearchSignDTO>>(
           key: UniqueKey(),
-          future: searchRes,
+          initialData: widget.searchSignDTOList,
+          future: widget.futureSearchSignDTO,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return loadingScreen();
@@ -56,21 +54,18 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                         });
                 throw Exception(snapshot.error);
               } else {
+                if (widget.futureSearchSignDTO != null) {
+                  widget.searchSignDTOList = snapshot.data;
+                }
                 return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      AppBar(
-                        title: SearchBar(),
-                        backgroundColor: Colors.white,
-                        iconTheme: IconThemeData(color: Colors.black),
-                      ),
-                      const Divider(),
                       Padding(
                         padding:
                             const EdgeInsets.only(left: kDefaultPaddingValue),
                         child: Obx(
                           () => Text(
-                              'Có ${snapshot.data!.length} kết quả được tìm thấy trong hạng mục ${sc.vehicleCategory.value}',
+                              'Có ${widget.searchSignDTOList!.length} kết quả được tìm thấy trong hạng mục ${sc.vehicleCategory.value}',
                               style: Theme.of(context)
                                   .textTheme
                                   .headline4
@@ -82,7 +77,7 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                       ),
                       SizedBox(
                         width: 100.w,
-                        height: 80.h,
+                        height: 49.h,
                         child: ListView.separated(
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
@@ -90,12 +85,13 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                                 SizedBox(height: kDefaultPaddingValue),
                             itemBuilder: ((context, index) {
                               return Padding(
-                                padding: const EdgeInsets.all(10.0),
+                                padding: const EdgeInsets.all(kDefaultPaddingValue / 3),
                                 child: SearchListItem(
-                                    searchLawDto: snapshot.data![index]),
+                                    searchSignDTO:
+                                        widget.searchSignDTOList![index]),
                               );
                             }),
-                            itemCount: snapshot.data!.length),
+                            itemCount: widget.searchSignDTOList!.length),
                       ),
                     ]);
               }

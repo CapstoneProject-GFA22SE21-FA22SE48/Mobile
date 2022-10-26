@@ -110,7 +110,6 @@ class AnalysisController extends GetxController {
 
   Future<void> yoloOnFrame(CameraImage cameraImage) async {
     _isDetecting = true;
-    print('owo');
 
     final result = await vision.yoloOnFrame(
         bytesList: cameraImage.planes.map((plane) => plane.bytes).toList(),

@@ -50,7 +50,6 @@ class _SearchLawScreenState extends State<SearchLawScreen> {
     GlobalController gc = Get.find<GlobalController>();
     SearchController sc = Get.put(SearchController());
 
-    sc.updateQuery(null);
     return Scaffold(
         extendBodyBehindAppBar: true,
         body: SafeArea(
@@ -82,6 +81,7 @@ class _SearchLawScreenState extends State<SearchLawScreen> {
                                 height: 10.h,
                                 child: TabBar(
                                     onTap: (value) {
+                                      sc.updateVehicleCategoryNo(value);
                                       sc.updateVehicleCategory(value);
                                     },
                                     indicatorColor: Colors.grey,

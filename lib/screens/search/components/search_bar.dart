@@ -29,11 +29,18 @@ class SearchBar extends GetView<GlobalController> {
             padding: const EdgeInsets.all(0),
             child: TextField(
               onChanged: (value) {
-                sc.updateQuery(value);
+                print(value);
+                // sc.updateQuery(value);
               },
               onSubmitted: (value) {
-                Get.to(() => SearchLawListScreen(query: _textController.text),
-                    preventDuplicates: false);
+                sc.updateQuery(_textController.text);
+                if (gc.tab.value == TABS.SEARCH) {
+                  if (_textController.text.trim().length > 0) {
+                    Get.to(
+                        () => SearchLawListScreen(query: _textController.text),
+                        preventDuplicates: false);
+                  }
+                }
               },
               controller: _textController,
               decoration: InputDecoration(
@@ -51,7 +58,7 @@ class SearchBar extends GetView<GlobalController> {
                     _textController.text = sc.query.value;
                   },
                 ),
-                hintText: gc.tab == TABS.SEARCH
+                hintText: gc.tab.value == TABS.SEARCH
                     ? 'Tra cứu luật của ${(sc.vehicleCategory.value)}...'
                     : 'Tra cứu các ${(sc.signCategory.value)}...',
                 hintStyle: TextStyle(color: Colors.blueAccent.shade200),

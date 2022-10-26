@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:vnrdn_tai/models/dtos/searchLawDTO.dart';
+import 'package:vnrdn_tai/models/dtos/searchSignDTO.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_detail.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_screen.dart';
@@ -9,8 +10,10 @@ import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:sizer/sizer.dart';
 
 class SearchListItem extends StatelessWidget {
-  const SearchListItem({super.key, required this.searchLawDto});
+  const SearchListItem({super.key, this.searchLawDto, this.searchSignDTO});
   final SearchLawDTO? searchLawDto;
+  final SearchSignDTO? searchSignDTO;
+
   @override
   Widget build(BuildContext context) {
     NumberFormat numberFormat =
@@ -89,8 +92,71 @@ class SearchListItem extends StatelessWidget {
           ),
         ),
       );
+    } else if (searchSignDTO != null) {
+      return WillPopScope(
+          onWillPop: () async {
+            Get.to(() => ContainerScreen());
+            return await true;
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: GestureDetector(
+              onTap: () {},
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(
+                        width: 15.w,
+                        child: searchSignDTO!.imageUrl != null
+                            ? Image.network(
+                                searchSignDTO!.imageUrl as String,
+                                fit: BoxFit.contain,
+                              )
+                            : Icon(
+                                Icons.search,
+                                size: 32,
+                              )),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: kDefaultPaddingValue),
+                      child: Container(
+                          width: 60.w,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                    searchSignDTO!.description,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline4
+                                        ?.copyWith(
+                                            color: Colors.black,
+                                            fontSize: FONTSIZES.textMedium)),
+                                const Padding(
+                                  padding: EdgeInsets.only(
+                                      top: kDefaultPaddingValue / 2),
+                                  child: Text(
+                                    'Tìm hiểu thêm',
+                                    style: TextStyle(
+                                        color: Colors.blue,
+                                        decoration: TextDecoration.underline),
+                                  ),
+                                )
+                              ])),
+                    ),
+                  ]),
+            ),
+          ));
     } else {
-      return Container();
+      return WillPopScope(
+          onWillPop: () async {
+            Get.to(() => ContainerScreen());
+            return await true;
+          },
+          child: Container());
     }
   }
 }

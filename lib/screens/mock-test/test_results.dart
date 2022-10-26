@@ -21,7 +21,6 @@ class TestRestulScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GlobalController gc = Get.find<GlobalController>();
-    // print(testResults[0].createdDate);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,

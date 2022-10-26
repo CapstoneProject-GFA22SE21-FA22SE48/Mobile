@@ -35,7 +35,7 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
     var min = "";
     var max = "";
     SearchController sc = Get.put(SearchController());
-    print(widget.searchLawDto!.additionalPenalty);
+    sc.updateQuery("");
     return Scaffold(
         body: SafeArea(
             child: FutureBuilder<SearchLawDTO>(
