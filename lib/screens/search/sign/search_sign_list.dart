@@ -65,7 +65,7 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                             const EdgeInsets.only(left: kDefaultPaddingValue),
                         child: Obx(
                           () => Text(
-                              'Có ${widget.searchSignDTOList!.length} kết quả được tìm thấy trong hạng mục ${sc.vehicleCategory.value}',
+                              'Có ${widget.searchSignDTOList!.length} kết quả tìm được liên quan đến ${sc.signCategory.value}',
                               style: Theme.of(context)
                                   .textTheme
                                   .headline4
@@ -85,7 +85,8 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                                 SizedBox(height: kDefaultPaddingValue),
                             itemBuilder: ((context, index) {
                               return Padding(
-                                padding: const EdgeInsets.all(kDefaultPaddingValue / 3),
+                                padding: const EdgeInsets.all(
+                                    kDefaultPaddingValue / 3),
                                 child: SearchListItem(
                                     searchSignDTO:
                                         widget.searchSignDTOList![index]),

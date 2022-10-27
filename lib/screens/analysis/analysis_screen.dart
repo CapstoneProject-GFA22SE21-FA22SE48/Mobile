@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/analysis_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
+import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/shared/snippets.dart';
+import 'package:sizer/sizer.dart';
+import 'package:vnrdn_tai/widgets/animation/ripple.dart';
 
 class AnalysisScreen extends StatelessWidget {
   AnalysisScreen({super.key});
@@ -15,116 +20,138 @@ class AnalysisScreen extends StatelessWidget {
     return GetBuilder<AnalysisController>(
         init: ac,
         builder: (controller) {
-          print(controller.isLoaded);
+          if (controller.detectedSigns!.length != 0) {
+            Get.to(() => SearchSignScreen());
+          }
           return Scaffold(
+            appBar: AppBar(),
             body: !controller.isLoaded
-                ? Center(
-                    child: Text("Model not loaded, waiting for it"),
-                  )
-                : controller.modelResults.isEmpty
-                    ? Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          AspectRatio(
-                              aspectRatio:
-                                  controller.cameraController.value.aspectRatio,
-                              child: CameraPreview(
-                                controller.cameraController,
-                              )),
-                          ColorFiltered(
-                            colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.7),
-                                BlendMode.srcOut),
-                            child: Stack(
-                              children: [
-                                Container(
-                                  decoration: const BoxDecoration(
-                                      color: Colors.black,
-                                      backgroundBlendMode: BlendMode.dstOut),
-                                ),
-                                Align(
-                                  alignment: Alignment.topCenter,
-                                  child: Container(
-                                    margin:
-                                        EdgeInsets.only(top: size.height * 0.2),
-                                    height: size.height * 0.30,
-                                    width: size.width * 0.9,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                ? loadingScreen()
+                : Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      AspectRatio(
+                          aspectRatio:
+                              controller.cameraController.value.aspectRatio,
+                          child: CameraPreview(
+                            controller.cameraController,
+                          )),
+                      ColorFiltered(
+                        colorFilter: ColorFilter.mode(
+                            Colors.black.withOpacity(0.7), BlendMode.srcOut),
+                        child: Stack(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                  color: Colors.black,
+                                  backgroundBlendMode: BlendMode.dstOut),
                             ),
-                          ),
-                          Positioned(
-                            bottom: 75,
-                            width: MediaQuery.of(context).size.width,
-                            child: Container(
-                              height: 80,
-                              width: 80,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                    width: 5,
-                                    color: Colors.white,
-                                    style: BorderStyle.solid),
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                margin: EdgeInsets.only(top: size.height * 0.2),
+                                height: size.height * 0.16 * 2,
+                                width: size.width * 0.9 * 2,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
-                              child: controller.isDetecting
-                                  ? IconButton(
-                                      onPressed: () async {
-                                        await controller.stopImageStream();
-                                      },
-                                      icon: const Icon(
-                                        Icons.stop,
-                                        color: Colors.red,
-                                      ),
-                                      iconSize: 50,
-                                    )
-                                  : IconButton(
-                                      onPressed: () async {
-                                        await controller.startImageStream();
-                                      },
-                                      icon: const Icon(
-                                        Icons.play_arrow,
-                                        color: Colors.white,
-                                      ),
-                                      iconSize: 50,
-                                    ),
                             ),
-                          ),
-                        ],
-                      )
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: controller.modelResults.length,
-                        itemBuilder: (context, index) {
-                          Map<String, dynamic> result =
-                              controller.modelResults[index];
-                          return Card(
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 5.h,
+                        width: MediaQuery.of(context).size.width,
+                        child: Container(
+                          height: 30.h,
+                          width: 15.h,
+                          child: SizedBox(
+                            width: 100.w,
+                            height: 30.h,
                             child: Column(
                               children: [
-                                Text(
-                                  result['tag'].toString().toUpperCase(),
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
+                                controller.isDetecting
+                                    ? Center(
+                                        child: RippleAnimation(
+                                            minRadius: 100,
+                                            ripplesCount: 15,
+                                            repeat: controller.isDetecting,
+                                            color: Colors.white,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 20, left: 18),
+                                              child: ElevatedButton(
+                                                  onPressed: () async {
+                                                    await controller
+                                                        .stopImageStream();
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                      shape:
+                                                          const CircleBorder(),
+                                                      fixedSize:
+                                                          const Size(60, 60)),
+                                                  child: const Icon(Icons.stop,
+                                                      size: 32,
+                                                      color: Colors.red)),
+                                            )),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 20, left: 18),
+                                        child: ElevatedButton(
+                                            onPressed: () async {
+                                              await controller
+                                                  .startImageStream();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                                shape: const CircleBorder(),
+                                                fixedSize: const Size(60, 60)),
+                                            child: const Icon(Icons.play_arrow,
+                                                size: 32)),
+                                      ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: kDefaultPaddingValue),
+                                  child: controller.isDetecting
+                                      ? Text('Đang tìm kiếm biển báo...',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5
+                                              ?.copyWith(
+                                                  color: Colors
+                                                      .blueAccent.shade200,
+                                                  fontWeight: FontWeight.bold))
+                                      : Text(
+                                          ' Bấm nút phía trên để bắt đầu quét',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5
+                                              ?.copyWith(
+                                                  color: Colors
+                                                      .blueAccent.shade200,
+                                                  fontWeight: FontWeight.bold),
+                                        ),
                                 ),
-                                const SizedBox(height: 6),
-                                Image.memory(result['image'] as Uint8List),
-                                const SizedBox(height: 6),
+                                Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: kDefaultPaddingValue),
+                                    child: Text('${controller.detected}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5
+                                            ?.copyWith(
+                                                color:
+                                                    Colors.blueAccent.shade200,
+                                                fontWeight: FontWeight.bold))),
                               ],
                             ),
-                          );
-                        },
+                          ),
+                        ),
                       ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () async {
-                await controller.stopImageStream();
-              },
-              child: const Icon(Icons.restart_alt_rounded),
-            ),
+                    ],
+                  ),
           );
         });
   }

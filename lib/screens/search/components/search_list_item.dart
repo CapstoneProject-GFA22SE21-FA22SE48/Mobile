@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/dtos/searchLawDTO.dart';
 import 'package:vnrdn_tai/models/dtos/searchSignDTO.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_detail.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_screen.dart';
+import 'package:vnrdn_tai/screens/search/sign/search_sign_detail.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:sizer/sizer.dart';
 
@@ -26,130 +28,130 @@ class SearchListItem extends StatelessWidget {
     }
 
     if (searchLawDto != null) {
-      return WillPopScope(
-        onWillPop: () async {
-          Get.to(() => ContainerScreen());
-          return await true;
-        },
-        child: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: GestureDetector(
-            onTap: () {
-              Get.to(() => SearchLawDetailScreen(searchLawDto: searchLawDto));
-            },
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                      width: 15.w,
-                      child: Icon(
-                        Icons.search,
-                        size: 32,
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.only(left: kDefaultPaddingValue),
-                    child: Container(
-                        width: 70.w,
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                  searchLawDto!.paragraphDesc != ""
-                                      ? '${searchLawDto!.paragraphDesc!.replaceAll('\\', '')}'
-                                      : '${searchLawDto!.sectionDesc}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline4
-                                      ?.copyWith(
-                                          color: Colors.black,
-                                          fontSize: FONTSIZES.textMedium)),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: kDefaultPaddingValue / 2),
-                                child: (searchLawDto!.minPenalty != "0" &&
-                                        searchLawDto!.maxPenalty != "0")
-                                    ? Text(
-                                        'Phạt tiền từ ${min}đến ${max}nghìn đồng',
-                                        style: TextStyle(color: Colors.red))
-                                    : const Text('Phạt cảnh cáo',
-                                        style: TextStyle(color: Colors.red)),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.only(
-                                    top: kDefaultPaddingValue / 2),
-                                child: Text(
-                                  'Tìm hiểu thêm',
-                                  style: TextStyle(
-                                      color: Colors.blue,
-                                      decoration: TextDecoration.underline),
-                                ),
-                              )
-                            ])),
-                  ),
-                ]),
-          ),
+      return Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: GestureDetector(
+          onTap: () {
+            Get.to(() => SearchLawDetailScreen(searchLawDto: searchLawDto),
+                preventDuplicates: false);
+          },
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            SizedBox(
+                width: 13.w,
+                child: Icon(
+                  Icons.search,
+                  size: 32,
+                )),
+            Padding(
+              padding: const EdgeInsets.only(left: kDefaultPaddingValue),
+              child: Container(
+                  width: 70.w,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            searchLawDto!.paragraphDesc != ""
+                                ? '${searchLawDto!.paragraphDesc!.replaceAll('\\', '')}'
+                                : '${searchLawDto!.sectionDesc}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4
+                                ?.copyWith(
+                                    color: Colors.black,
+                                    fontSize: FONTSIZES.textMedium)),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: kDefaultPaddingValue / 2),
+                          child: (searchLawDto!.minPenalty != "0" &&
+                                  searchLawDto!.maxPenalty != "0")
+                              ? Text('Phạt tiền từ ${min}đến ${max}nghìn đồng',
+                                  style: TextStyle(color: Colors.red))
+                              : const Text('Phạt cảnh cáo',
+                                  style: TextStyle(color: Colors.red)),
+                        ),
+                        const Padding(
+                          padding:
+                              EdgeInsets.only(top: kDefaultPaddingValue / 2),
+                          child: Text(
+                            'Tìm hiểu thêm',
+                            style: TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline),
+                          ),
+                        )
+                      ])),
+            ),
+          ]),
         ),
       );
     } else if (searchSignDTO != null) {
-      return WillPopScope(
-          onWillPop: () async {
-            Get.to(() => ContainerScreen());
-            return await true;
+      return Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: GestureDetector(
+          onTap: () {
+            Get.to(() => SearchSignDetailScreen(searchSignDto: searchSignDTO));
           },
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: GestureDetector(
-              onTap: () {},
-              child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SizedBox(
-                        width: 15.w,
-                        child: searchSignDTO!.imageUrl != null
-                            ? Image.network(
-                                searchSignDTO!.imageUrl as String,
-                                fit: BoxFit.contain,
-                              )
-                            : Icon(
-                                Icons.search,
-                                size: 32,
-                              )),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: kDefaultPaddingValue),
-                      child: Container(
-                          width: 60.w,
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                    searchSignDTO!.description,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline4
-                                        ?.copyWith(
-                                            color: Colors.black,
-                                            fontSize: FONTSIZES.textMedium)),
-                                const Padding(
-                                  padding: EdgeInsets.only(
-                                      top: kDefaultPaddingValue / 2),
-                                  child: Text(
-                                    'Tìm hiểu thêm',
-                                    style: TextStyle(
-                                        color: Colors.blue,
-                                        decoration: TextDecoration.underline),
-                                  ),
-                                )
-                              ])),
-                    ),
-                  ]),
-            ),
-          ));
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(
+                    width: 15.w,
+                    child: searchSignDTO!.imageUrl != null
+                        ? Image.network(
+                            searchSignDTO!.imageUrl as String,
+                            fit: BoxFit.contain,
+                          )
+                        : Icon(
+                            Icons.search,
+                            size: 32,
+                          )),
+                Padding(
+                  padding: const EdgeInsets.only(left: kDefaultPaddingValue),
+                  child: Container(
+                      width: 60.w,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                searchSignDTO!.name,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4
+                                    ?.copyWith(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: FONTSIZES.textMediumLarge)),
+                            Text(
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                searchSignDTO!.description,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4
+                                    ?.copyWith(
+                                        color: Colors.black,
+                                        fontSize: FONTSIZES.textMedium)),
+                            const Padding(
+                              padding: EdgeInsets.only(
+                                  top: kDefaultPaddingValue / 2),
+                              child: Text(
+                                'Tìm hiểu thêm',
+                                style: TextStyle(
+                                    color: Colors.blue,
+                                    decoration: TextDecoration.underline),
+                              ),
+                            )
+                          ])),
+                ),
+              ]),
+        ),
+      );
     } else {
       return WillPopScope(
           onWillPop: () async {

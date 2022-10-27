@@ -33,11 +33,8 @@ upload(File imageFile) async {
   // send
   var response = await request.send();
   print(response.statusCode);
-
-  // listen for response
-  response.stream.transform(utf8.decoder).listen((value) {
-    print(value);
-  });
+  
+  return await response.stream.bytesToString();;
 }
 
 handleError(value) {

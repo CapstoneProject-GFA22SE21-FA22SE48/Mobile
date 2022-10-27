@@ -29,7 +29,6 @@ class SearchBar extends GetView<GlobalController> {
             padding: const EdgeInsets.all(0),
             child: TextField(
               onChanged: (value) {
-                print(value);
                 // sc.updateQuery(value);
               },
               onSubmitted: (value) {

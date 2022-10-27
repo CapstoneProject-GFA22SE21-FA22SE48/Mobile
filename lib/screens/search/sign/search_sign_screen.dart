@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:tiengviet/tiengviet.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/models/Keyword.dart';
@@ -25,7 +26,8 @@ class SearchSignScreen extends StatefulWidget {
   State<SearchSignScreen> createState() => _SearchSignScreenState();
 }
 
-class _SearchSignScreenState extends State<SearchSignScreen> {
+class _SearchSignScreenState extends State<SearchSignScreen>
+    with TickerProviderStateMixin {
   GlobalController gc = Get.find<GlobalController>();
   SearchController sc = Get.put(SearchController());
   late Future<List<SignCategoryDTO>> signCategories =
@@ -53,6 +55,7 @@ class _SearchSignScreenState extends State<SearchSignScreen> {
 
   @override
   Widget build(BuildContext context) {
+    TabController _tabController;
     return Scaffold(
         extendBodyBehindAppBar: true,
         body: SafeArea(
@@ -73,35 +76,34 @@ class _SearchSignScreenState extends State<SearchSignScreen> {
                             });
                     throw Exception(snapshot.error);
                   } else {
-                    sc.updateSignCategoryNo(0);
-                    sc.updateSignCategory(snapshot.data![0].name);
+                    _tabController = TabController(
+                        length: snapshot.data!.length, vsync: this);
+                    _tabController.index = sc.signCategoryNo.value;
                     return Obx(
                       () => Center(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            DefaultTabController(
-                                initialIndex: sc.signCategoryNo.value,
-                                length: snapshot.data!.length,
-                                child: SizedBox(
-                                  width: 100.w,
-                                  height: 8.h,
-                                  child: TabBar(
-                                      isScrollable: true,
-                                      onTap: (value) {
-                                        sc.updateSignCategoryNo(value);
-                                        sc.updateSignCategory(
-                                            snapshot.data![value].name);
-                                      },
-                                      indicatorColor: Colors.grey,
-                                      labelColor: Colors.blue,
-                                      unselectedLabelColor: Colors.black,
-                                      tabs: snapshot.data!
-                                          .map((signCategory) => Tab(
-                                                text: signCategory.name,
-                                              ))
-                                          .toList()),
-                                )),
+                            SizedBox(
+                              width: 100.w,
+                              height: 8.h,
+                              child: TabBar(
+                                  controller: _tabController,
+                                  isScrollable: true,
+                                  onTap: (value) {
+                                    sc.updateSignCategoryNo(value);
+                                    sc.updateSignCategory(
+                                        snapshot.data![value].name);
+                                  },
+                                  indicatorColor: Colors.grey,
+                                  labelColor: Colors.blue,
+                                  unselectedLabelColor: Colors.black,
+                                  tabs: snapshot.data!
+                                      .map((signCategory) => Tab(
+                                            text: signCategory.name,
+                                          ))
+                                      .toList()),
+                            ),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 6.0),
@@ -114,8 +116,18 @@ class _SearchSignScreenState extends State<SearchSignScreen> {
                                 searchSignDTOList: snapshot
                                     .data![sc.signCategoryNo.value]
                                     .searchSignDTOs
-                                    .where((element) => element.description
-                                        .contains(sc.query.value))
+                                    .where((element) =>
+                                        TiengViet.parse(element.description
+                                                .trim()
+                                                .toLowerCase())
+                                            .contains(TiengViet.parse(sc.query.value
+                                                .trim()
+                                                .toLowerCase())) ||
+                                        TiengViet.parse(element.name.trim().toLowerCase())
+                                            .contains(TiengViet.parse(sc
+                                                .query.value
+                                                .trim()
+                                                .toLowerCase())))
                                     .toList(),
                               ),
                             ),
