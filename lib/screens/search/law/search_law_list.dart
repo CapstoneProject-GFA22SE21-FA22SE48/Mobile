@@ -39,8 +39,6 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
             widget.keywordId!, sc.vehicleCategory.value);
     return WillPopScope(
       onWillPop: () async {
-        sc.updateQuery('');
-        sc.updateVehicleCategory(0);
         return await true;
       },
       child: Scaffold(
@@ -76,7 +74,7 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                               const EdgeInsets.only(left: kDefaultPaddingValue),
                           child: Obx(
                             () => Text(
-                                'Có ${snapshot.data!.length} kết quả được tìm thấy trong hạng mục ${sc.vehicleCategory.value}',
+                                'Có ${snapshot.data!.length} kết quả được tìm thấy liên quan đến ${sc.vehicleCategory.value}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline4
@@ -96,7 +94,7 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                                   SizedBox(height: kDefaultPaddingValue),
                               itemBuilder: ((context, index) {
                                 return Padding(
-                                  padding: const EdgeInsets.all(10.0),
+                                  padding: const EdgeInsets.all(5.0),
                                   child: SearchListItem(
                                       searchLawDto: snapshot.data![index]),
                                 );

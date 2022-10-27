@@ -44,6 +44,7 @@ dependencies:
   expandable:
   expandable_text:
   extended_text:
+  tiengviet:
   flutter:
     sdk: flutter
   shared_preferences: "^2.0.15"

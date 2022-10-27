@@ -22,9 +22,11 @@ class SearchLawScreen extends StatefulWidget {
   State<SearchLawScreen> createState() => _SearchLawScreenState();
 }
 
-class _SearchLawScreenState extends State<SearchLawScreen> {
+class _SearchLawScreenState extends State<SearchLawScreen>
+    with TickerProviderStateMixin {
   late Future<List<Keyword>> keywords = KeywordSerivce().GetKeywordList();
-
+  GlobalController gc = Get.find<GlobalController>();
+  SearchController sc = Get.put(SearchController());
   final List<IconData> iconData = <IconData>[
     Icons.dangerous_outlined,
     Icons.turn_right,
@@ -47,9 +49,7 @@ class _SearchLawScreenState extends State<SearchLawScreen> {
 
   @override
   Widget build(BuildContext context) {
-    GlobalController gc = Get.find<GlobalController>();
-    SearchController sc = Get.put(SearchController());
-
+    TabController _tabController;
     return Scaffold(
         extendBodyBehindAppBar: true,
         body: SafeArea(
@@ -70,35 +70,36 @@ class _SearchLawScreenState extends State<SearchLawScreen> {
                             });
                     throw Exception(snapshot.error);
                   } else {
+                    _tabController = TabController(length: 3, vsync: this);
+                    _tabController.index = sc.vehicleCategoryNo.value;
                     return Center(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          DefaultTabController(
-                              length: 3,
-                              child: SizedBox(
-                                width: 100.w,
-                                height: 10.h,
-                                child: TabBar(
-                                    onTap: (value) {
-                                      sc.updateVehicleCategoryNo(value);
-                                      sc.updateVehicleCategory(value);
-                                    },
-                                    indicatorColor: Colors.grey,
-                                    labelColor: Colors.blue,
-                                    unselectedLabelColor: Colors.black,
-                                    tabs: const <Tab>[
-                                      Tab(
-                                          icon: Icon(Icons.motorcycle_outlined),
-                                          text: 'Xe máy'),
-                                      Tab(
-                                          icon: Icon(Icons.car_crash_outlined),
-                                          text: 'Xe ô tô'),
-                                      Tab(
-                                          icon: Icon(Icons.difference_outlined),
-                                          text: 'Khác'),
-                                    ]),
-                              )),
+                          SizedBox(
+                            width: 100.w,
+                            height: 10.h,
+                            child: TabBar(
+                                controller: _tabController,
+                                onTap: (value) {
+                                  sc.updateVehicleCategoryNo(value);
+                                  sc.updateVehicleCategory(value);
+                                },
+                                indicatorColor: Colors.grey,
+                                labelColor: Colors.blue,
+                                unselectedLabelColor: Colors.black,
+                                tabs: const <Tab>[
+                                  Tab(
+                                      icon: Icon(Icons.motorcycle_outlined),
+                                      text: 'Xe máy'),
+                                  Tab(
+                                      icon: Icon(Icons.car_crash_outlined),
+                                      text: 'Xe ô tô'),
+                                  Tab(
+                                      icon: Icon(Icons.difference_outlined),
+                                      text: 'Khác'),
+                                ]),
+                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 12.0),
                             child: SearchBar(),

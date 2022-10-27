@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/models/Paragraph.dart';
 import 'package:vnrdn_tai/models/dtos/searchLawDTO.dart';
@@ -30,12 +31,11 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalController gc = Get.find<GlobalController>();
     NumberFormat numberFormat =
         NumberFormat.currency(locale: 'vi_VN', symbol: "");
     var min = "";
     var max = "";
-    SearchController sc = Get.put(SearchController());
-    sc.updateQuery("");
     return Scaffold(
         body: SafeArea(
             child: FutureBuilder<SearchLawDTO>(
@@ -59,7 +59,6 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             AppBar(
-                              title: SearchBar(),
                               backgroundColor: Colors.white,
                               iconTheme: IconThemeData(color: Colors.black),
                             ),
@@ -76,10 +75,11 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                       SizedBox(
                                         width: 100.w,
                                         height: widget
-                                                    .searchLawDto!
-                                                    .referenceParagraph!
-                                                    .length !=
-                                                0
+                                                        .searchLawDto!
+                                                        .referenceParagraph!
+                                                        .length !=
+                                                    0 &&
+                                                gc.tab.value == TABS.SEARCH
                                             ? 50.h
                                             : 70.h,
                                         child: Padding(
@@ -203,13 +203,15 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                       ),
                                       const Divider(),
                                       widget.searchLawDto!.referenceParagraph!
-                                                  .length !=
-                                              0
+                                                      .length !=
+                                                  0 &&
+                                              gc.tab.value == TABS.SEARCH
                                           ? Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       horizontal:
-                                                          kDefaultPaddingValue),
+                                                          kDefaultPaddingValue /
+                                                              2),
                                               child: SizedBox(
                                                 width: 100.w,
                                                 height: 25.h,
