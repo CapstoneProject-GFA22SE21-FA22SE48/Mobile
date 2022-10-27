@@ -2,7 +2,6 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/models/Paragraph.dart';
 import 'package:vnrdn_tai/models/dtos/searchSignDTO.dart';
