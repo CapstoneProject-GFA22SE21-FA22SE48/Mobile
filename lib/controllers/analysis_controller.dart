@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter_vision/flutter_vision.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 
 class AnalysisController extends GetxController {
@@ -28,6 +29,15 @@ class AnalysisController extends GetxController {
 
   late List<dynamic>? _recognitionsList;
   List<dynamic>? get recognitionsList => this._recognitionsList;
+
+  late Timer? _timer;
+  Timer? get timer => this._timer;
+
+  late String? _detected = "[]";
+  String? get detected => this._detected;
+
+  late List<int>? _detectedSigns = [];
+  List<int>? get detectedSigns => this._detectedSigns;
 
   @override
   onInit() {
@@ -61,6 +71,58 @@ class AnalysisController extends GetxController {
   //   }
   // }
 
+  Future<String> takePicAndDetect() async {
+    final xFile = await _cameraController.takePicture();
+    final path = xFile.path;
+    io.File file = io.File(xFile.path);
+    final res = await upload(file);
+    return res != "[]" ? res : "[]";
+  }
+
+  // void startTimer() {
+  //   _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+  //     _timer!.cancel();
+  //     await Future.delayed(Duration(seconds: 5));
+  //     final xFile = await _cameraController.takePicture();
+  //     final path = xFile.path;
+  //     io.File file = io.File(xFile.path);
+  //     final res = await upload(file);
+  //     if (res != null) {
+  //       _isDetecting = false;
+  //       // return res;
+  //     }
+  //     print(_isDetecting);
+  //     if (_isDetecting) {
+  //       startTimer();
+  //     }
+  //     print(res);
+  //     update();
+  //   });
+  // }
+
+  void startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer t) async {
+      print("lets wait for 5 seconds");
+      _timer!.cancel();
+      await Future.delayed(Duration(seconds: 5));
+      var res = await takePicAndDetect();
+      _detected = res;
+      if (res != "[]") {
+        res = res.replaceAll(new RegExp(r"\p{P}", unicode: true), "").trim();
+        var detectedSignsAsString = res.split(" ");
+        List<int> detectedSignsAsNumber = [];
+        detectedSignsAsString.forEach((element) {
+          detectedSignsAsNumber.add(int.parse(element));
+        });
+        print(detectedSignsAsNumber);
+        stopImageStream();
+      }
+      if (_isDetecting) {
+        startTimer();
+      }
+    });
+  }
+
   Future<void> startImageStream() async {
     if (!_cameraController.value.isInitialized) {
       print('controller not initialized');
@@ -68,17 +130,7 @@ class AnalysisController extends GetxController {
     }
     _isDetecting = true;
 
-    // final xFile = await _cameraController.takePicture();
-    // print('taken');
-    // final path = xFile.path;
-    // io.File file = io.File(xFile.path);
-    // final res = await upload(file);
-    // if (res != null) {
-    //   _isDetecting = true;
-    //   print(res);
-    //   return res;
-    // }
-
+    startTimer();
     // await _cameraController.startImageStream((image) async {
     //   print("Running! ");
     //   if (_isDetecting) {
@@ -91,7 +143,6 @@ class AnalysisController extends GetxController {
     //     throw Exception(e);
     //   } finally {}
     // });
-
     update();
   }
 
@@ -100,6 +151,7 @@ class AnalysisController extends GetxController {
       print('controller not initialized');
       return;
     }
+    // _timer!.cancel();
     // if (_cameraController.value.isStreamingImages) {
     //   await _cameraController.stopImageStream();
     // }
@@ -149,7 +201,7 @@ class AnalysisController extends GetxController {
 
   @override
   void dispose() async {
-    await vision.closeYoloModel();
+    // await vision.closeYoloModel();
     _cameraController.stopImageStream();
     super.dispose();
   }
