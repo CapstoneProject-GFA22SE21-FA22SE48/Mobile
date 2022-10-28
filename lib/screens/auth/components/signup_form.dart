@@ -48,11 +48,11 @@ class _SignUpFormState extends State<SignUpForm> {
     return TextButton(
       style: TemplatedButtons().confirmStyle,
       onPressed: () {
-        Navigator.pop(context, 'YES');
+        Navigator.pop(context, 'CÓ');
         handleRegister(context);
       },
       child: const Text(
-        "YES",
+        "CÓ",
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
@@ -69,10 +69,10 @@ class _SignUpFormState extends State<SignUpForm> {
   Future<bool> sendEmail() async {
     EmailAuth emailAuth = EmailAuth(sessionName: "verify session");
 
-    emailAuth.config({
-      "server": "https://api.smtp2go.com/v3/",
-      "serverKey": "api-7246DDBA535811ED855EF23C91C88F4E"
-    });
+    // emailAuth.config({
+    //   "server": "https://api.smtp2go.com/v3/",
+    //   "serverKey": "api-7246DDBA535811ED855EF23C91C88F4E"
+    // });
     return await emailAuth
         .sendOtp(recipientMail: emailController.text, otpLength: 6)
         .then((value) => value ? true : false);
@@ -90,19 +90,25 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
       ),
     );
+    print(emailController.text);
     await AuthService()
         .register(usernameController.text, passwordController.text,
             emailController.text.isNotEmpty ? emailController.text : null)
-        .then(((value) => {
-              if (value.length > 1)
-                {afterRegistered(value)}
-              else
-                {
-                  // need fix content
-                  DialogUtil.showTextDialog(context, "Đăng ký thất bại", value,
-                      [TemplatedButtons.ok(context)])
-                }
-            }));
+        .then(((value) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      if (value.length > 1) {
+        if (value.contains("lỗi")) {
+          DialogUtil.showTextDialog(context, "Đăng ký thất bại", value,
+              [TemplatedButtons.ok(context)]);
+        } else {
+          afterRegistered(value);
+        }
+      } else {
+        // need fix content
+        DialogUtil.showTextDialog(
+            context, "Đăng ký thất bại", value, [TemplatedButtons.ok(context)]);
+      }
+    }));
   }
 
   // do after logged in

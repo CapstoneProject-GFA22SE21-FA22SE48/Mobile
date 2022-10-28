@@ -95,7 +95,7 @@ class SearchListItem extends StatelessWidget {
             Get.to(() => SearchSignDetailScreen(searchSignDto: searchSignDTO));
           },
           child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(

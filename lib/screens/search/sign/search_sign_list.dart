@@ -64,20 +64,23 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                         padding:
                             const EdgeInsets.only(left: kDefaultPaddingValue),
                         child: Obx(
-                          () => Text(
-                              'Có ${widget.searchSignDTOList!.length} kết quả tìm được liên quan đến ${sc.signCategory.value}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4
-                                  ?.copyWith(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: FONTSIZES.textMedium)),
+                          () => SizedBox(
+                            height: 4.h,
+                            child: Text(
+                                'Có ${widget.searchSignDTOList!.length} kết quả tìm được liên quan đến ${sc.signCategory.value}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4
+                                    ?.copyWith(
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: FONTSIZES.textMedium)),
+                          ),
                         ),
                       ),
                       SizedBox(
                         width: 100.w,
-                        height: 49.h,
+                        height: 58.h,
                         child: ListView.separated(
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
@@ -86,7 +89,7 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                             itemBuilder: ((context, index) {
                               return Padding(
                                 padding: const EdgeInsets.all(
-                                    kDefaultPaddingValue / 3),
+                                    kDefaultPaddingValue / 4),
                                 child: SearchListItem(
                                     searchSignDTO:
                                         widget.searchSignDTOList![index]),

@@ -228,71 +228,75 @@ class ContainerScreen extends GetView<GlobalController> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Center(child: getScreen(controller.tab.value)),
+        child: Center(child: Obx(() => getScreen(controller.tab.value))),
       ),
-      bottomNavigationBar: SizedBox(
-        height: 80,
-        child: Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(30), topLeft: Radius.circular(30)),
-            boxShadow: [
-              BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 10),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(30.0),
-              topRight: Radius.circular(30.0),
+      bottomNavigationBar: Obx(
+        () => SizedBox(
+          height: 80,
+          child: Container(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(30), topLeft: Radius.circular(30)),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black12, spreadRadius: 0, blurRadius: 10),
+              ],
             ),
-            child: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.menu_book_outlined),
-                  label: 'Tra cứu luật',
-                  tooltip: 'Tra cứu Luật giao thông đường bộ',
-                  activeIcon: Icon(
-                    Icons.menu_book_rounded,
-                    size: FONTSIZES.textVeryHuge,
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.motorcycle_outlined),
-                  label: 'GPLX',
-                  tooltip: 'Ôn và Thi thử Sát hạch giấy phép lái xe',
-                  activeIcon: Padding(
-                    padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
-                    child: Icon(
-                      Icons.motorcycle_rounded,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+              ),
+              child: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.menu_book_outlined),
+                    label: 'Tra cứu luật',
+                    tooltip: 'Tra cứu Luật giao thông đường bộ',
+                    activeIcon: Icon(
+                      Icons.menu_book_rounded,
                       size: FONTSIZES.textVeryHuge,
                     ),
                   ),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.warning_amber_outlined),
-                  label: 'Biển báo',
-                  tooltip: 'Tra cứu biển báo hiệu đường bộ',
-                  activeIcon: Icon(
-                    Icons.warning_rounded,
-                    size: FONTSIZES.textVeryHuge,
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.motorcycle_outlined),
+                    label: 'GPLX',
+                    tooltip: 'Ôn và Thi thử Sát hạch giấy phép lái xe',
+                    activeIcon: Padding(
+                      padding:
+                          EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
+                      child: Icon(
+                        Icons.motorcycle_rounded,
+                        size: FONTSIZES.textVeryHuge,
+                      ),
+                    ),
                   ),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.map_outlined),
-                  label: 'Bản đồ',
-                  tooltip: 'Xem Bản đồ thời gian thực',
-                  activeIcon: Icon(
-                    Icons.map_rounded,
-                    size: FONTSIZES.textVeryHuge,
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.warning_amber_outlined),
+                    label: 'Biển báo',
+                    tooltip: 'Tra cứu biển báo hiệu đường bộ',
+                    activeIcon: Icon(
+                      Icons.warning_rounded,
+                      size: FONTSIZES.textVeryHuge,
+                    ),
                   ),
-                ),
-              ],
-              currentIndex: controller.tab.value.index,
-              selectedItemColor: kBlueAccentBackground[800],
-              onTap: (value) {
-                controller.updateTab(value);
-              },
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.map_outlined),
+                    label: 'Bản đồ',
+                    tooltip: 'Xem Bản đồ thời gian thực',
+                    activeIcon: Icon(
+                      Icons.map_rounded,
+                      size: FONTSIZES.textVeryHuge,
+                    ),
+                  ),
+                ],
+                currentIndex: controller.tab.value.index,
+                selectedItemColor: kBlueAccentBackground[800],
+                onTap: (value) {
+                  controller.updateTab(value);
+                },
+              ),
             ),
           ),
         ),

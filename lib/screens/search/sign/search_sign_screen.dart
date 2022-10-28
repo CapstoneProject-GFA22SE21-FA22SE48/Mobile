@@ -86,7 +86,7 @@ class _SearchSignScreenState extends State<SearchSignScreen>
                           children: <Widget>[
                             SizedBox(
                               width: 100.w,
-                              height: 8.h,
+                              height: 6.h,
                               child: TabBar(
                                   controller: _tabController,
                                   isScrollable: true,
@@ -111,7 +111,7 @@ class _SearchSignScreenState extends State<SearchSignScreen>
                             ),
                             SizedBox(
                               width: 100.w,
-                              height: 52.h,
+                              height: 63.h,
                               child: SearchSignListScreen(
                                 searchSignDTOList: snapshot
                                     .data![sc.signCategoryNo.value]

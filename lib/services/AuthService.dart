@@ -89,6 +89,28 @@ class AuthService {
     }
   }
 
+  Future<String> getUserByEmail(String email) async {
+    try {
+      final res = await http
+          .post(Uri.parse("${url}Users/GetUserByEmail"),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode(email))
+          .timeout(const Duration(seconds: TIME_OUT));
+      if (res.statusCode == 200) {
+        return res.body;
+      } else if (res.statusCode == 404) {
+        log(res.body);
+        return 'notfound';
+      } else {
+        return '';
+      }
+    } on TimeoutException {
+      throw Exception('Không tải được dữ liệu.');
+    }
+  }
+
   Future<String> changePassword(String oldP, String newP) async {
     try {
       GlobalController gc = Get.put(GlobalController());
