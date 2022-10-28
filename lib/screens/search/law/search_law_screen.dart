@@ -11,6 +11,7 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/models/Keyword.dart';
 import 'package:vnrdn_tai/screens/search/components/search_bar.dart';
+import 'package:vnrdn_tai/screens/search/law/search_law_list.dart';
 import 'package:vnrdn_tai/services/KeywordService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
@@ -22,9 +23,11 @@ class SearchLawScreen extends StatefulWidget {
   State<SearchLawScreen> createState() => _SearchLawScreenState();
 }
 
-class _SearchLawScreenState extends State<SearchLawScreen> {
+class _SearchLawScreenState extends State<SearchLawScreen>
+    with TickerProviderStateMixin {
   late Future<List<Keyword>> keywords = KeywordSerivce().GetKeywordList();
-
+  GlobalController gc = Get.find<GlobalController>();
+  SearchController sc = Get.put(SearchController());
   final List<IconData> iconData = <IconData>[
     Icons.dangerous_outlined,
     Icons.turn_right,
@@ -47,10 +50,7 @@ class _SearchLawScreenState extends State<SearchLawScreen> {
 
   @override
   Widget build(BuildContext context) {
-    GlobalController gc = Get.find<GlobalController>();
-    SearchController sc = Get.put(SearchController());
-
-    sc.updateQuery(null);
+    TabController _tabController;
     return Scaffold(
         extendBodyBehindAppBar: true,
         body: SafeArea(
@@ -71,6 +71,8 @@ class _SearchLawScreenState extends State<SearchLawScreen> {
                           });
                   throw Exception(snapshot.error);
                 } else {
+                  _tabController = TabController(length: 3, vsync: this);
+                  _tabController.index = sc.vehicleCategoryNo.value;
                   return KeyboardVisibilityBuilder(
                     builder: (context, isKeyboardVisible) {
                       return Center(
@@ -83,7 +85,9 @@ class _SearchLawScreenState extends State<SearchLawScreen> {
                                   width: 100.w,
                                   height: 8.h,
                                   child: TabBar(
+                                      controller: _tabController,
                                       onTap: (value) {
+                                        sc.updateVehicleCategoryNo(value);
                                         sc.updateVehicleCategory(value);
                                       },
                                       indicatorColor: Colors.blueAccent,
@@ -139,7 +143,12 @@ class _SearchLawScreenState extends State<SearchLawScreen> {
                                               iconSize: 48,
                                               padding: const EdgeInsets.only(
                                                   bottom: 5),
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                Get.to(() =>
+                                                    SearchLawListScreen(
+                                                        keywordId: snapshot
+                                                            .data![index].id));
+                                              },
                                               // color: Colors.accents[index],
                                               color: Colors.blueAccent,
                                               icon: Icon(iconData[index]),

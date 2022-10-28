@@ -40,7 +40,6 @@ final ButtonStyle kModeChoosingButtonStyle = ElevatedButton.styleFrom(
 //                                         fontWeight: FontWeight.bold,
 //                                         fontSize: FONTSIZES.textHuge)
 
-
 enum TEST_TYPE { STUDY, TEST }
 
 enum TABS { SEARCH, MOCK_TEST, ANALYSIS, MINIMAP, WELCOME, LOGIN, SIGNUP }
@@ -65,8 +64,8 @@ const emptyUserId = "00000000-0000-0000-0000-000000000000"; // jwt fixed
 // const url = "https://10.0.2.2:5001/api/";
 const url = "https://vnrdntaiapi.azurewebsites.net/api/";
 
-// const ai_url = "http://10.0.2.2:5000/";
-const ai_url = "https://vnrdnt-ai-aimodule.herokuapp.com/";
+const ai_url = "http://10.0.2.2:3000/";
+// const ai_url = "https://vnrdnt-ai-aimodule.herokuapp.com/";
 
 
 

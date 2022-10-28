@@ -3,7 +3,7 @@ class Paragraph {
   final String name;
   final String sectionId;
   final String description;
-  final double? additionalPenalty;
+  final String? additionalPenalty;
 
   factory Paragraph.fromJson(Map<String, dynamic> data) {
     return Paragraph(

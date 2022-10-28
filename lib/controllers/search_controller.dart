@@ -2,6 +2,11 @@ import 'package:get/get.dart';
 
 class SearchController extends GetxController {
   final vehicleCategory = "xe máy".obs;
+  final vehicleCategoryNo = 0.obs;
+
+  final signCategory = "Biển báo cấm".obs;
+  final signCategoryNo = 0.obs;
+
   final query = "".obs;
 
   @override
@@ -16,6 +21,18 @@ class SearchController extends GetxController {
 
   updateQuery(value) {
     query(value);
+  }
+
+  updateSignCategoryNo(value) {
+    signCategoryNo(value);
+  }
+
+  updateSignCategory(value) {
+    signCategory(value);
+  }
+
+  updateVehicleCategoryNo(value) {
+    vehicleCategoryNo(value);
   }
 
   updateVehicleCategory(value) {
