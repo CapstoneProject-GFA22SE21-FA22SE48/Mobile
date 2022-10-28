@@ -201,9 +201,10 @@ flutter:
     - assets/images/
     - assets/images/quiz/
     - assets/images/auth/
-    # for images
+    # general
     - assets/images/logo.png
     - assets/images/snapchat.png
+    # auth
     - assets/images/auth/login.png
     - assets/images/auth/signup.png
     - assets/images/auth/main_top.png
@@ -211,10 +212,18 @@ flutter:
     - assets/images/auth/login_bottom.png
     - assets/images/auth/signup_top.png
     - assets/images/auth/google.png
+    # quiz
     - assets/images/quiz/car.png
     - assets/images/quiz/motorcycle.png
     - assets/images/quiz/scooter.png
-  #   - images/a_dot_ham.jpeg
+    - assets/images/quiz/cancel.png
+    - assets/images/quiz/clock.png
+    - assets/images/quiz/history.png
+    - assets/images/quiz/education.png
+    - assets/images/quiz/study.png
+    - assets/images/quiz/exam.png
+    - assets/images/quiz/test.png
+    - assets/images/quiz/wrong.png
   #   - images/a_dot_burr.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

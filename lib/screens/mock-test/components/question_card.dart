@@ -21,7 +21,7 @@ class QuestionCard extends StatelessWidget {
     showQuestionImage(Question question) {
       if (question.imageUrl != null) {
         return SizedBox(
-            height: 120,
+            height: 180,
             child: Image.network(
               question.imageUrl as String,
               fit: BoxFit.contain,

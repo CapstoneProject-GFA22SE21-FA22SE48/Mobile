@@ -59,9 +59,7 @@ class _QuizScreenState extends State<QuizScreen> {
         actions: [
           TextButton(
             child: const Text("Xác nhận"),
-            onPressed: () => {
-              Get.to(() => ChooseModeScreen())
-            },
+            onPressed: () => {Get.to(() => ChooseModeScreen())},
           ),
           TextButton(
             child: const Text("Không"),
@@ -84,7 +82,7 @@ class _QuizScreenState extends State<QuizScreen> {
             backgroundColor: Colors.white,
             elevation: 0,
             iconTheme: const IconThemeData(
-              color: Colors.black, //change your color here
+              color: Colors.black54, //change your color here
             ),
             title: Text(
                 // ignore: unrelated_type_equality_checks

@@ -5,6 +5,7 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/TestResult.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
+import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/category_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/test_results.dart';
@@ -63,21 +64,35 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                   SafeArea(
                       child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 0.0),
+                      padding: const EdgeInsets.all(0.0),
                       child: Padding(
                         padding: const EdgeInsets.only(left: 0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(qc.testCategoryName.value,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline4
-                                    ?.copyWith(
-                                        color: Colors.blueAccent.shade200,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: FONTSIZES.textHuge)),
-                            const SizedBox(height: kDefaultPaddingValue),
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.arrow_back),
+                                  color: kPrimaryButtonColor,
+                                  onPressed: () {
+                                    QuestionController qc =
+                                        Get.put(QuestionController());
+                                    qc.testCategoryId.value = '';
+                                    qc.testCategoryName.value = '';
+                                    gc.updateTab(1);
+                                    Get.to(ContainerScreen());
+                                  },
+                                ),
+                                Text("Hạng ${qc.testCategoryName.value}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        ?.copyWith(
+                                            color: Colors.blueAccent.shade200,
+                                            fontWeight: FontWeight.bold)),
+                              ],
+                            ),
                             const SizedBox(height: kDefaultPaddingValue),
                             // Vào học
                             ElevatedButton(
@@ -124,7 +139,9 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                               onPressed: () {
                                 if (gc.userId.value.isNotEmpty) {
                                   gc.updateTestMode(TEST_TYPE.TEST);
-                                  Get.to(() => CategoryScreen());
+                                  Get.to(() => QuizScreen(
+                                        categoryId: qc.testCategoryId.value,
+                                      ));
                                 } else {
                                   DialogUtil.showTextDialog(
                                       context,

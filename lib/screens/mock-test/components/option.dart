@@ -54,36 +54,54 @@ class Option extends StatelessWidget {
           return InkWell(
               onTap: press,
               child: Container(
-                margin: EdgeInsets.only(top: kDefaultPaddingValue / 2),
+                margin: EdgeInsets.only(top: kDefaultPaddingValue),
                 padding: EdgeInsets.all(kDefaultPaddingValue),
                 decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(25)),
+                    border: Border.all(color: getTheRightColour(), width: 3),
+                    borderRadius: BorderRadius.circular(kDefaultPaddingValue)),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(
                         child: Text(
                           "${index + 1} $text",
-                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                          style: TextStyle(
+                              color: getTheRightColour(),
+                              fontSize: FONTSIZES.textPrimary),
                         ),
                       ),
-                      Container(
-                        width: 20,
-                        decoration: BoxDecoration(
-                            color: getTheRightColour() == Colors.grey
-                                ? Colors.transparent
-                                : gc.test_mode == TEST_TYPE.STUDY
-                                    ? getTheRightColour()
-                                    : Colors.blue,
-                            borderRadius: BorderRadius.circular(50),
-                            border: Border.all(color: getTheRightColour())),
-                        child: getTheRightColour() == Colors.grey
-                            ? null
-                            : gc.test_mode == TEST_TYPE.STUDY
-                                ? Icon(getTheRightIcon(), size: 16)
-                                : Icon(Icons.done, size: 16),
-                      )
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: kDefaultPaddingValue / 2),
+                        child: Container(
+                          width: 26,
+                          decoration: BoxDecoration(
+                              color: getTheRightColour() == Colors.grey
+                                  ? Colors.transparent
+                                  : gc.test_mode == TEST_TYPE.STUDY
+                                      ? getTheRightColour()
+                                      : Colors.blue,
+                              borderRadius: BorderRadius.circular(50),
+                              border: Border.all(color: getTheRightColour())),
+                          child: getTheRightColour() == Colors.grey
+                              ? null
+                              : gc.test_mode == TEST_TYPE.STUDY
+                                  ? Icon(
+                                      getTheRightIcon(),
+                                      size: 24,
+                                      color: getTheRightColour() == Colors.grey
+                                          ? Colors.grey
+                                          : Colors.white,
+                                    )
+                                  : Icon(
+                                      Icons.done,
+                                      size: 24,
+                                      color: getTheRightColour() == Colors.grey
+                                          ? Colors.black54
+                                          : Colors.white,
+                                    ),
+                        ),
+                      ),
                     ]),
               ));
         });

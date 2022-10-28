@@ -81,7 +81,7 @@ class ScoreScreen extends StatelessWidget {
                           style: Theme.of(context)
                               .textTheme
                               .headline4
-                              ?.copyWith(color: Colors.blue),
+                              ?.copyWith(color: Colors.blueAccent),
                           textAlign: TextAlign.center,
                         ),
                         const Divider(),
@@ -108,9 +108,9 @@ class ScoreScreen extends StatelessWidget {
                               _qnController.stopTimer();
                               Get.offAll(() => ContainerScreen());
                             },
+                            style: kDefaultButtonStyle,
                             child: const Text("Quay về màn hình chính",
-                                style: TextStyle(color: Colors.black)),
-                            style: kDefaultButtonStyle)
+                                style: TextStyle(color: Colors.black54)))
                       ],
                     ),
                   ),

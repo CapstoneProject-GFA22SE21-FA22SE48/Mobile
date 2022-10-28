@@ -289,7 +289,7 @@ class ContainerScreen extends GetView<GlobalController> {
                 ),
               ],
               currentIndex: controller.tab.value.index,
-              selectedItemColor: Colors.blueAccent[800],
+              selectedItemColor: kBlueAccentBackground[800],
               onTap: (value) {
                 controller.updateTab(value);
               },

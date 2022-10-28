@@ -21,9 +21,7 @@ class SearchBar extends GetView<GlobalController> {
 
     return Container(
         decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: const [BoxShadow(color: Colors.black)],
-            borderRadius: BorderRadius.circular(5)),
+            color: Colors.white, borderRadius: BorderRadius.circular(5)),
         child: Obx(
           () => Padding(
             padding: const EdgeInsets.all(0),
@@ -53,8 +51,10 @@ class SearchBar extends GetView<GlobalController> {
                     color: Colors.blueAccent,
                   ),
                   onPressed: () {
-                    sc.updateQuery("");
-                    _textController.text = sc.query.value;
+                    if (_textController.text.isNotEmpty) {
+                      sc.updateQuery("");
+                      _textController.text = sc.query.value;
+                    }
                   },
                 ),
                 hintText: gc.tab.value == TABS.SEARCH

@@ -92,7 +92,7 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                                       },
                                       indicatorColor: Colors.blueAccent,
                                       labelColor: kPrimaryButtonColor,
-                                      unselectedLabelColor: Colors.black,
+                                      unselectedLabelColor: Colors.black54,
                                       tabs: const <Tab>[
                                         Tab(
                                             icon:

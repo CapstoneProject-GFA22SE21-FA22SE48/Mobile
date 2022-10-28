@@ -73,7 +73,7 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                   throw Exception(snapshot.error);
                 } else {
                   snapshot.data!.forEach((tad) {
-                    _items.add(new Item(tad, false));
+                    _items.add(Item(tad, false));
                   });
                   return Column(
                     children: [
@@ -114,7 +114,8 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                                                                   .contain))
                                                       : Container(),
                                                   Text(
-                                                      "${snapshot.data![index].questionContent}",
+                                                      snapshot.data![index]
+                                                          .questionContent,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .headline6

@@ -38,6 +38,22 @@ class _CategoryScreenState extends State<CategoryScreen> {
     // }
   }
 
+  getThumbnail(String categoryName) {
+    String res = "";
+    switch (categoryName) {
+      case 'A1':
+        res = "scooter";
+        break;
+      case 'A2':
+        res = "motorcycle";
+        break;
+      case 'B1, B2':
+        res = "car";
+        break;
+    }
+    return res;
+  }
+
   getQuestioNo(String categoryName) {
     String res = "";
     switch (categoryName) {
@@ -92,7 +108,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            'Chọn loại bằng',
+                            'Chọn GPLX',
                             style: Theme.of(context)
                                 .textTheme
                                 .headline4
@@ -100,53 +116,72 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                     color: Colors.blueAccent.shade200,
                                     fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(height: kDefaultPaddingValue * 2),
+                          const SizedBox(height: kDefaultPaddingValue),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
                             child: ListView.separated(
-                                itemCount: snapshot.data!.length,
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                separatorBuilder: (context, index) =>
-                                    const SizedBox(
-                                        height: kDefaultPaddingValue * 1.5),
-                                itemBuilder: (context, index) {
-                                  return ElevatedButton(
-                                    onPressed: () {
-                                      getScreen(gc, snapshot.data![index].name,
-                                          snapshot.data![index].id);
-                                    },
-                                    style: kDefaultButtonStyle,
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          snapshot.data![index].name,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline4
-                                              ?.copyWith(
-                                                  color: Colors.blueAccent,
-                                                  fontWeight: FontWeight.bold),
+                              itemCount: snapshot.data!.length,
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
+                                      height: kDefaultPaddingValue * 1.5),
+                              itemBuilder: (context, index) {
+                                return ElevatedButton(
+                                  onPressed: () {
+                                    getScreen(gc, snapshot.data![index].name,
+                                        snapshot.data![index].id);
+                                  },
+                                  style: kDefaultButtonStyle,
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/quiz/${getThumbnail(snapshot.data![index].name)}.png",
+                                        scale: 6,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: kDefaultPaddingValue * 2),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              snapshot.data![index].name,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline4
+                                                  ?.copyWith(
+                                                      color: Colors.blueAccent,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                            ),
+                                            gc.test_mode.value ==
+                                                    TEST_TYPE.STUDY
+                                                ? Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 5),
+                                                    child: Text(
+                                                      "${getQuestioNo(snapshot.data![index].name)}",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline6
+                                                          ?.copyWith(
+                                                              color: Colors
+                                                                  .black45,
+                                                              fontSize: 16),
+                                                    ),
+                                                  )
+                                                : Container()
+                                          ],
                                         ),
-                                        gc.test_mode.value == TEST_TYPE.STUDY
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 5),
-                                                child: Text(
-                                                  "${getQuestioNo(snapshot.data![index].name)}",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headline6
-                                                      ?.copyWith(
-                                                          color: Colors.black54,
-                                                          fontSize: 16),
-                                                ),
-                                              )
-                                            : Container()
-                                      ],
-                                    ),
-                                  );
-                                }),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                           )
                         ],
                       ),
