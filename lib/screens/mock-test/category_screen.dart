@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Category.dart';
@@ -42,7 +43,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     String res = "";
     switch (categoryName) {
       case 'A1':
-        res = "scooter";
+        res = "motorbike";
         break;
       case 'A2':
         res = "motorcycle";
@@ -102,11 +103,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 children: [
                   SafeArea(
                       child: Padding(
-                    padding: const EdgeInsets.all(0.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: kDefaultPaddingValue,
+                    ),
                     child: Center(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          const SizedBox(height: kDefaultPaddingValue),
                           Text(
                             'Chọn GPLX',
                             style: Theme.of(context)
@@ -116,9 +120,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                     color: Colors.blueAccent.shade200,
                                     fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(height: kDefaultPaddingValue),
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: kDefaultPaddingValue,
+                            ),
                             child: ListView.separated(
                               itemCount: snapshot.data!.length,
                               scrollDirection: Axis.vertical,
@@ -127,57 +132,87 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                   const SizedBox(
                                       height: kDefaultPaddingValue * 1.5),
                               itemBuilder: (context, index) {
-                                return ElevatedButton(
-                                  onPressed: () {
+                                return GestureDetector(
+                                  onTap: () {
                                     getScreen(gc, snapshot.data![index].name,
                                         snapshot.data![index].id);
                                   },
-                                  style: kDefaultButtonStyle,
-                                  child: Row(
-                                    children: [
-                                      Image.asset(
-                                        "assets/images/quiz/${getThumbnail(snapshot.data![index].name)}.png",
-                                        scale: 6,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: kDefaultPaddingValue * 2),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              snapshot.data![index].name,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline4
-                                                  ?.copyWith(
-                                                      color: Colors.blueAccent,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                            ),
-                                            gc.test_mode.value ==
-                                                    TEST_TYPE.STUDY
-                                                ? Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 5),
-                                                    child: Text(
-                                                      "${getQuestioNo(snapshot.data![index].name)}",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headline6
-                                                          ?.copyWith(
-                                                              color: Colors
-                                                                  .black45,
-                                                              fontSize: 16),
-                                                    ),
-                                                  )
-                                                : Container()
+                                  child: Container(
+                                    height: 16.h,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: kDefaultPaddingValue,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(
+                                        kDefaultPaddingValue,
+                                      )),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color:
+                                                Color.fromARGB(80, 82, 82, 82),
+                                            spreadRadius: 2,
+                                            blurRadius: 8,
+                                            offset: Offset(0, 8))
+                                      ],
+                                      gradient: LinearGradient(
+                                          colors: [
+                                            Color(0xFF3366FF),
+                                            Color(0xFF00CCFF),
                                           ],
+                                          begin: FractionalOffset(0.0, 0.0),
+                                          end: FractionalOffset(1.0, 0.0),
+                                          stops: [0.0, 1.0],
+                                          tileMode: TileMode.decal),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: kDefaultPaddingValue),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                snapshot.data![index].name,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline4
+                                                    ?.copyWith(
+                                                        color:
+                                                            Colors.blueAccent,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                              ),
+                                              gc.test_mode.value ==
+                                                      TEST_TYPE.STUDY
+                                                  ? Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 5),
+                                                      child: Text(
+                                                        "${getQuestioNo(snapshot.data![index].name)}",
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .headline6
+                                                            ?.copyWith(
+                                                                color: Colors
+                                                                    .black45,
+                                                                fontSize: 16),
+                                                      ),
+                                                    )
+                                                  : Container()
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                        const Spacer(),
+                                        Image.asset(
+                                          "assets/images/quiz/${getThumbnail(snapshot.data![index].name)}.png",
+                                          scale: 0.5.h,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 );
                               },

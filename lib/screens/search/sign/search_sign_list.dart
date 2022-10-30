@@ -61,8 +61,8 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
-                        padding:
-                            const EdgeInsets.only(left: kDefaultPaddingValue),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: kDefaultPaddingValue),
                         child: Obx(
                           () => SizedBox(
                             height: 4.h,
@@ -80,22 +80,39 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                       ),
                       SizedBox(
                         width: 100.w,
-                        height: 58.h,
-                        child: ListView.separated(
+                        height: 62.h,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: kDefaultPaddingValue),
+                          child: ListView.separated(
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
+                            itemCount: widget.searchSignDTOList!.length,
                             separatorBuilder: (context, index) =>
-                                SizedBox(height: kDefaultPaddingValue),
+                                const SizedBox(height: kDefaultPaddingValue),
                             itemBuilder: ((context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(
-                                    kDefaultPaddingValue / 4),
-                                child: SearchListItem(
-                                    searchSignDTO:
-                                        widget.searchSignDTOList![index]),
-                              );
+                              return ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: kDefaultPaddingValue / 2),
+                                      backgroundColor: Colors.white,
+                                      elevation: 5,
+                                      shadowColor: Colors.grey.shade200,
+                                      alignment: Alignment.center,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16.0))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(
+                                        kDefaultPaddingValue / 4),
+                                    child: SearchListItem(
+                                        searchSignDTO:
+                                            widget.searchSignDTOList![index]),
+                                  ));
                             }),
-                            itemCount: widget.searchSignDTOList!.length),
+                          ),
+                        ),
                       ),
                     ]);
               }

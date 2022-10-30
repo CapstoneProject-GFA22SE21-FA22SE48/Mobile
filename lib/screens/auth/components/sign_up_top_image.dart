@@ -15,26 +15,31 @@ class SignUpScreenTopImage extends StatelessWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/images/logo.png",
-                  height: 32.0,
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 5.0),
-                  child: Text(
-                    "VNRDnTAI",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: FONTSIZES.textMediumLarge,
-                        color: kPrimaryTextColor),
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Image.asset(
+            //       "assets/images/logo.png",
+            //       height: 32.0,
+            //     ),
+            //     const Padding(
+            //       padding: EdgeInsets.only(left: 5.0),
+            //       child: Text(
+            //         "VNRDnTAI",
+            //         style: TextStyle(
+            //             fontWeight: FontWeight.w600,
+            //             fontSize: FONTSIZES.textMediumLarge,
+            //             color: kPrimaryTextColor),
+            //       ),
+            //     ),
+            //   ],
+            // ),
             const SizedBox(height: kDefaultPaddingValue * 2),
+            Image.asset(
+              "assets/images/logo.png",
+              height: isKeyboardVisible ? 120 : 180,
+            ),
+            const SizedBox(height: kDefaultPaddingValue),
             const Text(
               "ĐĂNG KÝ",
               style: TextStyle(
@@ -43,11 +48,6 @@ class SignUpScreenTopImage extends StatelessWidget {
                   color: kPrimaryButtonColor),
             ),
             const SizedBox(height: kDefaultPaddingValue * 2),
-            Image.asset(
-              "assets/images/auth/signup.png",
-              height: isKeyboardVisible ? 120 : 240,
-            ),
-            const SizedBox(height: kDefaultPaddingValue),
           ],
         );
       },

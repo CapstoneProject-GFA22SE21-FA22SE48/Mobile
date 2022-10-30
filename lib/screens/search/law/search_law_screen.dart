@@ -42,6 +42,20 @@ class _SearchLawScreenState extends State<SearchLawScreen>
     Icons.style,
     Icons.ice_skating
   ];
+  final List<Color> iconColors = <Color>[
+    Colors.deepOrange,
+    Colors.greenAccent.shade200,
+    Colors.yellow.shade700,
+    Colors.purpleAccent,
+    Colors.blueAccent,
+    Colors.redAccent.shade200,
+    Colors.lightGreenAccent.shade700,
+    Colors.indigoAccent.shade200,
+    Colors.tealAccent.shade700,
+    Colors.pinkAccent,
+    Colors.deepOrangeAccent.shade100,
+    Colors.grey.shade300
+  ];
 
   @override
   void initState() {
@@ -54,6 +68,7 @@ class _SearchLawScreenState extends State<SearchLawScreen>
     return Scaffold(
         extendBodyBehindAppBar: true,
         body: SafeArea(
+          maintainBottomViewPadding: true,
           child: FutureBuilder<List<Keyword>>(
             key: UniqueKey(),
             future: keywords,
@@ -95,79 +110,95 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                                       unselectedLabelColor: Colors.black54,
                                       tabs: const <Tab>[
                                         Tab(
-                                            icon:
-                                                Icon(Icons.motorcycle_outlined),
-                                            text: 'Xe máy'),
+                                          icon: Icon(Icons.motorcycle_outlined),
+                                          text: 'Xe máy',
+                                        ),
                                         Tab(
-                                            icon:
-                                                Icon(Icons.car_crash_outlined),
-                                            text: 'Xe ô tô'),
+                                          icon: Icon(Icons.car_crash_outlined),
+                                          text: 'Xe ô tô',
+                                        ),
                                         Tab(
-                                            icon:
-                                                Icon(Icons.difference_outlined),
-                                            text: 'Khác'),
+                                          icon: Icon(Icons.difference_outlined),
+                                          text: 'Khác',
+                                        ),
                                       ]),
                                 )),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 12.0),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: kDefaultPaddingValue / 2,
+                                horizontal: kDefaultPaddingValue,
+                              ),
                               child: SearchBar(),
                             ),
-                            SizedBox(
-                              width: 100.w,
-                              height: isKeyboardVisible ? 38.h : 60.h,
-                              child: GridView.count(
-                                clipBehavior: Clip.hardEdge,
-                                crossAxisCount: 3,
-                                children: List.generate(
-                                  snapshot.data!.length,
-                                  (index) {
-                                    return Container(
-                                      margin: const EdgeInsets.all(10),
-                                      child: ElevatedButton(
-                                        onPressed: () {},
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          animationDuration:
-                                              const Duration(milliseconds: 500),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0)),
-                                          shadowColor: Colors.grey,
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: kDefaultPaddingValue / 2),
+                              child: SizedBox(
+                                width: 100.w,
+                                height: isKeyboardVisible ? 38.h : 64.h,
+                                child: GridView.count(
+                                  clipBehavior: Clip.hardEdge,
+                                  crossAxisCount: 3,
+                                  children: List.generate(
+                                    growable: true,
+                                    snapshot.data!.length,
+                                    (index) {
+                                      return Container(
+                                        margin: const EdgeInsets.all(
+                                          kDefaultPaddingValue / 2,
                                         ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            IconButton(
-                                              iconSize: 48,
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 5),
-                                              onPressed: () {
-                                                Get.to(() =>
-                                                    SearchLawListScreen(
-                                                        keywordId: snapshot
-                                                            .data![index].id));
-                                              },
-                                              // color: Colors.accents[index],
-                                              color: Colors.blueAccent,
-                                              icon: Icon(iconData[index]),
-                                            ),
-                                            Text(
-                                              snapshot.data![index].name,
-                                              maxLines: 2,
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                color: Colors.blueAccent,
-                                                fontSize: FONTSIZES.textPrimary,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            Get.to(() => SearchLawListScreen(
+                                                keywordId:
+                                                    snapshot.data![index].id));
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            elevation: 5,
+                                            backgroundColor: Colors.white,
+                                            animationDuration: const Duration(
+                                                milliseconds: 500),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0)),
+                                            shadowColor: Colors.grey.shade200,
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              IconButton(
+                                                iconSize: 48,
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 5),
+                                                onPressed: () {
+                                                  Get.to(() =>
+                                                      SearchLawListScreen(
+                                                          keywordId: snapshot
+                                                              .data![index]
+                                                              .id));
+                                                },
+                                                // color: Colors.accents[index],
+                                                color: iconColors[index],
+                                                icon: Icon(iconData[index]),
                                               ),
-                                            ),
-                                          ],
+                                              Text(
+                                                snapshot.data![index].name,
+                                                maxLines: 2,
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  color: Colors.black54,
+                                                  fontSize:
+                                                      FONTSIZES.textPrimary,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                  growable: true,
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ),

@@ -116,19 +116,14 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   // crossAxisAlignment: CrossAxisAlignment.center,
                                   children: const [
-                                    Icon(
-                                      Icons.list_alt_rounded,
-                                      size: 36,
-                                      color: kPrimaryButtonColor,
-                                    ),
-                                    SizedBox(width: kDefaultPaddingValue),
                                     Text(
-                                      "Vào học",
+                                      "Câu hỏi lý thuyết",
                                       style: TextStyle(
                                           fontSize: FONTSIZES.textLarge,
                                           fontWeight: FontWeight.bold,
                                           color: kPrimaryButtonColor),
                                     ),
+                                    SizedBox(width: kDefaultPaddingValue),
                                   ],
                                 ),
                               ),
@@ -172,7 +167,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                     ),
                                     SizedBox(width: kDefaultPaddingValue),
                                     Text(
-                                      "Thi thử",
+                                      "Thi sát hạch GPLX",
                                       style: TextStyle(
                                           fontSize: FONTSIZES.textLarge,
                                           fontWeight: FontWeight.bold,
@@ -220,7 +215,55 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                     ),
                                     SizedBox(width: kDefaultPaddingValue),
                                     Text(
-                                      "Lịch sử",
+                                      "Xem lịch sử thi",
+                                      style: TextStyle(
+                                          fontSize: FONTSIZES.textLarge,
+                                          fontWeight: FontWeight.bold,
+                                          color: kWarningButtonColor),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: kDefaultPaddingValue),
+                            // Lịch sử
+                            ElevatedButton(
+                              onPressed: () {
+                                if (gc.userId.value.isNotEmpty) {
+                                  gc.updateTestMode(TEST_TYPE.TEST);
+                                  Get.to(() => TestRestulScreen(
+                                      testResults: snapshot.data!));
+                                } else {
+                                  DialogUtil.showTextDialog(
+                                      context,
+                                      "Authenticator",
+                                      "You need to logged in to continue.\nGo to login page?",
+                                      [
+                                        TemplatedButtons.yes(
+                                            context, const LoginScreen()),
+                                        TemplatedButtons.no(context),
+                                      ]);
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                alignment: Alignment.center,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: kDefaultPaddingValue / 2),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: const [
+                                    Icon(
+                                      Icons.av_timer_rounded,
+                                      size: 36,
+                                      color: kWarningButtonColor,
+                                    ),
+                                    SizedBox(width: kDefaultPaddingValue),
+                                    Text(
+                                      "Xem câu bị sai",
                                       style: TextStyle(
                                           fontSize: FONTSIZES.textLarge,
                                           fontWeight: FontWeight.bold,

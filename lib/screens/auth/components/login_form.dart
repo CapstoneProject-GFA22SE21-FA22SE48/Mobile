@@ -190,7 +190,7 @@ class _LoginFormState extends State<LoginForm> {
                           content: Row(
                             children: const [
                               // CircularProgressIndicator()
-                              Text('Logging in'),
+                              Text('Đang xử lí'),
                             ],
                           ),
                         ),
@@ -203,15 +203,18 @@ class _LoginFormState extends State<LoginForm> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Đăng nhập".toUpperCase()),
+                        Text(
+                          "Đăng nhập".toUpperCase(),
+                          textScaleFactor: 1.1,
+                        ),
                       ],
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: kDefaultPaddingValue),
+              const SizedBox(height: kDefaultPaddingValue / 2),
               const OrDivider(),
-              const SizedBox(height: kDefaultPaddingValue),
+              const SizedBox(height: kDefaultPaddingValue / 2),
               Hero(
                 tag: "g_login_btn",
                 child: ElevatedButton(
@@ -228,15 +231,16 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: kDefaultPaddingValue / 2),
+                        vertical: kDefaultPaddingValue - 6),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       // crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset('assets/images/auth/google.png', width: 32),
-                        const SizedBox(width: kDefaultPaddingValue),
+                        const SizedBox(width: kDefaultPaddingValue * 4),
                         const Text(
-                          "Đăng nhập bằng Google",
+                          "Đăng nhập với Google",
+                          textScaleFactor: 1.2,
                           style: TextStyle(color: kPrimaryButtonColor),
                         ),
                       ],
@@ -257,7 +261,7 @@ class _LoginFormState extends State<LoginForm> {
                   );
                 },
               ),
-              SizedBox(height: isKeyboardVisible ? 160 : 40),
+              SizedBox(height: isKeyboardVisible ? 320 : 40),
             ],
           ),
         );

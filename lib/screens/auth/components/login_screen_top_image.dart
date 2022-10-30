@@ -15,21 +15,32 @@ class LoginScreenTopImage extends StatelessWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Image.asset(
+            //       "assets/images/logo.png",
+            //       height: 32.0,
+            //     ),
+            //     const Padding(
+            //       padding: EdgeInsets.only(left: 5.0),
+            //       child: Text(
+            //         "VNRDnTAI",
+            //         style: TextStyle(
+            //             fontWeight: FontWeight.w600,
+            //             fontSize: FONTSIZES.textMediumLarge,
+            //             color: kPrimaryTextColor),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            const SizedBox(height: kDefaultPaddingValue * 2),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  "assets/images/logo.png",
-                  height: 32.0,
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 5.0),
-                  child: Text(
-                    "VNRDnTAI",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: FONTSIZES.textMediumLarge,
-                        color: kPrimaryTextColor),
+                Expanded(
+                  child: Image.asset(
+                    "assets/images/logo.png",
+                    height: isKeyboardVisible ? 120 : 180,
                   ),
                 ),
               ],
@@ -37,24 +48,11 @@ class LoginScreenTopImage extends StatelessWidget {
             const SizedBox(height: kDefaultPaddingValue * 2),
             const Text(
               "ĐĂNG NHẬP",
+              textAlign: TextAlign.start,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: FONTSIZES.textHuge,
+                  fontSize: FONTSIZES.textLarger,
                   color: kPrimaryButtonColor),
-            ),
-            const SizedBox(height: kDefaultPaddingValue * 2),
-            Row(
-              children: [
-                const Spacer(),
-                Expanded(
-                  flex: 6,
-                  child: Image.asset(
-                    "assets/images/auth/login.png",
-                    height: isKeyboardVisible ? 120 : 240,
-                  ),
-                ),
-                const Spacer(),
-              ],
             ),
             const SizedBox(height: kDefaultPaddingValue * 2),
           ],

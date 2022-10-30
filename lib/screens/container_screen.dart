@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
@@ -226,13 +227,10 @@ class ContainerScreen extends GetView<GlobalController> {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Center(child: Obx(() => getScreen(controller.tab.value))),
-      ),
+      body: Center(child: Obx(() => getScreen(controller.tab.value))),
       bottomNavigationBar: Obx(
         () => SizedBox(
-          height: 80,
+          height: 10.h,
           child: Container(
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(
@@ -256,7 +254,7 @@ class ContainerScreen extends GetView<GlobalController> {
                     tooltip: 'Tra cứu Luật giao thông đường bộ',
                     activeIcon: Icon(
                       Icons.menu_book_rounded,
-                      size: FONTSIZES.textVeryHuge,
+                      size: FONTSIZES.textVeryHuge + 8,
                     ),
                   ),
                   BottomNavigationBarItem(
@@ -268,7 +266,7 @@ class ContainerScreen extends GetView<GlobalController> {
                           EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
                       child: Icon(
                         Icons.motorcycle_rounded,
-                        size: FONTSIZES.textVeryHuge,
+                        size: FONTSIZES.textVeryHuge + 8,
                       ),
                     ),
                   ),
@@ -276,18 +274,26 @@ class ContainerScreen extends GetView<GlobalController> {
                     icon: Icon(Icons.warning_amber_outlined),
                     label: 'Biển báo',
                     tooltip: 'Tra cứu biển báo hiệu đường bộ',
-                    activeIcon: Icon(
-                      Icons.warning_rounded,
-                      size: FONTSIZES.textVeryHuge,
+                    activeIcon: Padding(
+                      padding:
+                          EdgeInsets.only(bottom: kDefaultPaddingValue / 4),
+                      child: Icon(
+                        Icons.warning_rounded,
+                        size: FONTSIZES.textVeryHuge + 8,
+                      ),
                     ),
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.map_outlined),
                     label: 'Bản đồ',
                     tooltip: 'Xem Bản đồ thời gian thực',
-                    activeIcon: Icon(
-                      Icons.map_rounded,
-                      size: FONTSIZES.textVeryHuge,
+                    activeIcon: Padding(
+                      padding:
+                          EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
+                      child: Icon(
+                        Icons.map_rounded,
+                        size: FONTSIZES.textVeryHuge + 8,
+                      ),
                     ),
                   ),
                 ],

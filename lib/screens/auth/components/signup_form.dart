@@ -85,12 +85,12 @@ class _SignUpFormState extends State<SignUpForm> {
         content: Row(
           children: const [
             // CircularProgressIndicator()
-            Text('Registering'),
+            Text('Đang gửi thông tin'),
           ],
         ),
       ),
     );
-    print(emailController.text);
+
     await AuthService()
         .register(usernameController.text, passwordController.text,
             emailController.text.isNotEmpty ? emailController.text : null)
@@ -113,16 +113,6 @@ class _SignUpFormState extends State<SignUpForm> {
 
   // do after logged in
   void afterRegistered(String user) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: const [
-            // CircularProgressIndicator()
-            Text('Đăng ký thành công!'),
-          ],
-        ),
-      ),
-    );
     Get.to(const LoginScreen());
     // if (emailController.text.isEmpty) {
     //   ScaffoldMessenger.of(context).showSnackBar(

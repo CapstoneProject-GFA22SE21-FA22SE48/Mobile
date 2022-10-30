@@ -33,19 +33,12 @@ class _SearchSignScreenState extends State<SearchSignScreen>
   late Future<List<SignCategoryDTO>> signCategories =
       SignService().GetSignCategoriesDTOList();
 
-  final List<IconData> iconData = <IconData>[
-    Icons.dangerous_outlined,
-    Icons.turn_right,
-    Icons.perm_device_info,
-    Icons.speed,
-    Icons.fire_truck,
-    Icons.local_parking,
-    Icons.swap_vert,
-    Icons.train,
-    Icons.shop,
-    Icons.invert_colors,
-    Icons.style,
-    Icons.ice_skating
+  final List<Color> listTabColors = <Color>[
+    Colors.red,
+    Colors.orangeAccent,
+    Colors.blue.shade300,
+    Colors.blueAccent.shade700,
+    Colors.grey.shade800,
   ];
 
   @override
@@ -95,9 +88,18 @@ class _SearchSignScreenState extends State<SearchSignScreen>
                                     sc.updateSignCategory(
                                         snapshot.data![value].name);
                                   },
-                                  indicatorColor: Colors.grey,
-                                  labelColor: Colors.blue,
-                                  unselectedLabelColor: Colors.black,
+                                  labelColor:
+                                      listTabColors[_tabController.index],
+                                  indicatorColor:
+                                      listTabColors[_tabController.index],
+                                  unselectedLabelColor: Colors.black54,
+                                  labelStyle: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: FONTSIZES.textPrimary,
+                                  ),
+                                  unselectedLabelStyle: const TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: FONTSIZES.textMedium),
                                   tabs: snapshot.data!
                                       .map((signCategory) => Tab(
                                             text: signCategory.name,
@@ -105,13 +107,15 @@ class _SearchSignScreenState extends State<SearchSignScreen>
                                       .toList()),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 6.0),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: kDefaultPaddingValue / 2,
+                                horizontal: kDefaultPaddingValue,
+                              ),
                               child: SearchBar(),
                             ),
                             SizedBox(
                               width: 100.w,
-                              height: 63.h,
+                              height: 66.h,
                               child: SearchSignListScreen(
                                 searchSignDTOList: snapshot
                                     .data![sc.signCategoryNo.value]
