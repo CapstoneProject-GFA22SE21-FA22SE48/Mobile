@@ -97,7 +97,7 @@ class _MinimapState extends State<MinimapScreen> {
               trafficEnabled: true,
               initialCameraPosition: CameraPosition(
                 target: sourceLocation,
-                zoom: 13.5,
+                zoom: 16,
               ),
               markers: {
                 Marker(
