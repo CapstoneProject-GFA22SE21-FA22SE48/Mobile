@@ -146,6 +146,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                           onTap: () {
                             if (gc.userId.value.isNotEmpty) {
                               gc.updateTestMode(TEST_TYPE.TEST);
+                              qc.restartTimer();
                               Get.to(() => QuizScreen(
                                     categoryId: qc.testCategoryId.value,
                                   ));

@@ -5,6 +5,7 @@ import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Question.dart';
+import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/components/progress_bar.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
@@ -69,7 +70,8 @@ class _BodyState extends State<Body> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              Get.back();
+                              qnController.stopTimer();
+                              Get.offAll(() => ContainerScreen());
                             },
                             icon: const FaIcon(
                               FontAwesomeIcons.close,

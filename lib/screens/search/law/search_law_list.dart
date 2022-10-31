@@ -10,6 +10,7 @@ import 'package:vnrdn_tai/models/Section.dart';
 import 'package:vnrdn_tai/models/dtos/searchLawDTO.dart';
 import 'package:vnrdn_tai/screens/search/components/search_bar.dart';
 import 'package:vnrdn_tai/screens/search/components/search_list_item.dart';
+import 'package:vnrdn_tai/screens/search/law/search_law_detail.dart';
 import 'package:vnrdn_tai/services/KeywordService.dart';
 import 'package:vnrdn_tai/services/LawService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -108,7 +109,10 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                                         height: kDefaultPaddingValue),
                                 itemBuilder: ((context, index) {
                                   return ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Get.to(() => SearchLawDetailScreen(
+                                          searchLawDto: snapshot.data![index]));
+                                    },
                                     style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: kDefaultPaddingValue / 2),

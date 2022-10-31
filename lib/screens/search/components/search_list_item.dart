@@ -32,8 +32,8 @@ class SearchListItem extends StatelessWidget {
         padding: const EdgeInsets.only(top: 8.0),
         child: GestureDetector(
           onTap: () {
-            // Get.to(() => SearchLawDetailScreen(searchLawDto: searchLawDto),
-            //     preventDuplicates: false);
+            Get.to(() => SearchLawDetailScreen(searchLawDto: searchLawDto),
+                preventDuplicates: false);
           },
           child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,

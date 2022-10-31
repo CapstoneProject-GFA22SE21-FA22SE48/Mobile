@@ -66,6 +66,10 @@ class QuestionController extends GetxController
     _animationController.forward();
   }
 
+  void restartTimer(){
+    _animationController.reset();
+  }
+
   void stopTimer() {
     _animationController.stop(canceled: true);
   }
