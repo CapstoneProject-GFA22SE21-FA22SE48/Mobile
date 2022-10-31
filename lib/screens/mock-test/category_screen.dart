@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Category.dart';
-import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/test_set_screen.dart';
 import 'package:vnrdn_tai/services/TestCategoryService.dart';
@@ -63,7 +61,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         backgroundColor: Colors.blue,
         elevation: 0,
         title:
-            Text(gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học" : "Chế độ Thi"),
+            Text(gc.test_mode.value == TEST_TYPE.STUDY ? "Chế độ Học" : "Chế độ Thi"),
       ),
       body: FutureBuilder<List<TestCategory>>(
           key: UniqueKey(),

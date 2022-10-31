@@ -1,6 +1,4 @@
-import 'package:vnrdn_tai/models/Paragraph.dart';
 import 'package:vnrdn_tai/models/dtos/searchLawDTO.dart';
-import 'package:vnrdn_tai/models/dtos/searchParagraphDTO.dart';
 
 class SearchSignDTO {
   final String name;

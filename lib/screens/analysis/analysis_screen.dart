@@ -1,54 +1,16 @@
-import 'dart:io' as io;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/analysis_controller.dart';
-import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
-import 'package:vnrdn_tai/shared/painter.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/widgets/animation/ripple.dart';
 
 class AnalysisScreen extends StatelessWidget {
   AnalysisScreen({super.key});
-
-  // List<Widget> renderBoxes(Size screen) {
-  //   if (_recognitions == null) return [];
-  //   if (_imageHeight == null || _imageWidth == null) return [];
-
-  //   double factorX = screen.width;
-  //   double factorY = _imageHeight / _imageWidth * screen.width;
-  //   Color blue = Color.fromRGBO(37, 213, 253, 1.0);
-  //   return _recognitions.map((re) {
-  //     return Positioned(
-  //       left: re["rect"]["x"] * factorX,
-  //       top: re["rect"]["y"] * factorY,
-  //       width: re["rect"]["w"] * factorX,
-  //       height: re["rect"]["h"] * factorY,
-  //       child: Container(
-  //         decoration: BoxDecoration(
-  //           borderRadius: BorderRadius.all(Radius.circular(8.0)),
-  //           border: Border.all(
-  //             color: blue,
-  //             width: 2,
-  //           ),
-  //         ),
-  //         child: Text(
-  //           "${re["detectedClass"]} ${(re["confidenceInClass"] * 100).toStringAsFixed(0)}%",
-  //           style: TextStyle(
-  //             background: Paint()..color = blue,
-  //             color: Colors.white,
-  //             fontSize: 12.0,
-  //           ),
-  //         ),
-  //       ),
-  //     );
-  //   }).toList();
-  // }
 
   Widget getBoundingBoxes(List<dynamic> coords, double height, double width) {
     AnalysisController ac = Get.find<AnalysisController>();

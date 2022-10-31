@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:io' as io;
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vision/flutter_vision.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:yaml/yaml.dart';
 
@@ -127,13 +125,13 @@ class AnalysisController extends GetxController {
             arrForPreprocess[i].add(detectedSignsAsString[i2]);
           }
         }
-        arrForPreprocess.forEach((element) {
+        for (var element in arrForPreprocess) {
           b.add(element);
-        });
+        }
       }
       _boxes = b;
       // update();
-      if (b.length > 0) {
+      if (b.isNotEmpty) {
         // stopImageStream();
       }
       update();
