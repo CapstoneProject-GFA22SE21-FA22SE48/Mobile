@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
@@ -42,8 +43,12 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
         return await true;
       },
       child: Scaffold(
-          body: SafeArea(
-        child: FutureBuilder<List<SearchLawDTO>>(
+        appBar: AppBar(
+          title:
+              Text("Tra cứu \"${sc.vehicleCategory.value.capitalizeFirst}\""),
+        ),
+        body: SafeArea(
+          child: FutureBuilder<List<SearchLawDTO>>(
             key: UniqueKey(),
             future: searchRes,
             builder: (context, snapshot) {
@@ -60,52 +65,81 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                           });
                   throw Exception(snapshot.error);
                 } else {
-                  return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        AppBar(
-                          title: SearchBar(),
-                          backgroundColor: Colors.white,
-                          iconTheme: IconThemeData(color: Colors.black),
-                        ),
-                        const Divider(),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: kDefaultPaddingValue),
-                          child: Obx(
-                            () => Text(
-                                'Có ${snapshot.data!.length} kết quả được tìm thấy liên quan đến ${sc.vehicleCategory.value}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline4
-                                    ?.copyWith(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: FONTSIZES.textMedium)),
+                  return KeyboardVisibilityBuilder(
+                    builder: (context, isKeyboardVisible) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: kDefaultPaddingValue / 2,
+                              horizontal: kDefaultPaddingValue,
+                            ),
+                            child: SearchBar(),
                           ),
-                        ),
-                        SizedBox(
-                          width: 100.w,
-                          height: 80.h,
-                          child: ListView.separated(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              separatorBuilder: (context, index) =>
-                                  SizedBox(height: kDefaultPaddingValue),
-                              itemBuilder: ((context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: SearchListItem(
-                                      searchLawDto: snapshot.data![index]),
-                                );
-                              }),
-                              itemCount: snapshot.data!.length),
-                        ),
-                      ]);
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: kDefaultPaddingValue),
+                            child: Obx(
+                              () => Text(
+                                  'Có ${snapshot.data!.length} kết quả được tìm thấy liên quan đến ${sc.vehicleCategory.value}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline4
+                                      ?.copyWith(
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: FONTSIZES.textPrimary)),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 100.w,
+                            height: isKeyboardVisible ? 45.h : 80.h,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: kDefaultPaddingValue,
+                              ),
+                              child: ListView.separated(
+                                itemCount: snapshot.data!.length,
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(
+                                        height: kDefaultPaddingValue),
+                                itemBuilder: ((context, index) {
+                                  return ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: kDefaultPaddingValue / 2),
+                                        backgroundColor: Colors.white,
+                                        elevation: 5,
+                                        shadowColor: Colors.grey.shade200,
+                                        alignment: Alignment.center,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16.0))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(
+                                          kDefaultPaddingValue / 4),
+                                      child: SearchListItem(
+                                          searchLawDto: snapshot.data![index]),
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 }
               }
-            }),
-      )),
+            },
+          ),
+        ),
+      ),
     );
   }
 }

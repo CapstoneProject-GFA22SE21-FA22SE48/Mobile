@@ -4,9 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/models/UserInfo.dart';
 
-class RegisterController extends GetxController {
-  static RegisterController instance = Get.find();
+class AuthController extends GetxController {
+  static AuthController instance = Get.find();
   late Rx<UserInfo?> _user;
+  final email = ''.obs;
+  final status = 0.obs;
 
   // FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -21,7 +23,11 @@ class RegisterController extends GetxController {
     super.dispose();
   }
 
-  registerQuery(value) {
-    // query(value);
+  updateEmail(value) {
+    email(value);
+  }
+
+  updateStatus(value) {
+    status(value);
   }
 }

@@ -4,7 +4,6 @@ import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/responsive.dart';
 import 'components/sign_up_top_image.dart';
 import 'components/signup_form.dart';
-import 'components/socal_sign_up.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -15,7 +14,8 @@ class SignUpScreen extends StatelessWidget {
       child: SingleChildScrollView(
         child: Responsive(
           mobile: const MobileSignupScreen(),
-          desktop: Row(
+          desktop: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const Expanded(
                 child: SignUpScreenTopImage(),

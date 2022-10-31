@@ -10,11 +10,19 @@ const kDisabledButtonColor = Color.fromARGB(255, 108, 117, 125);
 const kPrimaryTextColor = Color.fromARGB(255, 51, 51, 51);
 const kDisabledTextColor = Color.fromARGB(255, 102, 102, 102);
 
+const kPrimaryGradientColor = Color.fromARGB(255, 51, 102, 255);
+const kDangerGradientColor = Color.fromARGB(255, 239, 68, 68);
+const kSuccessGradientColor = Color.fromARGB(255, 34, 197, 94);
+const kWarningGradientColor = Color.fromARGB(255, 245, 159, 11);
+const kDisabledGradientColor = Color.fromARGB(255, 108, 117, 125);
+
+const kBlueAccentBackground = Colors.blueAccent;
+
 const kPrimaryBackgroundColor = Color.fromARGB(255, 255, 255, 255);
 
 const double kDefaultPaddingValue = 16;
 const kDefaultPadding = EdgeInsets.all(16);
-const quizTime = 60;
+const quizTime = 60 * 30;
 
 final ButtonStyle kDefaultButtonStyle = ElevatedButton.styleFrom(
     textStyle: const TextStyle(fontSize: FONTSIZES.textPrimary),
@@ -61,11 +69,13 @@ const TIME_OUT = 60;
 
 const emptyUserId = "00000000-0000-0000-0000-000000000000"; // jwt fixed
 
-const url = "https://10.0.2.2:5001/api/";
-// const url = "https://vnrdntaiapi.azurewebsites.net/api/";
+const String google_api_key = "AIzaSyBEre7YKax4irpLfr0I2jrkACu_ZiBL3JU";
 
-const ai_url = "http://10.0.2.2:3000/";
-// const ai_url = "https://vnrdnt-ai-aimodule.herokuapp.com/";
+// const url = "https://10.0.2.2:5001/api/";
+const url = "https://vnrdntaiapi.azurewebsites.net/api/";
+
+// const ai_url = "http://10.0.2.2:3000/";
+const ai_url = "https://vnrdnt-ai-aimodule.herokuapp.com/";
 
 
 

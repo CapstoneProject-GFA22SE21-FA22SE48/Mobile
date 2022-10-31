@@ -22,7 +22,7 @@ class AlreadyHaveAnAccountCheck extends StatelessWidget {
         GestureDetector(
           onTap: press as void Function()?,
           child: Text(
-            login ? "Đăng kí ngay" : "Đăng nhập ngay",
+            login ? "Đăng ký ngay" : "Đăng nhập ngay",
             style: const TextStyle(
               color: kPrimaryButtonColor,
               fontWeight: FontWeight.bold,

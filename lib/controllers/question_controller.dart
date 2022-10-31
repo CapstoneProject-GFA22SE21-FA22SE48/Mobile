@@ -10,6 +10,9 @@ class QuestionController extends GetxController
     with GetSingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late GlobalController gc;
+  final testCategoryId = ''.obs;
+  final testCategoryName = ''.obs;
+  final testCategoryCount = 0.obs;
   final questionService = QuestionSerivce();
 
   late Animation _animation;
@@ -67,9 +70,13 @@ class QuestionController extends GetxController
     _animationController.stop(canceled: true);
   }
 
+  void disposeTimer() {
+    _animationController.dispose();
+  }
+
   void checkAns(Question question, int selectedIndex) {
     if (_answeredQuestions.firstWhereOrNull((element) => element == question) ==
-            null) {
+        null) {
       _isAnswered = true;
       _correctAns =
           question.answers.firstWhere((element) => element.isCorrect == true);
@@ -83,11 +90,13 @@ class QuestionController extends GetxController
         'selectedAns': _selectedAns,
         'isCorrect': _correctAns == _selectedAns
       });
-    } else if(gc.test_mode.value == TEST_TYPE.TEST) {
+    } else if (gc.test_mode.value == TEST_TYPE.TEST) {
       dynamic q = _answeredAttempt
           .firstWhere((element) => element['question'] == question);
       q!['selectedAns'] = question.answers[selectedIndex];
-      q!['isCorrect'] = question.answers.firstWhere((element) => element.isCorrect == true) == question.answers[selectedIndex];
+      q!['isCorrect'] =
+          question.answers.firstWhere((element) => element.isCorrect == true) ==
+              question.answers[selectedIndex];
     }
 
     if (gc.test_mode.value == TEST_TYPE.TEST) {
@@ -105,5 +114,17 @@ class QuestionController extends GetxController
         duration: Duration(microseconds: 250), curve: Curves.ease);
     _animationController.reset();
     _animationController.forward();
+  }
+
+  updateTestCategoryId(value) {
+    testCategoryId(value);
+  }
+
+  updateTestCategoryName(value) {
+    testCategoryName(value);
+  }
+
+  updateTestCategoryCount(value) {
+    testCategoryCount(value);
   }
 }

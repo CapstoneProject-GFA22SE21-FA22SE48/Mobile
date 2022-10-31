@@ -32,59 +32,68 @@ class SearchListItem extends StatelessWidget {
         padding: const EdgeInsets.only(top: 8.0),
         child: GestureDetector(
           onTap: () {
-            Get.to(() => SearchLawDetailScreen(searchLawDto: searchLawDto),
-                preventDuplicates: false);
+            // Get.to(() => SearchLawDetailScreen(searchLawDto: searchLawDto),
+            //     preventDuplicates: false);
           },
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-            SizedBox(
-                width: 13.w,
-                child: Icon(
-                  Icons.search,
-                  size: 32,
-                )),
-            Padding(
-              padding: const EdgeInsets.only(left: kDefaultPaddingValue),
-              child: Container(
-                  width: 70.w,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            searchLawDto!.paragraphDesc != ""
-                                ? '${searchLawDto!.paragraphDesc!.replaceAll('\\', '')}'
-                                : '${searchLawDto!.sectionDesc}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4
-                                ?.copyWith(
-                                    color: Colors.black,
-                                    fontSize: FONTSIZES.textMedium)),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: kDefaultPaddingValue / 2),
-                          child: (searchLawDto!.minPenalty != "0" &&
-                                  searchLawDto!.maxPenalty != "0")
-                              ? Text('Phạt tiền từ ${min}đến ${max}nghìn đồng',
-                                  style: TextStyle(color: Colors.red))
-                              : const Text('Phạt cảnh cáo',
-                                  style: TextStyle(color: Colors.red)),
-                        ),
-                        const Padding(
-                          padding:
-                              EdgeInsets.only(top: kDefaultPaddingValue / 2),
-                          child: Text(
-                            'Tìm hiểu thêm',
-                            style: TextStyle(
-                                color: Colors.blue,
-                                decoration: TextDecoration.underline),
-                          ),
-                        )
-                      ])),
-            ),
-          ]),
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(
+                    width: 16.w,
+                    child: Icon(
+                      Icons.search,
+                      size: 64,
+                      color: Colors.black54,
+                    )),
+                Padding(
+                  padding: const EdgeInsets.only(left: kDefaultPaddingValue),
+                  child: Container(
+                      width: 66.w,
+                      padding: EdgeInsets.symmetric(
+                        vertical: kDefaultPaddingValue / 4,
+                        horizontal: kDefaultPaddingValue / 2,
+                      ),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                searchLawDto!.paragraphDesc != ""
+                                    ? '${searchLawDto!.paragraphDesc!.replaceAll('\\', '')}'
+                                    : '${searchLawDto!.sectionDesc}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4
+                                    ?.copyWith(
+                                        color: Colors.black,
+                                        fontSize: FONTSIZES.textPrimary)),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: kDefaultPaddingValue / 2),
+                              child: (searchLawDto!.minPenalty != "0" &&
+                                      searchLawDto!.maxPenalty != "0")
+                                  ? Text('Phạt tiền từ ${min}đến ${max} đồng',
+                                      style: TextStyle(color: Colors.red))
+                                  : const Text('Phạt cảnh cáo',
+                                      style: TextStyle(color: Colors.red)),
+                            ),
+                            searchLawDto!.referenceParagraph!.isNotEmpty
+                                ? const Padding(
+                                    padding: EdgeInsets.only(
+                                        top: kDefaultPaddingValue / 2),
+                                    child: Text(
+                                      'Tìm hiểu các hành vi liên quan',
+                                      style: TextStyle(
+                                          color: Colors.blue,
+                                          decoration: TextDecoration.underline),
+                                    ),
+                                  )
+                                : Container(),
+                          ])),
+                ),
+              ]),
         ),
       );
     } else if (searchSignDTO != null) {
@@ -95,11 +104,11 @@ class SearchListItem extends StatelessWidget {
             Get.to(() => SearchSignDetailScreen(searchSignDto: searchSignDTO));
           },
           child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(
-                    width: 15.w,
+                    width: 25.w,
                     child: searchSignDTO!.imageUrl != null
                         ? Image.network(
                             searchSignDTO!.imageUrl as String,
@@ -107,7 +116,8 @@ class SearchListItem extends StatelessWidget {
                           )
                         : Icon(
                             Icons.search,
-                            size: 32,
+                            size: 64,
+                            color: Colors.black54,
                           )),
                 Padding(
                   padding: const EdgeInsets.only(left: kDefaultPaddingValue),
@@ -136,7 +146,7 @@ class SearchListItem extends StatelessWidget {
                                     .headline4
                                     ?.copyWith(
                                         color: Colors.black,
-                                        fontSize: FONTSIZES.textMedium)),
+                                        fontSize: FONTSIZES.textPrimary)),
                             const Padding(
                               padding: EdgeInsets.only(
                                   top: kDefaultPaddingValue / 2),
