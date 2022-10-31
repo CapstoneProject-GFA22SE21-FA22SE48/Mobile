@@ -79,6 +79,7 @@ class _MailVerifyState extends State<MailVerifyScreen> {
     return Scaffold(
       backgroundColor: kPrimaryBackgroundColor,
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         title: const Text("Verify Account"),
       ),
       body: KeyboardVisibilityBuilder(

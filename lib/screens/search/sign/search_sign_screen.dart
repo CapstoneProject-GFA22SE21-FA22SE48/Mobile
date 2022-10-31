@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tiengviet/tiengviet.dart';
@@ -50,98 +51,100 @@ class _SearchSignScreenState extends State<SearchSignScreen>
   Widget build(BuildContext context) {
     TabController _tabController;
     return Scaffold(
-        extendBodyBehindAppBar: true,
-        body: SafeArea(
-          child: FutureBuilder<List<SignCategoryDTO>>(
-              key: UniqueKey(),
-              future: signCategories,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return loadingScreen();
-                } else {
-                  if (snapshot.hasError) {
-                    Future.delayed(
-                        Duration.zero,
-                        () => {
-                              handleError(snapshot.error
-                                  ?.toString()
-                                  .replaceFirst('Exception:', ''))
-                            });
-                    throw Exception(snapshot.error);
-                  } else {
-                    _tabController = TabController(
-                        length: snapshot.data!.length, vsync: this);
-                    _tabController.index = sc.signCategoryNo.value;
+      extendBodyBehindAppBar: true,
+      body: SafeArea(
+        child: FutureBuilder<List<SignCategoryDTO>>(
+          key: UniqueKey(),
+          future: signCategories,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return loadingScreen();
+            } else {
+              if (snapshot.hasError) {
+                Future.delayed(
+                    Duration.zero,
+                    () => {
+                          handleError(snapshot.error
+                              ?.toString()
+                              .replaceFirst('Exception:', ''))
+                        });
+                throw Exception(snapshot.error);
+              } else {
+                _tabController =
+                    TabController(length: snapshot.data!.length, vsync: this);
+                _tabController.index = sc.signCategoryNo.value;
+                return KeyboardVisibilityBuilder(
+                  builder: (p0, isKeyboardVisible) {
                     return Obx(
-                      () => Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            SizedBox(
-                              width: 100.w,
-                              height: 6.h,
-                              child: TabBar(
-                                  controller: _tabController,
-                                  isScrollable: true,
-                                  onTap: (value) {
-                                    sc.updateSignCategoryNo(value);
-                                    sc.updateSignCategory(
-                                        snapshot.data![value].name);
-                                  },
-                                  labelColor:
-                                      listTabColors[_tabController.index],
-                                  indicatorColor:
-                                      listTabColors[_tabController.index],
-                                  unselectedLabelColor: Colors.black54,
-                                  labelStyle: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: FONTSIZES.textPrimary,
-                                  ),
-                                  unselectedLabelStyle: const TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: FONTSIZES.textMedium),
-                                  tabs: snapshot.data!
-                                      .map((signCategory) => Tab(
-                                            text: signCategory.name,
-                                          ))
-                                      .toList()),
+                      () => Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 100.w,
+                            height: 6.h,
+                            child: TabBar(
+                                controller: _tabController,
+                                isScrollable: true,
+                                onTap: (value) {
+                                  sc.updateSignCategoryNo(value);
+                                  sc.updateSignCategory(
+                                      snapshot.data![value].name);
+                                },
+                                labelColor: listTabColors[_tabController.index],
+                                indicatorColor:
+                                    listTabColors[_tabController.index],
+                                indicatorWeight: 3.6,
+                                unselectedLabelColor: Colors.black54,
+                                labelStyle: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: FONTSIZES.textPrimary,
+                                ),
+                                unselectedLabelStyle: const TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: FONTSIZES.textMedium),
+                                tabs: snapshot.data!
+                                    .map((signCategory) => Tab(
+                                          text: signCategory.name,
+                                        ))
+                                    .toList()),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: kDefaultPaddingValue / 2,
+                              horizontal: kDefaultPaddingValue,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: kDefaultPaddingValue / 2,
-                                horizontal: kDefaultPaddingValue,
-                              ),
-                              child: SearchBar(),
+                            child: SearchBar(),
+                          ),
+                          SizedBox(
+                            width: 100.w,
+                            height: isKeyboardVisible ? 41.h : 66.h,
+                            child: SearchSignListScreen(
+                              searchSignDTOList: snapshot
+                                  .data![sc.signCategoryNo.value].searchSignDTOs
+                                  .where((element) =>
+                                      TiengViet.parse(element.description
+                                              .trim()
+                                              .toLowerCase())
+                                          .contains(TiengViet.parse(sc.query.value
+                                              .trim()
+                                              .toLowerCase())) ||
+                                      TiengViet.parse(
+                                              element.name.trim().toLowerCase())
+                                          .contains(TiengViet.parse(
+                                              sc.query.value.trim().toLowerCase())))
+                                  .toList(),
                             ),
-                            SizedBox(
-                              width: 100.w,
-                              height: 66.h,
-                              child: SearchSignListScreen(
-                                searchSignDTOList: snapshot
-                                    .data![sc.signCategoryNo.value]
-                                    .searchSignDTOs
-                                    .where((element) =>
-                                        TiengViet.parse(element.description
-                                                .trim()
-                                                .toLowerCase())
-                                            .contains(TiengViet.parse(sc.query.value
-                                                .trim()
-                                                .toLowerCase())) ||
-                                        TiengViet.parse(element.name.trim().toLowerCase())
-                                            .contains(TiengViet.parse(sc
-                                                .query.value
-                                                .trim()
-                                                .toLowerCase())))
-                                    .toList(),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     );
-                  }
-                }
-              }),
-        ));
+                  },
+                );
+              }
+            }
+          },
+        ),
+      ),
+    );
   }
 }

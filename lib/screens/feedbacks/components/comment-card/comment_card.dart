@@ -16,40 +16,33 @@ class _CommentCardState extends State<CommentCard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Simple Material App"),
-        ),
-        body: Column(
-          children: <Widget>[
-            Card(
-              color: Colors.white,
-              shadowColor: Colors.grey.shade400,
-              child: Padding(
-                  padding: const EdgeInsets.all(kDefaultPaddingValue),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 90.w.sp, //illegal
-                        child: Text(
-                          widget.comment.content,
-                          style:
-                              Theme.of(context).textTheme.headline5?.copyWith(
-                                    color: Colors.black54,
-                                  ),
-                        ),
+        body: Card(
+      color: Colors.white,
+      shadowColor: Colors.grey.shade400,
+      child: Padding(
+          padding: const EdgeInsets.all(kDefaultPaddingValue),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 90.w,
+                height: 15.h, //illegal
+                child: Text(
+                  widget.comment.content,
+                  style: Theme.of(context).textTheme.headline5?.copyWith(
+                        color: Colors.black54,
                       ),
-                      Row(
-                        children: [
-                          Text(
-                            widget.comment.createdDate.toIso8601String(),
-                          ),
-                        ],
-                      )
-                    ],
-                  )),
-            )
-          ],
-        ));
+                ),
+              ),
+              Row(
+                children: [
+                  Text(
+                    widget.comment.createdDate,
+                  ),
+                ],
+              )
+            ],
+          )),
+    ));
   }
 }

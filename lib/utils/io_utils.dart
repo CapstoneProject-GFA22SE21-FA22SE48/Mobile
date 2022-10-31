@@ -21,7 +21,6 @@ class IOUtils {
       final prefs = await SharedPreferences.getInstance();
       // get value
       String? value = prefs.getString(key);
-      log('$value -----------------');
       return value ?? '';
     } on Exception {
       throw Exception('Getting $key causes error.');

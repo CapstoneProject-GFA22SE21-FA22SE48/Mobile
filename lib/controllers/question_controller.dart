@@ -12,6 +12,7 @@ class QuestionController extends GetxController
   late GlobalController gc;
   final testCategoryId = ''.obs;
   final testCategoryName = ''.obs;
+  final testCategoryCount = 0.obs;
   final questionService = QuestionSerivce();
 
   late Animation _animation;
@@ -69,6 +70,10 @@ class QuestionController extends GetxController
     _animationController.stop(canceled: true);
   }
 
+  void disposeTimer() {
+    _animationController.dispose();
+  }
+
   void checkAns(Question question, int selectedIndex) {
     if (_answeredQuestions.firstWhereOrNull((element) => element == question) ==
         null) {
@@ -117,5 +122,9 @@ class QuestionController extends GetxController
 
   updateTestCategoryName(value) {
     testCategoryName(value);
+  }
+
+  updateTestCategoryCount(value) {
+    testCategoryCount(value);
   }
 }

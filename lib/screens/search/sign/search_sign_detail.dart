@@ -34,153 +34,216 @@ class _SearchSignDetailScreen extends State<SearchSignDetailScreen> {
     var max = "";
     SearchController sc = Get.put(SearchController());
     print(widget.searchSignDto?.searchLawDTOs);
+
     return Scaffold(
-        body: SafeArea(
-            child: Center(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: <
-          Widget>[
-        AppBar(
-          backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.black),
+        appBar: AppBar(
+          backgroundColor: Colors.blueAccent,
+          title: const Text("Chi tiết biển báo"),
         ),
-        const Divider(),
-        SizedBox(
-          width: 100.w,
-          height: 80.h,
-          child: Padding(
-            padding: const EdgeInsets.all(0),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              SizedBox(
-                width: 100.w,
-                height: 50.h,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: kDefaultPaddingValue),
-                  child: SingleChildScrollView(
-                    child: Container(
-                      color: Colors.grey.shade300,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text.rich(TextSpan(children: [
-                          TextSpan(
-                              text: "${widget.searchSignDto!.name}.",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4
-                                  ?.copyWith(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: FONTSIZES.textMediumLarge)),
-                          WidgetSpan(
-                              child: Container(
-                            color: Colors.grey.shade300,
-                            padding: EdgeInsets.all(8.0),
-                          )),
-                          WidgetSpan(
-                              child: ExpandableText(
-                            "${widget.searchSignDto!.description}",
-                            expandText: 'xem thêm',
-                            collapseText: 'thu nhỏ',
-                            maxLines: 5,
-                            linkColor: Colors.blue,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4
-                                ?.copyWith(
-                                    color: Colors.black,
-                                    fontSize: FONTSIZES.textMedium),
-                          )),
-                          WidgetSpan(
-                              child: Container(
-                            color: Colors.grey.shade300,
-                            padding: EdgeInsets.all(4.0),
-                          )),
-                          WidgetSpan(
-                              child: Container(
-                            color: Colors.grey.shade300,
-                            padding: EdgeInsets.all(4.0),
-                            child: Column(
-                              children: [
-                                Divider(
-                                  color: Colors.black,
-                                ),
-                                SizedBox(
-                                  height: 30.h,
-                                  width: 50.w,
-                                  child: Image.network(
-                                    widget.searchSignDto!.imageUrl as String,
-                                    fit: BoxFit.scaleDown,
-                                  ),
-                                )
-                              ],
-                            ),
-                          )),
-                        ])),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const Divider(),
-              widget.searchSignDto!.searchLawDTOs!.isNotEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: kDefaultPaddingValue),
-                      child: SizedBox(
+        body: SafeArea(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 100.w,
+              height: 90.h,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(kDefaultPaddingValue),
+                      child: Container(
                         width: 100.w,
-                        height: 25.h,
-                        child: Container(
-                            color: Colors.white70,
+                        height: 54.h,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(
+                                kDefaultPaddingValue,
+                              ),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade300,
+                                spreadRadius: 2,
+                                blurRadius: 4,
+                              )
+                            ]),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: kDefaultPaddingValue,
+                          horizontal: kDefaultPaddingValue,
+                        ),
+                        child: SingleChildScrollView(
+                          child: Container(
+                            width: 90.w,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text.rich(TextSpan(children: [
-                                    TextSpan(
-                                        text: "Hành vi liên quan: ",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline3
-                                            ?.copyWith(
-                                                color: Colors.orange,
-                                                fontWeight: FontWeight.bold,
-                                                fontStyle: FontStyle.italic,
-                                                decoration:
-                                                    TextDecoration.underline,
-                                                fontSize: FONTSIZES.textLarge))
-                                  ])),
-                                  Expanded(
-                                    child: SizedBox(
-                                      width: 100.w,
-                                      height: 20.h,
-                                      child: ListView.separated(
-                                          scrollDirection: Axis.vertical,
-                                          shrinkWrap: true,
-                                          separatorBuilder: (context, index) =>
-                                              SizedBox(
-                                                  height: kDefaultPaddingValue),
-                                          itemBuilder: ((context, index) {
-                                            return SearchListItem(
-                                                searchLawDto: widget
-                                                    .searchSignDto!
-                                                    .searchLawDTOs![index]);
-                                          }),
-                                          itemCount: widget.searchSignDto!
-                                              .searchLawDTOs!.length),
+                              child: Text.rich(
+                                TextSpan(children: [
+                                  TextSpan(
+                                    text: "${widget.searchSignDto!.name}.",
+                                    style: const TextStyle(
+                                      color: Colors.blueAccent,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: FONTSIZES.textLarge,
                                     ),
-                                  )
-                                ],
+                                  ),
+                                  WidgetSpan(
+                                    child: Divider(
+                                      height: 3.h,
+                                      color: Colors.grey.shade300,
+                                      endIndent: 60.w,
+                                      thickness: 3,
+                                    ),
+                                  ),
+                                  WidgetSpan(
+                                    child: Container(
+                                      width: 80.w,
+                                      padding: const EdgeInsets.only(
+                                          bottom: kDefaultPaddingValue),
+                                      child: const Text(
+                                        "Mô tả chi tiết: ",
+                                        maxLines: 5,
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize:
+                                                FONTSIZES.textMediumLarge),
+                                      ),
+                                    ),
+                                  ),
+                                  WidgetSpan(
+                                      child: ExpandableText(
+                                    widget.searchSignDto!.description,
+                                    expandText: 'Xem thêm',
+                                    collapseText: 'Thu nhỏ',
+                                    maxLines: 5,
+                                    linkColor: Colors.blueAccent,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: FONTSIZES.textPrimary,
+                                    ),
+                                  )),
+                                  WidgetSpan(
+                                      child: Container(
+                                    color: Colors.transparent,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: kDefaultPaddingValue / 2,
+                                    ),
+                                  )),
+                                  // WidgetSpan(
+                                  //   child: Divider(
+                                  //     height: 3.h,
+                                  //     color: Colors.grey.shade300,
+                                  //     endIndent: 60.w,
+                                  //     thickness: 3,
+                                  //   ),
+                                  // ),
+                                  WidgetSpan(
+                                    child: Container(
+                                      width: 80.w,
+                                      padding: const EdgeInsets.only(
+                                          bottom: kDefaultPaddingValue),
+                                      child: const Text(
+                                        "Hình ảnh: ",
+                                        maxLines: 5,
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize:
+                                                FONTSIZES.textMediumLarge),
+                                      ),
+                                    ),
+                                  ),
+                                  WidgetSpan(
+                                      child: Container(
+                                    alignment: Alignment.center,
+                                    color: Colors.transparent,
+                                    child: SizedBox(
+                                      height: 30.h,
+                                      width: 50.w,
+                                      child: Image.network(
+                                        widget.searchSignDto!.imageUrl
+                                            as String,
+                                        fit: BoxFit.scaleDown,
+                                        alignment: Alignment.center,
+                                      ),
+                                    ),
+                                  )),
+                                ]),
                               ),
-                            )),
+                            ),
+                          ),
+                        ),
                       ),
-                    )
-                  : Container()
-            ]),
-          ),
-        ),
-      ]),
-    )));
+                    ),
+                    const Divider(),
+                    widget.searchSignDto!.searchLawDTOs!.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: kDefaultPaddingValue),
+                            child: SizedBox(
+                              width: 100.w,
+                              height: 25.h,
+                              child: Container(
+                                  color: Colors.white70,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text.rich(TextSpan(children: [
+                                          TextSpan(
+                                              text: "Hành vi liên quan: ",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline3
+                                                  ?.copyWith(
+                                                      color: Colors.orange,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontStyle:
+                                                          FontStyle.italic,
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                      fontSize:
+                                                          FONTSIZES.textLarge))
+                                        ])),
+                                        Expanded(
+                                          child: SizedBox(
+                                            width: 100.w,
+                                            height: 20.h,
+                                            child: ListView.separated(
+                                                scrollDirection: Axis.vertical,
+                                                shrinkWrap: true,
+                                                separatorBuilder: (context,
+                                                        index) =>
+                                                    SizedBox(
+                                                        height:
+                                                            kDefaultPaddingValue),
+                                                itemBuilder: ((context, index) {
+                                                  return SearchListItem(
+                                                      searchLawDto: widget
+                                                              .searchSignDto!
+                                                              .searchLawDTOs![
+                                                          index]);
+                                                }),
+                                                itemCount: widget.searchSignDto!
+                                                    .searchLawDTOs!.length),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          )
+                        : Container()
+                  ]),
+            ),
+          ],
+        )));
   }
 }

@@ -2,7 +2,7 @@ class Comment {
   final String? id;
   final String userId;
   final String content;
-  final DateTime createdDate;
+  final String createdDate;
 
   factory Comment.fromJson(Map<String, dynamic> data) {
     return Comment(

@@ -43,43 +43,52 @@ class ProgressBar extends StatelessWidget {
               child: Row(
                 children: [
                   Container(
-                      width: 70.w,
-                      height: 35,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.orange, width: 3),
-                          borderRadius: BorderRadius.circular(50)),
-                      child: Stack(
-                        children: [
-                          LayoutBuilder(
-                            builder: (ctx, constraint) => Container(
-                              width: constraint.maxWidth *
-                                  controller.animation.value,
-                              decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    begin: Alignment.topRight,
-                                    end: Alignment.bottomLeft,
-                                    colors: [
-                                      Colors.blue,
-                                      Colors.green,
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(50)),
-                            ),
+                    width: 66.w,
+                    height: 5.h,
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white, width: 3),
+                        borderRadius: BorderRadius.circular(50)),
+                    child: Stack(
+                      children: [
+                        LayoutBuilder(
+                          builder: (ctx, constraint) => Container(
+                            width: constraint.maxWidth *
+                                controller.animation.value,
+                            decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topRight,
+                                  end: Alignment.bottomLeft,
+                                  colors: [
+                                    Color.fromARGB(255, 255, 61, 2),
+                                    Color.fromARGB(255, 86, 176, 250),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(50)),
                           ),
-                          Positioned.fill(
-                              child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                          'Đã qua ${(controller.animation.value * quizTime).round()} giây'),
-                                      FaIcon(FontAwesomeIcons.clock)
-                                    ],
-                                  )))
-                        ],
-                      )),
+                        ),
+                        Positioned.fill(
+                            child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Đã qua ${(controller.animation.value * quizTime).round() < 60 ? '${(controller.animation.value * quizTime).round()} giây' : '${(controller.animation.value * quizTime / 60).round()} phút'}',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    FaIcon(
+                                      FontAwesomeIcons.clock,
+                                      color: Colors.white,
+                                    )
+                                  ],
+                                )))
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: ButtonTheme(
@@ -88,7 +97,8 @@ class ProgressBar extends StatelessWidget {
                               confirmSubmission();
                             },
                             style: ElevatedButton.styleFrom(
-                                textStyle: const TextStyle(fontSize: 12),
+                                textStyle: const TextStyle(
+                                    fontSize: FONTSIZES.textPrimary),
                                 backgroundColor: Colors.blueAccent,
                                 shadowColor: Colors.grey,
                                 alignment: Alignment.center,

@@ -22,7 +22,7 @@ const kPrimaryBackgroundColor = Color.fromARGB(255, 255, 255, 255);
 
 const double kDefaultPaddingValue = 16;
 const kDefaultPadding = EdgeInsets.all(16);
-const quizTime = 60;
+const quizTime = 60 * 30;
 
 final ButtonStyle kDefaultButtonStyle = ElevatedButton.styleFrom(
     textStyle: const TextStyle(fontSize: FONTSIZES.textPrimary),

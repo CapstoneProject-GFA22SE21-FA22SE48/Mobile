@@ -108,17 +108,28 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                                       indicatorColor: Colors.blueAccent,
                                       labelColor: kPrimaryButtonColor,
                                       unselectedLabelColor: Colors.black54,
+                                      indicatorPadding:
+                                          const EdgeInsets.symmetric(
+                                        horizontal: kDefaultPaddingValue,
+                                      ),
+                                      indicatorWeight: 3.6,
                                       tabs: const <Tab>[
                                         Tab(
                                           icon: Icon(Icons.motorcycle_outlined),
+                                          iconMargin: EdgeInsets.only(
+                                              bottom: kDefaultPaddingValue / 4),
                                           text: 'Xe máy',
                                         ),
                                         Tab(
                                           icon: Icon(Icons.car_crash_outlined),
+                                          iconMargin: EdgeInsets.only(
+                                              bottom: kDefaultPaddingValue / 4),
                                           text: 'Xe ô tô',
                                         ),
                                         Tab(
                                           icon: Icon(Icons.difference_outlined),
+                                          iconMargin: EdgeInsets.only(
+                                              bottom: kDefaultPaddingValue / 4),
                                           text: 'Khác',
                                         ),
                                       ]),
@@ -135,7 +146,7 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                                   horizontal: kDefaultPaddingValue / 2),
                               child: SizedBox(
                                 width: 100.w,
-                                height: isKeyboardVisible ? 38.h : 64.h,
+                                height: isKeyboardVisible ? 39.h : 64.h,
                                 child: GridView.count(
                                   clipBehavior: Clip.hardEdge,
                                   crossAxisCount: 3,

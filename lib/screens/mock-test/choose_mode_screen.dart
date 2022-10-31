@@ -62,222 +62,360 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
               return Stack(
                 children: [
                   SafeArea(
-                      child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(0.0),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.arrow_back),
-                                  color: kPrimaryButtonColor,
-                                  onPressed: () {
-                                    QuestionController qc =
-                                        Get.put(QuestionController());
-                                    qc.testCategoryId.value = '';
-                                    qc.testCategoryName.value = '';
-                                    gc.updateTab(1);
-                                    Get.to(ContainerScreen());
-                                  },
-                                ),
-                                Text("Hạng ${qc.testCategoryName.value}",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline5
-                                        ?.copyWith(
-                                            color: Colors.blueAccent.shade200,
-                                            fontWeight: FontWeight.bold)),
-                              ],
+                    child: ListView(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: kDefaultPaddingValue + 4,
+                        horizontal: kDefaultPaddingValue,
+                      ),
+                      children: [
+                        const SizedBox(height: kDefaultPaddingValue * 3),
+
+                        // Vào học
+                        GestureDetector(
+                          onTap: () {
+                            gc.updateTestMode(TEST_TYPE.STUDY);
+                            if (qc.testCategoryId.value.isNotEmpty) {
+                              Get.to(() => TestSetScreen(
+                                    categoryName: qc.testCategoryName.value,
+                                    categoryId: qc.testCategoryId.value,
+                                  ));
+                            }
+                          },
+                          child: Container(
+                            height: 16.h,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: kDefaultPaddingValue,
                             ),
-                            const SizedBox(height: kDefaultPaddingValue),
-                            // Vào học
-                            ElevatedButton(
-                              onPressed: () {
-                                gc.updateTestMode(TEST_TYPE.STUDY);
-                                if (qc.testCategoryId.value.isNotEmpty) {
-                                  Get.to(() => TestSetScreen(
-                                        categoryName: qc.testCategoryId.value,
-                                        categoryId: qc.testCategoryId.value,
-                                      ));
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                alignment: Alignment.center,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: kDefaultPaddingValue / 2),
-                                child: Row(
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(
+                                kDefaultPaddingValue,
+                              )),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Color.fromARGB(80, 82, 82, 82),
+                                    spreadRadius: 2,
+                                    blurRadius: 8,
+                                    offset: Offset(0, 8))
+                              ],
+                              gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xFF00B953),
+                                    Color(0xFF91F096),
+                                  ],
+                                  begin: FractionalOffset(0.0, 0.0),
+                                  end: FractionalOffset(1.0, 0.0),
+                                  stops: [0.0, 1.0],
+                                  tileMode: TileMode.clamp),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  // crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: const [
-                                    Text(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
                                       "Câu hỏi lý thuyết",
                                       style: TextStyle(
-                                          fontSize: FONTSIZES.textLarge,
+                                          fontSize: FONTSIZES.textHuge,
                                           fontWeight: FontWeight.bold,
-                                          color: kPrimaryButtonColor),
+                                          color: Colors.white),
                                     ),
-                                    SizedBox(width: kDefaultPaddingValue),
+                                    const SizedBox(
+                                        height: kDefaultPaddingValue / 2),
+                                    Text(
+                                      "${qc.testCategoryCount} câu hỏi theo chủ đề",
+                                      style: TextStyle(
+                                          fontSize: FONTSIZES.textPrimary,
+                                          color: Colors.white),
+                                    ),
                                   ],
                                 ),
-                              ),
+                                const Spacer(),
+                                Image.asset(
+                                  "assets/images/quiz/education.png",
+                                  scale: 0.8.h,
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: kDefaultPaddingValue),
-                            // Thi thử
-                            ElevatedButton(
-                              onPressed: () {
-                                if (gc.userId.value.isNotEmpty) {
-                                  gc.updateTestMode(TEST_TYPE.TEST);
-                                  Get.to(() => QuizScreen(
-                                        categoryId: qc.testCategoryId.value,
-                                      ));
-                                } else {
-                                  DialogUtil.showTextDialog(
-                                      context,
-                                      "Cảnh báo",
-                                      "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
-                                      [
-                                        TemplatedButtons.yes(
-                                            context, const LoginScreen()),
-                                        TemplatedButtons.no(context),
-                                      ]);
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                alignment: Alignment.center,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: kDefaultPaddingValue / 2),
-                                child: Row(
+                          ),
+                        ),
+                        const SizedBox(height: kDefaultPaddingValue),
+                        // Thi thử
+                        GestureDetector(
+                          onTap: () {
+                            if (gc.userId.value.isNotEmpty) {
+                              gc.updateTestMode(TEST_TYPE.TEST);
+                              Get.to(() => QuizScreen(
+                                    categoryId: qc.testCategoryId.value,
+                                  ));
+                            } else {
+                              DialogUtil.showTextDialog(
+                                  context,
+                                  "Cảnh báo",
+                                  "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
+                                  [
+                                    TemplatedButtons.yes(
+                                        context, const LoginScreen()),
+                                    TemplatedButtons.no(context),
+                                  ]);
+                            }
+                          },
+                          child: Container(
+                            height: 16.h,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: kDefaultPaddingValue,
+                            ),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(
+                                kDefaultPaddingValue,
+                              )),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Color.fromARGB(80, 82, 82, 82),
+                                    spreadRadius: 2,
+                                    blurRadius: 8,
+                                    offset: Offset(0, 8))
+                              ],
+                              gradient: LinearGradient(
+                                  colors: [
+                                    Color.fromARGB(255, 78, 51, 228),
+                                    Color.fromARGB(255, 113, 202, 230),
+                                  ],
+                                  begin: FractionalOffset(0.0, 0.0),
+                                  end: FractionalOffset(1.0, 0.0),
+                                  stops: [0.0, 1.0],
+                                  tileMode: TileMode.clamp),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              // crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  // crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: const [
-                                    Icon(
-                                      Icons.check_circle,
-                                      size: 36,
-                                      color: kSuccessButtonColor,
-                                    ),
-                                    SizedBox(width: kDefaultPaddingValue),
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
                                     Text(
                                       "Thi sát hạch GPLX",
                                       style: TextStyle(
-                                          fontSize: FONTSIZES.textLarge,
+                                          fontSize: FONTSIZES.textHuge,
                                           fontWeight: FontWeight.bold,
-                                          color: kSuccessButtonColor),
+                                          color: Colors.white),
+                                    ),
+                                    const SizedBox(
+                                        height: kDefaultPaddingValue / 2),
+                                    Text(
+                                      "Bộ đề ngẫu nhiên thực tế nhất",
+                                      style: TextStyle(
+                                          fontSize: FONTSIZES.textPrimary,
+                                          color: Colors.white),
                                     ),
                                   ],
                                 ),
-                              ),
+                                const Spacer(),
+                                Image.asset(
+                                  "assets/images/quiz/exam.png",
+                                  scale: 0.8.h,
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: kDefaultPaddingValue),
-                            // Lịch sử
-                            ElevatedButton(
-                              onPressed: () {
-                                if (gc.userId.value.isNotEmpty) {
-                                  gc.updateTestMode(TEST_TYPE.TEST);
-                                  Get.to(() => TestRestulScreen(
-                                      testResults: snapshot.data!));
-                                } else {
-                                  DialogUtil.showTextDialog(
-                                      context,
-                                      "Authenticator",
-                                      "You need to logged in to continue.\nGo to login page?",
-                                      [
-                                        TemplatedButtons.yes(
-                                            context, const LoginScreen()),
-                                        TemplatedButtons.no(context),
-                                      ]);
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                alignment: Alignment.center,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: kDefaultPaddingValue / 2),
-                                child: Row(
+                          ),
+                        ),
+                        const SizedBox(height: kDefaultPaddingValue),
+                        // Lịch sử
+                        GestureDetector(
+                          onTap: () {
+                            if (gc.userId.value.isNotEmpty) {
+                              gc.updateTestMode(TEST_TYPE.TEST);
+                              Get.to(() => TestRestulScreen(
+                                  testResults: snapshot.data!));
+                            } else {
+                              DialogUtil.showTextDialog(
+                                  context,
+                                  "Authenticator",
+                                  "You need to logged in to continue.\nGo to login page?",
+                                  [
+                                    TemplatedButtons.yes(
+                                        context, const LoginScreen()),
+                                    TemplatedButtons.no(context),
+                                  ]);
+                            }
+                          },
+                          child: Container(
+                            height: 16.h,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: kDefaultPaddingValue,
+                            ),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(
+                                kDefaultPaddingValue,
+                              )),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Color.fromARGB(80, 82, 82, 82),
+                                    spreadRadius: 2,
+                                    blurRadius: 8,
+                                    offset: Offset(0, 8))
+                              ],
+                              gradient: LinearGradient(
+                                  colors: [
+                                    Color.fromARGB(255, 136, 85, 204),
+                                    Color.fromARGB(255, 186, 167, 255),
+                                  ],
+                                  begin: FractionalOffset(0.0, 0.0),
+                                  end: FractionalOffset(1.0, 0.0),
+                                  stops: [0.0, 1.0],
+                                  tileMode: TileMode.clamp),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  // crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: const [
-                                    Icon(
-                                      Icons.av_timer_rounded,
-                                      size: 36,
-                                      color: kWarningButtonColor,
-                                    ),
-                                    SizedBox(width: kDefaultPaddingValue),
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
                                     Text(
                                       "Xem lịch sử thi",
                                       style: TextStyle(
-                                          fontSize: FONTSIZES.textLarge,
+                                          fontSize: FONTSIZES.textHuge,
                                           fontWeight: FontWeight.bold,
-                                          color: kWarningButtonColor),
+                                          color: Colors.white),
+                                    ),
+                                    SizedBox(height: kDefaultPaddingValue / 2),
+                                    Text(
+                                      "Kết quả của ${12} lần thi",
+                                      style: TextStyle(
+                                          fontSize: FONTSIZES.textPrimary,
+                                          color: Colors.white),
                                     ),
                                   ],
                                 ),
-                              ),
+                                const Spacer(),
+                                Image.asset(
+                                  "assets/images/quiz/history.png",
+                                  scale: 0.8.h,
+                                ),
+                                const SizedBox(width: kDefaultPaddingValue),
+                              ],
                             ),
-                            const SizedBox(height: kDefaultPaddingValue),
-                            // Lịch sử
-                            ElevatedButton(
-                              onPressed: () {
-                                if (gc.userId.value.isNotEmpty) {
-                                  gc.updateTestMode(TEST_TYPE.TEST);
-                                  Get.to(() => TestRestulScreen(
-                                      testResults: snapshot.data!));
-                                } else {
-                                  DialogUtil.showTextDialog(
-                                      context,
-                                      "Authenticator",
-                                      "You need to logged in to continue.\nGo to login page?",
-                                      [
-                                        TemplatedButtons.yes(
-                                            context, const LoginScreen()),
-                                        TemplatedButtons.no(context),
-                                      ]);
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                alignment: Alignment.center,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: kDefaultPaddingValue / 2),
-                                child: Row(
+                          ),
+                        ),
+                        const SizedBox(height: kDefaultPaddingValue),
+                        // Xem câu sai
+                        GestureDetector(
+                          onTap: () {
+                            if (gc.userId.value.isNotEmpty) {
+                              gc.updateTestMode(TEST_TYPE.TEST);
+                              Get.to(() => TestRestulScreen(
+                                  testResults: snapshot.data!));
+                            } else {
+                              DialogUtil.showTextDialog(
+                                  context,
+                                  "Authenticator",
+                                  "You need to logged in to continue.\nGo to login page?",
+                                  [
+                                    TemplatedButtons.yes(
+                                        context, const LoginScreen()),
+                                    TemplatedButtons.no(context),
+                                  ]);
+                            }
+                          },
+                          child: Container(
+                            height: 16.h,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: kDefaultPaddingValue,
+                            ),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(
+                                kDefaultPaddingValue,
+                              )),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Color.fromARGB(80, 82, 82, 82),
+                                    spreadRadius: 2,
+                                    blurRadius: 8,
+                                    offset: Offset(0, 8))
+                              ],
+                              gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xFFFF3B3B),
+                                    Color(0xFFFF9F9F),
+                                  ],
+                                  begin: FractionalOffset(0.0, 0.0),
+                                  end: FractionalOffset(1.0, 0.0),
+                                  stops: [0.0, 0.8],
+                                  tileMode: TileMode.clamp),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  // crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: const [
-                                    Icon(
-                                      Icons.av_timer_rounded,
-                                      size: 36,
-                                      color: kWarningButtonColor,
-                                    ),
-                                    SizedBox(width: kDefaultPaddingValue),
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
                                     Text(
                                       "Xem câu bị sai",
                                       style: TextStyle(
-                                          fontSize: FONTSIZES.textLarge,
+                                          fontSize: FONTSIZES.textHuge,
                                           fontWeight: FontWeight.bold,
-                                          color: kWarningButtonColor),
+                                          color: Colors.white),
+                                    ),
+                                    SizedBox(height: kDefaultPaddingValue / 2),
+                                    Text(
+                                      "Có ${57} câu bị sai",
+                                      style: TextStyle(
+                                          fontSize: FONTSIZES.textPrimary,
+                                          color: Colors.white),
                                     ),
                                   ],
                                 ),
-                              ),
+                                const Spacer(),
+                                Image.asset(
+                                  "assets/images/quiz/wrong.png",
+                                  scale: 0.8.h,
+                                ),
+                                const SizedBox(width: kDefaultPaddingValue),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ))
+                  ),
+                  Container(
+                    decoration: BoxDecoration(color: Colors.white70),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: kDefaultPaddingValue / 2,
+                            horizontal: kDefaultPaddingValue / 2,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.arrow_back),
+                            color: kPrimaryButtonColor,
+                            iconSize: FONTSIZES.textHuge,
+                            onPressed: () {
+                              QuestionController qc =
+                                  Get.put(QuestionController());
+                              qc.testCategoryId.value = '';
+                              qc.testCategoryName.value = '';
+                              gc.updateTab(1);
+                              Get.to(const ContainerScreen());
+                            },
+                          ),
+                        ),
+                        Text("Hạng ${qc.testCategoryName.value}",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline5
+                                ?.copyWith(
+                                    color: Colors.blueAccent.shade400,
+                                    fontSize: FONTSIZES.textHuge,
+                                    fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
                 ],
               );
             }

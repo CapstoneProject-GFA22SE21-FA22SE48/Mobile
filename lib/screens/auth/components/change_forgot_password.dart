@@ -83,6 +83,7 @@ class _ChangePasswordState extends State<ChangeForgotPasswordScreen> {
     return Scaffold(
       backgroundColor: kPrimaryBackgroundColor,
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         title: const Text("Change Password"),
       ),
       body: Column(children: [

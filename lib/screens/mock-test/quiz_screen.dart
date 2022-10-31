@@ -59,7 +59,10 @@ class _QuizScreenState extends State<QuizScreen> {
         actions: [
           TextButton(
             child: const Text("Xác nhận"),
-            onPressed: () => {Get.to(() => ChooseModeScreen())},
+            onPressed: () {
+              qc.stopTimer();
+              Get.to(() => ChooseModeScreen());
+            },
           ),
           TextButton(
             child: const Text("Không"),
@@ -76,18 +79,24 @@ class _QuizScreenState extends State<QuizScreen> {
     return WillPopScope(
       onWillPop: () => confirmSubmission(),
       child: Scaffold(
-          extendBodyBehindAppBar:
-              gc.test_mode == TEST_TYPE.STUDY ? false : true,
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            iconTheme: const IconThemeData(
-              color: Colors.black54, //change your color here
-            ),
-            title: Text(
-                // ignore: unrelated_type_equality_checks
-                gc.test_mode == TEST_TYPE.STUDY ? "Chế độ Học " : "Chế độ Thi"),
-          ),
+          backgroundColor: Color.fromARGB(255, 162, 211, 252),
+          // extendBodyBehindAppBar:
+          //     gc.test_mode == TEST_TYPE.STUDY ? false : true,
+          // appBar: AppBar(
+          //   backgroundColor: Colors.blueAccent,
+          //   elevation: 4,
+          //   title: Text(
+          //     widget.questionCategoryName.isNotEmpty
+          //         ? widget.questionCategoryName
+          //         : "Sát hạch GPLX",
+          //   ),
+          //   actions: [
+          //     IconButton(
+          //       onPressed: () {},
+          //       icon: const Icon(Icons.replay_outlined),
+          //     ),
+          //   ],
+          // ),
           body: FutureBuilder<List<Question>>(
               key: UniqueKey(),
               future: _questions,

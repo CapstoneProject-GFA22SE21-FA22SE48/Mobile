@@ -2,13 +2,15 @@ import 'dart:ffi';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'dart:developer';
 
 import 'package:vnrdn_tai/utils/io_utils.dart';
 
-class GlobalController extends GetxController {
+class GlobalController extends GetxController
+    with GetSingleTickerProviderStateMixin {
   final test_mode = TEST_TYPE.STUDY.obs;
   final is_error = false.obs;
   final tab = TABS.SEARCH.obs;

@@ -20,8 +20,9 @@ class QuestionCard extends StatelessWidget {
 
     showQuestionImage(Question question) {
       if (question.imageUrl != null) {
-        return SizedBox(
+        return Container(
             height: 180,
+            padding: EdgeInsets.symmetric(vertical: kDefaultPaddingValue / 2),
             child: Image.network(
               question.imageUrl as String,
               fit: BoxFit.contain,
@@ -46,25 +47,28 @@ class QuestionCard extends StatelessWidget {
           )
         ],
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          showQuestionImage(question),
-          Text(question.content,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6
-                  ?.copyWith(color: Colors.black54)),
-          ...List.generate(
-              question.answers.length,
-              (index) => Option(
-                  question: question,
-                  text: question.answers[index].description,
-                  index: index,
-                  press: () {
-                    _controller.checkAns(question, index);
-                  }))
-        ],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(question.content,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    ?.copyWith(color: Colors.black54)),
+            showQuestionImage(question),
+            ...List.generate(
+                question.answers.length,
+                (index) => Option(
+                    question: question,
+                    text: question.answers[index].description,
+                    index: index,
+                    press: () {
+                      _controller.checkAns(question, index);
+                    }))
+          ],
+        ),
       ),
     );
   }

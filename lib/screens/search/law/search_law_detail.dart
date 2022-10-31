@@ -37,6 +37,10 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
     var min = "";
     var max = "";
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.blueAccent,
+          title: Text("Chi tiết"),
+        ),
         body: SafeArea(
             child: FutureBuilder<SearchLawDTO>(
                 key: UniqueKey(),
@@ -58,10 +62,6 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            AppBar(
-                              backgroundColor: Colors.white,
-                              iconTheme: IconThemeData(color: Colors.black),
-                            ),
                             const Divider(),
                             SizedBox(
                               width: 100.w,
@@ -116,8 +116,8 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                   WidgetSpan(
                                                       child: ExpandableText(
                                                     "${widget.searchLawDto!.paragraphDesc?.replaceAll('\\', '')}",
-                                                    expandText: 'xem thêm',
-                                                    collapseText: 'thu nhỏ',
+                                                    expandText: 'Xem thêm',
+                                                    collapseText: 'Thu nhỏ',
                                                     maxLines: 5,
                                                     linkColor: Colors.blue,
                                                     style: Theme.of(context)
@@ -249,84 +249,94 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                           Expanded(
                                                             child: ListView
                                                                 .separated(
-                                                                    scrollDirection: Axis
-                                                                        .vertical,
-                                                                    shrinkWrap:
-                                                                        true,
-                                                                    separatorBuilder: (context,
-                                                                            index) =>
-                                                                        const SizedBox(
-                                                                            height:
-                                                                                kDefaultPaddingValue),
-                                                                    itemBuilder:
-                                                                        ((context,
-                                                                            index) {
-                                                                      var min2 =
-                                                                          "";
-                                                                      var max2 =
-                                                                          "";
-                                                                      if (widget
-                                                                              .searchLawDto!
-                                                                              .referenceParagraph !=
-                                                                          []) {
-                                                                        min2 = numberFormat.format(double.parse(widget
-                                                                            .searchLawDto!
-                                                                            .referenceParagraph![index]
-                                                                            .minPenalty!));
-                                                                        max2 = numberFormat.format(double.parse(widget
-                                                                            .searchLawDto!
-                                                                            .referenceParagraph![index]
-                                                                            .maxPenalty!));
-                                                                      }
-                                                                      return Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.only(top: 8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () async {
-                                                                            Future<SearchLawDTO>
-                                                                                sldto =
-                                                                                LawSerivce().GetSearchParagraphDTOAsync(widget.searchLawDto!.referenceParagraph![index].id);
-                                                                            Get.to(() => SearchLawDetailScreen(futureSearchLawDto: sldto),
-                                                                                preventDuplicates: false);
-                                                                          },
-                                                                          child: Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                                              children: [
-                                                                                SizedBox(
-                                                                                    width: 5.w,
-                                                                                    child: Icon(
-                                                                                      Icons.search,
-                                                                                      size: 16,
-                                                                                    )),
-                                                                                Padding(
-                                                                                  padding: const EdgeInsets.only(left: kDefaultPaddingValue),
-                                                                                  child: Container(
-                                                                                      width: 70.w,
-                                                                                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                                        Text(maxLines: 2, overflow: TextOverflow.ellipsis, '${widget.searchLawDto!.referenceParagraph![index].description}', style: Theme.of(context).textTheme.headline4?.copyWith(color: Colors.black, fontSize: FONTSIZES.textMedium)),
-                                                                                        Padding(
-                                                                                          padding: const EdgeInsets.only(top: kDefaultPaddingValue / 2),
-                                                                                          child: (widget.searchLawDto!.referenceParagraph![index].minPenalty != "0" && widget.searchLawDto!.referenceParagraph![index].maxPenalty != "0") ? Text('Phạt tiền từ ${min2}đến ${max2}nghìn đồng', style: TextStyle(color: Colors.red, fontSize: FONTSIZES.textSmall)) : const Text('Phạt cảnh cáo', style: TextStyle(color: Colors.red)),
-                                                                                        ),
-                                                                                        const Padding(
-                                                                                          padding: EdgeInsets.only(top: kDefaultPaddingValue / 2),
-                                                                                          child: Text(
-                                                                                            'Tìm hiểu thêm',
-                                                                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
-                                                                                          ),
-                                                                                        )
-                                                                                      ])),
-                                                                                ),
-                                                                              ]),
-                                                                        ),
-                                                                      );
-                                                                    }),
-                                                                    itemCount: widget
+                                                              scrollDirection:
+                                                                  Axis.vertical,
+                                                              shrinkWrap: true,
+                                                              separatorBuilder: (context,
+                                                                      index) =>
+                                                                  const SizedBox(
+                                                                      height:
+                                                                          kDefaultPaddingValue),
+                                                              itemBuilder:
+                                                                  ((context,
+                                                                      index) {
+                                                                var min2 = "";
+                                                                var max2 = "";
+                                                                if (widget
                                                                         .searchLawDto!
-                                                                        .referenceParagraph!
-                                                                        .length),
+                                                                        .referenceParagraph !=
+                                                                    []) {
+                                                                  min2 = numberFormat.format(double.parse(widget
+                                                                      .searchLawDto!
+                                                                      .referenceParagraph![
+                                                                          index]
+                                                                      .minPenalty!));
+                                                                  max2 = numberFormat.format(double.parse(widget
+                                                                      .searchLawDto!
+                                                                      .referenceParagraph![
+                                                                          index]
+                                                                      .maxPenalty!));
+                                                                }
+                                                                return Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .only(
+                                                                      top: 8.0),
+                                                                  child:
+                                                                      GestureDetector(
+                                                                    onTap:
+                                                                        () async {
+                                                                      Future<SearchLawDTO>
+                                                                          sldto =
+                                                                          LawSerivce().GetSearchParagraphDTOAsync(widget
+                                                                              .searchLawDto!
+                                                                              .referenceParagraph![index]
+                                                                              .id);
+                                                                      Get.to(
+                                                                          () => SearchLawDetailScreen(
+                                                                              futureSearchLawDto:
+                                                                                  sldto),
+                                                                          preventDuplicates:
+                                                                              false);
+                                                                    },
+                                                                    child: Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceAround,
+                                                                        children: [
+                                                                          SizedBox(
+                                                                              width: 5.w,
+                                                                              child: Icon(
+                                                                                Icons.search,
+                                                                                size: 16,
+                                                                              )),
+                                                                          Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.only(left: kDefaultPaddingValue),
+                                                                            child: Container(
+                                                                                width: 70.w,
+                                                                                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                                                  Text(maxLines: 2, overflow: TextOverflow.ellipsis, '${widget.searchLawDto!.referenceParagraph![index].description}', style: Theme.of(context).textTheme.headline4?.copyWith(color: Colors.black, fontSize: FONTSIZES.textMedium)),
+                                                                                  Padding(
+                                                                                    padding: const EdgeInsets.only(top: kDefaultPaddingValue / 2),
+                                                                                    child: (widget.searchLawDto!.referenceParagraph![index].minPenalty != "0" && widget.searchLawDto!.referenceParagraph![index].maxPenalty != "0") ? Text('Phạt tiền từ ${min2}đến ${max2}nghìn đồng', style: TextStyle(color: Colors.red, fontSize: FONTSIZES.textSmall)) : const Text('Phạt cảnh cáo', style: TextStyle(color: Colors.red)),
+                                                                                  ),
+                                                                                  const Padding(
+                                                                                    padding: EdgeInsets.only(top: kDefaultPaddingValue / 2),
+                                                                                    child: Text(
+                                                                                      'Tìm hiểu thêm',
+                                                                                      style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+                                                                                    ),
+                                                                                  )
+                                                                                ])),
+                                                                          ),
+                                                                        ]),
+                                                                  ),
+                                                                );
+                                                              }),
+                                                              itemCount: widget
+                                                                  .searchLawDto!
+                                                                  .referenceParagraph!
+                                                                  .length,
+                                                            ),
                                                           )
                                                         ],
                                                       ),

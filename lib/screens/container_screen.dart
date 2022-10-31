@@ -2,13 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/controllers/my_tab_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/screens/analysis/analysis_screen.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
-import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
+import 'package:vnrdn_tai/screens/feedbacks/comments_screen.dart';
 import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/category_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
@@ -90,8 +92,11 @@ class ContainerScreen extends GetView<GlobalController> {
   Widget build(BuildContext context) {
     AuthController ac = Get.put(AuthController());
     String title = 'VNRDnTAI';
+    final MyTabController _tabx = Get.put(MyTabController());
+
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         title: Text(title),
         centerTitle: true,
         actions: [
@@ -110,7 +115,7 @@ class ContainerScreen extends GetView<GlobalController> {
           children: [
             DrawerHeader(
               decoration: const BoxDecoration(
-                color: Colors.blue,
+                color: Colors.blueAccent,
               ),
               child: Column(children: [
                 Center(
@@ -221,7 +226,7 @@ class ContainerScreen extends GetView<GlobalController> {
               onTap: () {
                 Navigator.pop(context); // close the drawer
                 controller.updateSideBar(2);
-                Get.to(const FeedbacksScreen());
+                Get.to(const CommentsScreen());
               },
             ),
           ],
@@ -240,69 +245,63 @@ class ContainerScreen extends GetView<GlobalController> {
                     color: Colors.black12, spreadRadius: 0, blurRadius: 10),
               ],
             ),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                topRight: Radius.circular(30.0),
-              ),
-              child: BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.menu_book_outlined),
-                    label: 'Tra cứu luật',
-                    tooltip: 'Tra cứu Luật giao thông đường bộ',
-                    activeIcon: Icon(
-                      Icons.menu_book_rounded,
+            child: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              // backgroundColor: Colors.black54,
+              // unselectedItemColor: Colors.white,
+
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.menu_book_outlined),
+                  label: 'Tra cứu luật',
+                  tooltip: 'Tra cứu Luật giao thông đường bộ',
+                  activeIcon: Icon(
+                    Icons.menu_book_rounded,
+                    size: FONTSIZES.textVeryHuge + 8,
+                  ),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.motorcycle_outlined),
+                  label: 'GPLX',
+                  tooltip: 'Ôn và Thi thử Sát hạch giấy phép lái xe',
+                  activeIcon: Padding(
+                    padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
+                    child: Icon(
+                      Icons.motorcycle_rounded,
                       size: FONTSIZES.textVeryHuge + 8,
                     ),
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.motorcycle_outlined),
-                    label: 'GPLX',
-                    tooltip: 'Ôn và Thi thử Sát hạch giấy phép lái xe',
-                    activeIcon: Padding(
-                      padding:
-                          EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
-                      child: Icon(
-                        Icons.motorcycle_rounded,
-                        size: FONTSIZES.textVeryHuge + 8,
-                      ),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.warning_amber_outlined),
+                  label: 'Biển báo',
+                  tooltip: 'Tra cứu biển báo hiệu đường bộ',
+                  activeIcon: Padding(
+                    padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 4),
+                    child: Icon(
+                      Icons.warning_rounded,
+                      size: FONTSIZES.textVeryHuge + 8,
                     ),
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.warning_amber_outlined),
-                    label: 'Biển báo',
-                    tooltip: 'Tra cứu biển báo hiệu đường bộ',
-                    activeIcon: Padding(
-                      padding:
-                          EdgeInsets.only(bottom: kDefaultPaddingValue / 4),
-                      child: Icon(
-                        Icons.warning_rounded,
-                        size: FONTSIZES.textVeryHuge + 8,
-                      ),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.map_outlined),
+                  label: 'Bản đồ',
+                  tooltip: 'Xem Bản đồ thời gian thực',
+                  activeIcon: Padding(
+                    padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
+                    child: Icon(
+                      Icons.map_rounded,
+                      size: FONTSIZES.textVeryHuge + 8,
                     ),
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.map_outlined),
-                    label: 'Bản đồ',
-                    tooltip: 'Xem Bản đồ thời gian thực',
-                    activeIcon: Padding(
-                      padding:
-                          EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
-                      child: Icon(
-                        Icons.map_rounded,
-                        size: FONTSIZES.textVeryHuge + 8,
-                      ),
-                    ),
-                  ),
-                ],
-                currentIndex: controller.tab.value.index,
-                selectedItemColor: kBlueAccentBackground[800],
-                onTap: (value) {
-                  controller.updateTab(value);
-                },
-              ),
+                ),
+              ],
+              currentIndex: controller.tab.value.index,
+              selectedItemColor: kBlueAccentBackground[800],
+              onTap: (value) {
+                controller.updateTab(value);
+              },
             ),
           ),
         ),

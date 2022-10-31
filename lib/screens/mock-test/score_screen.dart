@@ -52,9 +52,9 @@ class ScoreScreen extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.blueAccent,
           shadowColor: Colors.grey,
-          title: Text("Điểm số"),
+          title: Text("Kết thúc bài thi"),
           centerTitle: true,
           automaticallyImplyLeading: false,
         ),
@@ -64,11 +64,11 @@ class ScoreScreen extends StatelessWidget {
               children: [
                 Spacer(),
                 Text(
-                  'Điểm bài thi vừa rồi',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline3
-                      ?.copyWith(color: Colors.blue),
+                  'Kết thúc',
+                  style: Theme.of(context).textTheme.headline3?.copyWith(
+                        color: Colors.blueAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 Spacer(),
                 Center(
@@ -76,11 +76,15 @@ class ScoreScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(kDefaultPaddingValue),
                     child: Column(
                       children: [
+                        Image.asset(
+                          "/assets/images/quiz/${_qnController.numberOfCorrectAns >= 20 ? 'exam_pass' : 'exam_fail'}.png",
+                          scale: 2,
+                        ),
                         Text(
-                          "Bạn trả lời đúng ${_qnController.numberOfCorrectAns} trên 25 câu",
+                          "Bạn đã trả lời đúng ${_qnController.numberOfCorrectAns} trên ${25} câu",
                           style: Theme.of(context)
                               .textTheme
-                              .headline4
+                              .headline3
                               ?.copyWith(color: Colors.blueAccent),
                           textAlign: TextAlign.center,
                         ),
@@ -91,7 +95,8 @@ class ScoreScreen extends StatelessWidget {
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline6
-                                    ?.copyWith(color: Colors.blueAccent),
+                                    ?.copyWith(
+                                        color: Colors.greenAccent.shade700),
                                 textAlign: TextAlign.center,
                               )
                             : Text(
@@ -108,9 +113,21 @@ class ScoreScreen extends StatelessWidget {
                               _qnController.stopTimer();
                               Get.offAll(() => ContainerScreen());
                             },
-                            style: kDefaultButtonStyle,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueAccent,
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: kDefaultPaddingValue,
+                                  horizontal: kDefaultPaddingValue),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      kDefaultPaddingValue)),
+                            ),
                             child: const Text("Quay về màn hình chính",
-                                style: TextStyle(color: Colors.black54)))
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: FONTSIZES.textPrimary,
+                                )))
                       ],
                     ),
                   ),

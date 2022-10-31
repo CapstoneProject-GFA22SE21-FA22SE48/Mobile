@@ -22,7 +22,29 @@ class TestResultSerivce {
     try {
       final res = await http
           .get(Uri.parse(
-              "${url}TestResults/GetTestResultByUserId?userId=" + userId))
+              '${url}TestResults/GetTestResultByUserId?userId=$userId'))
+          .timeout(const Duration(seconds: TIME_OUT));
+      if (res.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        return parseTestResultsTestResult(res.body);
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Không tải được dữ liệu.');
+      }
+    } on TimeoutException {
+      throw Exception('Không tải được dữ liệu.');
+    } catch (ex) {
+      throw Exception('Không thể kết nối');
+    }
+  }
+
+  Future<List<TestResult>> GetWrongList(userId) async {
+    try {
+      final res = await http
+          .get(Uri.parse(
+              '${url}TestResults/GetTestResultByUserId?userId=$userId'))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
