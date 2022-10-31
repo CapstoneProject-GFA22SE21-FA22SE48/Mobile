@@ -1,13 +1,8 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decode/jwt_decode.dart';
-import 'package:path/path.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/models/UserInfo.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vnrdn_tai/screens/auth/components/or_divider.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';
@@ -18,8 +13,6 @@ import 'package:vnrdn_tai/utils/io_utils.dart';
 import 'package:vnrdn_tai/utils/dialogUtil.dart';
 import '../signup_screen.dart';
 
-import 'dart:convert';
-import 'dart:developer' as developer;
 
 class LoginForm extends StatefulWidget {
   const LoginForm({

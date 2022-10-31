@@ -53,7 +53,9 @@ class _BodyState extends State<Body> {
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: kDefaultPaddingValue),
-                child: gc.test_mode == TEST_TYPE.TEST ? ProgressBar() : null,
+                child: gc.test_mode.value == TEST_TYPE.TEST
+                    ? const ProgressBar()
+                    : null,
               ),
               SizedBox(height: kDefaultPaddingValue / 2),
               Padding(

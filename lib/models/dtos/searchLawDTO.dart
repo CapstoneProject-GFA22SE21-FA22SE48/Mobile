@@ -1,4 +1,3 @@
-import 'package:vnrdn_tai/models/Paragraph.dart';
 import 'package:vnrdn_tai/models/dtos/searchParagraphDTO.dart';
 class SearchLawDTO {
   final String statueDesc;
