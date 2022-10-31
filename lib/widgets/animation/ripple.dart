@@ -44,7 +44,7 @@ class _RippleAnimationState extends State<RippleAnimation>
 
     // repeating or just forwarding the animation once.
     Timer(widget.delay, () {
-      widget.repeat ? _controller?.repeat() : _controller?.forward();
+      widget.repeat ? _controller.repeat() : _controller.forward();
     });
 
     super.initState();

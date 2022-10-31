@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/models/UserInfo.dart';
 
 class AuthController extends GetxController {

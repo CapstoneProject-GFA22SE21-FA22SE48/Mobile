@@ -1,4 +1,3 @@
-import 'package:vnrdn_tai/models/Answer.dart';
 
 class QuestionCategory {
   final String id;

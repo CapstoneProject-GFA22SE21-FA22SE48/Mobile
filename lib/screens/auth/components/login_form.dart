@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -24,8 +23,6 @@ import 'package:vnrdn_tai/utils/dialogUtil.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 import '../signup_screen.dart';
 
-import 'dart:convert';
-import 'dart:developer' as developer;
 
 class LoginForm extends StatefulWidget {
   const LoginForm({

@@ -1,4 +1,3 @@
-import 'package:vnrdn_tai/models/KeywordParagraphs.dart';
 
 class Keyword {
   final String id;

@@ -12,7 +12,9 @@ import 'dart:convert';
 
 import 'package:vnrdn_tai/shared/constants.dart';
 
-upload(File imageFile) async {
+upload(File imageFile, {bool cont = true}) async {
+  print(cont);
+  if (!cont) return "[]";
   // open a bytestream
   var stream =
       new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
@@ -34,10 +36,7 @@ upload(File imageFile) async {
 
   // send
   var response = await request.send();
-  print(response.statusCode);
-
   return await response.stream.bytesToString();
-  ;
 }
 
 handleError(value) {
