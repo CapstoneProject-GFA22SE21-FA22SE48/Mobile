@@ -8,6 +8,8 @@ class SearchController extends GetxController {
   final signCategoryNo = 0.obs;
 
   final query = "".obs;
+  final isFromAnalysis = false.obs;
+
 
   @override
   Future<void> onInit() async {
@@ -17,6 +19,10 @@ class SearchController extends GetxController {
   @override
   dispose() {
     super.dispose();
+  }
+
+  updateIsFromAnalysis(value) {
+    isFromAnalysis(value);
   }
 
   updateQuery(value) {

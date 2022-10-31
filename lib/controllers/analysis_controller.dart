@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:io' as io;
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_vision/flutter_vision.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
+import 'package:yaml/yaml.dart';
 
 class AnalysisController extends GetxController {
   GlobalController gc = Get.find<GlobalController>();
@@ -39,15 +42,29 @@ class AnalysisController extends GetxController {
   late List<int>? _detectedSigns = [];
   List<int>? get detectedSigns => this._detectedSigns;
 
+  late String? _imagePath = "";
+  String? get imagePath => this._imagePath;
+
+  late List<List<dynamic>> _boxes = [];
+  List<List<dynamic>> get boxes => this._boxes;
+
+  late YamlMap? _mapData = null;
+  YamlMap? get mapData => this._mapData;
+
   @override
-  onInit() {
+  onInit() async {
+    var data = await rootBundle.loadString('assets/ml/custom.yaml');
+    var d = loadYaml(data);
+    _mapData = d['names'];
+    print(_mapData);
     initCamera();
     super.onInit();
   }
 
   initCamera() {
     List<CameraDescription> cameras = gc.cameras;
-    _cameraController = CameraController(cameras[0], ResolutionPreset.medium);
+    _cameraController =
+        CameraController(cameras[0], ResolutionPreset.low, enableAudio: false);
     _cameraController.initialize().then((_) {
       // vision = FlutterVision();
       // loadYoloModel().then((value) {
@@ -74,49 +91,52 @@ class AnalysisController extends GetxController {
   Future<String> takePicAndDetect() async {
     final xFile = await _cameraController.takePicture();
     final path = xFile.path;
+    _imagePath = path;
     io.File file = io.File(xFile.path);
-    final res = await upload(file);
+    final res = await upload(file, cont: _isDetecting);
+    if (res != "[]") {
+      _imagePath = path;
+    }
     return res != "[]" ? res : "[]";
   }
 
-  // void startTimer() {
-  //   _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-  //     _timer!.cancel();
-  //     await Future.delayed(Duration(seconds: 5));
-  //     final xFile = await _cameraController.takePicture();
-  //     final path = xFile.path;
-  //     io.File file = io.File(xFile.path);
-  //     final res = await upload(file);
-  //     if (res != null) {
-  //       _isDetecting = false;
-  //       // return res;
-  //     }
-  //     print(_isDetecting);
-  //     if (_isDetecting) {
-  //       startTimer();
-  //     }
-  //     print(res);
-  //     update();
-  //   });
-  // }
-
   void startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer t) async {
-      print("lets wait for 5 seconds");
+    // _boxes.clear();
+    _timer = Timer.periodic(Duration(milliseconds: 50), (Timer t) async {
       _timer!.cancel();
-      await Future.delayed(Duration(seconds: 5));
-      var res = await takePicAndDetect();
-      _detected = res;
-      if (res != "[]") {
-        res = res.replaceAll(new RegExp(r"\p{P}", unicode: true), "").trim();
-        var detectedSignsAsString = res.split(" ");
-        List<int> detectedSignsAsNumber = [];
-        detectedSignsAsString.forEach((element) {
-          detectedSignsAsNumber.add(int.parse(element));
-        });
-        print(detectedSignsAsNumber);
-        stopImageStream();
+      if (!_isDetecting) {
+        t.cancel();
       }
+      await Future.delayed(Duration(milliseconds: 50));
+      var res = await takePicAndDetect();
+      // _detected = res;
+      List<List<dynamic>> b = [];
+      if (res != "[]") {
+        res = res
+            .replaceAll("[", "")
+            .replaceAll("]", "")
+            .replaceAll(",,", " ")
+            .trim();
+
+        var detectedSignsAsString = res.split(", ");
+
+        var arrForPreprocess = [];
+        for (var i = 0; i < detectedSignsAsString.length / 6; i++) {
+          arrForPreprocess.add([]);
+          for (var i2 = 0 + 6 * i; i2 < 6 + 6 * i; i2++) {
+            arrForPreprocess[i].add(detectedSignsAsString[i2]);
+          }
+        }
+        arrForPreprocess.forEach((element) {
+          b.add(element);
+        });
+      }
+      _boxes = b;
+      // update();
+      if (b.length > 0) {
+        // stopImageStream();
+      }
+      update();
       if (_isDetecting) {
         startTimer();
       }
@@ -124,12 +144,12 @@ class AnalysisController extends GetxController {
   }
 
   Future<void> startImageStream() async {
+    _imagePath = "";
     if (!_cameraController.value.isInitialized) {
       print('controller not initialized');
       return;
     }
     _isDetecting = true;
-
     startTimer();
     // await _cameraController.startImageStream((image) async {
     //   print("Running! ");
@@ -137,7 +157,7 @@ class AnalysisController extends GetxController {
     //     return;
     //   }
     //   try {
-    //     await yoloOnFrame(image);
+    //     // await yoloOnFrame(image);
     //     // await _cameraController.stopImageStream();
     //   } catch (e) {
     //     throw Exception(e);
@@ -156,7 +176,6 @@ class AnalysisController extends GetxController {
     //   await _cameraController.stopImageStream();
     // }
     _isDetecting = false;
-    // _modelResults.clear();
     update();
   }
 
@@ -203,6 +222,7 @@ class AnalysisController extends GetxController {
   void dispose() async {
     // await vision.closeYoloModel();
     _cameraController.stopImageStream();
+    _cameraController.dispose();
     super.dispose();
   }
 }

@@ -1,11 +1,14 @@
+import 'dart:io' as io;
 import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/analysis_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
+import 'package:vnrdn_tai/controllers/search_controller.dart';
+import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
+import 'package:vnrdn_tai/shared/painter.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/widgets/animation/ripple.dart';
@@ -13,16 +16,106 @@ import 'package:vnrdn_tai/widgets/animation/ripple.dart';
 class AnalysisScreen extends StatelessWidget {
   AnalysisScreen({super.key});
 
+  // List<Widget> renderBoxes(Size screen) {
+  //   if (_recognitions == null) return [];
+  //   if (_imageHeight == null || _imageWidth == null) return [];
+
+  //   double factorX = screen.width;
+  //   double factorY = _imageHeight / _imageWidth * screen.width;
+  //   Color blue = Color.fromRGBO(37, 213, 253, 1.0);
+  //   return _recognitions.map((re) {
+  //     return Positioned(
+  //       left: re["rect"]["x"] * factorX,
+  //       top: re["rect"]["y"] * factorY,
+  //       width: re["rect"]["w"] * factorX,
+  //       height: re["rect"]["h"] * factorY,
+  //       child: Container(
+  //         decoration: BoxDecoration(
+  //           borderRadius: BorderRadius.all(Radius.circular(8.0)),
+  //           border: Border.all(
+  //             color: blue,
+  //             width: 2,
+  //           ),
+  //         ),
+  //         child: Text(
+  //           "${re["detectedClass"]} ${(re["confidenceInClass"] * 100).toStringAsFixed(0)}%",
+  //           style: TextStyle(
+  //             background: Paint()..color = blue,
+  //             color: Colors.white,
+  //             fontSize: 12.0,
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  //   }).toList();
+  // }
+
+  Widget getBoundingBoxes(List<dynamic> coords, double height, double width) {
+    AnalysisController ac = Get.find<AnalysisController>();
+    double xmin = double.parse(coords[1]) * width - width / 2;
+    double ymin = double.parse(coords[2]) * height;
+    double xmax = double.parse(coords[3]) * width - width / 2;
+    double ymax = double.parse(coords[4]) * height;
+    var name =
+        ac.mapData![int.parse(coords[0].replaceAll(".0", ""))].toString();
+
+    // return GestureDetector(
+    //   behavior: HitTestBehavior.translucent,
+    //   onTap: () {
+    //     print('owo');
+    //   },
+    //   child: AbsorbPointer(
+    //     child: CustomPaint(
+    //       painter: OpenPainter(
+    //           xmin: xmin,
+    //           ymin: ymin,
+    //           xmax: xmax,
+    //           ymax: ymax,
+    // name: ac.mapData[int.parse(coords[0].replaceAll(".0", ""))]
+    //     .toString()),
+    //     ),
+    //   ),
+    // );
+    return Positioned(
+        left: xmin + width / 2,
+        top: ymin,
+        child: InkWell(
+            onTap: () {
+              SearchController sc = Get.put(SearchController());
+              ac.stopImageStream();
+              sc.updateQuery(name);
+              sc.updateIsFromAnalysis(true);
+              Get.offAll(() => ContainerScreen());
+            },
+            child: Container(
+              alignment: Alignment.bottomLeft,
+              width: xmax - xmin,
+              height: ymax - ymin,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 5,
+                  color: Colors.yellow[100]!,
+                ),
+              ),
+              child: Text(
+                'Biển $name',
+                style: TextStyle(
+                    backgroundColor: Colors.yellow[100],
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10),
+              ),
+            )));
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
     AnalysisController ac = Get.put(AnalysisController());
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return GetBuilder<AnalysisController>(
         init: ac,
         builder: (controller) {
-          if (controller.detectedSigns!.length != 0) {
-            Get.to(() => SearchSignScreen());
-          }
           return Scaffold(
             appBar: AppBar(),
             body: !controller.isLoaded
@@ -30,39 +123,30 @@ class AnalysisScreen extends StatelessWidget {
                 : Stack(
                     fit: StackFit.expand,
                     children: [
+                      // controller.imagePath == ""
+                      // ?
                       AspectRatio(
                           aspectRatio:
                               controller.cameraController.value.aspectRatio,
                           child: CameraPreview(
                             controller.cameraController,
-                          )),
-                      ColorFiltered(
-                        colorFilter: ColorFilter.mode(
-                            Colors.black.withOpacity(0.7), BlendMode.srcOut),
-                        child: Stack(
-                          children: [
-                            Container(
-                              decoration: const BoxDecoration(
-                                  color: Colors.black,
-                                  backgroundBlendMode: BlendMode.dstOut),
-                            ),
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: Container(
-                                margin: EdgeInsets.only(top: size.height * 0.2),
-                                height: size.height * 0.16 * 2,
-                                width: size.width * 0.9 * 2,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                          ))
+                      // : Image.file(
+                      //     io.File(controller.imagePath!),
+                      //     fit: BoxFit.fill,
+                      //     height: double.infinity,
+                      //     width: double.infinity,
+                      //     alignment: Alignment.center,
+                      //   )
+                      ,
+                      controller.boxes == []
+                          ? Container()
+                          : Stack(children: <Widget>[
+                              for (var box in controller.boxes)
+                                getBoundingBoxes(box, height - 80, width)
+                            ]),
                       Positioned(
-                        bottom: 5.h,
+                        bottom: 0.h,
                         width: MediaQuery.of(context).size.width,
                         child: Container(
                           height: 30.h,
@@ -111,40 +195,57 @@ class AnalysisScreen extends StatelessWidget {
                                             child: const Icon(Icons.play_arrow,
                                                 size: 32)),
                                       ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: kDefaultPaddingValue),
-                                  child: controller.isDetecting
-                                      ? Text('Đang tìm kiếm biển báo...',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5
-                                              ?.copyWith(
-                                                  color: Colors
-                                                      .blueAccent.shade200,
-                                                  fontWeight: FontWeight.bold))
-                                      : Text(
-                                          ' Bấm nút phía trên để bắt đầu quét',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5
-                                              ?.copyWith(
-                                                  color: Colors
-                                                      .blueAccent.shade200,
-                                                  fontWeight: FontWeight.bold),
-                                        ),
-                                ),
-                                Padding(
+                                Center(
+                                  child: Padding(
                                     padding: const EdgeInsets.only(
                                         top: kDefaultPaddingValue),
-                                    child: Text('${controller.detected}',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5
-                                            ?.copyWith(
-                                                color:
-                                                    Colors.blueAccent.shade200,
-                                                fontWeight: FontWeight.bold))),
+                                    child: controller.isDetecting
+                                        ? Text('Đang tìm kiếm biển báo...',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5
+                                                ?.copyWith(
+                                                    color: Colors
+                                                        .blueAccent.shade200,
+                                                    fontWeight:
+                                                        FontWeight.bold))
+                                        : controller.boxes.length > 0
+                                            ? Text(
+                                                ' Hệ thống đã nhận diện được ${controller.boxes.length} biển báo',
+                                                textAlign: TextAlign.center,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5
+                                                    ?.copyWith(
+                                                        color: Colors.blueAccent
+                                                            .shade200,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                              )
+                                            : Text(
+                                                ' Bấm nút phía trên để bắt đầu quét',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5
+                                                    ?.copyWith(
+                                                        color: Colors.blueAccent
+                                                            .shade200,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                              ),
+                                  ),
+                                ),
+                                // Padding(
+                                //     padding: const EdgeInsets.only(
+                                //         top: kDefaultPaddingValue),
+                                //     child: Text('${controller.detected}',
+                                //         style: Theme.of(context)
+                                //             .textTheme
+                                //             .headline5
+                                //             ?.copyWith(
+                                //                 color:
+                                //                     Colors.blueAccent.shade200,
+                                //                 fontWeight: FontWeight.bold))),
                               ],
                             ),
                           ),
