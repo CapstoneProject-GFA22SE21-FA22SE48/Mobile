@@ -275,19 +275,20 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       "Xem lịch sử thi",
                                       style: TextStyle(
                                           fontSize: FONTSIZES.textHuge,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white),
                                     ),
-                                    SizedBox(height: kDefaultPaddingValue / 2),
+                                    const SizedBox(
+                                        height: kDefaultPaddingValue / 2),
                                     Text(
                                       gc.userId.value.isNotEmpty
                                           ? "Kết quả của 10 lần thi gần nhất"
                                           : "Chưa có dữ liệu",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: FONTSIZES.textPrimary,
                                           color: Colors.white),
                                     ),
@@ -356,19 +357,20 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       "Xem câu bị sai",
                                       style: TextStyle(
                                           fontSize: FONTSIZES.textHuge,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white),
                                     ),
-                                    SizedBox(height: kDefaultPaddingValue / 2),
+                                    const SizedBox(
+                                        height: kDefaultPaddingValue / 2),
                                     Text(
                                       gc.userId.value.isNotEmpty
                                           ? "Có ${57} câu bị sai"
                                           : "Chưa có dữ liệu",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: FONTSIZES.textPrimary,
                                           color: Colors.white),
                                     ),
