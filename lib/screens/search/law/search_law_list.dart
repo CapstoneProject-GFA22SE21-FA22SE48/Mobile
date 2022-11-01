@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
-import 'package:vnrdn_tai/models/Keyword.dart';
-import 'package:vnrdn_tai/models/Section.dart';
 import 'package:vnrdn_tai/models/dtos/searchLawDTO.dart';
 import 'package:vnrdn_tai/screens/search/components/search_bar.dart';
 import 'package:vnrdn_tai/screens/search/components/search_list_item.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_detail.dart';
-import 'package:vnrdn_tai/services/KeywordService.dart';
 import 'package:vnrdn_tai/services/LawService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
@@ -47,6 +42,10 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
         appBar: AppBar(
           title:
               Text("Tra cứu \"${sc.vehicleCategory.value.capitalizeFirst}\""),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.receipt), onPressed: () => print('owo')),
+          ],
         ),
         body: SafeArea(
           child: FutureBuilder<List<SearchLawDTO>>(

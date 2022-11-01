@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
+import 'package:vnrdn_tai/controllers/cart_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/dtos/searchLawDTO.dart';
+import 'package:vnrdn_tai/screens/search/cart/cart_page.dart';
 import 'package:vnrdn_tai/services/LawService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
@@ -28,6 +30,7 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
   @override
   Widget build(BuildContext context) {
     GlobalController gc = Get.find<GlobalController>();
+    CartController cc = Get.find<CartController>();
     NumberFormat numberFormat =
         NumberFormat.currency(locale: 'vi_VN', symbol: "");
     var min = "";
@@ -36,6 +39,13 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
         appBar: AppBar(
           backgroundColor: Colors.blueAccent,
           title: const Text("Chi tiết"),
+          actions: [
+            IconButton(
+                icon: const Icon(Icons.receipt),
+                onPressed: () {
+                  Get.to(() => CartPage());
+                }),
+          ],
         ),
         body: SafeArea(
             child: FutureBuilder<SearchLawDTO>(
@@ -194,7 +204,38 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                                   FontStyle
                                                                       .italic,
                                                               fontSize: FONTSIZES
-                                                                  .textMedium))
+                                                                  .textMedium)),
+                                                  WidgetSpan(
+                                                      child: Container(
+                                                    color: Colors.grey.shade300,
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            5.0),
+                                                  )),
+                                                  WidgetSpan(
+                                                      child: Center(
+                                                    child: FloatingActionButton
+                                                        .extended(
+                                                      shape: const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius.circular(
+                                                                      15.0))),
+                                                      onPressed: () {
+                                                        if (widget.searchLawDto !=
+                                                                null &&
+                                                            !cc.laws.contains(widget
+                                                                .searchLawDto)) {
+                                                          cc.laws.add(widget
+                                                              .searchLawDto!);
+                                                        }
+                                                      },
+                                                      label: const Text(
+                                                          'Thêm vào biên bản.'),
+                                                      icon: const Icon(Icons
+                                                          .add_box_outlined),
+                                                    ),
+                                                  )),
                                                 ])),
                                               ),
                                             ),

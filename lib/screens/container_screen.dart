@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
+import 'package:vnrdn_tai/controllers/cart_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/my_tab_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
@@ -91,6 +92,7 @@ class ContainerScreen extends GetView<GlobalController> {
   @override
   Widget build(BuildContext context) {
     AuthController ac = Get.put(AuthController());
+    CartController cc = Get.put(CartController());
     String title = 'VNRDnTAI';
     final MyTabController _tabx = Get.put(MyTabController());
 
