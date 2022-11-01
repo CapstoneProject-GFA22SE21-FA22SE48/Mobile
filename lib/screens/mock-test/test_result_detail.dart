@@ -75,7 +75,7 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                   });
                   return Column(
                     children: [
-                      Container(
+                      SizedBox(
                         height: 90.h,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -86,7 +86,7 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Container(
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(
                                         kDefaultPaddingValue,
@@ -113,13 +113,13 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                                                 tapBodyToCollapse: true,
                                               ),
                                               header: Padding(
-                                                  padding: EdgeInsets.all(10),
+                                                  padding: const EdgeInsets.all(10),
                                                   child: Column(
                                                     children: [
                                                       snapshot.data![index]
                                                                   .imageUrl !=
                                                               null
-                                                          ? Container(
+                                                          ? SizedBox(
                                                               height: 120,
                                                               child: Image.network(
                                                                   snapshot
@@ -146,7 +146,7 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                                                       .data![index].isCorrect
                                                   ? Center(
                                                       child: Row(
-                                                        children: [
+                                                        children: const [
                                                           Text("Đúng ",
                                                               style: TextStyle(
                                                                   color: Colors
@@ -162,7 +162,7 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                                                     )
                                                   : Center(
                                                       child: Row(
-                                                        children: [
+                                                        children: const [
                                                           Text("Sai ",
                                                               style: TextStyle(
                                                                   color: Colors
@@ -180,25 +180,25 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                                                     CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   Padding(
-                                                      padding: EdgeInsets.only(
+                                                      padding: const EdgeInsets.only(
                                                           bottom: 10),
                                                       child: Text(
                                                         "Bạn đã chọn: \n${snapshot.data![index].chosenAnswerContent}",
                                                         softWrap: true,
                                                         overflow:
                                                             TextOverflow.fade,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             fontSize: 16),
                                                       )),
                                                   Padding(
-                                                      padding: EdgeInsets.only(
+                                                      padding: const EdgeInsets.only(
                                                           bottom: 10),
                                                       child: Text(
                                                         'Câu trả lời đúng là: \n${snapshot.data![index].correctAnswerContent}',
                                                         softWrap: true,
                                                         overflow:
                                                             TextOverflow.fade,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             fontSize: 16),
                                                       ))
                                                 ],
@@ -206,7 +206,7 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                                               builder:
                                                   (_, collapsed, expanded) {
                                                 return Padding(
-                                                  padding: EdgeInsets.only(
+                                                  padding: const EdgeInsets.only(
                                                       left: 10,
                                                       right: 10,
                                                       bottom: 10),

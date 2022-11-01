@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/models/dtos/searchLawDTO.dart';
+import 'package:vnrdn_tai/screens/search/cart/cart_page.dart';
 import 'package:vnrdn_tai/screens/search/components/search_bar.dart';
 import 'package:vnrdn_tai/screens/search/components/search_list_item.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_detail.dart';
@@ -44,7 +45,10 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
               Text("Tra cứu \"${sc.vehicleCategory.value.capitalizeFirst}\""),
           actions: [
             IconButton(
-                icon: Icon(Icons.receipt), onPressed: () => print('owo')),
+                icon: const Icon(Icons.receipt),
+                onPressed: () {
+                  Get.to(() => CartPage(), preventDuplicates: false);
+                }),
           ],
         ),
         body: SafeArea(
@@ -96,7 +100,7 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                             width: 100.w,
                             height: isKeyboardVisible ? 48.h : 79.h,
                             child: Padding(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 horizontal: kDefaultPaddingValue,
                               ),
                               child: ListView.separated(

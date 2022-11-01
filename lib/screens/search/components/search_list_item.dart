@@ -25,14 +25,17 @@ class SearchListItem extends StatelessWidget {
     var query = TiengViet.parse(sc.query.value);
     var _s = TiengViet.parse(s);
     var start = _s.indexOf(query);
-    var end = start + query.length;
-    var res =
-        "${s.substring(0, start)}<bold>${s.substring(start, end)}</bold>${s.substring(end, s.length)}";
-    if (start > 65) {
-      res =
-          "...${res.substring(start - 45, s.length - end > 65 ? end + 55 : end)}...";
+    if (start > -1) {
+      var end = start + query.length;
+      var res =
+          "${s.substring(0, start)}<bold>${s.substring(start, end)}</bold>${s.substring(end, s.length)}";
+      if (start > 65) {
+        res =
+            "...${res.substring(start - 45, s.length - end > 65 ? end + 55 : end)}...";
+      }
+      return res;
     }
-    return res;
+    return s;
   }
 
   @override

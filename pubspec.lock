@@ -534,6 +534,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
+  number_to_words_english:
+    dependency: "direct main"
+    description:
+      name: number_to_words_english
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
   octo_image:
     dependency: transitive
     description:
@@ -812,6 +819,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.0"
+  translator:
+    dependency: "direct main"
+    description:
+      name: translator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.7"
   typed_data:
     dependency: transitive
     description:
