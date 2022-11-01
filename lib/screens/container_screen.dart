@@ -22,7 +22,9 @@ import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
 import 'package:vnrdn_tai/screens/signs/signs_screen.dart';
 import 'package:vnrdn_tai/screens/welcome/welcome_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/utils/dialogUtil.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
+import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class ContainerScreen extends GetView<GlobalController> {
   const ContainerScreen({super.key});
@@ -104,9 +106,9 @@ class ContainerScreen extends GetView<GlobalController> {
         title: Text(title),
         centerTitle: true,
         actions: [
-          GestureDetector(
-            onTap: () {},
-            child: Padding(
+          IconButton(
+            onPressed: () {},
+            icon: Padding(
               padding: const EdgeInsets.only(right: kDefaultPaddingValue),
               child: Obx(() => getActionButton(controller.tab.value)),
             ),
@@ -119,12 +121,12 @@ class ContainerScreen extends GetView<GlobalController> {
           children: [
             DrawerHeader(
               decoration: const BoxDecoration(
-                color: Colors.blueAccent,
+                color: Color.fromARGB(255, 128, 179, 255),
               ),
               child: Column(children: [
                 Center(
                   child: Stack(children: [
-                    Image.asset("assets/images/logo.png", height: 60.0),
+                    Image.asset("assets/images/logo.png", height: 72.0),
                   ]),
                 ),
                 Container(
@@ -228,9 +230,21 @@ class ContainerScreen extends GetView<GlobalController> {
               selectedColor: Colors.white,
               selectedTileColor: Colors.blueAccent,
               onTap: () {
-                Navigator.pop(context); // close the drawer
-                controller.updateSideBar(2);
-                Get.to(const CommentsScreen());
+                if (controller.userId.isNotEmpty) {
+                  Navigator.pop(context); // close the drawer
+                  controller.updateSideBar(2);
+                  Get.to(const CommentsScreen());
+                } else {
+                  DialogUtil.showTextDialog(
+                    context,
+                    "Cảnh báo",
+                    "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
+                    [
+                      TemplatedButtons.yes(context, const LoginScreen()),
+                      TemplatedButtons.no(context),
+                    ],
+                  );
+                }
               },
             ),
           ],
@@ -239,28 +253,44 @@ class ContainerScreen extends GetView<GlobalController> {
       body: Center(child: Obx(() => getScreen(controller.tab.value))),
       bottomNavigationBar: Obx(
         () => CurvedNavigationBar(
-          backgroundColor: kLightBlueBacground,
+          backgroundColor: kLightBlueBackground,
           index: controller.tab.value.index,
-          items: const <Widget>[
+          items: <Widget>[
             Icon(
-              Icons.menu_book_outlined,
+              controller.tab.value.index == 0
+                  ? Icons.menu_book_rounded
+                  : Icons.menu_book_outlined,
               size: 30,
-              color: Colors.black54,
+              color: controller.tab.value.index == 0
+                  ? Color.fromARGB(255, 89, 155, 255)
+                  : Colors.black54,
             ),
             Icon(
-              Icons.motorcycle_outlined,
+              controller.tab.value.index == 1
+                  ? Icons.motorcycle_rounded
+                  : Icons.motorcycle_outlined,
               size: 30,
-              color: Colors.black54,
+              color: controller.tab.value.index == 1
+                  ? Color.fromARGB(255, 89, 155, 255)
+                  : Colors.black54,
             ),
             Icon(
-              Icons.warning_amber_outlined,
+              controller.tab.value.index == 2
+                  ? Icons.remove_circle_rounded
+                  : Icons.remove_circle_outline,
               size: 30,
-              color: Colors.black54,
+              color: controller.tab.value.index == 2
+                  ? Color.fromARGB(255, 89, 155, 255)
+                  : Colors.black54,
             ),
             Icon(
-              Icons.map_outlined,
+              controller.tab.value.index == 3
+                  ? Icons.map_rounded
+                  : Icons.map_outlined,
               size: 30,
-              color: Colors.black54,
+              color: controller.tab.value.index == 3
+                  ? Color.fromARGB(255, 89, 155, 255)
+                  : Colors.black54,
             ),
           ],
           onTap: (index) {

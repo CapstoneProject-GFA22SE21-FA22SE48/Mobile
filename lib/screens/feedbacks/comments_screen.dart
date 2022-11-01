@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:image/image.dart';
+import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
@@ -39,6 +41,7 @@ class _FeedbackClassState extends State<CommentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kLightBlueBackground,
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         // elevation: 4,
@@ -66,8 +69,8 @@ class _FeedbackClassState extends State<CommentsScreen> {
                 builder: (context, isKeyboardVisible) {
                   return Column(
                     children: [
-                      Container(
-                        height: isKeyboardVisible ? 48.h : 80.h,
+                      SizedBox(
+                        height: isKeyboardVisible ? 52.h : 82.h,
                         width: 100.w,
                         child: snapshot.data!.isNotEmpty
                             ? Padding(
@@ -77,12 +80,15 @@ class _FeedbackClassState extends State<CommentsScreen> {
                                   scrollDirection: Axis.vertical,
                                   itemCount: snapshot.data!.length,
                                   itemBuilder: ((context, index) {
-                                    return Container(
-                                      height: 15.h,
+                                    return SizedBox(
                                       width: 80.w,
+                                      height: 15.h,
                                       child: Card(
                                         color: Colors.white,
                                         shadowColor: Colors.grey.shade400,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                kDefaultPaddingValue)),
                                         child: Padding(
                                             padding: const EdgeInsets.all(
                                                 kDefaultPaddingValue),
@@ -99,18 +105,21 @@ class _FeedbackClassState extends State<CommentsScreen> {
                                                         .textTheme
                                                         .headline6
                                                         ?.copyWith(
-                                                          color: Colors.black54,
+                                                          color: Colors.black87,
                                                         ),
                                                   ),
                                                 ),
                                                 Row(
                                                   children: [
-                                                    Text(
-                                                        "Commented by ${gc.username.value.isNotEmpty ? gc.username.value : ac.email.value}"),
+                                                    // Text(
+                                                    //     "${gc.username.value.isNotEmpty ? gc.username.value : ac.email.value}"),
                                                     const Spacer(),
                                                     Text(
-                                                      snapshot.data![index]
-                                                          .createdDate,
+                                                      'Đã bình luận lúc ${DateFormat('hh:mm dd/MM/yyyy').format(DateTime.parse(snapshot.data![index].createdDate))}',
+                                                      style: TextStyle(
+                                                        fontStyle:
+                                                            FontStyle.italic,
+                                                      ),
                                                     ),
                                                   ],
                                                 )
@@ -136,6 +145,14 @@ class _FeedbackClassState extends State<CommentsScreen> {
                           children: [
                             Container(
                               width: 80.w,
+                              // color: Colors.white12,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: kDefaultPaddingValue / 2),
+                              decoration: BoxDecoration(
+                                color: Colors.white70,
+                                borderRadius: BorderRadius.circular(
+                                    kDefaultPaddingValue / 2),
+                              ),
                               child: TextField(
                                 controller: commentController,
                                 keyboardType: TextInputType.text,
@@ -143,6 +160,7 @@ class _FeedbackClassState extends State<CommentsScreen> {
                                 cursorColor: kPrimaryButtonColor,
                                 decoration: const InputDecoration(
                                   hintText: "Viết bình luận",
+                                  border: InputBorder.none,
                                   // prefixIcon: Padding(
                                   //   padding: EdgeInsets.all(
                                   //       kDefaultPaddingValue / 2),
