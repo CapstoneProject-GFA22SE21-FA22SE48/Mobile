@@ -186,6 +186,19 @@ flutter:
     - assets/images/quiz/wrong.png
     - assets/images/quiz/exam_pass.png
     - assets/images/quiz/exam_fail.png
+    # law
+    - assets/images/law/turn_left.png
+    - assets/images/law/speed_limit.png
+    - assets/images/law/no_alcohol.png
+    - assets/images/law/parking.png
+    - assets/images/law/delivery.png
+    - assets/images/law/driving_license.png
+    - assets/images/law/direction.png
+    - assets/images/law/delivery_truck.png
+    - assets/images/law/jack.png
+    - assets/images/law/priority.png
+    - assets/images/law/road_barrier.png
+    - assets/images/law/speed_limit.png
     # signs
     - assets/images/signs/marker.png
 
