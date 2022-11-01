@@ -22,6 +22,8 @@ class MinimapScreen extends StatefulWidget {
 class _MinimapState extends State<MinimapScreen> {
   final Completer<GoogleMapController> gmapController = Completer();
   MapsController mc = Get.put(MapsController());
+  Location location = Location();
+
   late Future<List<GPSSign>> gpsSigns;
   final List<Marker> _markers = <Marker>[].obs;
 
@@ -100,11 +102,11 @@ class _MinimapState extends State<MinimapScreen> {
   }
 
   void getCurrentLocation() {
-    mc.location.getLocation().then((location) {
+    location.getLocation().then((location) {
       currentLocation = location;
     });
 
-    mc.location.onLocationChanged.listen((newLoc) {
+    location.onLocationChanged.listen((newLoc) {
       count++;
       if (currentLocation != null) {
         lastLocation =

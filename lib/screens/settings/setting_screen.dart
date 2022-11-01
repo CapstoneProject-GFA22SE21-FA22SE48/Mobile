@@ -25,7 +25,7 @@ class _SwitchClassState extends State<SettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blueAccent,
         // elevation: 0,
         title: const Text('Cài đặt'),
         leading: IconButton(

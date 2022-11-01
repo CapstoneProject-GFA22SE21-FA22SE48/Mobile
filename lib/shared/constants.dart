@@ -17,7 +17,7 @@ const kWarningGradientColor = Color.fromARGB(255, 245, 159, 11);
 const kDisabledGradientColor = Color.fromARGB(255, 108, 117, 125);
 
 const kBlueAccentBackground = Colors.blueAccent;
-const kLightBlueBacground = Color(0xFFA9CAFF);
+const kLightBlueBackground = Color(0xFFA9CAFF);
 
 const kPrimaryBackgroundColor = Color.fromARGB(255, 255, 255, 255);
 
@@ -72,8 +72,8 @@ const emptyUserId = "00000000-0000-0000-0000-000000000000"; // jwt fixed
 
 const String google_api_key = "AIzaSyBEre7YKax4irpLfr0I2jrkACu_ZiBL3JU";
 
-const url = "https://10.0.2.2:5001/api/";
-// const url = "https://vnrdntaiapi.azurewebsites.net/api/";
+// const url = "https://10.0.2.2:5001/api/";
+const url = "https://vnrdntaiapi.azurewebsites.net/api/";
 
 // const ai_url = "http://10.0.2.2:3000/";
 const ai_url = "https://vnrdnt-ai-aimodule.herokuapp.com/";

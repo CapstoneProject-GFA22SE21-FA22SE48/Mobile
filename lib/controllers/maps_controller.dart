@@ -8,7 +8,6 @@ import 'package:vnrdn_tai/models/UserInfo.dart';
 
 class MapsController extends GetxController {
   static MapsController instance = Get.find();
-  Location location = Location();
   late List<GPSSign> _listSigns;
   final zoom = 18.0.obs;
 
