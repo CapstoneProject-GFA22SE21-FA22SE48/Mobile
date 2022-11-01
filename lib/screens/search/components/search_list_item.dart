@@ -27,8 +27,9 @@ class SearchListItem extends StatelessWidget {
     var end = start + query.length;
     var res =
         "${s.substring(0, start)}<bold>${s.substring(start, end)}</bold>${s.substring(end, s.length)}";
-    if (start > 55) {
-      res = "...${res.substring(start - 35)}...";
+    if (start > 65) {
+      res =
+          "...${res.substring(start - 45, s.length - end > 65 ? end + 55 : end)}...";
     }
     return res;
   }
