@@ -201,7 +201,7 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                                                 style: const TextStyle(
                                                   color: Colors.black54,
                                                   fontSize:
-                                                      FONTSIZES.textPrimary,
+                                                      FONTSIZES.textSmall,
                                                 ),
                                               ),
                                             ],

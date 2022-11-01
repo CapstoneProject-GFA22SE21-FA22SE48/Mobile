@@ -46,6 +46,7 @@ dependencies:
   extended_text:
   tiengviet:
   flutter_native_splash:
+  styled_text:
   yaml:
   flutter:
     sdk: flutter

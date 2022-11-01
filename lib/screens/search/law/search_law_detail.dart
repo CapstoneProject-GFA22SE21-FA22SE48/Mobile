@@ -4,13 +4,9 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/controllers/search_controller.dart';
-import 'package:vnrdn_tai/models/Paragraph.dart';
 import 'package:vnrdn_tai/models/dtos/searchLawDTO.dart';
-import 'package:vnrdn_tai/screens/search/components/search_bar.dart';
 import 'package:vnrdn_tai/services/LawService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 
 class SearchLawDetailScreen extends StatefulWidget {
@@ -39,7 +35,7 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blueAccent,
-          title: Text("Chi tiết"),
+          title: const Text("Chi tiết"),
         ),
         body: SafeArea(
             child: FutureBuilder<SearchLawDTO>(
@@ -75,10 +71,9 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                       SizedBox(
                                         width: 100.w,
                                         height: widget
-                                                        .searchLawDto!
-                                                        .referenceParagraph!
-                                                        .length !=
-                                                    0 &&
+                                                    .searchLawDto!
+                                                    .referenceParagraph!
+                                                    .isNotEmpty &&
                                                 gc.tab.value == TABS.SEARCH
                                             ? 50.h
                                             : 70.h,
@@ -87,6 +82,7 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                               horizontal: kDefaultPaddingValue),
                                           child: SingleChildScrollView(
                                             child: Container(
+                                              height: 100.h,
                                               color: Colors.grey.shade300,
                                               child: Padding(
                                                 padding:
@@ -111,7 +107,8 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                       child: Container(
                                                     color: Colors.grey.shade300,
                                                     padding:
-                                                        EdgeInsets.all(8.0),
+                                                        const EdgeInsets.all(
+                                                            8.0),
                                                   )),
                                                   WidgetSpan(
                                                       child: ExpandableText(
@@ -134,7 +131,8 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                       child: Container(
                                                     color: Colors.grey.shade300,
                                                     padding:
-                                                        EdgeInsets.all(4.0),
+                                                        const EdgeInsets.all(
+                                                            4.0),
                                                   )),
                                                   TextSpan(
                                                       text:
@@ -153,8 +151,9 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                       child: Container(
                                                     color: Colors.grey.shade300,
                                                     padding:
-                                                        EdgeInsets.all(4.0),
-                                                    child: Divider(
+                                                        const EdgeInsets.all(
+                                                            4.0),
+                                                    child: const Divider(
                                                       color: Colors.black,
                                                     ),
                                                   )),
@@ -179,7 +178,8 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                       child: Container(
                                                     color: Colors.grey.shade300,
                                                     padding:
-                                                        EdgeInsets.all(5.0),
+                                                        const EdgeInsets.all(
+                                                            5.0),
                                                   )),
                                                   TextSpan(
                                                       text:
@@ -203,8 +203,7 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                       ),
                                       const Divider(),
                                       widget.searchLawDto!.referenceParagraph!
-                                                      .length !=
-                                                  0 &&
+                                                  .isNotEmpty &&
                                               gc.tab.value == TABS.SEARCH
                                           ? Padding(
                                               padding:
@@ -304,20 +303,20 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                                         children: [
                                                                           SizedBox(
                                                                               width: 5.w,
-                                                                              child: Icon(
+                                                                              child: const Icon(
                                                                                 Icons.search,
                                                                                 size: 16,
                                                                               )),
                                                                           Padding(
                                                                             padding:
                                                                                 const EdgeInsets.only(left: kDefaultPaddingValue),
-                                                                            child: Container(
+                                                                            child: SizedBox(
                                                                                 width: 70.w,
                                                                                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                                  Text(maxLines: 2, overflow: TextOverflow.ellipsis, '${widget.searchLawDto!.referenceParagraph![index].description}', style: Theme.of(context).textTheme.headline4?.copyWith(color: Colors.black, fontSize: FONTSIZES.textMedium)),
+                                                                                  Text(maxLines: 2, overflow: TextOverflow.ellipsis, widget.searchLawDto!.referenceParagraph![index].description, style: Theme.of(context).textTheme.headline4?.copyWith(color: Colors.black, fontSize: FONTSIZES.textMedium)),
                                                                                   Padding(
                                                                                     padding: const EdgeInsets.only(top: kDefaultPaddingValue / 2),
-                                                                                    child: (widget.searchLawDto!.referenceParagraph![index].minPenalty != "0" && widget.searchLawDto!.referenceParagraph![index].maxPenalty != "0") ? Text('Phạt tiền từ ${min2}đến ${max2}nghìn đồng', style: TextStyle(color: Colors.red, fontSize: FONTSIZES.textSmall)) : const Text('Phạt cảnh cáo', style: TextStyle(color: Colors.red)),
+                                                                                    child: (widget.searchLawDto!.referenceParagraph![index].minPenalty != "0" && widget.searchLawDto!.referenceParagraph![index].maxPenalty != "0") ? Text('Phạt tiền từ ${min2}đến ${max2}nghìn đồng', style: const TextStyle(color: Colors.red, fontSize: FONTSIZES.textSmall)) : const Text('Phạt cảnh cáo', style: TextStyle(color: Colors.red)),
                                                                                   ),
                                                                                   const Padding(
                                                                                     padding: EdgeInsets.only(top: kDefaultPaddingValue / 2),
