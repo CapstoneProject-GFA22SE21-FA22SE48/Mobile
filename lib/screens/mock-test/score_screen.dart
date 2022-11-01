@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
+import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/models/TestResult.dart';
 import 'package:vnrdn_tai/models/TestResultDetail.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
@@ -17,8 +18,8 @@ class ScoreScreen extends StatelessWidget {
 
   submitScore(QuestionController qc) {
     if (qc.answeredQuestions.length > 0) {
-      dynamic testAttempDTO = null;
       List<TestResultDetail> trds = [];
+      List<Question> questions = qc.questions;
       var trId = Uuid().v4();
       qc.answeredAttempts.forEach((element) {
         TestResultDetail trd = TestResultDetail(
@@ -30,6 +31,22 @@ class ScoreScreen extends StatelessWidget {
         );
         trds.add(trd);
       });
+
+      // questions.forEach((question) {
+      //   if (trds.firstWhereOrNull(
+      //           (element2) => element2.questionId == question.id) ==
+      //       null) {
+      //     TestResultDetail trd = TestResultDetail(
+      //       Uuid().v4(),
+      //       trId,
+      //       question.id,
+      //       null,
+      //       false,
+      //     );
+      //     trds.add(trd);
+      //   }
+      // });
+
       GlobalController gc = Get.put(GlobalController());
       TestResult tr = TestResult(
           trId,

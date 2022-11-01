@@ -284,7 +284,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                     ),
                                     SizedBox(height: kDefaultPaddingValue / 2),
                                     Text(
-                                      "Kết quả của ${12} lần thi",
+                                      "Kết quả của 10 lần thi gần nhất",
                                       style: TextStyle(
                                           fontSize: FONTSIZES.textPrimary,
                                           color: Colors.white),
@@ -363,7 +363,9 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                     ),
                                     SizedBox(height: kDefaultPaddingValue / 2),
                                     Text(
-                                      "Có ${57} câu bị sai",
+                                      gc.userId.value.isNotEmpty
+                                          ? "Có ${57} câu bị sai"
+                                          : "Chưa có dữ liệu",
                                       style: TextStyle(
                                           fontSize: FONTSIZES.textPrimary,
                                           color: Colors.white),
