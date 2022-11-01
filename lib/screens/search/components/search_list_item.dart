@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:tiengviet/tiengviet.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/models/dtos/searchLawDTO.dart';
 import 'package:vnrdn_tai/models/dtos/searchSignDTO.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
@@ -11,11 +13,27 @@ import 'package:vnrdn_tai/screens/search/law/search_law_screen.dart';
 import 'package:vnrdn_tai/screens/search/sign/search_sign_detail.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:sizer/sizer.dart';
+import 'package:styled_text/styled_text.dart';
 
 class SearchListItem extends StatelessWidget {
   const SearchListItem({super.key, this.searchLawDto, this.searchSignDTO});
   final SearchLawDTO? searchLawDto;
   final SearchSignDTO? searchSignDTO;
+
+  sliceFoundQuery(String s) {
+    SearchController sc = Get.find<SearchController>();
+    var query = TiengViet.parse(sc.query.value);
+    var _s = TiengViet.parse(s);
+    var start = _s.indexOf(query);
+    var end = start + query.length;
+    var res =
+        "${s.substring(0, start)}<bold>${s.substring(start, end)}</bold>${s.substring(end, s.length)}";
+    if (start > 65) {
+      res =
+          "...${res.substring(start - 45, s.length - end > 65 ? end + 55 : end)}...";
+    }
+    return res;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +76,17 @@ class SearchListItem extends StatelessWidget {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            StyledText(
+                                tags: {
+                                  'bold': StyledTextTag(
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                },
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
-                                searchLawDto!.paragraphDesc != ""
-                                    ? '${searchLawDto!.paragraphDesc!.replaceAll('\\', '')}'
-                                    : '${searchLawDto!.sectionDesc}',
+                                text: searchLawDto!.paragraphDesc != ""
+                                    ? "${sliceFoundQuery("${searchLawDto!.paragraphDesc!.replaceAll('\\\n', '')}")}"
+                                    : "${sliceFoundQuery("${searchLawDto!.sectionDesc}")}",
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline4

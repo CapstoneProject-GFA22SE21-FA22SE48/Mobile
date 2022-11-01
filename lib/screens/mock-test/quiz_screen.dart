@@ -113,6 +113,7 @@ class _QuizScreenState extends State<QuizScreen> {
                             });
                     throw Exception(snapshot.error);
                   } else {
+                    qc.updateQuestions(snapshot.data!);
                     return Body(questions: snapshot.data!);
                   }
                 }

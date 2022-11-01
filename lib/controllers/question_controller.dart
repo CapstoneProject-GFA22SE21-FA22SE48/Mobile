@@ -13,6 +13,7 @@ class QuestionController extends GetxController
   final testCategoryId = ''.obs;
   final testCategoryName = ''.obs;
   final testCategoryCount = 0.obs;
+  final questions = <Question>[].obs;
   final questionService = QuestionSerivce();
 
   late Animation _animation;
@@ -66,7 +67,7 @@ class QuestionController extends GetxController
     _animationController.forward();
   }
 
-  void restartTimer(){
+  void restartTimer() {
     _animationController.reset();
   }
 
@@ -130,5 +131,9 @@ class QuestionController extends GetxController
 
   updateTestCategoryCount(value) {
     testCategoryCount(value);
+  }
+
+  updateQuestions(value) {
+    questions(value);
   }
 }

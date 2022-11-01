@@ -3,7 +3,7 @@ class TestResultDetail {
   final String? id;
   final String? testResultId;
   late final String questionId;
-  late final String answerId;
+  late final String? answerId;
   late final bool isCorrect;
 
   factory TestResultDetail.fromJson(Map<String, dynamic> data) {
