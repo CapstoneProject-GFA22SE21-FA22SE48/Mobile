@@ -1,5 +1,7 @@
 import 'package:vnrdn_tai/models/dtos/searchParagraphDTO.dart';
+
 class SearchLawDTO {
+  final String? name;
   final String statueDesc;
   final String sectionDesc;
   final String? paragraphDesc;
@@ -10,6 +12,7 @@ class SearchLawDTO {
 
   factory SearchLawDTO.fromJson(Map<String, dynamic> data) {
     return SearchLawDTO(
+        data['name'],
         data['statueDesc'],
         data['sectionDesc'],
         data['paragraphDesc'],
@@ -32,6 +35,7 @@ class SearchLawDTO {
 
   Map<String, dynamic> toJson() {
     return {
+      'name': name,
       'statueDesc': statueDesc,
       'sectionDesc': sectionDesc,
       'paragraphDesc': paragraphDesc,
@@ -43,6 +47,7 @@ class SearchLawDTO {
   }
 
   SearchLawDTO(
+      this.name,
       this.statueDesc,
       this.sectionDesc,
       this.paragraphDesc,

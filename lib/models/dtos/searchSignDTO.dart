@@ -13,6 +13,7 @@ class SearchSignDTO {
         data['imageUrl'],
         data['searchLawDTOs']
             .map((entry) => SearchLawDTO(
+                  entry['name'],
                   entry['statueDesc'],
                   entry['sectionDesc'],
                   entry['paragraphDesc'],

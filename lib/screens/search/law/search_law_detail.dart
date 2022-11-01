@@ -43,7 +43,7 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
             IconButton(
                 icon: const Icon(Icons.receipt),
                 onPressed: () {
-                  Get.to(() => CartPage());
+                  Get.to(() => CartPage(), preventDuplicates: false);
                 }),
           ],
         ),
@@ -101,6 +101,27 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                     TextSpan(children: [
                                                   TextSpan(
                                                       text:
+                                                          "${widget.searchLawDto!.name}.",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline4
+                                                          ?.copyWith(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: FONTSIZES
+                                                                  .textLarge)),
+                                                  WidgetSpan(
+                                                      child: Container(
+                                                    color: Colors.grey.shade300,
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                  )),
+                                                  TextSpan(
+                                                      text:
                                                           "${widget.searchLawDto!.statueDesc}.",
                                                       style: Theme.of(context)
                                                           .textTheme
@@ -132,8 +153,10 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                         .headline4
                                                         ?.copyWith(
                                                             color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                            fontStyle: FontStyle
+                                                                .italic,
+                                                            // fontWeight:
+                                                            //     FontWeight.,
                                                             fontSize: FONTSIZES
                                                                 .textMediumLarge),
                                                   )),
@@ -226,6 +249,7 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                                 null &&
                                                             !cc.laws.contains(widget
                                                                 .searchLawDto)) {
+                                                          print(cc.laws.length);
                                                           cc.laws.add(widget
                                                               .searchLawDto!);
                                                         }

@@ -39,6 +39,43 @@ upload(File imageFile, {bool cont = true}) async {
   return await response.stream.bytesToString();
 }
 
+numberEngToVietWord(String input) {
+  var res = input;
+  res = res
+      .replaceAll("zero", "không")
+      .replaceAll("one", "một")
+      .replaceAll("two", "hai")
+      .replaceAll("three", "ba")
+      .replaceAll("four", "bốn")
+      .replaceAll("five", "năm")
+      .replaceAll("six", "sáu")
+      .replaceAll("seven", "bảy")
+      .replaceAll("eight", "tám")
+      .replaceAll("nine", "chín")
+      .replaceAll("ten", "mười")
+      .replaceAll("twenty", "hai mươi")
+      .replaceAll("thirty", "ba mươi")
+      .replaceAll("fourty", "bốn mươi")
+      .replaceAll("fifty", "năm mươi")
+      .replaceAll("sixty", "sáu mươi")
+      .replaceAll("seventy", "bảy mươi")
+      .replaceAll("eighty", "tám mươi")
+      .replaceAll("ninety", "chín mươi")
+      .replaceAll("hundred", "trăm")
+      .replaceAll("thousand", "nghìn")
+      .replaceAll("million", "triệu")
+      .replaceAll("billion", "tỷ");
+  return res;
+}
+
+defaultDivider() {
+  return const Divider(
+    height: 10,
+    thickness: 1,
+    color: Colors.black,
+  );
+}
+
 handleError(value) {
   Get.snackbar('Lỗi', '$value', colorText: Colors.red, isDismissible: true);
   Get.offAll(() => ContainerScreen());

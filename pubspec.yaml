@@ -48,6 +48,8 @@ dependencies:
   flutter_native_splash:
   styled_text:
   yaml:
+  number_to_words_english:
+  translator:
   flutter:
     sdk: flutter
   shared_preferences: "^2.0.15"
