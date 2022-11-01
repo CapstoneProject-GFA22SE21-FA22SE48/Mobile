@@ -17,6 +17,7 @@ const kWarningGradientColor = Color.fromARGB(255, 245, 159, 11);
 const kDisabledGradientColor = Color.fromARGB(255, 108, 117, 125);
 
 const kBlueAccentBackground = Colors.blueAccent;
+const kLightBlueBacground = Color(0xFFA9CAFF);
 
 const kPrimaryBackgroundColor = Color.fromARGB(255, 255, 255, 255);
 

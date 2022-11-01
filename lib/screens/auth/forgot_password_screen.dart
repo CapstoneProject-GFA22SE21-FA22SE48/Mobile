@@ -121,7 +121,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                   Padding(
                     padding: kDefaultPadding * 2,
                     child: Image.asset(
-                      "assets/images/snapchat.png",
+                      "assets/images/auth/verify_success.png",
                       scale: isKeyboardVisible ? 5 : 2,
                     ),
                   ),

@@ -13,7 +13,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        elevation: 0,
+        // elevation: 0,
         title: const Text('Phản hồi'),
       ),
       body: Container(),

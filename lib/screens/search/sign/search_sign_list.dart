@@ -71,36 +71,36 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                               height: 4.h,
                               child: Text(
                                   'Có ${widget.searchSignDTOList!.length} kết quả tìm được liên quan đến ${sc.signCategory.value}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline4
-                                      ?.copyWith(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: FONTSIZES.textMedium)),
+                                  style: const TextStyle(
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: FONTSIZES.textMedium)),
                             ),
                           ),
                         ),
                         SizedBox(
                           width: 100.w,
                           height: isKeyboardVisible ? 37.h : 62.h,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: kDefaultPaddingValue),
-                            child: ListView.separated(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: widget.searchSignDTOList!.length,
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(height: kDefaultPaddingValue),
-                              itemBuilder: ((context, index) {
-                                return ElevatedButton(
+                          child: ListView.separated(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: widget.searchSignDTOList!.length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(
+                                    height: kDefaultPaddingValue / 2),
+                            itemBuilder: ((context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: kDefaultPaddingValue,
+                                  vertical: kDefaultPaddingValue / 4,
+                                ),
+                                child: ElevatedButton(
                                   onPressed: () {},
                                   style: ElevatedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: kDefaultPaddingValue / 2),
                                       backgroundColor: Colors.white,
-                                      elevation: 5,
+                                      // elevation: 5,
                                       shadowColor: Colors.grey.shade200,
                                       alignment: Alignment.center,
                                       shape: RoundedRectangleBorder(
@@ -113,9 +113,9 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                                         searchSignDTO:
                                             widget.searchSignDTOList![index]),
                                   ),
-                                );
-                              }),
-                            ),
+                                ),
+                              );
+                            }),
                           ),
                         ),
                       ]);

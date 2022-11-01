@@ -56,6 +56,20 @@ class _SearchLawScreenState extends State<SearchLawScreen>
     Colors.deepOrangeAccent.shade100,
     Colors.grey.shade300
   ];
+  final List<Image> images = <Image>[
+    Image.asset("/assets/images/law/turn-left.png", scale: 5),
+    Image.asset("/assets/images/law/speed-limit.png", scale: 5),
+    Image.asset("/assets/images/law/no-alcohol.png", scale: 5),
+    Image.asset("/assets/images/law/parking.png", scale: 5),
+    Image.asset("/assets/images/law/delivery.png", scale: 5),
+    Image.asset("/assets/images/law/driving-license.png", scale: 5),
+    Image.asset("/assets/images/law/direction.png", scale: 5),
+    Image.asset("/assets/images/law/delivery-truck.png", scale: 5),
+    Image.asset("/assets/images/law/jack.png", scale: 5),
+    Image.asset("/assets/images/law/priority.png", scale: 5),
+    Image.asset("/assets/images/law/road-barrier.png", scale: 5),
+    Image.asset("/assets/images/law/speed-limit.png", scale: 5),
+  ];
 
   @override
   void initState() {
@@ -146,7 +160,7 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                                   horizontal: kDefaultPaddingValue / 2),
                               child: SizedBox(
                                 width: 100.w,
-                                height: isKeyboardVisible ? 39.h : 64.h,
+                                height: isKeyboardVisible ? 42.h : 64.h,
                                 child: GridView.count(
                                   clipBehavior: Clip.hardEdge,
                                   crossAxisCount: 3,
@@ -165,7 +179,7 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                                                     snapshot.data![index].id));
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            elevation: 5,
+                                            // elevation: 5,
                                             backgroundColor: Colors.white,
                                             animationDuration: const Duration(
                                                 milliseconds: 500),
@@ -178,22 +192,25 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                                           child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
                                             children: [
-                                              IconButton(
-                                                iconSize: 48,
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 5),
-                                                onPressed: () {
-                                                  Get.to(() =>
-                                                      SearchLawListScreen(
-                                                          keywordId: snapshot
-                                                              .data![index]
-                                                              .id));
-                                                },
-                                                // color: Colors.accents[index],
-                                                color: iconColors[index],
-                                                icon: Icon(iconData[index]),
-                                              ),
+                                              // IconButton(
+                                              //   iconSize: 48,
+                                              //   padding: const EdgeInsets.only(
+                                              //       bottom: 5),
+                                              //   onPressed: () {
+                                              //     Get.to(() =>
+                                              //         SearchLawListScreen(
+                                              //             keywordId: snapshot
+                                              //                 .data![index]
+                                              //                 .id));
+                                              //   },
+                                              //   // color: Colors.accents[index],
+                                              //   color: iconColors[index],
+                                              //   icon: Icon(iconData[index]),
+                                              // ),
+                                              images[index],
                                               Text(
                                                 snapshot.data![index].name,
                                                 maxLines: 2,

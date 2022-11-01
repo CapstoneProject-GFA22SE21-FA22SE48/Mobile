@@ -41,7 +41,7 @@ class _FeedbackClassState extends State<CommentsScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        elevation: 4,
+        // elevation: 4,
         title: const Text('Bình luận phản hồi'),
       ),
       body: FutureBuilder<List<Comment>>(
@@ -172,7 +172,6 @@ class _FeedbackClassState extends State<CommentsScreen> {
       ),
       // bottomNavigationBar: BottomAppBar(
       //   color: Colors.white,
-      //   elevation: 4,
       //   child: Container(
       //     height: 8.h,
       //     width: 100.w,

@@ -25,7 +25,7 @@ class TestRestulScreen extends StatelessWidget {
       // backgroundColor: Color.fromARGB(255, 255, 242, 202),
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        elevation: 4,
+        // elevation: 4,
         title: const Text('Kết quả 10 lần thi gần nhất'),
       ),
       body: SafeArea(
