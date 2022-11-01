@@ -284,7 +284,9 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                     ),
                                     SizedBox(height: kDefaultPaddingValue / 2),
                                     Text(
-                                      "Kết quả của 10 lần thi gần nhất",
+                                      gc.userId.value.isNotEmpty
+                                          ? "Kết quả của 10 lần thi gần nhất"
+                                          : "Chưa có dữ liệu",
                                       style: TextStyle(
                                           fontSize: FONTSIZES.textPrimary,
                                           color: Colors.white),
