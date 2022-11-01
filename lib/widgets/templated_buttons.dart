@@ -27,10 +27,10 @@ class TemplatedButtons {
     return TextButton(
       style: TemplatedButtons().confirmStyle,
       onPressed: () {
-        Navigator.pop(context, 'OK');
+        Navigator.pop(context, 'ĐỒNG Ý');
       },
       child: const Text(
-        "OK",
+        "ĐỒNG Ý",
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
@@ -40,11 +40,11 @@ class TemplatedButtons {
     return TextButton(
       style: TemplatedButtons().confirmStyle,
       onPressed: () {
-        Navigator.pop(context, 'OK');
+        Navigator.pop(context, 'ĐỒNG Ý');
         Get.to(screen);
       },
       child: const Text(
-        "OK",
+        "ĐỒNG Ý",
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
@@ -67,10 +67,10 @@ class TemplatedButtons {
     return TextButton(
       style: TemplatedButtons().cancelStyle,
       onPressed: () {
-        Navigator.pop(context, 'DENY');
+        Navigator.pop(context, 'TỪ CHỐI');
       },
       child: const Text(
-        "DENY",
+        "TỪ CHỐI",
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );

@@ -84,7 +84,6 @@ class _QuizScreenState extends State<QuizScreen> {
           //     gc.test_mode == TEST_TYPE.STUDY ? false : true,
           // appBar: AppBar(
           //   backgroundColor: Colors.blueAccent,
-          //   elevation: 4,
           //   title: Text(
           //     widget.questionCategoryName.isNotEmpty
           //         ? widget.questionCategoryName

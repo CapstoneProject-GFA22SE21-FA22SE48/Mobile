@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -62,7 +63,7 @@ class SearchListItem extends StatelessWidget {
                     child: const Icon(
                       Icons.search,
                       size: 64,
-                      color: Colors.black54,
+                      color: Colors.blueAccent,
                     )),
                 Padding(
                   padding: const EdgeInsets.only(left: kDefaultPaddingValue),
@@ -120,70 +121,95 @@ class SearchListItem extends StatelessWidget {
         ),
       );
     } else if (searchSignDTO != null) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: GestureDetector(
-          onTap: () {
-            Get.to(() => SearchSignDetailScreen(searchSignDto: searchSignDTO));
-          },
-          child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                SizedBox(
+      return GestureDetector(
+        onTap: () {
+          Get.to(() => SearchSignDetailScreen(searchSignDto: searchSignDTO));
+        },
+        child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 25.w,
+                child: CachedNetworkImage(
+                  imageUrl: searchSignDTO!.imageUrl as String,
+                  imageBuilder: (context, imageProvider) => Container(
                     width: 25.w,
-                    child: searchSignDTO!.imageUrl != null
-                        ? Image.network(
-                            searchSignDTO!.imageUrl as String,
-                            fit: BoxFit.contain,
-                          )
-                        : Icon(
-                            Icons.search,
-                            size: 64,
-                            color: Colors.black54,
-                          )),
-                Padding(
-                  padding: const EdgeInsets.only(left: kDefaultPaddingValue),
-                  child: Container(
-                      width: 60.w,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                searchSignDTO!.name,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline4
-                                    ?.copyWith(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: FONTSIZES.textMediumLarge)),
-                            Text(
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                searchSignDTO!.description,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline4
-                                    ?.copyWith(
-                                        color: Colors.black,
-                                        fontSize: FONTSIZES.textPrimary)),
-                            const Padding(
-                              padding: EdgeInsets.only(
-                                  top: kDefaultPaddingValue / 2),
-                              child: Text(
-                                'Tìm hiểu thêm',
-                                style: TextStyle(
-                                    color: Colors.blue,
-                                    decoration: TextDecoration.underline),
-                              ),
-                            )
-                          ])),
+                    height: 14.h,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        //image size fill
+                        image: imageProvider,
+                        fit: BoxFit.fitWidth,
+                      ),
+                    ),
+                  ),
+                  placeholder: (context, url) => Container(
+                    alignment: Alignment.center,
+                    child:
+                        CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
+                  ), //show progress  while loading image
+                  errorWidget: (context, url, error) =>
+                      Image.asset("assets/images/alt_image.png"),
+                  //show no iamge availalbe image on error laoding
                 ),
-              ]),
-        ),
+                // searchSignDTO!.imageUrl != null ?
+
+                // Image.network(
+                //     searchSignDTO!.imageUrl as String,
+                //     fit: BoxFit.contain,
+                //   )
+                // : const Icon(
+                //     Icons.search,
+                //     size: 64,
+                //     color: Colors.black54,
+                //   )
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: kDefaultPaddingValue / 2,
+                    horizontal: kDefaultPaddingValue / 2),
+                child: Container(
+                    width: 60.w,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              searchSignDTO!.name,
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: FONTSIZES.textMediumLarge)),
+                          const Divider(
+                            height: kDefaultPaddingValue / 2,
+                            color: Colors.white,
+                          ),
+                          Text(
+                              maxLines: 4,
+                              overflow: TextOverflow.ellipsis,
+                              searchSignDTO!.description,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4
+                                  ?.copyWith(
+                                      color: Colors.black,
+                                      fontSize: FONTSIZES.textPrimary)),
+                          const Padding(
+                            padding:
+                                EdgeInsets.only(top: kDefaultPaddingValue / 2),
+                            child: Text(
+                              'Tìm hiểu thêm',
+                              style: TextStyle(
+                                  color: Colors.blueAccent,
+                                  decoration: TextDecoration.underline),
+                            ),
+                          )
+                        ])),
+              ),
+            ]),
       );
     } else {
       return WillPopScope(

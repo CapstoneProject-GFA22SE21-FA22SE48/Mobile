@@ -94,7 +94,7 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                           ),
                           SizedBox(
                             width: 100.w,
-                            height: isKeyboardVisible ? 45.h : 80.h,
+                            height: isKeyboardVisible ? 48.h : 79.h,
                             child: Padding(
                               padding: EdgeInsets.symmetric(
                                 horizontal: kDefaultPaddingValue,
@@ -116,7 +116,7 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                                         padding: const EdgeInsets.symmetric(
                                             vertical: kDefaultPaddingValue / 2),
                                         backgroundColor: Colors.white,
-                                        elevation: 5,
+                                        // elevation: 5,
                                         shadowColor: Colors.grey.shade200,
                                         alignment: Alignment.center,
                                         shape: RoundedRectangleBorder(

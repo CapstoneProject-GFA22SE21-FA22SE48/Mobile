@@ -30,10 +30,12 @@ class SearchBar extends GetView<GlobalController> {
                 // ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.shade300,
-                    spreadRadius: 3,
-                    blurRadius: 5,
-                  )
+                    color: isKeyboardVisible
+                        ? Color(0xFFAEC8FF)
+                        : Colors.grey.shade300,
+                    spreadRadius: isKeyboardVisible ? 2 : 1.25,
+                    blurRadius: isKeyboardVisible ? 4 : 0,
+                  ),
                 ],
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20)),
@@ -63,19 +65,22 @@ class SearchBar extends GetView<GlobalController> {
                       color:
                           isKeyboardVisible ? Colors.blueAccent : Colors.grey,
                     ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        Icons.clear,
-                        color:
-                            isKeyboardVisible ? Colors.blueAccent : Colors.grey,
-                      ),
-                      onPressed: () {
-                        if (_textController.text.isNotEmpty) {
-                          sc.updateQuery("");
-                          _textController.text = sc.query.value;
-                        }
-                      },
-                    ),
+                    suffixIcon: isKeyboardVisible
+                        ? IconButton(
+                            icon: Icon(
+                              Icons.clear,
+                              color: isKeyboardVisible
+                                  ? Colors.blueAccent
+                                  : Colors.grey,
+                            ),
+                            onPressed: () {
+                              if (_textController.text.isNotEmpty) {
+                                sc.updateQuery("");
+                                _textController.text = sc.query.value;
+                              }
+                            },
+                          )
+                        : null,
                     hintText: gc.tab.value == TABS.SEARCH
                         ? 'Tra cứu luật của ${(sc.vehicleCategory.value)}...'
                         : 'Tra cứu các ${(sc.signCategory.value)}...',

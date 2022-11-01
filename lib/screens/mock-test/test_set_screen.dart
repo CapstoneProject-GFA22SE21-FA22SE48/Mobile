@@ -36,7 +36,7 @@ class _TestSetScreenState extends State<TestSetScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        elevation: 4,
+        // elevation: 4,
         title: Text('Câu hỏi lý thuyết (Hạng ${widget.categoryName})'),
       ),
       body: FutureBuilder<List<QuestionCategory>>(
