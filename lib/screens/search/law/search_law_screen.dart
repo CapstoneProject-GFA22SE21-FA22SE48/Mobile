@@ -56,6 +56,20 @@ class _SearchLawScreenState extends State<SearchLawScreen>
     Colors.deepOrangeAccent.shade100,
     Colors.grey.shade300
   ];
+  final List<Image> images = <Image>[
+    Image.asset("assets/images/law/turn_left.png", scale: 10),
+    Image.asset("assets/images/law/speed_limit.png", scale: 10),
+    Image.asset("assets/images/law/no_alcohol.png", scale: 10),
+    Image.asset("assets/images/law/parking.png", scale: 10),
+    Image.asset("assets/images/law/delivery.png", scale: 10),
+    Image.asset("assets/images/law/driving_license.png", scale: 10),
+    Image.asset("assets/images/law/direction.png", scale: 10),
+    Image.asset("assets/images/law/delivery_truck.png", scale: 10),
+    Image.asset("assets/images/law/jack.png", scale: 10),
+    Image.asset("assets/images/law/priority.png", scale: 10),
+    Image.asset("assets/images/law/road_barrier.png", scale: 10),
+    Image.asset("assets/images/law/speed_limit.png", scale: 10),
+  ];
 
   @override
   void initState() {
@@ -141,75 +155,88 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                               ),
                               child: SearchBar(),
                             ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: kDefaultPaddingValue / 2),
-                              child: SizedBox(
-                                width: 100.w,
-                                height: isKeyboardVisible ? 39.h : 64.h,
-                                child: GridView.count(
-                                  clipBehavior: Clip.hardEdge,
-                                  crossAxisCount: 3,
-                                  children: List.generate(
-                                    growable: true,
-                                    snapshot.data!.length,
-                                    (index) {
-                                      return Container(
-                                        margin: const EdgeInsets.all(
-                                          kDefaultPaddingValue / 2,
+                            SizedBox(
+                              width: 100.w,
+                              height: isKeyboardVisible ? 42.h : 64.h,
+                              child: GridView.count(
+                                clipBehavior: Clip.hardEdge,
+                                mainAxisSpacing: kDefaultPaddingValue / 4,
+                                crossAxisCount: 3,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: kDefaultPaddingValue / 2,
+                                ),
+                                children: List.generate(
+                                  growable: true,
+                                  snapshot.data!.length,
+                                  (index) {
+                                    return Container(
+                                      margin: const EdgeInsets.all(
+                                        kDefaultPaddingValue / 4,
+                                      ),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          Get.to(() => SearchLawListScreen(
+                                              keywordId:
+                                                  snapshot.data![index].id));
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          // elevation: 5,
+                                          backgroundColor: Colors.white,
+                                          animationDuration:
+                                              const Duration(milliseconds: 500),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      kDefaultPaddingValue)),
+                                          shadowColor: Colors.grey.shade200,
                                         ),
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            Get.to(() => SearchLawListScreen(
-                                                keywordId:
-                                                    snapshot.data![index].id));
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            elevation: 5,
-                                            backgroundColor: Colors.white,
-                                            animationDuration: const Duration(
-                                                milliseconds: 500),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        10.0)),
-                                            shadowColor: Colors.grey.shade200,
-                                          ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              IconButton(
-                                                iconSize: 48,
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 5),
-                                                onPressed: () {
-                                                  Get.to(() =>
-                                                      SearchLawListScreen(
-                                                          keywordId: snapshot
-                                                              .data![index]
-                                                              .id));
-                                                },
-                                                // color: Colors.accents[index],
-                                                color: iconColors[index],
-                                                icon: Icon(iconData[index]),
-                                              ),
-                                              Text(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            // IconButton(
+                                            //   iconSize: 48,
+                                            //   padding: const EdgeInsets.only(
+                                            //       bottom: 5),
+                                            //   onPressed: () {
+                                            //     Get.to(() =>
+                                            //         SearchLawListScreen(
+                                            //             keywordId: snapshot
+                                            //                 .data![index]
+                                            //                 .id));
+                                            //   },
+                                            //   // color: Colors.accents[index],
+                                            //   color: iconColors[index],
+                                            //   icon: Icon(iconData[index]),
+                                            // ),
+                                            Container(
+                                              height: 8.h,
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical:
+                                                      kDefaultPaddingValue / 2),
+                                              child: images[index],
+                                            ),
+                                            Container(
+                                              height: 5.h,
+                                              alignment: Alignment.center,
+                                              child: Text(
                                                 snapshot.data![index].name,
                                                 maxLines: 2,
                                                 textAlign: TextAlign.center,
                                                 style: const TextStyle(
                                                   color: Colors.black54,
                                                   fontSize:
-                                                      FONTSIZES.textPrimary,
+                                                      FONTSIZES.textMedium,
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      );
-                                    },
-                                  ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ),
