@@ -32,20 +32,20 @@ class ScoreScreen extends StatelessWidget {
         trds.add(trd);
       });
 
-      // questions.forEach((question) {
-      //   if (trds.firstWhereOrNull(
-      //           (element2) => element2.questionId == question.id) ==
-      //       null) {
-      //     TestResultDetail trd = TestResultDetail(
-      //       Uuid().v4(),
-      //       trId,
-      //       question.id,
-      //       null,
-      //       false,
-      //     );
-      //     trds.add(trd);
-      //   }
-      // });
+      questions.forEach((question) {
+        if (trds.firstWhereOrNull(
+                (element2) => element2.questionId == question.id) ==
+            null) {
+          TestResultDetail trd = TestResultDetail(
+            Uuid().v4(),
+            trId,
+            question.id,
+            null,
+            false,
+          );
+          trds.add(trd);
+        }
+      });
 
       GlobalController gc = Get.put(GlobalController());
       TestResult tr = TestResult(
