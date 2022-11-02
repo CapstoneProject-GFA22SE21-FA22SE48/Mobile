@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:vnrdn_tai/models/TestCategory.dart';
 import 'package:vnrdn_tai/models/TestResult.dart';
 import 'package:vnrdn_tai/models/dtos/testAttemptDTO.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -18,11 +19,11 @@ class TestResultSerivce {
         .toList();
   }
 
-  Future<List<TestResult>> GetTestResultList(userId) async {
+  Future<List<TestResult>> GetTestResultList(userId, testCategoryId) async {
     try {
       final res = await http
           .get(Uri.parse(
-              '${url}TestResults/GetTestResultByUserId?userId=$userId'))
+              '${url}TestResults/GetTestResultByUserId?userId=$userId&&testCategoryId=$testCategoryId'))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
@@ -62,13 +63,18 @@ class TestResultSerivce {
     }
   }
 
-  Future<List<TestAttempDTO>> GetTestAttemptDTOs(testResultId) async {
+  Future<List<TestAttempDTO>> GetTestAttemptDTOs(testResultId, userId, testCategoryId) async {
     try {
       final res = await http
           // ignore: prefer_interpolation_to_compose_strings
           .get(Uri.parse("${url}TestResults/GetTestAttemptDTOs?testResultId=" +
-              testResultId))
+              testResultId +
+              "&&userId=" +
+              userId +
+              "&&testCategoryId=" +
+              testCategoryId))
           .timeout(const Duration(seconds: TIME_OUT));
+      print(res.body);
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.

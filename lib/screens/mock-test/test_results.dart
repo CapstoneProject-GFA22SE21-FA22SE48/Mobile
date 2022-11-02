@@ -14,8 +14,8 @@ import 'package:vnrdn_tai/services/TestCategoryService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 
-class TestRestulScreen extends StatelessWidget {
-  const TestRestulScreen({super.key, required this.testResults});
+class TestResultScreen extends StatelessWidget {
+  const TestResultScreen({super.key, required this.testResults});
   final List<TestResult> testResults;
 
   @override
@@ -56,7 +56,7 @@ class TestRestulScreen extends StatelessWidget {
                                       onPressed: () {
                                         Get.to(() => TestResultDetailScreen(
                                             title:
-                                                'Bạn đã trả lời ${testResults[index].testResultDetails.length} trên 25 câu.',
+                                                'Bạn đã trả lời ${testResults[index].testResultDetails.where((element) => element.answerId != null).length} trên 25 câu.',
                                             tr: testResults[index]));
                                       },
                                       style: kDefaultButtonStyle,
@@ -88,7 +88,7 @@ class TestRestulScreen extends StatelessWidget {
                   )
                 //NEEDHEALING
                 : const Text(
-                    'Tiếc quá! \nBạn chưa thi nên không có kết quả',
+                    'Tiếc quá! \nBạn chưa thi thử ở hạng mục này nên không có kết quả',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: kDisabledTextColor,

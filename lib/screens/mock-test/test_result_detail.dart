@@ -38,7 +38,8 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
   @override
   void initState() {
     super.initState();
-    testAttemptDTOS = TestResultSerivce().GetTestAttemptDTOs(widget.tr.id);
+    testAttemptDTOS = TestResultSerivce().GetTestAttemptDTOs(
+        widget.tr.id, gc.userId.value, qc.testCategoryId.value);
   }
 
   @override
@@ -113,7 +114,8 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                                                 tapBodyToCollapse: true,
                                               ),
                                               header: Padding(
-                                                  padding: const EdgeInsets.all(10),
+                                                  padding:
+                                                      const EdgeInsets.all(10),
                                                   child: Column(
                                                     children: [
                                                       snapshot.data![index]
@@ -180,10 +182,16 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                                                     CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   Padding(
-                                                      padding: const EdgeInsets.only(
-                                                          bottom: 10),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 10),
                                                       child: Text(
-                                                        "Bạn đã chọn: \n${snapshot.data![index].chosenAnswerContent}",
+                                                        snapshot
+                                                                .data![index]
+                                                                .chosenAnswerContent
+                                                                .isNotEmpty
+                                                            ? "Bạn đã chọn: \n${snapshot.data![index].chosenAnswerContent}"
+                                                            : "Bạn đã không chọn đáp án",
                                                         softWrap: true,
                                                         overflow:
                                                             TextOverflow.fade,
@@ -191,8 +199,9 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                                                             fontSize: 16),
                                                       )),
                                                   Padding(
-                                                      padding: const EdgeInsets.only(
-                                                          bottom: 10),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 10),
                                                       child: Text(
                                                         'Câu trả lời đúng là: \n${snapshot.data![index].correctAnswerContent}',
                                                         softWrap: true,
@@ -206,10 +215,11 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                                               builder:
                                                   (_, collapsed, expanded) {
                                                 return Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      left: 10,
-                                                      right: 10,
-                                                      bottom: 10),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 10,
+                                                          right: 10,
+                                                          bottom: 10),
                                                   child: Expandable(
                                                     collapsed: collapsed,
                                                     expanded: expanded,
