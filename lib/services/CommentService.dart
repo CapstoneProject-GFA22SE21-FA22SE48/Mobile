@@ -26,7 +26,9 @@ class CommentService {
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         log(res.body);
-        return parseComments(res.body);
+        List<Comment> list = parseComments(res.body);
+        list.sort(((a, b) => b.createdDate.compareTo(a.createdDate)));
+        return list;
       } else {
         log(res.body);
         return [];
