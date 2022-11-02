@@ -15,7 +15,10 @@ class ProgressBar extends StatelessWidget {
     Get.dialog(
       AlertDialog(
         title: const Text('Nộp bài'),
-        content: const Text('Bạn có chắc là bạn muốn nộp bài không?'),
+        content: const Text(
+          'Bạn có chắc là bạn muốn nộp bài?\n(Lưu ý: bài thi trống sẽ không được lưu)',
+          textAlign: TextAlign.center,
+        ),
         actions: [
           TextButton(
             child: const Text("Xác nhận"),

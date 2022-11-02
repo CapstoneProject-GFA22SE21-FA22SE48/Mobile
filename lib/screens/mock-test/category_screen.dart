@@ -50,16 +50,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   List<List<Color>> gradient = [
     [
-      Color(0xFF8855CC),
-      Color(0xFFBAA7FF),
+      const Color(0xFF8855CC),
+      const Color(0xFFBAA7FF),
     ],
     [
-      Color(0xFF3366FF),
-      Color(0xFF00CCFF),
+      const Color(0xFF3366FF),
+      const Color(0xFF00CCFF),
     ],
     [
-      Color(0xFF00B953),
-      Color(0xFF91F096),
+      const Color(0xFF00B953),
+      const Color(0xFF91F096),
     ]
   ];
 
@@ -150,7 +150,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                   child: Stack(
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(
+                                        padding: const EdgeInsets.only(
                                             top: kDefaultPaddingValue * 4),
                                         child: Container(
                                           height: 16.h,
@@ -158,11 +158,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                             horizontal: kDefaultPaddingValue,
                                           ),
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
+                                            borderRadius: const BorderRadius.all(
                                                 Radius.circular(
                                               kDefaultPaddingValue,
                                             )),
-                                            boxShadow: [
+                                            boxShadow: const [
                                               BoxShadow(
                                                   color: Color.fromARGB(
                                                       80, 82, 82, 82),
@@ -173,9 +173,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                             gradient: LinearGradient(
                                                 colors: gradient[index],
                                                 begin:
-                                                    FractionalOffset(0.0, 0.0),
-                                                end: FractionalOffset(1.0, 0.0),
-                                                stops: [0.0, 1.0],
+                                                    const FractionalOffset(0.0, 0.0),
+                                                end: const FractionalOffset(1.0, 0.0),
+                                                stops: const [0.0, 1.0],
                                                 tileMode: TileMode.decal),
                                           ),
                                           child: Row(
