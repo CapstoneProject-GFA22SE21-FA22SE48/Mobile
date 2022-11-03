@@ -8,11 +8,13 @@ import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/cart_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/controllers/my_tab_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/screens/analysis/analysis_screen.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/feedbacks/comments_screen.dart';
+import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
 import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/category_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
@@ -52,22 +54,33 @@ class ContainerScreen extends GetView<GlobalController> {
       return const SearchSignScreen();
     }
     if (v == TABS.MINIMAP) {
+      MapsController mapsController = Get.put(MapsController());
       return const MinimapScreen();
     }
   }
 
   getActionButton(v) {
-    if (v == TABS.ANALYSIS) {
-      return GestureDetector(
-        onTap: () {
-          Get.to(AnalysisScreen());
-        },
-        child: const Icon(
-          Icons.camera_alt_rounded,
-        ),
-      );
-    } else {
-      return Container();
+    switch (v) {
+      case TABS.ANALYSIS:
+        return IconButton(
+          onPressed: () {
+            Get.to(AnalysisScreen());
+          },
+          icon: const Icon(
+            Icons.camera_alt_rounded,
+          ),
+        );
+      case TABS.MINIMAP:
+        return IconButton(
+          onPressed: () {
+            Get.to(FeedbacksScreen());
+          },
+          icon: const Icon(
+            Icons.warning_amber,
+          ),
+        );
+      default:
+        return Container();
     }
   }
 
@@ -101,9 +114,19 @@ class ContainerScreen extends GetView<GlobalController> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.white,
         elevation: 0,
-        title: Text(title),
+        iconTheme: const IconThemeData(
+          color: Colors.black54,
+          size: FONTSIZES.textHuge,
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.blueAccent,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -114,8 +137,13 @@ class ContainerScreen extends GetView<GlobalController> {
             ),
           ),
         ],
+        actionsIconTheme: const IconThemeData(
+          color: Colors.black54,
+          size: FONTSIZES.textHuge,
+        ),
       ),
       drawer: Drawer(
+        elevation: 4,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
@@ -262,7 +290,7 @@ class ContainerScreen extends GetView<GlobalController> {
                   : Icons.menu_book_outlined,
               size: 30,
               color: controller.tab.value.index == 0
-                  ? Color.fromARGB(255, 89, 155, 255)
+                  ? Color(0xFF3485FF)
                   : Colors.black54,
             ),
             Icon(
@@ -271,7 +299,7 @@ class ContainerScreen extends GetView<GlobalController> {
                   : Icons.motorcycle_outlined,
               size: 30,
               color: controller.tab.value.index == 1
-                  ? Color.fromARGB(255, 89, 155, 255)
+                  ? Color(0xFF3485FF)
                   : Colors.black54,
             ),
             Icon(
@@ -280,7 +308,7 @@ class ContainerScreen extends GetView<GlobalController> {
                   : Icons.remove_circle_outline,
               size: 30,
               color: controller.tab.value.index == 2
-                  ? Color.fromARGB(255, 89, 155, 255)
+                  ? Color(0xFF3485FF)
                   : Colors.black54,
             ),
             Icon(
@@ -289,7 +317,7 @@ class ContainerScreen extends GetView<GlobalController> {
                   : Icons.map_outlined,
               size: 30,
               color: controller.tab.value.index == 3
-                  ? Color.fromARGB(255, 89, 155, 255)
+                  ? Color(0xFF3485FF)
                   : Colors.black54,
             ),
           ],

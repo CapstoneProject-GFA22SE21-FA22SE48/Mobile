@@ -349,8 +349,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                 gc.updateTestMode(TEST_TYPE.TEST);
                                 Get.to(() => TestResultDetailScreen(
                                       tr: onlyWrongTestResult,
-                                      title:
-                                          "Những câu sai trong vòng 10 lần thi gần nhất",
+                                      title: "Xem câu sai",
                                     ));
                               } else {
                                 DialogUtil.showTextDialog(
