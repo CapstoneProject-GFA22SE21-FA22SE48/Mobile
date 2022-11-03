@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/loader/gf_loader.dart';
 import 'package:getwidget/getwidget.dart';
@@ -8,19 +9,35 @@ import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-
 import 'package:vnrdn_tai/shared/constants.dart';
 
+Future<File> compressFile(File file) async {
+  final filePath = file.absolute.path;
+
+  final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+  final splitted = filePath.substring(0, (lastIndex));
+  final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+  var result = (await FlutterImageCompress.compressAndGetFile(
+    minHeight: 640,
+    minWidth: 640,
+    file.absolute.path,
+    outPath,
+    quality: 50,
+  ))!;
+
+  print(file.lengthSync());
+  print(result.lengthSync());
+
+  return result;
+}
+
 upload(File imageFile, {bool cont = true}) async {
-  print(cont);
   if (!cont) return "[]";
   // open a bytestream
-  var stream =
-      new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+  var _imageFile = await compressFile(imageFile);
+  var stream = http.ByteStream(DelegatingStream.typed(_imageFile.openRead()));
   // get file length
-  var length = await imageFile.length();
-
+  var length = await _imageFile.length();
   // string to uri
   var uri = Uri.parse(ai_url);
 
@@ -29,11 +46,18 @@ upload(File imageFile, {bool cont = true}) async {
 
   // multipart that takes file
   var multipartFile = http.MultipartFile('file', stream, length,
-      filename: basename(imageFile.path));
+      filename: basename(_imageFile.path));
 
-  // add file to multipart
   request.files.add(multipartFile);
 
+  Map<String, String> headers = {
+    "Content-Type": "multipart/form-data",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept": "*/*",
+    "Connection": "keep-alive"
+  };
+  // add file to multipart
+  request.headers.addAll(headers);
   // send
   var response = await request.send();
   return await response.stream.bytesToString();

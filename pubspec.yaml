@@ -33,7 +33,9 @@ dependencies:
   font_awesome_flutter:
   get:
   http:
+  mime:
   camera:
+  flutter_image_compress:
   path_provider:
   path:
   flutter_vision:

@@ -54,7 +54,6 @@ class AnalysisController extends GetxController {
     var data = await rootBundle.loadString('assets/ml/custom.yaml');
     var d = loadYaml(data);
     _mapData = d['names'];
-    print(_mapData);
     initCamera();
     super.onInit();
   }
@@ -95,18 +94,22 @@ class AnalysisController extends GetxController {
     if (res != "[]") {
       _imagePath = path;
     }
-    return res != "[]" ? res : "[]";
+    return res != "[]" && !res.contains('Error') ? res : "[]";
   }
 
   void startTimer() {
     // _boxes.clear();
-    _timer = Timer.periodic(Duration(milliseconds: 50), (Timer t) async {
+    _timer = Timer.periodic(Duration(milliseconds: 1000), (Timer t) async {
       _timer!.cancel();
       if (!_isDetecting) {
         t.cancel();
       }
       await Future.delayed(Duration(milliseconds: 50));
+      final stopwatch = Stopwatch()..start();
       var res = await takePicAndDetect();
+      print('executed in ${stopwatch.elapsed}');
+      stopwatch.stop();
+
       // _detected = res;
       List<List<dynamic>> b = [];
       if (res != "[]") {
@@ -131,6 +134,8 @@ class AnalysisController extends GetxController {
       }
       _boxes = b;
       // update();
+      // stopImageStream();
+
       if (b.isNotEmpty) {
         // stopImageStream();
       }
