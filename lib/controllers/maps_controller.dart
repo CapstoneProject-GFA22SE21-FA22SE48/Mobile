@@ -8,6 +8,7 @@ import 'package:vnrdn_tai/models/UserInfo.dart';
 
 class MapsController extends GetxController {
   static MapsController instance = Get.find();
+  Location location = Location();
   late List<GPSSign> _listSigns;
   final zoom = 18.0.obs;
 
@@ -21,7 +22,7 @@ class MapsController extends GetxController {
 
   @override
   dispose() {
-    updateZoom(0.0);
+    updateZoom(18.0);
     super.dispose();
   }
 

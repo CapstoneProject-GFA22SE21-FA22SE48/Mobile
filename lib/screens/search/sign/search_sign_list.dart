@@ -36,8 +36,8 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
   Widget build(BuildContext context) {
     SearchController sc = Get.put(SearchController());
     return Scaffold(
-        body: SafeArea(
-      child: FutureBuilder<List<SearchSignDTO>>(
+      body: SafeArea(
+        child: FutureBuilder<List<SearchSignDTO>>(
           key: UniqueKey(),
           initialData: widget.searchSignDTOList,
           future: widget.futureSearchSignDTO,
@@ -59,8 +59,8 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                   widget.searchSignDTOList = snapshot.data;
                 }
                 return KeyboardVisibilityBuilder(
-                    builder: (context, isKeyboardVisible) {
-                  return Column(
+                  builder: (context, isKeyboardVisible) {
+                    return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Padding(
@@ -83,6 +83,7 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                           height: isKeyboardVisible ? 37.h : 62.h,
                           child: ListView.separated(
                             scrollDirection: Axis.vertical,
+                            physics: const BouncingScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: widget.searchSignDTOList!.length,
                             separatorBuilder: (context, index) =>
@@ -118,11 +119,15 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                             }),
                           ),
                         ),
-                      ]);
-                });
+                      ],
+                    );
+                  },
+                );
               }
             }
-          }),
-    ));
+          },
+        ),
+      ),
+    );
   }
 }

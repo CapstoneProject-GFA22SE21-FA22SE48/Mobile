@@ -106,6 +106,7 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                               child: ListView.separated(
                                 itemCount: snapshot.data!.length,
                                 scrollDirection: Axis.vertical,
+                                physics: const BouncingScrollPhysics(),
                                 shrinkWrap: true,
                                 separatorBuilder: (context, index) =>
                                     const SizedBox(

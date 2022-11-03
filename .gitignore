@@ -46,3 +46,4 @@ app.*.map.json
 # test list
 list_sign_location.json
 *.template
+*.old

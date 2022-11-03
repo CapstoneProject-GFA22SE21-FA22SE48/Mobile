@@ -48,145 +48,141 @@ class _BodyState extends State<Body> {
           return await false;
         }
       },
-      child: Stack(
-        children: [
-          SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: kDefaultPaddingValue),
+              child: gc.test_mode == TEST_TYPE.TEST ? ProgressBar() : null,
+            ),
+            const SizedBox(height: kDefaultPaddingValue),
+            Row(
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: kDefaultPaddingValue),
-                  child: gc.test_mode == TEST_TYPE.TEST ? ProgressBar() : null,
-                ),
-                const SizedBox(height: kDefaultPaddingValue),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: kDefaultPaddingValue,
+                    horizontal: kDefaultPaddingValue,
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          qnController.stopTimer();
+                          Get.offAll(() => ContainerScreen());
+                        },
+                        icon: const FaIcon(
+                          FontAwesomeIcons.close,
+                          color: Colors.white,
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              qnController.stopTimer();
-                              Get.offAll(() => ContainerScreen());
-                            },
-                            icon: const FaIcon(
-                              FontAwesomeIcons.close,
-                              color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 18.w,
-                          ),
-                          Text(
-                            "Câu số $questionNo/${widget.questions.length}",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: FONTSIZES.textHuge,
-                            ),
-                          ),
-                        ],
+                      SizedBox(
+                        width: 16.w,
                       ),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: PageView.builder(
-                    itemCount: widget.questions.length,
-                    controller: pageController,
-                    onPageChanged: (value) => updatePageNo(value),
-                    itemBuilder: ((context, index) => QuestionCard(
-                          question: widget.questions[index],
-                        )),
+                      Text(
+                        "Câu số $questionNo/${widget.questions.length}",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: FONTSIZES.textHuge,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 8.h,
-                      width: 40.w,
-                      margin:
-                          const EdgeInsets.only(bottom: kDefaultPaddingValue),
-                      alignment: Alignment.topCenter,
-                      padding: const EdgeInsets.all(0),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black12,
-                                spreadRadius: 0,
-                                blurRadius: 10)
-                          ],
-                          borderRadius:
-                              BorderRadius.circular(kDefaultPaddingValue * 4)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // IconButton(
-                          //   onPressed: () {},
-                          //   icon: const FaIcon(
-                          //     FontAwesomeIcons.anglesLeft,
-                          //     color: Colors.white,
-                          //     size: FONTSIZES.textHuge,
-                          //   ),
-                          // ),
-                          IconButton(
-                            onPressed: () {
-                              if (questionNo > 1) {
-                                updatePageNo(questionNo - 2);
-                              }
-                              // pageController.page.toInt();
-                              pageController.jumpTo(100.w * (questionNo - 1));
-                            },
-                            icon: const FaIcon(
-                              FontAwesomeIcons.angleLeft,
-                              color: Colors.blueAccent,
-                              size: FONTSIZES.textHuge,
-                            ),
-                          ),
-                          const SizedBox(width: kDefaultPaddingValue),
-                          Center(
-                            child: Stack(children: [
-                              Image.asset("assets/images/logo.png",
-                                  height: 40.0),
-                            ]),
-                          ),
-                          const SizedBox(width: kDefaultPaddingValue),
-                          IconButton(
-                            onPressed: () {
-                              print("n");
-                              pageController.jumpTo(100.w * questionNo);
-                            },
-                            icon: const FaIcon(
-                              FontAwesomeIcons.angleRight,
-                              color: Colors.blueAccent,
-                              size: FONTSIZES.textHuge,
-                            ),
-                          ),
-                          // IconButton(
-                          //   onPressed: () {},
-                          //   icon: const FaIcon(
-                          //     FontAwesomeIcons.anglesRight,
-                          //     color: Colors.white,
-                          //     size: FONTSIZES.textHuge,
-                          //   ),
-                          // ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
               ],
             ),
-          ),
-        ],
+            Expanded(
+              child: PageView.builder(
+                pageSnapping: true,
+                physics: const BouncingScrollPhysics(),
+                itemCount: widget.questions.length,
+                controller: pageController,
+                onPageChanged: (value) => updatePageNo(value),
+                itemBuilder: ((context, index) => QuestionCard(
+                      question: widget.questions[index],
+                    )),
+              ),
+            ),
+            Container(
+              alignment: Alignment.topCenter,
+              margin: const EdgeInsets.only(
+                bottom: kDefaultPaddingValue,
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    height: 6.4.h,
+                    width: 42.w,
+                    padding: const EdgeInsets.all(0),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Colors.black12,
+                              spreadRadius: 0,
+                              blurRadius: 10)
+                        ],
+                        borderRadius:
+                            BorderRadius.circular(kDefaultPaddingValue * 4)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            if (questionNo > 1) {
+                              updatePageNo(questionNo - 2);
+                            }
+                            // pageController.page.toInt();
+                            pageController.jumpTo(100.w * (questionNo - 1));
+                          },
+                          icon: const FaIcon(
+                            FontAwesomeIcons.angleLeft,
+                            color: Colors.blueAccent,
+                            size: FONTSIZES.textHuge,
+                          ),
+                        ),
+                        const SizedBox(width: kDefaultPaddingValue),
+                        const Spacer(),
+                        const SizedBox(width: kDefaultPaddingValue),
+                        IconButton(
+                          onPressed: () {
+                            print("n");
+                            pageController.jumpTo(100.w * questionNo);
+                          },
+                          icon: const FaIcon(
+                            FontAwesomeIcons.angleRight,
+                            color: Colors.blueAccent,
+                            size: FONTSIZES.textHuge,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 10.h,
+                    height: 10.h,
+                    padding: EdgeInsets.all(kDefaultPaddingValue),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50.0),
+                      color: Colors.white,
+                    ),
+                    child: Stack(children: [
+                      Image.asset(
+                        "assets/images/logo.png",
+                        height: 8.h,
+                      ),
+                    ]),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

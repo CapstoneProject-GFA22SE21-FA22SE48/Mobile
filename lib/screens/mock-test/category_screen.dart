@@ -135,6 +135,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                             child: ListView.separated(
                               itemCount: snapshot.data!.length,
                               scrollDirection: Axis.vertical,
+                              physics: const BouncingScrollPhysics(),
                               shrinkWrap: true,
                               separatorBuilder: (context, index) =>
                                   const SizedBox(height: 0),
@@ -158,8 +159,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                             horizontal: kDefaultPaddingValue,
                                           ),
                                           decoration: BoxDecoration(
-                                            borderRadius: const BorderRadius.all(
-                                                Radius.circular(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(
                                               kDefaultPaddingValue,
                                             )),
                                             boxShadow: const [
@@ -172,9 +174,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                             ],
                                             gradient: LinearGradient(
                                                 colors: gradient[index],
-                                                begin:
-                                                    const FractionalOffset(0.0, 0.0),
-                                                end: const FractionalOffset(1.0, 0.0),
+                                                begin: const FractionalOffset(
+                                                    0.0, 0.0),
+                                                end: const FractionalOffset(
+                                                    1.0, 0.0),
                                                 stops: const [0.0, 1.0],
                                                 tileMode: TileMode.decal),
                                           ),

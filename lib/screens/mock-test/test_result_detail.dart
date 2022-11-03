@@ -50,7 +50,6 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blueAccent,
           // elevation: 4,
           title: Text('${widget.title}'),
         ),
