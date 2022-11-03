@@ -37,7 +37,6 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
     var max = "";
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blueAccent,
           title: const Text("Chi tiết"),
           actions: [
             IconButton(

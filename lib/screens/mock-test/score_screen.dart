@@ -13,6 +13,8 @@ import 'package:vnrdn_tai/services/TestResultService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
 
+import 'package:styled_text/styled_text.dart';
+
 class ScoreScreen extends StatelessWidget {
   ScoreScreen({super.key});
 
@@ -69,9 +71,8 @@ class ScoreScreen extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blueAccent,
           shadowColor: Colors.grey,
-          title: Text("Kết thúc bài thi"),
+          title: const Text("Kết thúc bài thi"),
           centerTitle: true,
           automaticallyImplyLeading: false,
         ),
@@ -94,16 +95,26 @@ class ScoreScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         Image.asset(
-                          "/assets/images/quiz/${_qnController.numberOfCorrectAns >= 20 ? 'exam_pass' : 'exam_fail'}.png",
+                          "assets/images/quiz/${_qnController.numberOfCorrectAns >= 20 ? 'exam_pass' : 'exam_fail'}.png",
                           scale: 2,
                         ),
-                        Text(
-                          "Bạn đã trả lời đúng ${_qnController.numberOfCorrectAns} trên ${25} câu",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline3
-                              ?.copyWith(color: Colors.blueAccent),
-                          textAlign: TextAlign.center,
+                        Padding(
+                          padding:
+                              EdgeInsets.only(top: kDefaultPaddingValue * 2),
+                          child: StyledText(
+                            tags: {
+                              'bold': StyledTextTag(
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
+                            },
+                            text:
+                                'Bạn đã trả lời đúng <bold>${_qnController.numberOfCorrectAns}</bold> trên <bold>${25}</bold> câu',
+                            style: TextStyle(
+                              color: Colors.blueAccent,
+                              fontSize: FONTSIZES.textLarge,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         const Divider(),
                         _qnController.numberOfCorrectAns >= 22
@@ -116,12 +127,12 @@ class ScoreScreen extends StatelessWidget {
                                         color: Colors.greenAccent.shade700),
                                 textAlign: TextAlign.center,
                               )
-                            : Text(
+                            : const Text(
                                 "Chưa đạt! Hãy cố gắng hơn ở lần sau nhé!",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline6
-                                    ?.copyWith(color: Colors.redAccent),
+                                style: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontSize: FONTSIZES.textPrimary,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                         SizedBox(height: 50),

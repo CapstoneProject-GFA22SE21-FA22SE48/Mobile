@@ -23,9 +23,61 @@ class TestSetScreen extends StatefulWidget {
 class _TestSetScreenState extends State<TestSetScreen> {
   late Future<List<QuestionCategory>> _questionCategory;
 
+  List<List<Color>> gradientList = <List<Color>>[
+    [
+      // 0
+      Color(0xFF8855CC),
+      Color(0xFFBAA7FF),
+    ],
+    [
+      // 1
+      Color(0xFF1034D4),
+      Color(0xFF91D2F0),
+    ],
+    [
+      // 2
+      Color(0xFF00B953),
+      Color(0xFF91F096),
+    ],
+    [
+      // 3
+      Color(0xFFFF3B3B),
+      Color(0xFFFF9F9F),
+    ],
+    [
+      // 4
+      Color.fromARGB(255, 211, 164, 35),
+      Color(0xFFF091DB),
+    ],
+    [
+      // 5
+      Color(0xFF1086D4),
+      Color(0xFFBFF091),
+    ],
+    [
+      // 6
+      Color.fromARGB(255, 16, 52, 212),
+      Color.fromARGB(255, 145, 210, 240),
+    ],
+    [
+      // 7
+      Color.fromARGB(255, 16, 52, 212),
+      Color.fromARGB(255, 145, 210, 240),
+    ],
+    [
+      // 8
+      Color.fromARGB(255, 16, 52, 212),
+      Color.fromARGB(255, 145, 210, 240),
+    ],
+    [
+      // 9
+      Color.fromARGB(255, 16, 52, 212),
+      Color.fromARGB(255, 145, 210, 240),
+    ],
+  ];
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _questionCategory = QuestionCategoryService()
         .GetQuestionCategoriesByTestCategory(widget.categoryId);
@@ -36,7 +88,7 @@ class _TestSetScreenState extends State<TestSetScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        // elevation: 4,
+        elevation: 0,
         title: Text('Câu hỏi lý thuyết (Hạng ${widget.categoryName})'),
       ),
       body: FutureBuilder<List<QuestionCategory>>(
@@ -60,6 +112,7 @@ class _TestSetScreenState extends State<TestSetScreen> {
               return ListView.separated(
                 itemCount: snapshot.data!.length,
                 scrollDirection: Axis.vertical,
+                physics: const BouncingScrollPhysics(),
                 shrinkWrap: true,
                 separatorBuilder: (context, index) => const SizedBox(height: 0),
                 itemBuilder: (context, index) {
@@ -81,11 +134,11 @@ class _TestSetScreenState extends State<TestSetScreen> {
                         padding: const EdgeInsets.symmetric(
                           horizontal: kDefaultPaddingValue,
                         ),
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(Radius.circular(
                             kDefaultPaddingValue,
                           )),
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
                                 color: Color.fromARGB(80, 82, 82, 82),
                                 spreadRadius: 2,
@@ -93,10 +146,7 @@ class _TestSetScreenState extends State<TestSetScreen> {
                                 offset: Offset(0, 8))
                           ],
                           gradient: LinearGradient(
-                              colors: [
-                                Color.fromARGB(255, 16, 52, 212),
-                                Color.fromARGB(255, 145, 210, 240),
-                              ],
+                              colors: gradientList[index],
                               begin: FractionalOffset(0.0, 0.0),
                               end: FractionalOffset(1.0, 0.0),
                               stops: [0.0, 1.0],
@@ -112,88 +162,132 @@ class _TestSetScreenState extends State<TestSetScreen> {
                                   snapshot.data![index].name,
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: FONTSIZES.textHuge,
+                                    fontSize: FONTSIZES.textLarger,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      top: kDefaultPaddingValue / 4),
-                                  child: Text(
-                                    "Tổng ${snapshot.data![index].noOfQuestion} câu",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline6
-                                        ?.copyWith(
-                                            color: Colors.white,
-                                            fontSize: FONTSIZES.textPrimary),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: kDefaultPaddingValue / 4),
-                                  child: Text(
-                                    "Hoàn tất ${0} câu",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline6
-                                        ?.copyWith(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: FONTSIZES.textPrimary),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
                                       top: kDefaultPaddingValue),
-                                  child: Container(
-                                    width: 60.w,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: kDefaultPaddingValue / 4,
-                                      horizontal: kDefaultPaddingValue / 4,
-                                    ),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(
-                                          kDefaultPaddingValue,
-                                        ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.all_inbox_rounded,
+                                        color: Colors.white,
                                       ),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: GFProgressBar(
-                                      percentage: 0,
-                                      lineHeight: 16,
-                                      alignment: MainAxisAlignment.spaceBetween,
-                                      backgroundColor: Colors.grey.shade400,
-                                      progressBarColor: Color(0xFF7DFF71),
-                                      child: const Text(
-                                        "${0}%",
-                                        textAlign: TextAlign.end,
-                                        style: TextStyle(
-                                            fontSize: FONTSIZES.textMedium,
-                                            color: Colors.white),
+                                      const SizedBox(
+                                        width: kDefaultPaddingValue / 4,
                                       ),
-                                    ),
+                                      Text(
+                                        "Tổng ${snapshot.data![index].noOfQuestion} câu",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline6
+                                            ?.copyWith(
+                                                color: Colors.white,
+                                                fontSize:
+                                                    FONTSIZES.textPrimary),
+                                      ),
+                                    ],
                                   ),
                                 ),
+                                Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: kDefaultPaddingValue / 4),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.file_download_done_rounded,
+                                          color: Colors.white,
+                                        ),
+                                        const SizedBox(
+                                          width: kDefaultPaddingValue / 4,
+                                        ),
+                                        Text(
+                                          "Hoàn tất ${0} câu",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6
+                                              ?.copyWith(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize:
+                                                      FONTSIZES.textPrimary),
+                                        ),
+                                      ],
+                                    )),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(
+                                //       top: kDefaultPaddingValue),
+                                //   child: Container(
+                                //     width: 60.w,
+                                //     padding: const EdgeInsets.symmetric(
+                                //       vertical: kDefaultPaddingValue / 4,
+                                //       horizontal: kDefaultPaddingValue / 4,
+                                //     ),
+                                //     decoration: const BoxDecoration(
+                                //       color: Colors.white,
+                                //       borderRadius: BorderRadius.all(
+                                //         Radius.circular(
+                                //           kDefaultPaddingValue,
+                                //         ),
+                                //       ),
+                                //     ),
+                                //     alignment: Alignment.center,
+                                //     child: GFProgressBar(
+                                //       percentage: 0,
+                                //       lineHeight: 16,
+                                //       alignment: MainAxisAlignment.spaceBetween,
+                                //       backgroundColor: Colors.grey.shade400,
+                                //       progressBarColor: Color(0xFF7DFF71),
+                                //       child: const Text(
+                                //         "${0}%",
+                                //         textAlign: TextAlign.end,
+                                //         style: TextStyle(
+                                //             fontSize: FONTSIZES.textMedium,
+                                //             color: Colors.white),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
                               ],
                             ),
                             const Spacer(),
+                            // const SizedBox(
+                            //   width: kDefaultPaddingValue * 2,
+                            // ),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      right: kDefaultPaddingValue / 2),
-                                  child: Image.asset(
-                                    "assets/images/quiz/motorbike.png",
-                                    scale: 7,
+                                Container(
+                                  width: 3.w,
+                                  height: 3.w,
+                                  padding: EdgeInsets.only(
+                                      top: kDefaultPaddingValue),
+                                  child: GFProgressBar(
+                                    percentage: 0.01,
+                                    radius: 60,
+                                    circleWidth: 8,
+                                    type: GFProgressType.circular,
+                                    animation: true,
+                                    backgroundColor: Color(0xFFDFDFDF),
+                                    progressBarColor: PROGRESS_COLOR.none,
                                   ),
                                 ),
+
+                                // Padding(
+                                //   padding: const EdgeInsets.only(
+                                //       right: kDefaultPaddingValue / 2),
+                                //   child:
+                                //       Image.asset(
+                                //         "assets/images/quiz/motorbike.png",
+                                //         scale: 7,
+                                //       ),
+                                // ),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      top: kDefaultPaddingValue),
+                                      top: kDefaultPaddingValue * 4),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
                                       vertical: kDefaultPaddingValue / 2,

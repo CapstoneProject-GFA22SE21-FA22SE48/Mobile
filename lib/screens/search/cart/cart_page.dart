@@ -42,7 +42,6 @@ class CartPage extends StatelessWidget {
         NumberFormat.currency(locale: 'vi_VN', symbol: "");
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blueAccent,
           title: const Text("Chi tiết biên bản"),
         ),
         body: Obx(() {
@@ -192,6 +191,7 @@ class CartPage extends StatelessWidget {
                           child: ListView.separated(
                             itemCount: data.length,
                             scrollDirection: Axis.vertical,
+                            physics: const BouncingScrollPhysics(),
                             shrinkWrap: true,
                             separatorBuilder: (context, index) =>
                                 const SizedBox(height: 0),

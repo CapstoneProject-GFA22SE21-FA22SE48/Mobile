@@ -45,6 +45,7 @@ class TestResultScreen extends StatelessWidget {
                           child: ListView.separated(
                               itemCount: testResults.length,
                               scrollDirection: Axis.vertical,
+                              physics: const BouncingScrollPhysics(),
                               shrinkWrap: true,
                               separatorBuilder: (context, index) =>
                                   const SizedBox(height: kDefaultPaddingValue),

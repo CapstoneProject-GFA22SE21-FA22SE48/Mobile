@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:typed_data';
+import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
@@ -21,20 +24,17 @@ class MinimapScreen extends StatefulWidget {
 
 class _MinimapState extends State<MinimapScreen> {
   final Completer<GoogleMapController> gmapController = Completer();
+  final CustomInfoWindowController _infoWindowcontroller =
+      CustomInfoWindowController();
   MapsController mc = Get.put(MapsController());
-  Location location = Location();
 
   late Future<List<GPSSign>> gpsSigns;
   final List<Marker> _markers = <Marker>[].obs;
 
   LocationData? currentLocation;
+  LatLng defaultLocation = LatLng(10.841809162754405, 106.8097469445683);
   LatLng? lastLocation;
   int count = 0;
-
-  // static const LatLng sourceLocation =
-  //     LatLng(10.872357699429106, 106.97348777271252);
-  // static const LatLng destination =
-  //     LatLng(10.87345346035103, 106.97534388599888);
 
   List<GPSSign> listSigns = [
     GPSSign(
@@ -62,13 +62,11 @@ class _MinimapState extends State<MinimapScreen> {
 
   void setCustomMarkerIcon() async {
     for (var s in listSigns) {
-      // var iconurl =
-      //     "https://firebasestorage.googleapis.com/v0/b/vnrdntai.appspot.com/o/images%2Fsign-collection%2F112.png?alt=media";
-      var dataBytes;
-      var request = await http.get(Uri.parse(s.imageUrl));
+      var request = await http.get(Uri.parse(s.imageUrl!));
       var bytes = request.bodyBytes;
+      Uint8List dataBytes = bytes;
       String sTitle =
-          s.imageUrl.split("%2F")[2].split(".png")[0].removeAllWhitespace;
+          s.imageUrl!.split("%2F")[2].split(".png")[0].removeAllWhitespace;
 
       setState(() {
         dataBytes = bytes;
@@ -101,12 +99,31 @@ class _MinimapState extends State<MinimapScreen> {
     }
   }
 
-  void getCurrentLocation() {
-    location.getLocation().then((location) {
-      currentLocation = location;
-    });
+  CustomInfoWindow customInfoWindow(GPSSign signInfo) {
+    return CustomInfoWindow(
+      controller: _infoWindowcontroller,
+      width: 300,
+      height: 300,
+      offset: 35,
+    );
+  }
 
-    location.onLocationChanged.listen((newLoc) {
+  Future getCurrentLocation() async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      await mc.location.getLocation().then((location) {
+        currentLocation = location;
+        onLocationChanged();
+        return location;
+      }).catchError((e) => print(e));
+      // We didn't ask for permission yet or the permission has been denied before but not permanently.
+    } else {
+      getCurrentLocation();
+    }
+  }
+
+  void onLocationChanged() {
+    mc.location.onLocationChanged.listen((newLoc) {
       count++;
       if (currentLocation != null) {
         lastLocation =
@@ -117,23 +134,22 @@ class _MinimapState extends State<MinimapScreen> {
     });
   }
 
-  // void GetNearbySigns() async {
-  //   await GPSSignService()
-  //       .getNearbySigns(
-  //           currentLocation!.latitude!, currentLocation!.longitude!, 1.0)
-  //       .then((list) {
-  //     if (list.isNotEmpty) {}
-  //   }, onError: (err) {
-  //     print(err);
-  //   });
-  // }
+  void getSignsList() {
+    gpsSigns = GPSSignService().getNearbySigns(
+      currentLocation!.latitude!,
+      currentLocation!.longitude!,
+      10,
+    );
+  }
 
   @override
   void initState() {
     super.initState();
-    getCurrentLocation();
-    setCustomMarkerIcon();
-    if (mounted) {}
+    getCurrentLocation().then((value) {
+      getSignsList();
+      setCustomMarkerIcon();
+      print(gpsSigns);
+    });
   }
 
   @override
@@ -143,7 +159,6 @@ class _MinimapState extends State<MinimapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    LatLng defaultLocation = LatLng(10.841809162754405, 106.8097469445683);
     return Scaffold(
       body: currentLocation == null
           ? loadingScreen()

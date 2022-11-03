@@ -1,7 +1,7 @@
 class GPSSign {
   final String id;
   final String signId;
-  final String imageUrl;
+  final String? imageUrl;
   final double latitude;
   final double longtitude;
 

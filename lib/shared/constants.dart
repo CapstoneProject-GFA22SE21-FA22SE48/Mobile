@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 const kPrimaryButtonColor = Color.fromARGB(255, 51, 102, 255);
 const kDangerButtonColor = Color.fromARGB(255, 239, 68, 68);
@@ -41,6 +42,14 @@ final ButtonStyle kModeChoosingButtonStyle = ElevatedButton.styleFrom(
     minimumSize: const Size(200, 10),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)));
 
+class PROGRESS_COLOR {
+  static const Color none = Colors.grey;
+  static const Color little = Colors.redAccent;
+  static const Color nearly50 = Colors.orangeAccent;
+  static const Color greater50 = Colors.yellowAccent;
+  static const Color almost = Color(0xFFA6F069);
+  static const Color done = Colors.greenAccent;
+}
 // Theme.of(context)
 //                                     .textTheme
 //                                     .headline4
@@ -71,6 +80,8 @@ const TIME_OUT = 60;
 const emptyUserId = "00000000-0000-0000-0000-000000000000"; // jwt fixed
 
 const String google_api_key = "AIzaSyBEre7YKax4irpLfr0I2jrkACu_ZiBL3JU";
+LatLng schoolLocation = // FPT daigaku
+    const LatLng(10.841809162754405, 106.8097469445683);
 
 // const url = "https://10.0.2.2:5001/api/";
 const url = "https://vnrdntaiapi.azurewebsites.net/api/";
