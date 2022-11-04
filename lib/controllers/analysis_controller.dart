@@ -86,11 +86,13 @@ class AnalysisController extends GetxController {
   // }
 
   Future<String> takePicAndDetect() async {
+    _cameraController.setFlashMode(FlashMode.off);
     final xFile = await _cameraController.takePicture();
     final path = xFile.path;
     _imagePath = path;
     io.File file = io.File(xFile.path);
     final res = await upload(file, cont: _isDetecting);
+    print(res);
     if (res != "[]") {
       _imagePath = path;
     }
@@ -99,7 +101,7 @@ class AnalysisController extends GetxController {
 
   void startTimer() {
     // _boxes.clear();
-    _timer = Timer.periodic(Duration(milliseconds: 1000), (Timer t) async {
+    _timer = Timer.periodic(Duration(milliseconds: 50), (Timer t) async {
       _timer!.cancel();
       if (!_isDetecting) {
         t.cancel();
@@ -107,6 +109,7 @@ class AnalysisController extends GetxController {
       await Future.delayed(Duration(milliseconds: 50));
       final stopwatch = Stopwatch()..start();
       var res = await takePicAndDetect();
+      print(res);
       print('executed in ${stopwatch.elapsed}');
       stopwatch.stop();
 
