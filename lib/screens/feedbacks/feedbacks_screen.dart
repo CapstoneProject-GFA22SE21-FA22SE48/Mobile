@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:getwidget/components/dropdown/gf_dropdown.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
@@ -14,7 +13,7 @@ import 'package:vnrdn_tai/shared/constants.dart';
 class FeedbacksScreen extends StatefulWidget {
   FeedbacksScreen({
     super.key,
-    this.type = '',
+    required this.type,
   });
 
   String type;
@@ -42,7 +41,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
 
-  getTitle(String type) {
+  String getTitle(String type) {
     switch (type) {
       case "gpsSign":
         return "Vị trí biển báo";
@@ -84,8 +83,8 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        // elevation: 0,
-        title: Text('Phản hồi về ${getTitle(widget.type)}'),
+        elevation: 0,
+        title: Text('Phản hồi thông tin'),
       ),
       body: KeyboardVisibilityBuilder(
         builder: (context, isKeyboardVisible) {
@@ -100,7 +99,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
             child: Column(
               children: [
                 const Text(
-                  'Phản hồi thông tin',
+                  '',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: FONTSIZES.textHuge,
@@ -114,9 +113,9 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                   border: const BorderSide(color: Colors.black12, width: 1),
                   dropdownButtonColor: Colors.white,
                   value: reason,
-                  onChanged: (String? value) {
+                  onChanged: (value) {
                     setState(() {
-                      reason = value!;
+                      reason = value ?? '';
                     });
                   },
                   items: _listDropdown,
@@ -131,9 +130,35 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                     ),
                   ],
                 ),
-                pickedFile != null
-                    ? Expanded(
-                        child: Container(
+                SizedBox(
+                  height: 50.h,
+                  width: 100.w,
+                  child: pickedFile != null
+                      ? Expanded(
+                          child: Container(
+                            height: 15.h,
+                            width: 80.w,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.grey,
+                                style: BorderStyle.solid,
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                kDefaultPaddingValue / 2,
+                              ),
+                            ),
+                            child: Center(
+                                child: Image.file(
+                              File(pickedFile!.path!),
+                              fit: BoxFit.contain,
+                            )),
+                          ),
+                        )
+                      : Container(
+                          height: 10.h,
+                          width: 100.h,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(
@@ -145,28 +170,8 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                               kDefaultPaddingValue / 2,
                             ),
                           ),
-                          child: Center(
-                              child: Image.file(
-                            File(pickedFile!.path!),
-                            fit: BoxFit.contain,
-                          )),
                         ),
-                      )
-                    : Container(
-                        height: 10.h,
-                        width: 100.h,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                            color: Colors.grey,
-                            style: BorderStyle.solid,
-                            width: 3,
-                          ),
-                          borderRadius: BorderRadius.circular(
-                            kDefaultPaddingValue / 2,
-                          ),
-                        ),
-                      ),
+                ),
               ],
             ),
           );

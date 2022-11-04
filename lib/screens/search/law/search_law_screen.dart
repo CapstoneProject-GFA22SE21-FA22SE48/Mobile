@@ -28,48 +28,75 @@ class _SearchLawScreenState extends State<SearchLawScreen>
   late Future<List<Keyword>> keywords = KeywordSerivce().GetKeywordList();
   GlobalController gc = Get.find<GlobalController>();
   SearchController sc = Get.put(SearchController());
-  final List<IconData> iconData = <IconData>[
-    Icons.dangerous_outlined,
-    Icons.turn_right,
-    Icons.perm_device_info,
-    Icons.speed,
-    Icons.fire_truck,
-    Icons.local_parking,
-    Icons.swap_vert,
-    Icons.train,
-    Icons.shop,
-    Icons.invert_colors,
-    Icons.style,
-    Icons.ice_skating
-  ];
-  final List<Color> iconColors = <Color>[
-    Colors.deepOrange,
-    Colors.greenAccent.shade200,
-    Colors.yellow.shade700,
-    Colors.purpleAccent,
-    Colors.blueAccent,
-    Colors.redAccent.shade200,
-    Colors.lightGreenAccent.shade700,
-    Colors.indigoAccent.shade200,
-    Colors.tealAccent.shade700,
-    Colors.pinkAccent,
-    Colors.deepOrangeAccent.shade100,
-    Colors.grey.shade300
-  ];
+  // final List<IconData> iconData = <IconData>[
+  //   Icons.dangerous_outlined,
+  //   Icons.turn_right,
+  //   Icons.perm_device_info,
+  //   Icons.speed,
+  //   Icons.fire_truck,
+  //   Icons.local_parking,
+  //   Icons.swap_vert,
+  //   Icons.train,
+  //   Icons.shop,
+  //   Icons.invert_colors,
+  //   Icons.style,
+  //   Icons.ice_skating
+  // ];
+  // final List<Color> iconColors = <Color>[
+  //   Colors.deepOrange,
+  //   Colors.greenAccent.shade200,
+  //   Colors.yellow.shade700,
+  //   Colors.purpleAccent,
+  //   Colors.blueAccent,
+  //   Colors.redAccent.shade200,
+  //   Colors.lightGreenAccent.shade700,
+  //   Colors.indigoAccent.shade200,
+  //   Colors.tealAccent.shade700,
+  //   Colors.pinkAccent,
+  //   Colors.deepOrangeAccent.shade100,
+  //   Colors.grey.shade300
+  // ];
   final List<Image> images = <Image>[
-    Image.asset("assets/images/law/turn_left.png", scale: 10),
-    Image.asset("assets/images/law/speed_limit.png", scale: 10),
-    Image.asset("assets/images/law/no_alcohol.png", scale: 10),
-    Image.asset("assets/images/law/parking.png", scale: 10),
-    Image.asset("assets/images/law/delivery.png", scale: 10),
-    Image.asset("assets/images/law/driving_license.png", scale: 10),
-    Image.asset("assets/images/law/direction.png", scale: 10),
-    Image.asset("assets/images/law/delivery_truck.png", scale: 10),
-    Image.asset("assets/images/law/jack.png", scale: 10),
-    Image.asset("assets/images/law/priority.png", scale: 10),
-    Image.asset("assets/images/law/road_barrier.png", scale: 10),
-    Image.asset("assets/images/law/speed_limit.png", scale: 10),
+    Image.asset("assets/images/law/turn_left.png", scale: 10), // 0
+    Image.asset("assets/images/law/speed_limit.png", scale: 10), // 1
+    Image.asset("assets/images/law/no_alcohol.png", scale: 10), // 2
+    Image.asset("assets/images/law/parking.png", scale: 10), // 3
+    Image.asset("assets/images/law/delivery.png", scale: 10), // 4
+    Image.asset("assets/images/law/driving_license.png", scale: 10), // 5
+    Image.asset("assets/images/law/direction.png", scale: 10), // 6
+    Image.asset("assets/images/law/delivery_truck.png", scale: 10), // 7
+    Image.asset("assets/images/law/jack.png", scale: 10), // 8
+    Image.asset("assets/images/law/priority.png", scale: 10), // 9
+    Image.asset("assets/images/law/road_barrier.png", scale: 10), // 10
+    Image.asset("assets/images/law/speed_limit.png", scale: 10), // 11
   ];
+
+  Image getImage(String name) {
+    name = name.toLowerCase();
+    if (name.contains('quá tải')) {
+      return images[7];
+    } else if (name.contains('dừng xe')) {
+      return images[3];
+    } else if (name.contains('ưu tiên')) {
+      return images[9]; //
+    } else if (name.contains('vận chuyển')) {
+      return images[4];
+    } else if (name.contains('nồng độ')) {
+      return images[2];
+    } else if (name.contains('tốc độ')) {
+      return images[1];
+    } else if (name.contains('trang thiết bị')) {
+      return images[8];
+    } else if (name.contains('chuyển hướng')) {
+      return images[0];
+    } else if (name.contains('giấy tờ')) {
+      return images[5];
+    } else if (name.contains('đường cấm')) {
+      return images[10];
+    } else {
+      return images[6];
+    }
+  }
 
   @override
   void initState() {
@@ -80,6 +107,7 @@ class _SearchLawScreenState extends State<SearchLawScreen>
   Widget build(BuildContext context) {
     TabController _tabController;
     return Scaffold(
+        // backgroundColor: Theme.of(context).backgroundColor,
         extendBodyBehindAppBar: true,
         body: SafeArea(
           maintainBottomViewPadding: true,
@@ -110,9 +138,10 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                           children: <Widget>[
                             DefaultTabController(
                                 length: 3,
-                                child: SizedBox(
+                                child: Container(
                                   width: 100.w,
                                   height: 8.h,
+                                  color: Colors.white,
                                   child: TabBar(
                                       controller: _tabController,
                                       onTap: (value) {
@@ -159,6 +188,7 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                               width: 100.w,
                               height: isKeyboardVisible ? 42.h : 64.h,
                               child: GridView.count(
+                                physics: const BouncingScrollPhysics(),
                                 clipBehavior: Clip.hardEdge,
                                 mainAxisSpacing: kDefaultPaddingValue / 4,
                                 crossAxisCount: 3,
@@ -196,27 +226,13 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            // IconButton(
-                                            //   iconSize: 48,
-                                            //   padding: const EdgeInsets.only(
-                                            //       bottom: 5),
-                                            //   onPressed: () {
-                                            //     Get.to(() =>
-                                            //         SearchLawListScreen(
-                                            //             keywordId: snapshot
-                                            //                 .data![index]
-                                            //                 .id));
-                                            //   },
-                                            //   // color: Colors.accents[index],
-                                            //   color: iconColors[index],
-                                            //   icon: Icon(iconData[index]),
-                                            // ),
                                             Container(
                                               height: 8.h,
                                               padding: EdgeInsets.symmetric(
                                                   vertical:
                                                       kDefaultPaddingValue / 2),
-                                              child: images[index],
+                                              child: getImage(
+                                                  snapshot.data![index].name),
                                             ),
                                             Container(
                                               height: 5.h,

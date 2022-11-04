@@ -37,7 +37,9 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
     var max = "";
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
           title: const Text("Chi tiết"),
+          elevation: 0,
           actions: [
             IconButton(
                 icon: const Icon(Icons.receipt),
@@ -90,6 +92,8 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: kDefaultPaddingValue),
                                           child: SingleChildScrollView(
+                                            physics:
+                                                const BouncingScrollPhysics(),
                                             child: Container(
                                               height: 100.h,
                                               color: Colors.grey.shade300,
@@ -294,24 +298,25 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                                 TextSpan(
                                                                     text:
                                                                         "Hành vi liên quan: ",
-                                                                    style: Theme.of(context).textTheme.headline3?.copyWith(
-                                                                        color: Colors
-                                                                            .orange,
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold,
-                                                                        fontStyle:
-                                                                            FontStyle
-                                                                                .italic,
-                                                                        decoration:
-                                                                            TextDecoration
-                                                                                .underline,
-                                                                        fontSize:
-                                                                            FONTSIZES.textLarge))
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .headline3
+                                                                        ?.copyWith(
+                                                                            color:
+                                                                                Colors.orange,
+                                                                            fontWeight: FontWeight.bold,
+                                                                            // fontStyle: FontStyle.italic,
+                                                                            // decoration:
+                                                                            //     TextDecoration
+                                                                            //         .underline,
+                                                                            fontSize: FONTSIZES.textLarge))
                                                               ])),
                                                           Expanded(
                                                             child: ListView
                                                                 .separated(
+                                                              physics:
+                                                                  const BouncingScrollPhysics(),
                                                               scrollDirection:
                                                                   Axis.vertical,
                                                               shrinkWrap: true,

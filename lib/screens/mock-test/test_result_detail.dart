@@ -50,7 +50,7 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          // elevation: 4,
+          elevation: 0,
           title: Text('${widget.title}'),
         ),
         body: FutureBuilder<List<TestAttempDTO>>(

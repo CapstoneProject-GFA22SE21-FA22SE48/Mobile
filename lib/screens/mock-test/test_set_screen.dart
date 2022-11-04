@@ -5,6 +5,7 @@ import 'package:getwidget/getwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/models/QuestionCategory.dart';
+import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
 import 'package:vnrdn_tai/services/QuestionCategoryService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -87,9 +88,17 @@ class _TestSetScreenState extends State<TestSetScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
         elevation: 0,
         title: Text('Câu hỏi lý thuyết (Hạng ${widget.categoryName})'),
+        leading: IconButton(
+          onPressed: (() {
+            Get.offAll(() => const ContainerScreen());
+          }),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.blueAccent,
+          ),
+        ),
       ),
       body: FutureBuilder<List<QuestionCategory>>(
         key: UniqueKey(),
@@ -122,13 +131,13 @@ class _TestSetScreenState extends State<TestSetScreen> {
                       vertical: kDefaultPaddingValue,
                     ),
                     child: GestureDetector(
-                      onTap: () {
-                        Get.to(() => QuizScreen(
-                              questionCategoryName: snapshot.data![index].name,
-                              categoryId: widget.categoryId,
-                              questionCategoryId: snapshot.data![index].id,
-                            ));
-                      },
+                      // onTap: () {
+                      //   Get.to(() => QuizScreen(
+                      //         questionCategoryName: snapshot.data![index].name,
+                      //         categoryId: widget.categoryId,
+                      //         questionCategoryId: snapshot.data![index].id,
+                      //       ));
+                      // },
                       child: Container(
                         height: 20.h,
                         padding: const EdgeInsets.symmetric(
@@ -260,54 +269,64 @@ class _TestSetScreenState extends State<TestSetScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Container(
-                                  width: 3.w,
-                                  height: 3.w,
-                                  padding: EdgeInsets.only(
-                                      top: kDefaultPaddingValue),
-                                  child: GFProgressBar(
-                                    percentage: 0.01,
-                                    radius: 60,
-                                    circleWidth: 8,
-                                    type: GFProgressType.circular,
-                                    animation: true,
-                                    backgroundColor: Color(0xFFDFDFDF),
-                                    progressBarColor: PROGRESS_COLOR.none,
-                                  ),
-                                ),
-
-                                // Padding(
-                                //   padding: const EdgeInsets.only(
-                                //       right: kDefaultPaddingValue / 2),
-                                //   child:
-                                //       Image.asset(
-                                //         "assets/images/quiz/motorbike.png",
-                                //         scale: 7,
-                                //       ),
+                                // Container(
+                                //   width: 3.w,
+                                //   height: 3.w,
+                                //   margin: EdgeInsets.only(
+                                //       top: kDefaultPaddingValue * 2),
+                                //   child: GFProgressBar(
+                                //     percentage:
+                                //         snapshot.data![index].noOfQuestion > 10
+                                //             ? 10 /
+                                //                 snapshot
+                                //                     .data![index].noOfQuestion
+                                //             : 1.0,
+                                //     radius: 60,
+                                //     circleWidth: 8,
+                                //     type: GFProgressType.circular,
+                                //     animation: true,
+                                //     backgroundColor: const Color(0xFFDFDFDF),
+                                //     progressBarColor: PROGRESS_COLOR.none,
+                                //   ),
                                 // ),
+                                Image.asset(
+                                  "assets/images/quiz/test.png",
+                                  scale: 7,
+                                ),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      top: kDefaultPaddingValue * 4),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: kDefaultPaddingValue / 2,
-                                      horizontal: kDefaultPaddingValue,
-                                    ),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(
-                                          kDefaultPaddingValue,
+                                      top: kDefaultPaddingValue),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Get.to(() => QuizScreen(
+                                            questionCategoryName:
+                                                snapshot.data![index].name,
+                                            categoryId: widget.categoryId,
+                                            questionCategoryId:
+                                                snapshot.data![index].id,
+                                          ));
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: kDefaultPaddingValue / 2,
+                                        horizontal: kDefaultPaddingValue,
+                                      ),
+                                      decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(
+                                            kDefaultPaddingValue,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: const Text(
-                                      "Bắt đầu",
-                                      style: TextStyle(
-                                        color: Colors.redAccent,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: FONTSIZES.textPrimary,
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        "Bắt đầu",
+                                        style: TextStyle(
+                                          color: Colors.redAccent,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: FONTSIZES.textPrimary,
+                                        ),
                                       ),
                                     ),
                                   ),

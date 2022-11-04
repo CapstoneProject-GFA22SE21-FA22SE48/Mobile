@@ -35,14 +35,18 @@ class MyApp extends StatelessWidget {
     return Sizer(builder: (context, orientation, deviceType) {
       return GetMaterialApp(
         title: 'VNRDnTAI',
+        // enableLog: false,
+        themeMode: ThemeMode.light,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          fontFamily: 'SVN_Aleo',
+          backgroundColor: Color.fromARGB(255, 143, 143, 143),
+          primaryColor: Colors.white,
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.white,
             titleTextStyle: TextStyle(
               color: Colors.blueAccent,
-              fontSize: FONTSIZES.textLarger,
+              fontSize: FONTSIZES.textLarge,
               fontWeight: FontWeight.bold,
             ),
             actionsIconTheme: IconThemeData(
@@ -51,6 +55,30 @@ class MyApp extends StatelessWidget {
             ),
             iconTheme: IconThemeData(
               color: Colors.black54,
+              size: FONTSIZES.textHuge,
+            ),
+          ),
+        ),
+        darkTheme: ThemeData(
+          fontFamily: 'SVN_Aleo',
+          backgroundColor: Color(0xFF131313),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Color(0xFF000000),
+            titleTextStyle: TextStyle(
+              color: Colors.blueAccent,
+              fontSize: FONTSIZES.textLarger,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'SVN_Aleo',
+            ),
+            toolbarTextStyle: TextStyle(
+              color: Colors.white70,
+            ),
+            actionsIconTheme: IconThemeData(
+              color: Color(0xFFFFFFFF),
+              size: FONTSIZES.textHuge,
+            ),
+            iconTheme: IconThemeData(
+              color: Color(0xFFFFFFFF),
               size: FONTSIZES.textHuge,
             ),
           ),

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
@@ -22,7 +21,6 @@ import 'package:vnrdn_tai/utils/io_utils.dart';
 import 'package:vnrdn_tai/utils/dialogUtil.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 import '../signup_screen.dart';
-
 
 class LoginForm extends StatefulWidget {
   const LoginForm({
@@ -54,19 +52,16 @@ class _LoginFormState extends State<LoginForm> {
   void handleLogin(BuildContext context) async {
     await AuthService()
         .loginWithUsername(usernameController.text, passwordController.text)
-        .then(((value) => {
-              if (value.length > 1)
-                {afterLoggedIn(value)}
-              else
-                {
-                  // ignore: use_build_context_synchronously
-                  DialogUtil.showTextDialog(
-                      context,
-                      "Đăng nhập thất bại",
-                      "Sai tên đăng nhập hoặc mật khẩu.",
-                      [TemplatedButtons.ok(context)])
-                }
-            }));
+        .then(((value) {
+      if (value.length > 1) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        afterLoggedIn(value);
+      } else {
+        // ignore: use_build_context_synchronously
+        DialogUtil.showTextDialog(context, "Đăng nhập thất bại",
+            "Sai tên đăng nhập hoặc mật khẩu.", [TemplatedButtons.ok(context)]);
+      }
+    }));
   }
 
   void handleGLogin(BuildContext context, String gmail) async {
@@ -100,7 +95,8 @@ class _LoginFormState extends State<LoginForm> {
       if (key == 'Status') {
         ac.updateStatus(int.parse(value));
       }
-      Get.to(const ContainerScreen());
+
+      Get.to(() => const ContainerScreen());
     });
   }
 
@@ -181,7 +177,6 @@ class _LoginFormState extends State<LoginForm> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (loginFormKey.currentState!.validate()) {
-                      handleLogin(context);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Row(
@@ -192,6 +187,8 @@ class _LoginFormState extends State<LoginForm> {
                           ),
                         ),
                       );
+                      isKeyboardVisible = false;
+                      handleLogin(context);
                     }
                   },
                   child: Padding(

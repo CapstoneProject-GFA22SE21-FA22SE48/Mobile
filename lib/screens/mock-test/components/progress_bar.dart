@@ -14,7 +14,10 @@ class ProgressBar extends StatelessWidget {
   Future<void> confirmSubmission() async {
     Get.dialog(
       AlertDialog(
-        title: const Text('Nộp bài'),
+        title: const Text(
+          'Nộp bài',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         content: const Text(
           'Bạn có chắc là bạn muốn nộp bài?\n(Lưu ý: bài thi trống sẽ không được lưu)',
           textAlign: TextAlign.center,
@@ -96,23 +99,27 @@ class ProgressBar extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ButtonTheme(
-                          child: ElevatedButton(
-                              onPressed: () {
-                                confirmSubmission();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  textStyle: const TextStyle(
-                                      fontSize: FONTSIZES.textPrimary),
-                                  backgroundColor: Colors.blueAccent,
-                                  shadowColor: Colors.grey,
-                                  alignment: Alignment.center,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10))),
-                              child: Text("Nộp bài"))),
-                    )
+                    ButtonTheme(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          confirmSubmission();
+                        },
+                        style: ElevatedButton.styleFrom(
+                            textStyle: const TextStyle(
+                                fontSize: FONTSIZES.textPrimary),
+                            backgroundColor: Colors.blueAccent,
+                            shadowColor: Colors.grey,
+                            alignment: Alignment.center,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10))),
+                        child: Text(
+                          "Nộp bài",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
