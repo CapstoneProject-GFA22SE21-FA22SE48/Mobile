@@ -12,6 +12,7 @@ import 'package:vnrdn_tai/utils/io_utils.dart';
 class GlobalController extends GetxController
     with GetSingleTickerProviderStateMixin {
   final test_mode = TEST_TYPE.STUDY.obs;
+  final modelLoad = false.obs;
   final is_error = false.obs;
   final tab = TABS.SEARCH.obs;
   final sideBar = 0.obs;
@@ -45,6 +46,10 @@ class GlobalController extends GetxController
     log('data: $tab');
     // ---
     super.dispose();
+  }
+
+  updateModelLoad(value) {
+    modelLoad(value);
   }
 
   updateTestMode(value) {

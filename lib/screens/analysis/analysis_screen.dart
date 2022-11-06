@@ -23,27 +23,21 @@ class AnalysisScreen extends StatelessWidget {
     double ymax = double.parse(coords[4]) * height;
     var name =
         ac.mapData![int.parse(coords[0].replaceAll(".0", ""))].toString();
+    // var ratioH = height / 240;
+    // var ratioW = width / 320;
+    // print(coords[0]);
 
-    // return GestureDetector(
-    //   behavior: HitTestBehavior.translucent,
-    //   onTap: () {
-    //     print('owo');
-    //   },
-    //   child: AbsorbPointer(
-    //     child: CustomPaint(
-    //       painter: OpenPainter(
-    //           xmin: xmin,
-    //           ymin: ymin,
-    //           xmax: xmax,
-    //           ymax: ymax,
-    // name: ac.mapData[int.parse(coords[0].replaceAll(".0", ""))]
-    //     .toString()),
-    //     ),
-    //   ),
-    // );
+    // double xmin = coords[1];
+    // double ymin = coords[2];
+    // double xmax = coords[3];
+    // double ymax = coords[4];
+    // var name = coords[0];
+
     return Positioned(
         left: xmin + width / 2,
         top: ymin,
+        // left: xmin + (xmin * ratioW) / 2,
+        // top: ymin + (ymin * ratioH) / 3.5,
         child: InkWell(
             onTap: () {
               SearchController sc = Get.put(SearchController());
@@ -56,6 +50,8 @@ class AnalysisScreen extends StatelessWidget {
               alignment: Alignment.bottomLeft,
               width: xmax - xmin,
               height: ymax - ymin,
+              // width: (xmax - xmin) * ratioW * 2,
+              // height: (ymax - ymin) * ratioH,
               decoration: BoxDecoration(
                 border: Border.all(
                   width: 5,
@@ -109,6 +105,7 @@ class AnalysisScreen extends StatelessWidget {
                           : Stack(children: <Widget>[
                               for (var box in controller.boxes)
                                 getBoundingBoxes(box, height - 80, width)
+                              // getBoundingBoxes(box, height, width)
                             ]),
                       Positioned(
                         bottom: 0.h,
