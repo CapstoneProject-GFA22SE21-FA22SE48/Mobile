@@ -103,9 +103,10 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
     final _forgotFormKey = GlobalKey<FormState>();
 
     return Scaffold(
-        backgroundColor: kPrimaryBackgroundColor,
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
           title: const Text("Quên mật khẩu"),
+          elevation: 0,
           actions: [
             IconButton(
                 icon: Icon(Icons.home), onPressed: () => Get.to(LoginScreen())),
@@ -118,15 +119,15 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
               child: Column(
                 children: [
                   Padding(
-                    padding: kDefaultPadding * 2,
+                    padding: kDefaultPadding,
                     child: Image.asset(
                       "assets/images/auth/verify_success.png",
-                      scale: isKeyboardVisible ? 5 : 2,
+                      scale: isKeyboardVisible ? 5 : 3,
                     ),
                   ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
+                  // const SizedBox(
+                  //   height: kDefaultPaddingValue / 2,
+                  // ),
                   Padding(
                     padding: const EdgeInsets.all(kDefaultPaddingValue),
                     child: Column(
@@ -148,8 +149,11 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                             ),
                             suffixIcon: TextButton(
                               onPressed: () => {
-                                if (_forgotFormKey.currentState!.validate())
-                                  {sendEmail()}
+                                if (emailController.text.isNotEmpty)
+                                  {
+                                    if (_forgotFormKey.currentState!.validate())
+                                      {sendEmail()}
+                                  }
                               },
                               child: const Text("Gửi OTP"),
                             ),
@@ -177,8 +181,8 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                         Hero(
                           tag: "verify_btn",
                           child: ElevatedButton(
-                            onPressed: () {
-                              verifyOTP();
+                            onPressed: () => {
+                              if (otpController.text.length == 6) {verifyOTP()}
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(

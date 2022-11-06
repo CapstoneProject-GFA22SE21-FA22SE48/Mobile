@@ -73,9 +73,11 @@ class ContainerScreen extends GetView<GlobalController> {
       case TABS.MINIMAP:
         return IconButton(
           onPressed: () {
-            Get.to(() => FeedbacksScreen(
-                  type: '',
-                ));
+            Get.to(
+              () => FeedbacksScreen(
+                type: '',
+              ),
+            );
           },
           icon: const Icon(
             Icons.flag_rounded,

@@ -160,7 +160,7 @@ class _LoginFormState extends State<LoginForm> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   GestureDetector(
-                    onTap: () => {Get.to(ChangeForgotPasswordScreen())},
+                    onTap: () => {Get.to(const ForgotPasswordScreen())},
                     child: const Text(
                       "Quên mật khẩu?",
                       style: TextStyle(

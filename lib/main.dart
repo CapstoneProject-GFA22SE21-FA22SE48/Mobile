@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/controllers/search_controller.dart';
-import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/shared/bindings.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -20,9 +18,10 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 void main() {
-  HttpOverrides.global = new MyHttpOverrides();
+  HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
+  Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -40,7 +39,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           fontFamily: 'SVN_Aleo',
-          backgroundColor: Color.fromARGB(255, 143, 143, 143),
+          backgroundColor: const Color(0xFFF3F3F3),
           primaryColor: Colors.white,
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.white,

@@ -4,8 +4,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:get/get.dart';
 import 'package:getwidget/components/dropdown/gf_dropdown.dart';
 import 'package:sizer/sizer.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -23,21 +25,29 @@ class FeedbacksScreen extends StatefulWidget {
 }
 
 class _FeedbackClassState extends State<FeedbacksScreen> {
-  final _listDropdown = <DropdownMenuItem<String>>[
+  final List<DropdownMenuItem<String>> _listDropdown =
+      <DropdownMenuItem<String>>[
     const DropdownMenuItem<String>(
       value: "noSignHere",
-      child: Text("Tôi không thấy biển báo ở đây nhưng bản đồ hiển thị"),
+      child: Text.rich(
+        TextSpan(children: [
+          TextSpan(
+              text: "Tôi không thấy biển báo ở đây") //nhưng bản đồ hiển thị
+        ]),
+      ),
     ),
     const DropdownMenuItem<String>(
       value: "hasSignHere",
-      child: Text("Có biển báo ở đây nhưng bản đồ không hiển thị"),
+      child: Text("Biển báo ở đây nhưng bản đồ không hiển thị",
+          overflow: TextOverflow.ellipsis),
     ),
     const DropdownMenuItem<String>(
       value: "wrongSign",
-      child: Text("Biển báo không giống như trên bản đồ"),
+      child: Text("Biển báo không giống như trên bản đồ",
+          overflow: TextOverflow.ellipsis),
     ),
   ];
-  String reason = '';
+  dynamic reason;
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
 
@@ -62,7 +72,8 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
   }
 
   Future uploadImage() async {
-    final path = 'user-feedbacks/${pickedFile!.name}';
+    GlobalController gc = Get.put(GlobalController());
+    final path = 'user-feedbacks/${gc.userId.value}_${pickedFile!.name}';
     final file = File(pickedFile!.path!);
 
     final ref = FirebaseStorage.instance.ref().child(path);
@@ -71,6 +82,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
     final snapshot = await uploadTask!.whenComplete(() {});
 
     await snapshot.ref.getDownloadURL().then((url) {
+      print(url);
       // GPSSignService()
       //     .createGpsSignsModificationRequest(
       //         reason, schoolLocation, Uri.parse(url))
@@ -81,63 +93,108 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
-        title: Text('Phản hồi thông tin'),
+        title: const Text('Phản hồi thông tin'),
       ),
       body: KeyboardVisibilityBuilder(
         builder: (context, isKeyboardVisible) {
-          return Container(
-            height: 80.h,
-            width: 100.w,
-            padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultPaddingValue,
-              vertical: kDefaultPaddingValue,
-            ),
-            color: Colors.white70,
-            child: Column(
-              children: [
-                const Text(
-                  '',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: FONTSIZES.textHuge,
-                  ),
-                ),
-                const Text('Nguyên nhân:'),
-                const SizedBox(height: kDefaultPaddingValue),
-                GFDropdown(
-                  padding: const EdgeInsets.all(kDefaultPaddingValue),
-                  borderRadius: BorderRadius.circular(kDefaultPaddingValue / 2),
-                  border: const BorderSide(color: Colors.black12, width: 1),
-                  dropdownButtonColor: Colors.white,
-                  value: reason,
-                  onChanged: (value) {
-                    setState(() {
-                      reason = value ?? '';
-                    });
-                  },
-                  items: _listDropdown,
-                ),
-                const SizedBox(height: kDefaultPaddingValue),
-                Row(
-                  children: [
-                    const Text('Hình ảnh chứng minh:'),
-                    ElevatedButton(
-                      onPressed: selectImage,
-                      child: Text('Tải lên'),
+          return SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Container(
+              height: 90.h,
+              width: 100.w,
+              padding: const EdgeInsets.symmetric(
+                horizontal: kDefaultPaddingValue,
+                vertical: kDefaultPaddingValue,
+              ),
+              color: Colors.white70,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    '',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: FONTSIZES.textHuge,
                     ),
-                  ],
-                ),
-                SizedBox(
-                  height: 50.h,
-                  width: 100.w,
-                  child: pickedFile != null
-                      ? Expanded(
-                          child: Container(
-                            height: 15.h,
-                            width: 80.w,
+                  ),
+                  const Text(
+                    'Nguyên nhân:',
+                    style: TextStyle(
+                      fontSize: FONTSIZES.textPrimary,
+                      color: Colors.blueAccent,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: kDefaultPaddingValue),
+                  DropdownButtonHideUnderline(
+                    child: GFDropdown(
+                      hint: const Text('Hãy chọn nguyên nhân'),
+                      padding: const EdgeInsets.all(kDefaultPaddingValue / 2),
+                      borderRadius: BorderRadius.circular(5),
+                      border: const BorderSide(color: Colors.grey, width: 1),
+                      dropdownButtonColor: Colors.white,
+                      value: reason,
+                      onChanged: (newValue) {
+                        setState(() {
+                          reason = newValue ?? '';
+                        });
+                      },
+                      items: _listDropdown,
+                      isExpanded: true,
+                    ),
+                  ),
+                  const SizedBox(height: kDefaultPaddingValue),
+                  Row(
+                    children: [
+                      const Text(
+                        'Hình ảnh chứng minh:',
+                        style: TextStyle(
+                          fontSize: FONTSIZES.textPrimary,
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: selectImage,
+                        child: const Text('Tải lên'),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 50.h,
+                    width: 100.w,
+                    child: pickedFile != null
+                        ? Expanded(
+                            child: Container(
+                              height: 15.h,
+                              width: 80.w,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.grey,
+                                  style: BorderStyle.solid,
+                                  width: 3,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  kDefaultPaddingValue / 2,
+                                ),
+                              ),
+                              child: Center(
+                                child: Image.file(
+                                  File(pickedFile!.path!),
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            height: 10.h,
+                            width: 100.h,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               border: Border.all(
@@ -149,30 +206,20 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                                 kDefaultPaddingValue / 2,
                               ),
                             ),
-                            child: Center(
-                                child: Image.file(
-                              File(pickedFile!.path!),
-                              fit: BoxFit.contain,
-                            )),
                           ),
-                        )
-                      : Container(
-                          height: 10.h,
-                          width: 100.h,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Colors.grey,
-                              style: BorderStyle.solid,
-                              width: 3,
-                            ),
-                            borderRadius: BorderRadius.circular(
-                              kDefaultPaddingValue / 2,
-                            ),
-                          ),
-                        ),
-                ),
-              ],
+                  ),
+                  const SizedBox(
+                    height: kDefaultPaddingValue,
+                  ),
+                  ElevatedButton(
+                    onPressed: uploadImage,
+                    child: Padding(
+                      padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),
+                      child: const Text('Gửi phản hồi'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
