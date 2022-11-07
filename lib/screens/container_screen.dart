@@ -129,13 +129,7 @@ class ContainerScreen extends GetView<GlobalController> {
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Padding(
-              padding: const EdgeInsets.only(right: kDefaultPaddingValue),
-              child: Obx(() => getActionButton(controller.tab.value)),
-            ),
-          ),
+          Obx(() => getActionButton(controller.tab.value)),
         ],
         actionsIconTheme: const IconThemeData(
           color: Colors.black54,

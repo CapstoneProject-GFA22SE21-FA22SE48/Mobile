@@ -22,7 +22,7 @@ Future<File> compressFile(File file) async {
     minWidth: 640,
     file.absolute.path,
     outPath,
-    quality: 50,
+    // quality: 50,
   ))!;
 
   print(file.lengthSync());
@@ -77,6 +77,15 @@ numberEngToVietWord(String input) {
       .replaceAll("eight", "tám")
       .replaceAll("nine", "chín")
       .replaceAll("ten", "mười")
+      .replaceAll("eleven", "mười một")
+      .replaceAll("twelve", "mười hai")
+      .replaceAll("thirteen", "mười ba")
+      .replaceAll("fourteen", "mười bốn")
+      .replaceAll("fifteen", "mười lăm")
+      .replaceAll("sixteen", "mười sáu")
+      .replaceAll("seventeen", "mười bảy")
+      .replaceAll("eighteen", "mười tám")
+      .replaceAll("nineteen", "mười chín")
       .replaceAll("twenty", "hai mươi")
       .replaceAll("thirty", "ba mươi")
       .replaceAll("fourty", "bốn mươi")
