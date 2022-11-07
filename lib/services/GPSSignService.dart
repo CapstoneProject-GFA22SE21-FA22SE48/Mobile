@@ -18,7 +18,7 @@ class GPSSignService {
   }
 
   // distance can be modified
-  Future<List<GPSSign>> getNearbySigns(
+  Future<List<GPSSign>> GetNearbySigns(
       double latitude, double longtitude, double distance) async {
     try {
       final res = await http

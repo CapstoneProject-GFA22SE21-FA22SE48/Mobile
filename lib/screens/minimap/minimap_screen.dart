@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
@@ -77,19 +78,28 @@ class _MinimapState extends State<MinimapScreen> {
       _markers.add(
         Marker(
           onTap: () {
-            DialogUtil.showTextDialog(
-              context,
-              "Hey",
-              "You just made it!",
-              [TemplatedButtons.ok(context)],
+            _infoWindowcontroller.addInfoWindow!(
+              Container(
+                height: 10.h,
+                width: 70.w,
+                alignment: Alignment.center,
+                child: Text(s.signId),
+              ),
+              LatLng(s.latitude, s.longitude),
             );
+            // DialogUtil.showTextDialog(
+            //   context,
+            //   "Hey",
+            //   "You just made it!",
+            //   [TemplatedButtons.ok(context)],
+            // );
           },
           icon: BitmapDescriptor.fromBytes(
             dataBytes.buffer.asUint8List(),
             size: const Size(5, 5),
           ),
           markerId: MarkerId(s.id),
-          position: LatLng(s.latitude, s.longtitude),
+          position: LatLng(s.latitude, s.longitude),
           infoWindow: InfoWindow(
             title: 'Sign: $sTitle',
             anchor: const Offset(0.5, 0.5),
@@ -135,7 +145,7 @@ class _MinimapState extends State<MinimapScreen> {
   }
 
   void getSignsList() {
-    gpsSigns = GPSSignService().getNearbySigns(
+    gpsSigns = GPSSignService().GetNearbySigns(
       currentLocation!.latitude!,
       currentLocation!.longitude!,
       10,
@@ -180,10 +190,18 @@ class _MinimapState extends State<MinimapScreen> {
                     zoom: mc.zoom.value,
                   ),
                   markers: _markers.toSet(),
-                  onMapCreated: (mapController) {
-                    gmapController.complete(mapController);
+                  onTap: (position) {},
+                  onMapCreated: (controller) {
+                    gmapController.complete(controller);
+                    _infoWindowcontroller.googleMapController = controller;
                   },
                 ),
+                CustomInfoWindow(
+                  controller: _infoWindowcontroller,
+                  height: 200,
+                  width: 300,
+                  offset: 35,
+                )
               ],
             ),
     );

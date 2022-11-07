@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -6,19 +7,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/dropdown/gf_dropdown.dart';
-import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
+import 'package:sizer/sizer.dart';
+import 'package:vnrdn_tai/controllers/maps_controller.dart';
+import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
+import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/utils/location_util.dart';
 
 class FeedbacksScreen extends StatefulWidget {
   FeedbacksScreen({
     super.key,
-    required this.type,
+    this.type = '',
+    this.sign,
   });
 
   String type;
+  GPSSign? sign;
 
   @override
   State<StatefulWidget> createState() => _FeedbackClassState();
@@ -82,11 +91,33 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
     final snapshot = await uploadTask!.whenComplete(() {});
 
     await snapshot.ref.getDownloadURL().then((url) {
-      print(url);
-      // GPSSignService()
-      //     .createGpsSignsModificationRequest(
-      //         reason, schoolLocation, Uri.parse(url))
-      //     .then((value) {});
+      MapsController mapsController = Get.put(MapsController());
+
+      mapsController.location.getLocation().then((location) {
+        // switch (reason) {
+        //   case "noSignHere":
+        //     break;
+        //   case "hasSignHere":
+        //     break;
+        //   case "wrongSign":
+        //     break;
+        // }
+
+        GPSSignService()
+            .AddGpsSign(
+          LocationUtil.nearestSign([]),
+          location.latitude!,
+          location.longitude!,
+        )
+            .then((value) {
+          FeedbackService()
+              .createGpsSignsModificationRequest(
+                  reason, schoolLocation, Uri.parse(url))
+              .then((value) {
+            print(value);
+          });
+        });
+      });
     });
   }
 

@@ -8,7 +8,7 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import '../shared/constants.dart';
 
-class GPSSignService {
+class FeedbackService {
   List<SignModificationRequest> parseSignModificationRequestList(
       String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
@@ -47,7 +47,7 @@ class GPSSignService {
     }
   }
 
-  // get all Feedback of Signs
+  // create Feedback of GPSSigns
   Future<SignModificationRequest?> createGpsSignsModificationRequest(
     String requestType,
     LatLng currentLocation,
