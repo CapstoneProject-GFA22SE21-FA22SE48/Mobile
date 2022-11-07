@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -14,6 +13,7 @@ import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/location_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class MinimapScreen extends StatefulWidget {
@@ -29,12 +29,12 @@ class _MinimapState extends State<MinimapScreen> {
       CustomInfoWindowController();
   MapsController mc = Get.put(MapsController());
 
-  late Future<List<GPSSign>> gpsSigns;
+  late List<GPSSign> gpsSigns;
   final List<Marker> _markers = <Marker>[].obs;
 
   LocationData? currentLocation;
   LatLng defaultLocation = LatLng(10.841809162754405, 106.8097469445683);
-  LatLng? lastLocation;
+  // LatLng? lastLocation;
   int count = 0;
 
   List<GPSSign> listSigns = [
@@ -60,39 +60,48 @@ class _MinimapState extends State<MinimapScreen> {
       106.8097469445683,
     ),
   ];
+  // LatLng school = LatLng(10.841809162754405, 106.8097469445683);
 
-  void setCustomMarkerIcon() async {
-    for (var s in listSigns) {
+  void setCustomMarkerIcon(List<GPSSign> list) async {
+    _markers.clear();
+
+    for (var s in list) {
       var request = await http.get(Uri.parse(s.imageUrl!));
       var bytes = request.bodyBytes;
       Uint8List dataBytes = bytes;
       String sTitle =
-          s.imageUrl!.split("%2F")[2].split(".png")[0].removeAllWhitespace;
+          s.imageUrl!.split("%2F")[2].split("?")[0].removeAllWhitespace;
+      // print(sTitle);
 
-      setState(() {
-        dataBytes = bytes;
-      });
-
-      // LatLng school = LatLng(10.841809162754405, 106.8097469445683);
+      if (mounted) {
+        setState(() {
+          dataBytes = bytes;
+        });
+      }
 
       _markers.add(
         Marker(
           onTap: () {
             _infoWindowcontroller.addInfoWindow!(
-              Container(
-                height: 10.h,
-                width: 70.w,
-                alignment: Alignment.center,
-                child: Text(s.signId),
+              GestureDetector(
+                onTap: (() {
+                  // print(s.signId);
+                }),
+                child: Container(
+                  height: 5.h,
+                  width: 30.w,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(Icons.info_outline_rounded),
+                      Text("Xem thêm"),
+                    ],
+                  ),
+                ),
               ),
               LatLng(s.latitude, s.longitude),
             );
-            // DialogUtil.showTextDialog(
-            //   context,
-            //   "Hey",
-            //   "You just made it!",
-            //   [TemplatedButtons.ok(context)],
-            // );
           },
           icon: BitmapDescriptor.fromBytes(
             dataBytes.buffer.asUint8List(),
@@ -100,10 +109,11 @@ class _MinimapState extends State<MinimapScreen> {
           ),
           markerId: MarkerId(s.id),
           position: LatLng(s.latitude, s.longitude),
-          infoWindow: InfoWindow(
-            title: 'Sign: $sTitle',
-            anchor: const Offset(0.5, 0.5),
-          ),
+          // infoWindow: InfoWindow(
+
+          //   title: 'Sign: $sTitle',
+          //   anchor: const Offset(0.5, 0.5),
+          // ),
         ),
       );
     }
@@ -119,46 +129,63 @@ class _MinimapState extends State<MinimapScreen> {
   }
 
   Future getCurrentLocation() async {
-    var status = await Permission.location.request();
-    if (status.isGranted) {
-      await mc.location.getLocation().then((location) {
+    if (await Permission.location.request().isGranted) {
+      mc.location.getLocation().then((location) {
         currentLocation = location;
-        onLocationChanged();
+        getSignsList(location);
         return location;
       }).catchError((e) => print(e));
-      // We didn't ask for permission yet or the permission has been denied before but not permanently.
     } else {
       getCurrentLocation();
     }
   }
 
   void onLocationChanged() {
-    mc.location.onLocationChanged.listen((newLoc) {
-      count++;
-      if (currentLocation != null) {
-        lastLocation =
-            LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
-      }
-      currentLocation = newLoc;
-      print(count);
-    });
+    Timer(
+      Duration(milliseconds: 500),
+      () => mc.location.onLocationChanged.listen((newLoc) {
+        var distance = 0.0;
+        if (currentLocation != null) {
+          distance = LocationUtil.distanceInM(
+              LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+              LatLng(newLoc.latitude!, newLoc.longitude!));
+          print(distance);
+        } else {
+          currentLocation = newLoc;
+        }
+        if (currentLocation != null && distance > 5) {
+          currentLocation = newLoc;
+          getSignsList(currentLocation!);
+        }
+        if (mounted) {
+          setState(() {});
+        }
+      }),
+    );
   }
 
-  void getSignsList() {
-    gpsSigns = GPSSignService().GetNearbySigns(
-      currentLocation!.latitude!,
-      currentLocation!.longitude!,
-      10,
-    );
+  void getSignsList(LocationData curLocation) async {
+    if (curLocation.latitude != null && curLocation.longitude != null) {
+      await GPSSignService()
+          .GetNearbySigns(
+        curLocation.latitude!,
+        curLocation.longitude!,
+        10,
+      )
+          .then((signs) {
+        if (signs.isNotEmpty) {
+          gpsSigns = signs;
+          setCustomMarkerIcon(signs);
+        }
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
     getCurrentLocation().then((value) {
-      getSignsList();
-      setCustomMarkerIcon();
-      print(gpsSigns);
+      onLocationChanged();
     });
   }
 
@@ -181,7 +208,7 @@ class _MinimapState extends State<MinimapScreen> {
                   myLocationButtonEnabled: true,
                   myLocationEnabled: true,
                   trafficEnabled: true,
-                  minMaxZoomPreference: MinMaxZoomPreference(10, 25),
+                  minMaxZoomPreference: const MinMaxZoomPreference(10, 25),
                   initialCameraPosition: CameraPosition(
                     target: LatLng(
                       currentLocation!.latitude!,

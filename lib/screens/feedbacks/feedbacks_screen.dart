@@ -109,10 +109,14 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
           location.latitude!,
           location.longitude!,
         )
-            .then((value) {
+            .then((newSign) {
           FeedbackService()
               .createGpsSignsModificationRequest(
-                  reason, schoolLocation, Uri.parse(url))
+            reason,
+            url,
+            widget.sign,
+            newSign,
+          )
               .then((value) {
             print(value);
           });

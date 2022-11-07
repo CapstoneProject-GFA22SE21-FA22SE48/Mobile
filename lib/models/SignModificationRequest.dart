@@ -1,12 +1,12 @@
 class SignModificationRequest {
-  final String id; // get
+  final String? id; // get
   final String modifyingGpssignId;
-  final String modifiedGpssignId;
+  final String? modifiedGpssignId;
   final String userId;
   final int operationType;
   final String imageUrl;
-  final int status; // get
-  final DateTime createdDate; // get
+  final int? status; // get
+  final DateTime? createdDate; // get
 
   factory SignModificationRequest.fromJson(Map<String, dynamic> data) {
     return SignModificationRequest(

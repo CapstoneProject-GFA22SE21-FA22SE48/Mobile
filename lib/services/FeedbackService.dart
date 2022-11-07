@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import '../shared/constants.dart';
 
@@ -49,16 +50,33 @@ class FeedbackService {
 
   // create Feedback of GPSSigns
   Future<SignModificationRequest?> createGpsSignsModificationRequest(
-    String requestType,
-    LatLng currentLocation,
-    Uri imageUrl,
-  ) async {
+      String requestType,
+      String imageUrl,
+      GPSSign? oldSign,
+      GPSSign? newSign) async {
+    GlobalController gc = Get.put(GlobalController());
+    SignModificationRequest request;
     try {
-      final res = await http.post(Uri.parse("${url}SignModificationRequests"),
-          headers: <String, String>{
-            "Content-Type": "application/json; charset=UTF-8"
-          },
-          body: {}).timeout(const Duration(seconds: TIME_OUT));
+      switch (requestType) {
+        case 'noSignHere':
+          request = SignModificationRequest(null, newSign!.id, null,
+              gc.userId.value, 2, imageUrl, 0, DateTime.now());
+          break;
+        case 'wrongSign':
+          request = SignModificationRequest(null, newSign!.id, null,
+              gc.userId.value, 1, imageUrl, 0, DateTime.now());
+          break;
+        default:
+          request = SignModificationRequest(null, newSign!.id, null,
+              gc.userId.value, 0, imageUrl, 0, DateTime.now());
+      }
+      final res = await http.post(
+        Uri.parse("${url}SignModificationRequests"),
+        headers: <String, String>{
+          "Content-Type": "application/json; charset=UTF-8"
+        },
+        body: {request},
+      ).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
         return parseSignModificationRequest(res.body);
       } else {

@@ -9,7 +9,7 @@ class GPSSign {
     return GPSSign(
       data['id'],
       data['signId'],
-      data['signImageUrl'],
+      data['imageUrl'],
       data['latitude'],
       data['longtitude'],
     );
