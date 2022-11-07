@@ -164,23 +164,23 @@ class AnalysisController extends GetxController {
     _isDetecting = true;
     var frame = 0;
     var fps = 1;
-    startTimer();
-    // await _cameraController.startImageStream((image) async {
-    //   if (!_isDetecting) {
-    //     return;
-    //   }
-    //   frame++;
-    //   if (frame % (30 / fps) == 0) {
-    //     try {
-    //       frame = 0;
+    // startTimer();
+    await _cameraController.startImageStream((image) async {
+      if (!_isDetecting) {
+        return;
+      }
+      frame++;
+      if (frame % (30 / fps) == 0) {
+        try {
+          frame = 0;
 
-    //       await yoloOnFrame(image);
-    //       // await _cameraController.stopImageStream();
-    //     } catch (e) {
-    //       throw Exception(e);
-    //     } finally {}
-    //   }
-    // });
+          await yoloOnFrame(image);
+          // await _cameraController.stopImageStream();
+        } catch (e) {
+          throw Exception(e);
+        } finally {}
+      }
+    });
     update();
   }
 
