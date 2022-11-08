@@ -69,12 +69,11 @@ class TestResultSerivce {
           // ignore: prefer_interpolation_to_compose_strings
           .get(Uri.parse("${url}TestResults/GetTestAttemptDTOs?testResultId=" +
               testResultId +
-              "&&userId=" +
+              "&userId=" +
               userId +
-              "&&testCategoryId=" +
+              "&testCategoryId=" +
               testCategoryId))
           .timeout(const Duration(seconds: TIME_OUT));
-      print(res.body);
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.

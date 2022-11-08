@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/analysis_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/screens/feedbacks/sign_content_feedback_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
@@ -48,10 +51,10 @@ class AnalysisScreen extends StatelessWidget {
             },
             child: Container(
               alignment: Alignment.bottomLeft,
-              width: xmax - xmin,
-              height: ymax - ymin,
-              // width: (xmax - xmin) * ratioW * 2,
-              // height: (ymax - ymin) * ratioH,
+              // width: xmax - xmin,
+              // height: ymax - ymin,
+              width: (xmax - xmin) * ratioW * 2,
+              height: (ymax - ymin) * ratioH,
               decoration: BoxDecoration(
                 border: Border.all(
                   width: 5,
@@ -74,6 +77,7 @@ class AnalysisScreen extends StatelessWidget {
     AnalysisController ac = Get.put(AnalysisController());
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    Timer _timer = Timer(Duration(seconds: 10), () => ac.found);
     return GetBuilder<AnalysisController>(
         init: ac,
         builder: (controller) {
@@ -197,6 +201,46 @@ class AnalysisScreen extends StatelessWidget {
                                               ),
                                   ),
                                 ),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: kDefaultPaddingValue * 4),
+                                      child: Text('Không tìm thấy biển báo?',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5
+                                              ?.copyWith(
+                                                  fontSize:
+                                                      FONTSIZES.textMedium,
+                                                  color: Colors
+                                                      .blueAccent.shade200,
+                                                  fontWeight: FontWeight.bold)),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: kDefaultPaddingValue),
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          Get.to(() =>
+                                              SignContentFeedbackScreen());
+                                        },
+                                        style: ElevatedButton.styleFrom(),
+                                        child: Text('Báo cáo ngay',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6
+                                                ?.copyWith(
+                                                    fontSize:
+                                                        FONTSIZES.textSmall,
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                      ),
+                                    )
+                                  ],
+                                ),
+
                                 // Padding(
                                 //     padding: const EdgeInsets.only(
                                 //         top: kDefaultPaddingValue),

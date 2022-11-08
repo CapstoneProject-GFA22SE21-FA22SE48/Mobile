@@ -1,9 +1,15 @@
+import 'dart:convert';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:tiengviet/tiengviet.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/models/dtos/searchLawDTO.dart';
+import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/search/cart/cart_page.dart';
 import 'package:vnrdn_tai/screens/search/components/search_bar.dart';
 import 'package:vnrdn_tai/screens/search/components/search_list_item.dart';
@@ -27,6 +33,19 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
     super.initState();
   }
 
+  findMatch(SearchController sc) async {
+    final String response = await rootBundle.loadString('assets/dict.json');
+    final data = await json.decode(response);
+    var query = TiengViet.parse(sc.query.value);
+    for (final name in data.keys) {
+      final value = data[name];
+      if (query.contains(name)) {
+        return value;
+      }
+    }
+    return "";
+  }
+
   @override
   Widget build(BuildContext context) {
     SearchController sc = Get.put(SearchController());
@@ -37,6 +56,8 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
             widget.keywordId!, sc.vehicleCategory.value);
     return WillPopScope(
       onWillPop: () async {
+        sc.updateQuery("");
+        Get.to(() => ContainerScreen());
         return await true;
       },
       child: Scaffold(
@@ -95,6 +116,57 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                                           fontWeight: FontWeight.bold,
                                           fontSize: FONTSIZES.textPrimary)),
                             ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: kDefaultPaddingValue),
+                            child: FutureBuilder<dynamic>(
+                                future: findMatch(sc),
+                                builder: (context, snapshot) {
+                                  if (snapshot.data != "") {
+                                    return RichText(
+                                        text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              'Không tìm thấy kết quả mình cần? Thử tìm theo ',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4
+                                              ?.copyWith(
+                                                  color: Colors.black54,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontSize:
+                                                      FONTSIZES.textMedium),
+                                        ),
+                                        TextSpan(
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4
+                                              ?.copyWith(
+                                                  color: Colors.blue,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontSize:
+                                                      FONTSIZES.textMedium),
+                                          text: snapshot.data,
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () async {
+                                              sc.updateQuery(snapshot.data);
+                                              if (snapshot.data.trim().length >
+                                                  0) {
+                                                Get.to(
+                                                    () => SearchLawListScreen(
+                                                        query: snapshot.data),
+                                                    preventDuplicates: false);
+                                              }
+                                            },
+                                        ),
+                                      ],
+                                    ));
+                                  } else {
+                                    return Container();
+                                  }
+                                }),
                           ),
                           SizedBox(
                             width: 100.w,
