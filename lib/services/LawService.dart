@@ -38,7 +38,8 @@ class LawSerivce {
   Future<SearchLawDTO> GetSearchParagraphDTOAsync(String paragraphId) async {
     try {
       final res = await http
-          .get(Uri.parse("${url}Paragraphs/GetSearchParagraphDTOAsync?paragraphId=$paragraphId"))
+          .get(Uri.parse(
+              "${url}Paragraphs/GetSearchParagraphDTOAsync?paragraphId=$paragraphId"))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
@@ -84,8 +85,9 @@ class LawSerivce {
     try {
       final res = await http
           .get(Uri.parse(url +
-              "Sections/GetSearchListByQuery?query=$query&&vehicleCategory=$vehicleCategory"))
-          .timeout(const Duration(seconds: TIME_OUT));
+              "Sections/GetSearchListByQuery?query=$query&vehicleCategory=$vehicleCategory"))
+          // .timeout(const Duration(seconds: TIME_OUT))
+          ;
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.

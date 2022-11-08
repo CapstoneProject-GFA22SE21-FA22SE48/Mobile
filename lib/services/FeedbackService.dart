@@ -87,4 +87,25 @@ class FeedbackService {
       throw Exception('Không tải được dữ liệu.');
     }
   }
+
+  Future<SignModificationRequest?> createSignsModificationRequest(
+      SignModificationRequest rom) async {
+    try {
+      final res = await http.post(Uri.parse("${url}SignModificationRequests"),
+          headers: <String, String>{
+            "Content-Type": "application/json; charset=UTF-8"
+          },
+          body: {
+            jsonEncode(rom)
+          }).timeout(const Duration(seconds: TIME_OUT));
+      if (res.statusCode == 201) {
+        return parseSignModificationRequest(res.body);
+      } else {
+        log(res.body);
+        return null;
+      }
+    } on TimeoutException {
+      throw Exception('Không tải được dữ liệu.');
+    }
+  }
 }

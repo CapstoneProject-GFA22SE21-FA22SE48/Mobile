@@ -42,14 +42,21 @@ class AnalysisController extends GetxController {
   late List<int>? _detectedSigns = [];
   List<int>? get detectedSigns => this._detectedSigns;
 
-  late String? _imagePath = "";
-  String? get imagePath => this._imagePath;
-
   late List<List<dynamic>> _boxes = [];
   List<List<dynamic>> get boxes => this._boxes;
 
   late YamlMap? _mapData = null;
   YamlMap? get mapData => this._mapData;
+
+  late bool? _found = false;
+  bool? get found => this._found;
+
+  //Feedback Sign starts here
+  late String? _imagePath = "";
+  String? get imagePath => this._imagePath;
+
+  late XFile? _image = null;
+  XFile? get image => this._image;
 
   @override
   onInit() async {
@@ -58,6 +65,21 @@ class AnalysisController extends GetxController {
     _mapData = d['names'];
     initCamera();
     super.onInit();
+  }
+
+  takeSignContentFeebackImage() async {
+    _cameraController.setFlashMode(FlashMode.auto);
+    final xFile = await _cameraController.takePicture();
+    _image = xFile;
+    final path = xFile.path;
+    _imagePath = path;
+    update();
+  }
+
+  clearFeedbackImage() {
+    _image = null;
+    _imagePath = "";
+    update();
   }
 
   initCamera() {
@@ -80,10 +102,9 @@ class AnalysisController extends GetxController {
   }
 
   Future<void> loadYoloModel() async {
-    print('loading');
     final responseHandler = await vision.loadYoloModel(
         labels: 'assets/ml/best-fp16.txt',
-        modelPath: 'assets/ml/exp33.tflite',
+        modelPath: 'assets/ml/exp53.tflite',
         numThreads: 8,
         useGpu: false);
     if (responseHandler.type == 'success') {
@@ -92,15 +113,14 @@ class AnalysisController extends GetxController {
   }
 
   Future<String> takePicAndDetect() async {
-    _cameraController.setFlashMode(FlashMode.off);
+    _cameraController.setFlashMode(FlashMode.auto);
     final xFile = await _cameraController.takePicture();
     final path = xFile.path;
-    _imagePath = path;
+    // _imagePath = path;
     io.File file = io.File(xFile.path);
     final res = await upload(file, cont: _isDetecting);
-    print(res);
     if (res != "[]") {
-      _imagePath = path;
+      // _imagePath = path;
     }
     return res != "[]" && !res.contains('Error') ? res : "[]";
   }
@@ -157,6 +177,7 @@ class AnalysisController extends GetxController {
 
   Future<void> startImageStream() async {
     _imagePath = "";
+    _found = false;
     if (!_cameraController.value.isInitialized) {
       print('controller not initialized');
       return;
@@ -222,6 +243,7 @@ class AnalysisController extends GetxController {
             element['box']['y2']
           ]);
         });
+        _found = true;
       }
     }
     // debugger();
