@@ -80,10 +80,9 @@ class AnalysisController extends GetxController {
   }
 
   Future<void> loadYoloModel() async {
-    print('loading');
     final responseHandler = await vision.loadYoloModel(
         labels: 'assets/ml/best-fp16.txt',
-        modelPath: 'assets/ml/exp33.tflite',
+        modelPath: 'assets/ml/exp53.tflite',
         numThreads: 8,
         useGpu: false);
     if (responseHandler.type == 'success') {
