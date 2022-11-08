@@ -72,8 +72,8 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
     final snapshot = await uploadTask!.whenComplete(() {});
 
     await snapshot.ref.getDownloadURL().then((url) {
-      // GPSSignService()
-      //     .createGpsSignsModificationRequest(
+      // FeedbackService()
+      //     .createSignsModificationRequest(
       //         reason, schoolLocation, Uri.parse(url))
       //     .then((value) {});
     });

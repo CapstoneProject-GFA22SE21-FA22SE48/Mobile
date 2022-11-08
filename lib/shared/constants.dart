@@ -83,8 +83,8 @@ const String google_api_key = "AIzaSyBEre7YKax4irpLfr0I2jrkACu_ZiBL3JU";
 LatLng schoolLocation = // FPT daigaku
     const LatLng(10.841809162754405, 106.8097469445683);
 
-// const url = "https://10.0.2.2:5001/api/";
-const url = "https://vnrdntaiapi.azurewebsites.net/api/";
+const url = "https://10.0.2.2:5001/api/";
+// const url = "https://vnrdntaiapi.azurewebsites.net/api/";
 
 const ai_url = "http://10.0.2.2:5000/";
 // const ai_url = "https://vnrdnt-ai-aimodule.herokuapp.com/";

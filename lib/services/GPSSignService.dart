@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import '../shared/constants.dart';
 
-class GPSSignService {
+class FeedbackService {
   List<GPSSign> parseGPSSigns(String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed.map<GPSSign>((json) => GPSSign.fromJson(json)).toList();

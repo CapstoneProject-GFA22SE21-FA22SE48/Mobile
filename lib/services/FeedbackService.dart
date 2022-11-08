@@ -8,7 +8,7 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import '../shared/constants.dart';
 
-class GPSSignService {
+class FeedbackService {
   List<SignModificationRequest> parseSignModificationRequestList(
       String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
@@ -47,18 +47,16 @@ class GPSSignService {
     }
   }
 
-  // get all Feedback of Signs
-  Future<SignModificationRequest?> createGpsSignsModificationRequest(
-    String requestType,
-    LatLng currentLocation,
-    Uri imageUrl,
-  ) async {
+  Future<SignModificationRequest?> createSignsModificationRequest(
+      SignModificationRequest rom) async {
     try {
       final res = await http.post(Uri.parse("${url}SignModificationRequests"),
           headers: <String, String>{
             "Content-Type": "application/json; charset=UTF-8"
           },
-          body: {}).timeout(const Duration(seconds: TIME_OUT));
+          body: {
+            jsonEncode(rom)
+          }).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
         return parseSignModificationRequest(res.body);
       } else {
