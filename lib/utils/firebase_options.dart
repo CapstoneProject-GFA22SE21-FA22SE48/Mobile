@@ -49,7 +49,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '212362228870',
     projectId: 'vnrdntai',
     authDomain: 'vnrdntai.firebaseapp.com',
-    databaseURL: 'https://vnrdntai-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://vnrdntai-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'vnrdntai.appspot.com',
     measurementId: 'G-LBBVPZP0HR',
   );
@@ -59,7 +60,8 @@ class DefaultFirebaseOptions {
     appId: '1:212362228870:android:948373a28afb62e33d0d07',
     messagingSenderId: '212362228870',
     projectId: 'vnrdntai',
-    databaseURL: 'https://vnrdntai-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://vnrdntai-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'vnrdntai.appspot.com',
   );
 
@@ -68,9 +70,11 @@ class DefaultFirebaseOptions {
     appId: '1:212362228870:ios:8bcb65a87585d6143d0d07',
     messagingSenderId: '212362228870',
     projectId: 'vnrdntai',
-    databaseURL: 'https://vnrdntai-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://vnrdntai-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'vnrdntai.appspot.com',
-    iosClientId: '212362228870-85gt6h908oalmon7ud1f5a3cn58h1t5q.apps.googleusercontent.com',
+    iosClientId:
+        '212362228870-85gt6h908oalmon7ud1f5a3cn58h1t5q.apps.googleusercontent.com',
     iosBundleId: 'com.example.vnrdnTai',
   );
 
@@ -79,9 +83,16 @@ class DefaultFirebaseOptions {
     appId: '1:212362228870:ios:8bcb65a87585d6143d0d07',
     messagingSenderId: '212362228870',
     projectId: 'vnrdntai',
-    databaseURL: 'https://vnrdntai-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://vnrdntai-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'vnrdntai.appspot.com',
-    iosClientId: '212362228870-85gt6h908oalmon7ud1f5a3cn58h1t5q.apps.googleusercontent.com',
+    iosClientId:
+        '212362228870-85gt6h908oalmon7ud1f5a3cn58h1t5q.apps.googleusercontent.com',
     iosBundleId: 'com.example.vnrdnTai',
   );
 }
+
+// Firebase Paths
+const avatarsPath = '/images/avatar/';
+const testsPath = '/images/mock-test/';
+const signsPath = '/images/sign-collection/';

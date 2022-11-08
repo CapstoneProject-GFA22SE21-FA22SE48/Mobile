@@ -35,7 +35,7 @@ class AuthService {
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
-              body: jsonEncode(UserInfo(username, password, "")))
+              body: jsonEncode(UserInfo(username, password, "", "", "", 2)))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         return parseToken(res.body);
@@ -55,7 +55,7 @@ class AuthService {
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
-              body: jsonEncode(UserInfo("", "", "gmail")))
+              body: jsonEncode(UserInfo("", "", "gmail", "", "", 2)))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         return parseToken(res.body);
@@ -67,15 +67,16 @@ class AuthService {
     }
   }
 
-  Future<String> register(
-      String username, String password, String? email) async {
+  Future<String> register(String username, String password, String? email,
+      String? avatar, String? displayName) async {
     try {
       final res = await http
           .post(Uri.parse("${url}Users/Register"),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
-              body: jsonEncode(UserInfo(username, password, email)))
+              body: jsonEncode(
+                  UserInfo(username, password, email, avatar, displayName, 2)))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
         log(res.body);
@@ -147,7 +148,7 @@ class AuthService {
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
-              body: jsonEncode(UserInfo("", newP, ac.email.value)),
+              body: jsonEncode(UserInfo("", newP, ac.email.value, "", "", 0)),
             )
             .timeout(const Duration(seconds: TIME_OUT));
         if (res.statusCode == 200) {

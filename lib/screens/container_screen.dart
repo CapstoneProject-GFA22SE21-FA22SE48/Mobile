@@ -147,6 +147,7 @@ class ContainerScreen extends GetView<GlobalController> {
       drawer: Drawer(
         elevation: 0,
         child: ListView(
+          physics: BouncingScrollPhysics(),
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
@@ -267,7 +268,39 @@ class ContainerScreen extends GetView<GlobalController> {
               textColor: kWarningButtonColor,
               leading: const Icon(Icons.comment_rounded),
               title: const Text(
-                'Bình luận',
+                'Đánh giá',
+                style: TextStyle(
+                  fontSize: FONTSIZES.textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ), // Feedbacks
+              // selected: controller.sideBar.value == 2,
+              selectedColor: Colors.white,
+              selectedTileColor: Colors.blueAccent,
+              onTap: () {
+                if (controller.userId.isNotEmpty) {
+                  Navigator.pop(context); // close the drawer
+                  controller.updateSideBar(2);
+                  Get.to(const CommentsScreen());
+                } else {
+                  DialogUtil.showTextDialog(
+                    context,
+                    "Cảnh báo",
+                    "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
+                    [
+                      TemplatedButtons.yes(context, const LoginScreen()),
+                      TemplatedButtons.no(context),
+                    ],
+                  );
+                }
+              },
+            ),
+            ListTile(
+              iconColor: kPrimaryButtonColor,
+              textColor: kPrimaryButtonColor,
+              leading: const Icon(Icons.info_outline),
+              title: const Text(
+                'Thông tin',
                 style: TextStyle(
                   fontSize: FONTSIZES.textPrimary,
                   fontWeight: FontWeight.bold,

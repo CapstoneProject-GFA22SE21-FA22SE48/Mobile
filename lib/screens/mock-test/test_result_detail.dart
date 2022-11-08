@@ -73,168 +73,153 @@ class _TestResultDetailScreenState extends State<TestResultDetailScreen> {
                   snapshot.data!.forEach((tad) {
                     _items.add(Item(tad, false));
                   });
-                  return Column(
-                    children: [
-                      SizedBox(
-                        height: 90.h,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListView.builder(
-                              physics: const BouncingScrollPhysics(),
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: ((context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(
-                                        kDefaultPaddingValue,
-                                      )),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color:
-                                                Color.fromARGB(80, 82, 82, 82),
-                                            spreadRadius: 2,
-                                            blurRadius: 8,
-                                            offset: Offset(0, 8))
-                                      ],
-                                    ),
-                                    child: ExpandableNotifier(
-                                        child: ScrollOnExpand(
-                                            scrollOnExpand: true,
-                                            scrollOnCollapse: false,
-                                            child: ExpandablePanel(
-                                              theme: const ExpandableThemeData(
-                                                headerAlignment:
-                                                    ExpandablePanelHeaderAlignment
-                                                        .center,
-                                                tapBodyToCollapse: true,
-                                              ),
-                                              header: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(10),
-                                                  child: Column(
-                                                    children: [
+                  return SizedBox(
+                    height: 90.h,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: ((context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(
+                                    kDefaultPaddingValue,
+                                  )),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Color.fromARGB(80, 82, 82, 82),
+                                        spreadRadius: 2,
+                                        blurRadius: 8,
+                                        offset: Offset(0, 8))
+                                  ],
+                                ),
+                                child: ExpandableNotifier(
+                                    child: ScrollOnExpand(
+                                        scrollOnExpand: true,
+                                        scrollOnCollapse: false,
+                                        child: ExpandablePanel(
+                                          theme: const ExpandableThemeData(
+                                            headerAlignment:
+                                                ExpandablePanelHeaderAlignment
+                                                    .center,
+                                            tapBodyToCollapse: true,
+                                          ),
+                                          header: Padding(
+                                              padding: const EdgeInsets.all(10),
+                                              child: Column(
+                                                children: [
+                                                  snapshot.data![index]
+                                                              .imageUrl !=
+                                                          null
+                                                      ? SizedBox(
+                                                          height: 120,
+                                                          child: Image.network(
+                                                              snapshot
+                                                                      .data![index]
+                                                                      .imageUrl
+                                                                  as String,
+                                                              fit: BoxFit
+                                                                  .contain))
+                                                      : Container(),
+                                                  Text(
                                                       snapshot.data![index]
-                                                                  .imageUrl !=
-                                                              null
-                                                          ? SizedBox(
-                                                              height: 120,
-                                                              child: Image.network(
-                                                                  snapshot
-                                                                          .data![
-                                                                              index]
-                                                                          .imageUrl
-                                                                      as String,
-                                                                  fit: BoxFit
-                                                                      .contain))
-                                                          : Container(),
-                                                      Text(
-                                                          snapshot.data![index]
-                                                              .questionContent,
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .textTheme
-                                                              .headline6
-                                                              ?.copyWith(
-                                                                  color: Colors
-                                                                      .blue)),
-                                                    ],
-                                                  )),
-                                              collapsed: snapshot
-                                                      .data![index].isCorrect
-                                                  ? Center(
-                                                      child: Row(
-                                                        children: const [
-                                                          Text("Đúng ",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .blueAccent,
-                                                                  fontSize:
-                                                                      16)),
-                                                          Icon(Icons.done,
+                                                          .questionContent,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline6
+                                                          ?.copyWith(
+                                                              color:
+                                                                  Colors.blue)),
+                                                ],
+                                              )),
+                                          collapsed: snapshot
+                                                  .data![index].isCorrect
+                                              ? Center(
+                                                  child: Row(
+                                                    children: const [
+                                                      Text("Đúng ",
+                                                          style: TextStyle(
                                                               color: Colors
                                                                   .blueAccent,
-                                                              size: 16),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  : Center(
-                                                      child: Row(
-                                                        children: const [
-                                                          Text("Sai ",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .red,
-                                                                  fontSize:
-                                                                      16)),
-                                                          Icon(Icons.close,
+                                                              fontSize: 16)),
+                                                      Icon(Icons.done,
+                                                          color:
+                                                              Colors.blueAccent,
+                                                          size: 16),
+                                                    ],
+                                                  ),
+                                                )
+                                              : Center(
+                                                  child: Row(
+                                                    children: const [
+                                                      Text("Sai ",
+                                                          style: TextStyle(
                                                               color: Colors.red,
-                                                              size: 16),
-                                                        ],
-                                                      ),
-                                                    ),
-                                              expanded: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 10),
-                                                      child: Text(
-                                                        snapshot
-                                                                .data![index]
-                                                                .chosenAnswerContent
-                                                                .isNotEmpty
-                                                            ? "Bạn đã chọn: \n${snapshot.data![index].chosenAnswerContent}"
-                                                            : "Bạn đã không chọn đáp án",
-                                                        softWrap: true,
-                                                        overflow:
-                                                            TextOverflow.fade,
-                                                        style: const TextStyle(
-                                                            fontSize: 16),
-                                                      )),
-                                                  Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 10),
-                                                      child: Text(
-                                                        'Câu trả lời đúng là: \n${snapshot.data![index].correctAnswerContent}',
-                                                        softWrap: true,
-                                                        overflow:
-                                                            TextOverflow.fade,
-                                                        style: const TextStyle(
-                                                            fontSize: 16),
-                                                      ))
-                                                ],
-                                              ),
-                                              builder:
-                                                  (_, collapsed, expanded) {
-                                                return Padding(
+                                                              fontSize: 16)),
+                                                      Icon(Icons.close,
+                                                          color: Colors.red,
+                                                          size: 16),
+                                                    ],
+                                                  ),
+                                                ),
+                                          expanded: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Padding(
                                                   padding:
                                                       const EdgeInsets.only(
-                                                          left: 10,
-                                                          right: 10,
                                                           bottom: 10),
-                                                  child: Expandable(
-                                                    collapsed: collapsed,
-                                                    expanded: expanded,
-                                                    theme:
-                                                        const ExpandableThemeData(
-                                                            crossFadePoint: 0),
-                                                  ),
-                                                );
-                                              },
-                                            ))),
-                                  ),
-                                );
-                              })),
-                        ),
-                      ),
-                    ],
+                                                  child: Text(
+                                                    snapshot
+                                                            .data![index]
+                                                            .chosenAnswerContent
+                                                            .isNotEmpty
+                                                        ? "Bạn đã chọn: \n${snapshot.data![index].chosenAnswerContent}"
+                                                        : "Bạn đã không chọn đáp án",
+                                                    softWrap: true,
+                                                    overflow: TextOverflow.fade,
+                                                    style: const TextStyle(
+                                                        fontSize: 16),
+                                                  )),
+                                              Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 10),
+                                                  child: Text(
+                                                    'Câu trả lời đúng là: \n${snapshot.data![index].correctAnswerContent}',
+                                                    softWrap: true,
+                                                    overflow: TextOverflow.fade,
+                                                    style: const TextStyle(
+                                                        fontSize: 16),
+                                                  ))
+                                            ],
+                                          ),
+                                          builder: (_, collapsed, expanded) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 10,
+                                                  right: 10,
+                                                  bottom: 10),
+                                              child: Expandable(
+                                                collapsed: collapsed,
+                                                expanded: expanded,
+                                                theme:
+                                                    const ExpandableThemeData(
+                                                        crossFadePoint: 0),
+                                              ),
+                                            );
+                                          },
+                                        ))),
+                              ),
+                            );
+                          })),
+                    ),
                   );
                 }
               }

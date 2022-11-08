@@ -1,5 +1,5 @@
 class SignModificationRequest {
-  final String id; // get
+  final String? id; // get
   final String? modifyingSignId;
   final String? modifiedSignId;
   final String? modifyingGpssignId;

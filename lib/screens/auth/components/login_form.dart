@@ -10,6 +10,7 @@ import 'package:vnrdn_tai/models/UserInfo.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vnrdn_tai/screens/auth/components/change_forgot_password.dart';
 import 'package:vnrdn_tai/screens/auth/components/or_divider.dart';
+import 'package:vnrdn_tai/screens/auth/components/verify_mail_screen.dart';
 import 'package:vnrdn_tai/screens/auth/forgot_password_screen.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';

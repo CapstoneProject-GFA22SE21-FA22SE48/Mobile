@@ -11,7 +11,9 @@ import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
+import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
+import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:vnrdn_tai/utils/dialogUtil.dart';
 import 'package:vnrdn_tai/utils/location_util.dart';
@@ -71,7 +73,7 @@ class _MinimapState extends State<MinimapScreen> {
       var bytes = request.bodyBytes;
       Uint8List dataBytes = bytes;
       String sTitle =
-          s.imageUrl!.split("%2F")[2].split("?")[0].removeAllWhitespace;
+          s.imageUrl!.split("%2F")[2].split(".png")[0].removeAllWhitespace;
       // print(sTitle);
 
       if (mounted) {
@@ -89,17 +91,68 @@ class _MinimapState extends State<MinimapScreen> {
                   // print(s.signId);
                 }),
                 child: Container(
-                  height: 5.h,
-                  width: 30.w,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(Icons.info_outline_rounded),
-                      Text("Xem thêm"),
-                    ],
-                  ),
-                ),
+                    padding: EdgeInsets.symmetric(
+                      vertical: kDefaultPaddingValue / 2,
+                      horizontal: kDefaultPaddingValue / 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(kDefaultPaddingValue),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey,
+                          blurRadius: 4,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Sign: $sTitle',
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: FONTSIZES.textLarge,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: (() {
+                                // Get.to(FeedbacksScreen(
+                                //   type: '',
+                                //   sign: s,
+                                // ));
+                              }),
+                              icon: Icon(
+                                Icons.info_outline_rounded,
+                                color: Colors.blueAccent,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding:
+                              EdgeInsets.only(top: kDefaultPaddingValue / 2),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: () => Get.to(FeedbacksScreen(
+                                  type: '',
+                                  sign: s,
+                                )),
+                                child: Text("Wrong infomation?"),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    )),
               ),
               LatLng(s.latitude, s.longitude),
             );
@@ -218,7 +271,12 @@ class _MinimapState extends State<MinimapScreen> {
                     zoom: mc.zoom.value,
                   ),
                   markers: _markers.toSet(),
-                  onTap: (position) {},
+                  onTap: (position) {
+                    _infoWindowcontroller.hideInfoWindow!();
+                  },
+                  onCameraMove: (position) {
+                    _infoWindowcontroller.onCameraMove!();
+                  },
                   onMapCreated: (controller) {
                     gmapController.complete(controller);
                     _infoWindowcontroller.googleMapController = controller;
@@ -226,9 +284,9 @@ class _MinimapState extends State<MinimapScreen> {
                 ),
                 CustomInfoWindow(
                   controller: _infoWindowcontroller,
-                  height: 200,
-                  width: 300,
-                  offset: 35,
+                  height: 12.h,
+                  width: 40.w,
+                  offset: 16.h,
                 )
               ],
             ),

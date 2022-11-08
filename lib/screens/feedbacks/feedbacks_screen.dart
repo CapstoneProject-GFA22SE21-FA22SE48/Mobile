@@ -14,10 +14,13 @@ import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
+import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/utils/dialogUtil.dart';
 import 'package:vnrdn_tai/utils/location_util.dart';
+import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class FeedbacksScreen extends StatefulWidget {
   FeedbacksScreen({
@@ -82,7 +85,8 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
 
   Future uploadImage() async {
     GlobalController gc = Get.put(GlobalController());
-    final path = 'user-feedbacks/${gc.userId.value}_${pickedFile!.name}';
+    final ext = pickedFile!.name.split('.').last;
+    final path = 'user-feedbacks/${gc.userId.value}_${DateTime.now()}.${ext}';
     final file = File(pickedFile!.path!);
 
     final ref = FirebaseStorage.instance.ref().child(path);
@@ -105,7 +109,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
 
         GPSSignService()
             .AddGpsSign(
-          LocationUtil.nearestSign([]),
+          widget.sign!.id,
           location.latitude!,
           location.longitude!,
         )
@@ -118,6 +122,14 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
             newSign,
           )
               .then((value) {
+            if (value != null) {
+              DialogUtil.showTextDialog(
+                context,
+                "Phản hồi",
+                "Cảm ơn về phản hồi của bạn.\n Chúng tôi sẽ kiểm tra và chỉnh sửa sớm nhất có thể.",
+                [TemplatedButtons.okWithscreen(context, MinimapScreen())],
+              );
+            }
             print(value);
           });
         });
