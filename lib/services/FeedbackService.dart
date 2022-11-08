@@ -47,16 +47,49 @@ class FeedbackService {
     try {
       switch (requestType) {
         case 'noSignHere':
-          request = SignModificationRequest(null, null, null, newGpsSign!.id,
-              oldGpsSign!.id, gc.userId.value, 2, imageUrl, 0, DateTime.now());
+          request = SignModificationRequest(
+              null,
+              null,
+              null,
+              newGpsSign!.id,
+              oldGpsSign!.id,
+              gc.userId.value,
+              null,
+              null,
+              2,
+              imageUrl,
+              0,
+              DateTime.now());
           break;
         case 'wrongSign':
-          request = SignModificationRequest(null, null, null, newGpsSign!.id,
-              oldGpsSign!.id, gc.userId.value, 1, imageUrl, 0, DateTime.now());
+          request = SignModificationRequest(
+              null,
+              null,
+              null,
+              newGpsSign!.id,
+              oldGpsSign!.id,
+              gc.userId.value,
+              null,
+              null,
+              1,
+              imageUrl,
+              0,
+              DateTime.now());
           break;
         default:
-          request = SignModificationRequest(null, null, null, newGpsSign!.id,
-              null, gc.userId.value, 0, imageUrl, 0, DateTime.now());
+          request = SignModificationRequest(
+              null,
+              null,
+              null,
+              newGpsSign!.id,
+              null,
+              gc.userId.value,
+              null,
+              null,
+              0,
+              imageUrl,
+              0,
+              DateTime.now());
       }
       final res = await http.post(
         Uri.parse("${url}SignModificationRequests"),
@@ -88,7 +121,8 @@ class FeedbackService {
             jsonEncode(rom)
           }).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
-        return parseSignModificationRequest(res.body);
+        return SignModificationRequestService.parseSignModificationRequest(
+            res.body);
       } else {
         log(res.body);
         return null;
