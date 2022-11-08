@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
+import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:vnrdn_tai/utils/dialogUtil.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
@@ -135,7 +136,7 @@ class _MinimapState extends State<MinimapScreen> {
   }
 
   void getSignsList() {
-    gpsSigns = FeedbackService().getNearbySigns(
+    gpsSigns = GPSSignService().getNearbySigns(
       currentLocation!.latitude!,
       currentLocation!.longitude!,
       10,
