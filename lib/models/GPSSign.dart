@@ -3,13 +3,13 @@ class GPSSign {
   final String signId;
   final String? imageUrl;
   final double latitude;
-  final double longtitude;
+  final double longitude;
 
   factory GPSSign.fromJson(Map<String, dynamic> data) {
     return GPSSign(
       data['id'],
       data['signId'],
-      data['signImageUrl'],
+      data['imageUrl'],
       data['latitude'],
       data['longtitude'],
     );
@@ -20,6 +20,6 @@ class GPSSign {
     this.signId,
     this.imageUrl,
     this.latitude,
-    this.longtitude,
+    this.longitude,
   );
 }

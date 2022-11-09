@@ -10,7 +10,7 @@ class MapsController extends GetxController {
   static MapsController instance = Get.find();
   Location location = Location();
   late List<GPSSign> _listSigns;
-  final zoom = 18.0.obs;
+  final zoom = 19.0.obs;
 
   List<GPSSign> get listSigns => _listSigns;
 

@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/controllers/search_controller.dart';
-import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/shared/bindings.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -20,9 +18,10 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 void main() {
-  HttpOverrides.global = new MyHttpOverrides();
+  HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
+  Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -35,14 +34,18 @@ class MyApp extends StatelessWidget {
     return Sizer(builder: (context, orientation, deviceType) {
       return GetMaterialApp(
         title: 'VNRDnTAI',
+        // enableLog: false,
+        themeMode: ThemeMode.light,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          fontFamily: 'SVN_Aleo',
+          backgroundColor: const Color(0xFFF3F3F3),
+          primaryColor: Colors.white,
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.white,
             titleTextStyle: TextStyle(
               color: Colors.blueAccent,
-              fontSize: FONTSIZES.textLarger,
+              fontSize: FONTSIZES.textLarge,
               fontWeight: FontWeight.bold,
             ),
             actionsIconTheme: IconThemeData(
@@ -51,6 +54,30 @@ class MyApp extends StatelessWidget {
             ),
             iconTheme: IconThemeData(
               color: Colors.black54,
+              size: FONTSIZES.textHuge,
+            ),
+          ),
+        ),
+        darkTheme: ThemeData(
+          fontFamily: 'SVN_Aleo',
+          backgroundColor: Color(0xFF131313),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Color(0xFF000000),
+            titleTextStyle: TextStyle(
+              color: Colors.blueAccent,
+              fontSize: FONTSIZES.textLarger,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'SVN_Aleo',
+            ),
+            toolbarTextStyle: TextStyle(
+              color: Colors.white70,
+            ),
+            actionsIconTheme: IconThemeData(
+              color: Color(0xFFFFFFFF),
+              size: FONTSIZES.textHuge,
+            ),
+            iconTheme: IconThemeData(
+              color: Color(0xFFFFFFFF),
               size: FONTSIZES.textHuge,
             ),
           ),

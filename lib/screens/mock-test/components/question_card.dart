@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -21,12 +23,32 @@ class QuestionCard extends StatelessWidget {
     showQuestionImage(Question question) {
       if (question.imageUrl != null) {
         return Container(
-            height: 180,
-            padding: EdgeInsets.symmetric(vertical: kDefaultPaddingValue / 2),
-            child: Image.network(
-              question.imageUrl as String,
-              fit: BoxFit.contain,
-            ));
+          height: 180,
+          padding: EdgeInsets.symmetric(vertical: kDefaultPaddingValue / 2),
+          child: CachedNetworkImage(
+            imageUrl: question.imageUrl as String,
+            imageBuilder: (context, imageProvider) => Container(
+              width: 80.w,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
+            ),
+            placeholder: (context, url) => Container(
+              alignment: Alignment.center,
+              child:
+                  const CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
+            ), //show progress  while loading image
+            errorWidget: (context, url, error) =>
+                Image.asset("assets/images/alt_image.png"),
+          ),
+          // Image.network(
+          //   question.imageUrl as String,
+          //   fit: BoxFit.contain,
+          // )
+        );
       } else {
         return Container();
       }
@@ -48,11 +70,13 @@ class QuestionCard extends StatelessWidget {
         ],
       ),
       child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         scrollDirection: Axis.vertical,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(question.content,
+                textAlign: TextAlign.justify,
                 style: Theme.of(context)
                     .textTheme
                     .headline6

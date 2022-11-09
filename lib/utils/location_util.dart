@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:vnrdn_tai/models/GPSSign.dart';
 
 class LocationUtil {
   static double distanceInKM(LatLng loc1, LatLng loc2) {
@@ -23,5 +24,9 @@ class LocationUtil {
             (1 - cos((loc2.longitude - loc1.longitude) * p)) /
             2;
     return 12742 * asin(sqrt(a)) * 1000;
+  }
+
+  static String nearestSign(List<GPSSign> signs) {
+    return "";
   }
 }

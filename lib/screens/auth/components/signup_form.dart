@@ -92,8 +92,12 @@ class _SignUpFormState extends State<SignUpForm> {
     );
 
     await AuthService()
-        .register(usernameController.text, passwordController.text,
-            emailController.text.isNotEmpty ? emailController.text : null)
+        .register(
+            usernameController.text,
+            passwordController.text,
+            emailController.text.isNotEmpty ? emailController.text : null,
+            "",
+            "")
         .then(((value) {
       ScaffoldMessenger.of(context).clearSnackBars();
       if (value.length > 1) {

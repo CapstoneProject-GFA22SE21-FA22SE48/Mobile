@@ -25,11 +25,11 @@ import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 class FeedbacksScreen extends StatefulWidget {
   FeedbacksScreen({
     super.key,
-    this.type = '',
+    this.romId = '',
     this.sign,
   });
 
-  String type;
+  String romId;
   GPSSign? sign;
 
   @override
@@ -144,7 +144,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
-        title: const Text('Phản hồi thông tin'),
+        title: const Text('Xác nhận phản hồi'),
       ),
       body: KeyboardVisibilityBuilder(
         builder: (context, isKeyboardVisible) {
@@ -161,44 +161,10 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text(
-                    '',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: FONTSIZES.textHuge,
-                    ),
-                  ),
-                  const Text(
-                    'Nguyên nhân:',
-                    style: TextStyle(
-                      fontSize: FONTSIZES.textPrimary,
-                      color: Colors.blueAccent,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: kDefaultPaddingValue),
-                  DropdownButtonHideUnderline(
-                    child: GFDropdown(
-                      hint: const Text('Hãy chọn nguyên nhân'),
-                      padding: const EdgeInsets.all(kDefaultPaddingValue / 2),
-                      borderRadius: BorderRadius.circular(5),
-                      border: const BorderSide(color: Colors.grey, width: 1),
-                      dropdownButtonColor: Colors.white,
-                      value: reason,
-                      onChanged: (newValue) {
-                        setState(() {
-                          reason = newValue ?? '';
-                        });
-                      },
-                      items: _listDropdown,
-                      isExpanded: true,
-                    ),
-                  ),
-                  const SizedBox(height: kDefaultPaddingValue),
                   Row(
                     children: [
                       const Text(
-                        'Hình ảnh chứng minh:',
+                        'Hình ảnh xác nhận:',
                         style: TextStyle(
                           fontSize: FONTSIZES.textPrimary,
                           color: Colors.blueAccent,
@@ -262,7 +228,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                     onPressed: uploadImage,
                     child: Padding(
                       padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),
-                      child: const Text('Gửi phản hồi'),
+                      child: const Text('Gửi Xác nhận'),
                     ),
                   ),
                 ],

@@ -50,6 +50,17 @@ class TemplatedButtons {
     );
   }
 
+  static TextButton okWithMethod(BuildContext context, Future function) {
+    return TextButton(
+      style: TemplatedButtons().confirmStyle,
+      onPressed: () => function,
+      child: const Text(
+        "ĐỒNG Ý",
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
   static TextButton cancel(BuildContext context) {
     return TextButton(
       style: TemplatedButtons().cancelStyle,

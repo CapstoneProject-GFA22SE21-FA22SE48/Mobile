@@ -37,7 +37,7 @@ class _SearchSignDetailScreen extends State<SearchSignDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
+        elevation: 0,
         title: const Text("Chi tiết biển báo"),
       ),
       body: SafeArea(
@@ -66,7 +66,7 @@ class _SearchSignDetailScreen extends State<SearchSignDetailScreen> {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.shade300,
+                              color: Colors.grey.shade200,
                               spreadRadius: 2,
                               blurRadius: 4,
                             )
@@ -76,6 +76,7 @@ class _SearchSignDetailScreen extends State<SearchSignDetailScreen> {
                         horizontal: kDefaultPaddingValue,
                       ),
                       child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
                         child: Container(
                           width: 90.w,
                           child: Padding(
@@ -132,14 +133,6 @@ class _SearchSignDetailScreen extends State<SearchSignDetailScreen> {
                                     vertical: kDefaultPaddingValue / 2,
                                   ),
                                 )),
-                                // WidgetSpan(
-                                //   child: Divider(
-                                //     height: 3.h,
-                                //     color: Colors.grey.shade300,
-                                //     endIndent: 60.w,
-                                //     thickness: 3,
-                                //   ),
-                                // ),
                                 WidgetSpan(
                                   child: Container(
                                     width: 80.w,
@@ -176,16 +169,29 @@ class _SearchSignDetailScreen extends State<SearchSignDetailScreen> {
                       ),
                     ),
                   ),
-                  const Divider(),
+                  // const Divider(),
                   widget.searchSignDto!.searchLawDTOs!.isNotEmpty
                       ? Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: kDefaultPaddingValue),
                           child: SizedBox(
                             width: 100.w,
-                            height: 25.h,
+                            height: 30.h,
                             child: Container(
-                              color: Colors.white70,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(
+                                      kDefaultPaddingValue,
+                                    ),
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.shade200,
+                                      spreadRadius: 2,
+                                      blurRadius: 4,
+                                    )
+                                  ]),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
@@ -203,10 +209,10 @@ class _SearchSignDetailScreen extends State<SearchSignDetailScreen> {
                                                       color: Colors.orange,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      fontStyle:
-                                                          FontStyle.italic,
-                                                      decoration: TextDecoration
-                                                          .underline,
+                                                      // fontStyle:
+                                                      //     FontStyle.italic,
+                                                      // decoration: TextDecoration
+                                                      //     .underline,
                                                       fontSize:
                                                           FONTSIZES.textLarge))
                                         ],

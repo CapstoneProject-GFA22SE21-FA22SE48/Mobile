@@ -69,11 +69,14 @@ dependencies:
 
   jwt_decode: ^0.3.1
   email_auth: ^1.0.0
+  flutter_otp_text_field: ^1.1.1
+  
   flutter_keyboard_visibility: ^5.4.0
   cached_network_image: ^3.1.0
   curved_navigation_bar: ^1.0.3
-  file_picker: ^5.2.2
+  file_picker: ^4.6.1
   permission_handler: ^6.1.3
+
 
 flutter_native_splash:
   color: "#ffffff"
@@ -170,10 +173,7 @@ flutter:
     - assets/images/signs/
     # general
     - assets/images/logo.png
-    - assets/images/443.png
-    - assets/images/112.png
     - assets/images/alt_img.png
-    - assets/images/alt_img_2.png
 
     # auth
     - assets/images/auth/main_top.png
@@ -223,16 +223,24 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   # fonts:
-  #   - family: Schyler
+  #   - family: SVN_Aleo
   #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
+  #       - asset: fonts/SVN-Aleo_Regular.otf
+  #       - asset: fonts/SVN-Aleo_Light.otf
+  #         weight: 200
+  #       - asset: fonts/SVN-Aleo_Light.otf
+  #         weight: 300
+  #       - asset: fonts/SVN-Aleo_Light.otf
+  #         weight: 400
+  #       - asset: fonts/SVN-Aleo_Regular.otf
+  #         weight: 600
+  #       - asset: fonts/SVN-Aleo_Bold.otf
   #         weight: 700
-  #
+  #       - asset: fonts/SVN-Aleo_Bold.otf
+  #         weight: 800
+  #       - asset: fonts/SVN-Aleo_Bold.otf
+  #         weight: 900
+  #       - asset: fonts/SVN-Aleo_Italic.otf
+  #         style: italic
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

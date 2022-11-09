@@ -62,6 +62,7 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
+          elevation: 0,
           title:
               Text("Tra cứu \"${sc.vehicleCategory.value.capitalizeFirst}\""),
           actions: [

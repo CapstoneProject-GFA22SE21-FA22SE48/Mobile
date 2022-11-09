@@ -7,6 +7,7 @@ import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/components/progress_bar.dart';
+import 'package:vnrdn_tai/screens/mock-test/test_set_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
 import 'question_card.dart';
@@ -66,18 +67,31 @@ class _BodyState extends State<Body> {
                   ),
                   child: Row(
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          qnController.stopTimer();
-                          Get.offAll(() => ContainerScreen());
-                        },
-                        icon: const FaIcon(
-                          FontAwesomeIcons.close,
-                          color: Colors.white,
-                        ),
-                      ),
+                      gc.test_mode == TEST_TYPE.STUDY
+                          ? IconButton(
+                              onPressed: () {
+                                // qnController.stopTimer();
+                                // Get.offAll(() => ContainerScreen());
+                                if (qnController
+                                    .testCategoryId.value.isNotEmpty) {
+                                  Get.to(() => TestSetScreen(
+                                        categoryName:
+                                            qnController.testCategoryName.value,
+                                        categoryId:
+                                            qnController.testCategoryId.value,
+                                      ));
+                                }
+                              },
+                              icon: const FaIcon(
+                                FontAwesomeIcons.close,
+                                color: Colors.white,
+                              ),
+                            )
+                          : SizedBox(
+                              width: 12.0.w,
+                            ),
                       SizedBox(
-                        width: 16.w,
+                        width: 12.w,
                       ),
                       Text(
                         "Câu số $questionNo/${widget.questions.length}",
@@ -87,6 +101,9 @@ class _BodyState extends State<Body> {
                           fontWeight: FontWeight.bold,
                           fontSize: FONTSIZES.textHuge,
                         ),
+                      ),
+                      SizedBox(
+                        width: 16.w,
                       ),
                     ],
                   ),

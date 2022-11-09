@@ -3,17 +3,20 @@ import 'dart:typed_data';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
+import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
+import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/location_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class MinimapScreen extends StatefulWidget {
@@ -29,12 +32,12 @@ class _MinimapState extends State<MinimapScreen> {
       CustomInfoWindowController();
   MapsController mc = Get.put(MapsController());
 
-  late Future<List<GPSSign>> gpsSigns;
+  late List<GPSSign> gpsSigns;
   final List<Marker> _markers = <Marker>[].obs;
 
   LocationData? currentLocation;
   LatLng defaultLocation = LatLng(10.841809162754405, 106.8097469445683);
-  LatLng? lastLocation;
+  // LatLng? lastLocation;
   int count = 0;
 
   List<GPSSign> listSigns = [
@@ -60,29 +63,98 @@ class _MinimapState extends State<MinimapScreen> {
       106.8097469445683,
     ),
   ];
+  // LatLng school = LatLng(10.841809162754405, 106.8097469445683);
 
-  void setCustomMarkerIcon() async {
-    for (var s in listSigns) {
+  void setCustomMarkerIcon(List<GPSSign> list) async {
+    _markers.clear();
+
+    for (var s in list) {
       var request = await http.get(Uri.parse(s.imageUrl!));
       var bytes = request.bodyBytes;
       Uint8List dataBytes = bytes;
       String sTitle =
           s.imageUrl!.split("%2F")[2].split(".png")[0].removeAllWhitespace;
+      // print(sTitle);
 
-      setState(() {
-        dataBytes = bytes;
-      });
-
-      // LatLng school = LatLng(10.841809162754405, 106.8097469445683);
+      if (mounted) {
+        setState(() {
+          dataBytes = bytes;
+        });
+      }
 
       _markers.add(
         Marker(
           onTap: () {
-            DialogUtil.showTextDialog(
-              context,
-              "Hey",
-              "You just made it!",
-              [TemplatedButtons.ok(context)],
+            _infoWindowcontroller.addInfoWindow!(
+              GestureDetector(
+                onTap: (() {
+                  // print(s.signId);
+                }),
+                child: Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: kDefaultPaddingValue / 2,
+                      horizontal: kDefaultPaddingValue / 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(kDefaultPaddingValue),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey,
+                          blurRadius: 4,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Sign: $sTitle',
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: FONTSIZES.textLarge,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: (() {
+                                // Get.to(FeedbacksScreen(
+                                //   type: '',
+                                //   sign: s,
+                                // ));
+                              }),
+                              icon: Icon(
+                                Icons.info_outline_rounded,
+                                color: Colors.blueAccent,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding:
+                              EdgeInsets.only(top: kDefaultPaddingValue / 2),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: () => Get.to(FeedbacksScreen(
+                                  type: '',
+                                  sign: s,
+                                )),
+                                child: Text("Wrong infomation?"),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    )),
+              ),
+              LatLng(s.latitude, s.longitude),
             );
           },
           icon: BitmapDescriptor.fromBytes(
@@ -90,11 +162,12 @@ class _MinimapState extends State<MinimapScreen> {
             size: const Size(5, 5),
           ),
           markerId: MarkerId(s.id),
-          position: LatLng(s.latitude, s.longtitude),
-          infoWindow: InfoWindow(
-            title: 'Sign: $sTitle',
-            anchor: const Offset(0.5, 0.5),
-          ),
+          position: LatLng(s.latitude, s.longitude),
+          // infoWindow: InfoWindow(
+
+          //   title: 'Sign: $sTitle',
+          //   anchor: const Offset(0.5, 0.5),
+          // ),
         ),
       );
     }
@@ -110,46 +183,63 @@ class _MinimapState extends State<MinimapScreen> {
   }
 
   Future getCurrentLocation() async {
-    var status = await Permission.location.request();
-    if (status.isGranted) {
-      await mc.location.getLocation().then((location) {
+    if (await Permission.location.request().isGranted) {
+      mc.location.getLocation().then((location) {
         currentLocation = location;
-        onLocationChanged();
+        getSignsList(location);
         return location;
       }).catchError((e) => print(e));
-      // We didn't ask for permission yet or the permission has been denied before but not permanently.
     } else {
       getCurrentLocation();
     }
   }
 
   void onLocationChanged() {
-    mc.location.onLocationChanged.listen((newLoc) {
-      count++;
-      if (currentLocation != null) {
-        lastLocation =
-            LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
-      }
-      currentLocation = newLoc;
-      print(count);
-    });
+    Timer(
+      Duration(milliseconds: 500),
+      () => mc.location.onLocationChanged.listen((newLoc) {
+        var distance = 0.0;
+        if (currentLocation != null) {
+          distance = LocationUtil.distanceInM(
+              LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+              LatLng(newLoc.latitude!, newLoc.longitude!));
+          print(distance);
+        } else {
+          currentLocation = newLoc;
+        }
+        if (currentLocation != null && distance > 5) {
+          currentLocation = newLoc;
+          getSignsList(currentLocation!);
+        }
+        if (mounted) {
+          setState(() {});
+        }
+      }),
+    );
   }
 
-  void getSignsList() {
-    gpsSigns = GPSSignService().getNearbySigns(
-      currentLocation!.latitude!,
-      currentLocation!.longitude!,
-      10,
-    );
+  void getSignsList(LocationData curLocation) async {
+    if (curLocation.latitude != null && curLocation.longitude != null) {
+      await GPSSignService()
+          .GetNearbySigns(
+        curLocation.latitude!,
+        curLocation.longitude!,
+        10,
+      )
+          .then((signs) {
+        if (signs.isNotEmpty) {
+          gpsSigns = signs;
+          setCustomMarkerIcon(signs);
+        }
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
     getCurrentLocation().then((value) {
-      getSignsList();
-      setCustomMarkerIcon();
-      print(gpsSigns);
+      onLocationChanged();
     });
   }
 
@@ -172,7 +262,7 @@ class _MinimapState extends State<MinimapScreen> {
                   myLocationButtonEnabled: true,
                   myLocationEnabled: true,
                   trafficEnabled: true,
-                  minMaxZoomPreference: MinMaxZoomPreference(10, 25),
+                  minMaxZoomPreference: const MinMaxZoomPreference(10, 25),
                   initialCameraPosition: CameraPosition(
                     target: LatLng(
                       currentLocation!.latitude!,
@@ -181,10 +271,23 @@ class _MinimapState extends State<MinimapScreen> {
                     zoom: mc.zoom.value,
                   ),
                   markers: _markers.toSet(),
-                  onMapCreated: (mapController) {
-                    gmapController.complete(mapController);
+                  onTap: (position) {
+                    _infoWindowcontroller.hideInfoWindow!();
+                  },
+                  onCameraMove: (position) {
+                    _infoWindowcontroller.onCameraMove!();
+                  },
+                  onMapCreated: (controller) {
+                    gmapController.complete(controller);
+                    _infoWindowcontroller.googleMapController = controller;
                   },
                 ),
+                CustomInfoWindow(
+                  controller: _infoWindowcontroller,
+                  height: 12.h,
+                  width: 40.w,
+                  offset: 16.h,
+                )
               ],
             ),
     );

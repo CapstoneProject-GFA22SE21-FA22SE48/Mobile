@@ -18,16 +18,17 @@ class GPSSignService {
   }
 
   // distance can be modified
-  Future<List<GPSSign>> getNearbySigns(
-      double latitude, double longtitude, double distance) async {
+  Future<List<GPSSign>> GetNearbySigns(
+      double latitude, double longitude, double distance) async {
     try {
       final res = await http
           .get(
             Uri.parse(
-                "${url}Gpssigns/GetNearbySigns?latitude=$latitude&longtitude=$longtitude&distance=$distance"),
+                "${url}Gpssigns/GetNearbyGpsSign?latitude=$latitude&longitude=$longitude&distance=$distance"),
           )
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
+        log(res.body);
         return parseGPSSigns(res.body);
       } else {
         log(res.body);

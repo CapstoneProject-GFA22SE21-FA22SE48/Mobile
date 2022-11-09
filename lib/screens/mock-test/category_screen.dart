@@ -109,25 +109,29 @@ class _CategoryScreenState extends State<CategoryScreen> {
             } else {
               return Stack(
                 children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: kDefaultPaddingValue,
+                      vertical: kDefaultPaddingValue,
+                    ),
+                    child: Text(
+                      'Chọn hạng GPLX',
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                          color: Colors.pinkAccent.shade200,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
                   SafeArea(
                       child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: kDefaultPaddingValue,
+                      vertical: kDefaultPaddingValue / 2,
                     ),
                     child: Center(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: kDefaultPaddingValue),
-                          Text(
-                            'Chọn hạng GPLX',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4
-                                ?.copyWith(
-                                    color: Colors.pinkAccent.shade200,
-                                    fontWeight: FontWeight.bold),
-                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               vertical: 0,
@@ -189,12 +193,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  const Icon(
-                                                    Icons
-                                                        .play_circle_outline_rounded,
-                                                    color: Colors.white,
-                                                    size: FONTSIZES.textHuge,
-                                                  ),
+                                                  // const Icon(
+                                                  //   Icons
+                                                  //       .play_circle_outline_rounded,
+                                                  //   color: Colors.white,
+                                                  //   size: FONTSIZES.textHuge,
+                                                  // ),
                                                   // const SizedBox(
                                                   //   height: kDefaultPaddingValue / 2,
                                                   // ),
@@ -209,10 +213,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                       style: const TextStyle(
                                                         color: Colors.white,
                                                         fontSize: FONTSIZES
-                                                            .textPrimary,
+                                                            .textMediumLarge,
                                                       ),
                                                     ),
                                                   ),
+                                                  const Divider(),
                                                   Text(
                                                       "HẠNG ${snapshot.data![index].name}",
                                                       style: const TextStyle(
@@ -225,7 +230,25 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                 ],
                                               ),
                                               const Spacer(),
-                                              Container(),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Icon(
+                                                    Icons
+                                                        .play_circle_outline_rounded,
+                                                    color: Colors.white,
+                                                    size: 18.0.w,
+                                                  ),
+                                                  SizedBox(
+                                                    height:
+                                                        kDefaultPaddingValue,
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                width: 10.w,
+                                              ),
                                             ],
                                           ),
                                         ),

@@ -44,7 +44,7 @@ class ContainerScreen extends GetView<GlobalController> {
     if (v == TABS.MOCK_TEST) {
       QuestionController qc = Get.put(QuestionController());
       if (qc.testCategoryId.value.isNotEmpty) {
-        return ChooseModeScreen();
+        return const ChooseModeScreen();
       }
       return CategoryScreen();
     }
@@ -73,10 +73,14 @@ class ContainerScreen extends GetView<GlobalController> {
       case TABS.MINIMAP:
         return IconButton(
           onPressed: () {
-            Get.to(FeedbacksScreen());
+            Get.to(
+              () => FeedbacksScreen(
+                type: '',
+              ),
+            );
           },
           icon: const Icon(
-            Icons.warning_amber,
+            Icons.flag_rounded,
           ),
         );
       default:
@@ -113,8 +117,9 @@ class ContainerScreen extends GetView<GlobalController> {
     final MyTabController _tabx = Get.put(MyTabController());
 
     return Scaffold(
+      // backgroundColor: ThemeData().backgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
         iconTheme: const IconThemeData(
           color: Colors.black54,
@@ -129,7 +134,10 @@ class ContainerScreen extends GetView<GlobalController> {
         ),
         centerTitle: true,
         actions: [
-          Obx(() => getActionButton(controller.tab.value)),
+          Padding(
+            padding: const EdgeInsets.only(right: kDefaultPaddingValue / 2),
+            child: Obx(() => getActionButton(controller.tab.value)),
+          ),
         ],
         actionsIconTheme: const IconThemeData(
           color: Colors.black54,
@@ -137,8 +145,9 @@ class ContainerScreen extends GetView<GlobalController> {
         ),
       ),
       drawer: Drawer(
-        elevation: 4,
+        elevation: 0,
         child: ListView(
+          physics: BouncingScrollPhysics(),
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
@@ -193,12 +202,14 @@ class ContainerScreen extends GetView<GlobalController> {
                     leading: const Icon(Icons.logout_rounded),
                     title: const Text(
                       'Đăng xuất',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: FONTSIZES.textPrimary),
                     ),
                     onTap: () {
                       handleLogout().then((value) {
                         if (value) {
-                          Get.to(LoginScreen());
+                          Get.to(() => const LoginScreen());
                         }
                       }); // close the drawer
                     },
@@ -209,7 +220,9 @@ class ContainerScreen extends GetView<GlobalController> {
                     leading: const Icon(Icons.login_rounded),
                     title: const Text(
                       'Đăng nhập',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: FONTSIZES.textPrimary),
                     ),
                     onTap: () {
                       // Update the state of the app
@@ -227,7 +240,14 @@ class ContainerScreen extends GetView<GlobalController> {
             ),
             ListTile(
               leading: const Icon(Icons.settings),
-              title: const Text('Cài đặt'), // Settings
+              title: const Text(
+                'Cài đặt',
+                style: TextStyle(
+                  fontSize: FONTSIZES.textPrimary,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.bold,
+                ),
+              ), // Settings
               // selected: controller.sideBar.value == 1,
               selectedColor: Colors.white,
               selectedTileColor: Colors.blueAccent,
@@ -246,8 +266,46 @@ class ContainerScreen extends GetView<GlobalController> {
             ListTile(
               iconColor: kWarningButtonColor,
               textColor: kWarningButtonColor,
-              leading: const Icon(Icons.flag_rounded),
-              title: const Text('Phản hồi'), // Feedbacks
+              leading: const Icon(Icons.comment_rounded),
+              title: const Text(
+                'Đánh giá',
+                style: TextStyle(
+                  fontSize: FONTSIZES.textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ), // Feedbacks
+              // selected: controller.sideBar.value == 2,
+              selectedColor: Colors.white,
+              selectedTileColor: Colors.blueAccent,
+              onTap: () {
+                if (controller.userId.isNotEmpty) {
+                  Navigator.pop(context); // close the drawer
+                  controller.updateSideBar(2);
+                  Get.to(const CommentsScreen());
+                } else {
+                  DialogUtil.showTextDialog(
+                    context,
+                    "Cảnh báo",
+                    "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
+                    [
+                      TemplatedButtons.yes(context, const LoginScreen()),
+                      TemplatedButtons.no(context),
+                    ],
+                  );
+                }
+              },
+            ),
+            ListTile(
+              iconColor: kPrimaryButtonColor,
+              textColor: kPrimaryButtonColor,
+              leading: const Icon(Icons.info_outline),
+              title: const Text(
+                'Thông tin',
+                style: TextStyle(
+                  fontSize: FONTSIZES.textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ), // Feedbacks
               // selected: controller.sideBar.value == 2,
               selectedColor: Colors.white,
               selectedTileColor: Colors.blueAccent,
@@ -274,130 +332,132 @@ class ContainerScreen extends GetView<GlobalController> {
       ),
       body: Center(child: Obx(() => getScreen(controller.tab.value))),
       bottomNavigationBar: Obx(
-        () => CurvedNavigationBar(
-          backgroundColor: kLightBlueBackground,
-          index: controller.tab.value.index,
-          items: <Widget>[
-            Icon(
-              controller.tab.value.index == 0
-                  ? Icons.menu_book_rounded
-                  : Icons.menu_book_outlined,
-              size: 30,
-              color: controller.tab.value.index == 0
-                  ? Color(0xFF3485FF)
-                  : Colors.black54,
-            ),
-            Icon(
-              controller.tab.value.index == 1
-                  ? Icons.motorcycle_rounded
-                  : Icons.motorcycle_outlined,
-              size: 30,
-              color: controller.tab.value.index == 1
-                  ? Color(0xFF3485FF)
-                  : Colors.black54,
-            ),
-            Icon(
-              controller.tab.value.index == 2
-                  ? Icons.remove_circle_rounded
-                  : Icons.remove_circle_outline,
-              size: 30,
-              color: controller.tab.value.index == 2
-                  ? Color(0xFF3485FF)
-                  : Colors.black54,
-            ),
-            Icon(
-              controller.tab.value.index == 3
-                  ? Icons.map_rounded
-                  : Icons.map_outlined,
-              size: 30,
-              color: controller.tab.value.index == 3
-                  ? Color(0xFF3485FF)
-                  : Colors.black54,
-            ),
-          ],
-          onTap: (index) {
-            controller.updateTab(index);
-          },
+        () =>
+            // CurvedNavigationBar(
+            //   backgroundColor: kLightBlueBackground,
+            //   color: Theme.of(context).primaryColor,
+            //   index: controller.tab.value.index,
+            //   items: <Widget>[
+            //     Icon(
+            //       controller.tab.value.index == 0
+            //           ? Icons.menu_book_rounded
+            //           : Icons.menu_book_outlined,
+            //       size: 30,
+            //       color: controller.tab.value.index == 0
+            //           ? Color(0xFF3485FF)
+            //           : Colors.black54,
+            //     ),
+            //     Icon(
+            //       controller.tab.value.index == 1
+            //           ? Icons.motorcycle_rounded
+            //           : Icons.motorcycle_outlined,
+            //       size: 30,
+            //       color: controller.tab.value.index == 1
+            //           ? Color(0xFF3485FF)
+            //           : Colors.black54,
+            //     ),
+            //     Icon(
+            //       controller.tab.value.index == 2
+            //           ? Icons.remove_circle_rounded
+            //           : Icons.remove_circle_outline,
+            //       size: 30,
+            //       color: controller.tab.value.index == 2
+            //           ? Color(0xFF3485FF)
+            //           : Colors.black54,
+            //     ),
+            //     Icon(
+            //       controller.tab.value.index == 3
+            //           ? Icons.map_rounded
+            //           : Icons.map_outlined,
+            //       size: 30,
+            //       color: controller.tab.value.index == 3
+            //           ? Color(0xFF3485FF)
+            //           : Colors.black54,
+            //     ),
+            //   ],
+            //   onTap: (index) {
+            //     controller.updateTab(index);
+            //   },
+            // ),
+            Container(
+          height: 10.h,
+          width: 100.w,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            border: Border(
+                top: BorderSide(
+              color: Color(0xFFC0C0C0),
+              width: 0.25,
+            )),
+            // borderRadius: BorderRadius.only(
+            //     topRight: Radius.circular(30), topLeft: Radius.circular(30)),
+            // boxShadow: [
+            //   BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 10),
+            // ],
+          ),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
+            unselectedItemColor: Colors.black54,
+            elevation: 0,
+            currentIndex: controller.tab.value.index,
+            selectedItemColor: kBlueAccentBackground[800],
+            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+            iconSize: FONTSIZES.textHuge,
+            unselectedFontSize: FONTSIZES.textMedium,
+            selectedFontSize: FONTSIZES.textPrimary,
+            onTap: (value) {
+              controller.updateTab(value);
+            },
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.menu_book_outlined),
+                label: 'Luật',
+                tooltip: 'Tra cứu Luật giao thông đường bộ',
+                activeIcon: Icon(
+                  Icons.menu_book_rounded,
+                  size: FONTSIZES.textVeryHuge + 2,
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.motorcycle_outlined),
+                label: 'GPLX',
+                tooltip: 'Ôn và Thi thử Sát hạch giấy phép lái xe',
+                activeIcon: Padding(
+                  padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
+                  child: Icon(
+                    Icons.motorcycle_rounded,
+                    size: FONTSIZES.textVeryHuge + 2,
+                  ),
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.remove_circle_outline),
+                label: 'Biển báo',
+                tooltip: 'Tra cứu biển báo hiệu đường bộ',
+                activeIcon: Padding(
+                  padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 4),
+                  child: Icon(
+                    Icons.remove_circle_rounded,
+                    size: FONTSIZES.textVeryHuge + 2,
+                  ),
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.map_outlined),
+                label: 'Bản đồ',
+                tooltip: 'Xem Bản đồ thời gian thực',
+                activeIcon: Padding(
+                  padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
+                  child: Icon(
+                    Icons.map_rounded,
+                    size: FONTSIZES.textVeryHuge + 2,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-        // Container(
-        //   height: 8.h,
-        //   width: 100.w,
-        //   decoration: const BoxDecoration(
-        //     color: Colors.white,
-        //     border: Border(
-        //         top: BorderSide(
-        //       color: Color(0xFFC0C0C0),
-        //       width: 0.25,
-        //     )),
-        //     // borderRadius: BorderRadius.only(
-        //     //     topRight: Radius.circular(30), topLeft: Radius.circular(30)),
-        //     // boxShadow: [
-        //     //   BoxShadow(
-        //     //       color: Colors.black12, spreadRadius: 0, blurRadius: 10),
-        //     // ],
-        //   ),
-        //   child: BottomNavigationBar(
-        //     type: BottomNavigationBarType.fixed,
-        //     backgroundColor: Colors.white,
-        //     unselectedItemColor: Colors.white,
-        //     elevation: 0,
-        //     currentIndex: controller.tab.value.index,
-        //     selectedItemColor: kBlueAccentBackground[800],
-        //     iconSize: FONTSIZES.textHuge,
-        //     unselectedFontSize: FONTSIZES.textMedium,
-        //     selectedFontSize: FONTSIZES.textPrimary,
-        //     onTap: (value) {
-        //       controller.updateTab(value);
-        //     },
-        //     items: const <BottomNavigationBarItem>[
-        //       BottomNavigationBarItem(
-        //         icon: Icon(Icons.menu_book_outlined),
-        //         label: 'Luật',
-        //         tooltip: 'Tra cứu Luật giao thông đường bộ',
-        //         activeIcon: Icon(
-        //           Icons.menu_book_rounded,
-        //           size: FONTSIZES.textVeryHuge + 8,
-        //         ),
-        //       ),
-        //       BottomNavigationBarItem(
-        //         icon: Icon(Icons.motorcycle_outlined),
-        //         label: 'GPLX',
-        //         tooltip: 'Ôn và Thi thử Sát hạch giấy phép lái xe',
-        //         activeIcon: Padding(
-        //           padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
-        //           child: Icon(
-        //             Icons.motorcycle_rounded,
-        //             size: FONTSIZES.textVeryHuge + 8,
-        //           ),
-        //         ),
-        //       ),
-        //       BottomNavigationBarItem(
-        //         icon: Icon(Icons.warning_amber_outlined),
-        //         label: 'Biển báo',
-        //         tooltip: 'Tra cứu biển báo hiệu đường bộ',
-        //         activeIcon: Padding(
-        //           padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 4),
-        //           child: Icon(
-        //             Icons.warning_rounded,
-        //             size: FONTSIZES.textVeryHuge + 8,
-        //           ),
-        //         ),
-        //       ),
-        //       BottomNavigationBarItem(
-        //         icon: Icon(Icons.map_outlined),
-        //         label: 'Bản đồ',
-        //         tooltip: 'Xem Bản đồ thời gian thực',
-        //         activeIcon: Padding(
-        //           padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
-        //           child: Icon(
-        //             Icons.map_rounded,
-        //             size: FONTSIZES.textVeryHuge + 8,
-        //           ),
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
       ),
     );
   }

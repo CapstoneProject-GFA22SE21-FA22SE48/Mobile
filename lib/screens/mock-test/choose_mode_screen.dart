@@ -97,12 +97,13 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                   children: [
                     SafeArea(
                       child: ListView(
+                        physics: const BouncingScrollPhysics(),
                         padding: const EdgeInsets.symmetric(
-                          vertical: kDefaultPaddingValue + 4,
+                          vertical: kDefaultPaddingValue * 2,
                           horizontal: kDefaultPaddingValue,
                         ),
                         children: [
-                          const SizedBox(height: kDefaultPaddingValue * 3),
+                          const SizedBox(height: kDefaultPaddingValue * 2),
 
                           // Vào học
                           GestureDetector(
@@ -435,12 +436,13 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                              vertical: kDefaultPaddingValue / 2,
+                              vertical: kDefaultPaddingValue / 4,
                               horizontal: kDefaultPaddingValue / 2,
                             ),
                             child: IconButton(
                               icon: const Icon(Icons.arrow_back),
-                              color: kPrimaryButtonColor,
+                              // color: kPrimaryButtonColor,
+                              color: Colors.pinkAccent.shade200,
                               iconSize: FONTSIZES.textHuge,
                               onPressed: () {
                                 qc.testCategoryId.value = '';
@@ -455,8 +457,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                   .textTheme
                                   .headline5
                                   ?.copyWith(
-                                      color: Colors.blueAccent.shade400,
-                                      fontSize: FONTSIZES.textHuge,
+                                      color: Colors.pinkAccent.shade200,
                                       fontWeight: FontWeight.bold)),
                         ],
                       ),
