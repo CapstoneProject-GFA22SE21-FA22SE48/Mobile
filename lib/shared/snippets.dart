@@ -22,7 +22,7 @@ Future<File> compressFile(File file) async {
     minWidth: 640,
     file.absolute.path,
     outPath,
-    // quality: 50,
+    quality: 50,
   ))!;
 
   print(file.lengthSync());

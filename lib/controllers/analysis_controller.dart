@@ -85,15 +85,15 @@ class AnalysisController extends GetxController {
   initCamera() {
     GlobalController gc = Get.find<GlobalController>();
     List<CameraDescription> cameras = gc.cameras;
-    _cameraController = CameraController(cameras[0], ResolutionPreset.medium,
-        enableAudio: false);
+    _cameraController =
+        CameraController(cameras[0], ResolutionPreset.low, enableAudio: false);
     _cameraController.initialize().then((_) {
-      vision = FlutterVision();
-      if (gc.modelLoad.value == false) {
-        loadYoloModel().then((value) {
-          gc.updateModelLoad(true);
-        });
-      }
+      // vision = FlutterVision();
+      // if (gc.modelLoad.value == false) {
+      //   loadYoloModel().then((value) {
+      //     gc.updateModelLoad(true);
+      //   });
+      // }
       _isDetecting = false;
       _modelResults = [];
       _isLoaded = true;
@@ -102,10 +102,11 @@ class AnalysisController extends GetxController {
   }
 
   Future<void> loadYoloModel() async {
+    print('loading');
     final responseHandler = await vision.loadYoloModel(
         labels: 'assets/ml/best-fp16.txt',
-        modelPath: 'assets/ml/exp53.tflite',
-        numThreads: 8,
+        modelPath: 'assets/ml/exp33.tflite',
+        numThreads: 1,
         useGpu: false);
     if (responseHandler.type == 'success') {
       update();
@@ -127,7 +128,7 @@ class AnalysisController extends GetxController {
 
   void startTimer() {
     // _boxes.clear();
-    _timer = Timer.periodic(Duration(milliseconds: 50), (Timer t) async {
+    _timer = Timer.periodic(Duration(milliseconds: 10), (Timer t) async {
       _timer!.cancel();
       if (!_isDetecting) {
         t.cancel();
@@ -185,23 +186,23 @@ class AnalysisController extends GetxController {
     _isDetecting = true;
     var frame = 0;
     var fps = 1;
-    // startTimer();
-    await _cameraController.startImageStream((image) async {
-      if (!_isDetecting) {
-        return;
-      }
-      frame++;
-      if (frame % (30 / fps) == 0) {
-        try {
-          frame = 0;
+    startTimer();
+    // await _cameraController.startImageStream((image) async {
+    //   if (!_isDetecting) {
+    //     return;
+    //   }
+    //   frame++;
+    //   if (frame % (30 / fps) == 0) {
+    //     try {
+    //       frame = 0;
 
-          await yoloOnFrame(image);
-          // await _cameraController.stopImageStream();
-        } catch (e) {
-          throw Exception(e);
-        } finally {}
-      }
-    });
+    //       await yoloOnFrame(image);
+    //       await _cameraController.stopImageStream();
+    //     } catch (e) {
+    //       throw Exception(e);
+    //     } finally {}
+    //   }
+    // });
     update();
   }
 
@@ -231,7 +232,9 @@ class AnalysisController extends GetxController {
         iouThreshold: 0.9,
         confThreshold: 0.50);
     print('executed in ${stopwatch.elapsed}');
+    print(result.stackTrace);
     if (result.data != null) {
+      print(result.data);
       _modelResults = result.data as List<Map<String, dynamic>>;
       if (_modelResults.isNotEmpty) {
         _modelResults.forEach((element) {
