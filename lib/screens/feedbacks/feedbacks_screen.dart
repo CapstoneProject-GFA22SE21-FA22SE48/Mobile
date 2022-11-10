@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/dropdown/gf_dropdown.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -14,6 +15,7 @@ import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
+import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
@@ -37,6 +39,7 @@ class FeedbacksScreen extends StatefulWidget {
 }
 
 class _FeedbackClassState extends State<FeedbacksScreen> {
+  final imagePicker = ImagePicker();
   final List<DropdownMenuItem<String>> _listDropdown =
       <DropdownMenuItem<String>>[
     const DropdownMenuItem<String>(
@@ -75,18 +78,31 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
   }
 
   Future selectImage() async {
-    final result = await FilePicker.platform.pickFiles();
-    if (result == null) return;
+    final picked = await FilePicker.platform.pickFiles();
+    if (picked == null) return;
 
     setState(() {
-      pickedFile = result.files.first;
+      pickedFile = picked.files.first;
+    });
+  }
+
+  Future captureImage() async {
+    final captured = await imagePicker.getImage(source: ImageSource.camera);
+    if (captured == null) return;
+
+    setState(() {
+      pickedFile = PlatformFile(
+          name: captured.path.split('/').last,
+          path: captured.path,
+          size: 1024 * 1024 * 30);
     });
   }
 
   Future uploadImage() async {
     GlobalController gc = Get.put(GlobalController());
     final ext = pickedFile!.name.split('.').last;
-    final path = 'user-feedbacks/${gc.userId.value}_${DateTime.now()}.${ext}';
+    final path =
+        'user-feedbacks/sign-position/${gc.userId.value}_${DateTime.now().toUtc()}.$ext';
     final file = File(pickedFile!.path!);
 
     final ref = FirebaseStorage.instance.ref().child(path);
@@ -98,18 +114,9 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
       MapsController mapsController = Get.put(MapsController());
 
       mapsController.location.getLocation().then((location) {
-        // switch (reason) {
-        //   case "noSignHere":
-        //     break;
-        //   case "hasSignHere":
-        //     break;
-        //   case "wrongSign":
-        //     break;
-        // }
-
         GPSSignService()
             .AddGpsSign(
-          widget.sign!.id,
+          widget.sign!.signId,
           location.latitude!,
           location.longitude!,
         )
@@ -117,24 +124,35 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
           FeedbackService()
               .createGpsSignsModificationRequest(
             reason,
-            url,
+            url.split('&token').first,
             widget.sign,
             newSign,
           )
               .then((value) {
             if (value != null) {
-              DialogUtil.showTextDialog(
+              DialogUtil.showDCDialog(
                 context,
-                "Phản hồi",
-                "Cảm ơn về phản hồi của bạn.\n Chúng tôi sẽ kiểm tra và chỉnh sửa sớm nhất có thể.",
-                [TemplatedButtons.okWithscreen(context, MinimapScreen())],
+                DialogUtil.successText("Phản hồi thành công"),
+                "Cảm ơn về phản hồi của bạn!\nChúng tôi sẽ kiểm tra và chỉnh sửa sớm nhất có thể.",
+                [TemplatedButtons.okWithscreen(context, ContainerScreen())],
+              );
+            } else {
+              DialogUtil.showDCDialog(
+                context,
+                DialogUtil.failedText("Phản hồi thất bại"),
+                "Một sự cố không mong muốn đã xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
+                [TemplatedButtons.okWithscreen(context, ContainerScreen())],
               );
             }
-            print(value);
           });
         });
       });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -207,19 +225,27 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                       ),
                       const Spacer(),
                       ElevatedButton(
+                        onPressed: captureImage,
+                        child: const Icon(Icons.camera_alt_rounded),
+                      ),
+                      SizedBox(width: 1.w),
+                      ElevatedButton(
                         onPressed: selectImage,
-                        child: const Text('Tải lên'),
+                        child: const Icon(Icons.upload_rounded),
                       ),
                     ],
                   ),
-                  SizedBox(
+                  Container(
                     height: 50.h,
                     width: 100.w,
+                    margin:
+                        const EdgeInsets.only(top: kDefaultPaddingValue / 2),
                     child: pickedFile != null
                         ? Expanded(
                             child: Container(
                               height: 15.h,
                               width: 80.w,
+                              alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 border: Border.all(
@@ -232,10 +258,18 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                                 ),
                               ),
                               child: Center(
-                                child: Image.file(
-                                  File(pickedFile!.path!),
-                                  fit: BoxFit.contain,
-                                ),
+                                child: pickedFile != null
+                                    ? Image.file(
+                                        File(pickedFile!.path!),
+                                        fit: BoxFit.contain,
+                                      )
+                                    : const Text(
+                                        "Xem trước tại đây",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.black54,
+                                        ),
+                                      ),
                               ),
                             ),
                           )
@@ -259,7 +293,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                     height: kDefaultPaddingValue,
                   ),
                   ElevatedButton(
-                    onPressed: uploadImage,
+                    onPressed: pickedFile != null ? uploadImage : () => {},
                     child: Padding(
                       padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),
                       child: const Text('Gửi phản hồi'),

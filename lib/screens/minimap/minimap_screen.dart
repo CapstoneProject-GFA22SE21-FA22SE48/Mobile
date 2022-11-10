@@ -8,6 +8,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
@@ -27,6 +29,7 @@ class MinimapScreen extends StatefulWidget {
 }
 
 class _MinimapState extends State<MinimapScreen> {
+  AuthController ac = Get.put(AuthController());
   final Completer<GoogleMapController> gmapController = Completer();
   final CustomInfoWindowController _infoWindowcontroller =
       CustomInfoWindowController();
@@ -36,34 +39,8 @@ class _MinimapState extends State<MinimapScreen> {
   final List<Marker> _markers = <Marker>[].obs;
 
   LocationData? currentLocation;
-  LatLng defaultLocation = LatLng(10.841809162754405, 106.8097469445683);
-  // LatLng? lastLocation;
+  LatLng defaultLocation = const LatLng(10.841809162754405, 106.8097469445683);
   int count = 0;
-
-  List<GPSSign> listSigns = [
-    GPSSign(
-      "D36CC94B-251E-4785-90A9-13AB762AFE83",
-      "D36CC94B-251E-4785-90A9-13AB762AFE83",
-      "https://firebasestorage.googleapis.com/v0/b/vnrdntai.appspot.com/o/images%2Fsign-collection%2F443.png?alt=media",
-      10.872357699429106,
-      106.97348777271252,
-    ),
-    GPSSign(
-      "390BE946-3F40-46BA-9859-55C308419A99",
-      "390BE946-3F40-46BA-9859-55C308419A99",
-      "https://firebasestorage.googleapis.com/v0/b/vnrdntai.appspot.com/o/images%2Fsign-collection%2F112.png?alt=media",
-      10.87345346035103,
-      106.97534388599888,
-    ),
-    GPSSign(
-      "390BE946-3F40-46BA-9859-55C308419A99",
-      "390BE946-3F40-46BA-9859-55C308419A99",
-      "https://firebasestorage.googleapis.com/v0/b/vnrdntai.appspot.com/o/images%2Fsign-collection%2F112.png?alt=media",
-      10.841809162754405,
-      106.8097469445683,
-    ),
-  ];
-  // LatLng school = LatLng(10.841809162754405, 106.8097469445683);
 
   void setCustomMarkerIcon(List<GPSSign> list) async {
     _markers.clear();
@@ -91,14 +68,14 @@ class _MinimapState extends State<MinimapScreen> {
                   // print(s.signId);
                 }),
                 child: Container(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       vertical: kDefaultPaddingValue / 2,
                       horizontal: kDefaultPaddingValue / 4,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(kDefaultPaddingValue),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.grey,
                           blurRadius: 4,
@@ -107,6 +84,7 @@ class _MinimapState extends State<MinimapScreen> {
                       ],
                     ),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Row(
@@ -114,39 +92,42 @@ class _MinimapState extends State<MinimapScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              'Sign: $sTitle',
-                              style: TextStyle(
+                              'Biển số: $sTitle',
+                              style: const TextStyle(
                                 color: Colors.black54,
-                                fontSize: FONTSIZES.textLarge,
+                                fontSize: FONTSIZES.textLarger,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            IconButton(
-                              onPressed: (() {
-                                // Get.to(FeedbacksScreen(
-                                //   type: '',
-                                //   sign: s,
-                                // ));
-                              }),
-                              icon: Icon(
-                                Icons.info_outline_rounded,
-                                color: Colors.blueAccent,
-                              ),
-                            ),
+                            // IconButton(
+                            //   onPressed: (() {
+                            //     // Get.to(FeedbacksScreen(
+                            //     //   type: '',
+                            //     //   sign: s,
+                            //     // ));
+                            //   }),
+                            //   padding: EdgeInsets.all(0),
+                            //   icon: const Icon(
+                            //     Icons.info_outline_rounded,
+                            //     color: Colors.blueAccent,
+                            //   ),
+                            // ),
                           ],
                         ),
                         Padding(
-                          padding:
-                              EdgeInsets.only(top: kDefaultPaddingValue / 2),
+                          padding: const EdgeInsets.only(
+                              top: kDefaultPaddingValue / 2),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               GestureDetector(
-                                onTap: () => Get.to(FeedbacksScreen(
-                                  type: '',
-                                  sign: s,
-                                )),
-                                child: Text("Wrong infomation?"),
+                                onTap: ac.role.value == 2
+                                    ? () => Get.to(FeedbacksScreen(
+                                          type: '',
+                                          sign: s,
+                                        ))
+                                    : () {},
+                                child: Text("Thông tin chưa đúng?"),
                               )
                             ],
                           ),
@@ -159,7 +140,7 @@ class _MinimapState extends State<MinimapScreen> {
           },
           icon: BitmapDescriptor.fromBytes(
             dataBytes.buffer.asUint8List(),
-            size: const Size(5, 5),
+            size: const Size(0.005, 0.005),
           ),
           markerId: MarkerId(s.id),
           position: LatLng(s.latitude, s.longitude),
@@ -171,15 +152,6 @@ class _MinimapState extends State<MinimapScreen> {
         ),
       );
     }
-  }
-
-  CustomInfoWindow customInfoWindow(GPSSign signInfo) {
-    return CustomInfoWindow(
-      controller: _infoWindowcontroller,
-      width: 300,
-      height: 300,
-      offset: 35,
-    );
   }
 
   Future getCurrentLocation() async {
@@ -204,12 +176,12 @@ class _MinimapState extends State<MinimapScreen> {
               LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
               LatLng(newLoc.latitude!, newLoc.longitude!));
           print(distance);
+          if (distance > 500) {
+            currentLocation = newLoc;
+            getSignsList(currentLocation!);
+          }
         } else {
           currentLocation = newLoc;
-        }
-        if (currentLocation != null && distance > 5) {
-          currentLocation = newLoc;
-          getSignsList(currentLocation!);
         }
         if (mounted) {
           setState(() {});
@@ -224,7 +196,7 @@ class _MinimapState extends State<MinimapScreen> {
           .GetNearbySigns(
         curLocation.latitude!,
         curLocation.longitude!,
-        10,
+        100,
       )
           .then((signs) {
         if (signs.isNotEmpty) {
@@ -262,6 +234,8 @@ class _MinimapState extends State<MinimapScreen> {
                   myLocationButtonEnabled: true,
                   myLocationEnabled: true,
                   trafficEnabled: true,
+                  zoomGesturesEnabled: false,
+                  zoomControlsEnabled: false,
                   minMaxZoomPreference: const MinMaxZoomPreference(10, 25),
                   initialCameraPosition: CameraPosition(
                     target: LatLng(
@@ -285,7 +259,7 @@ class _MinimapState extends State<MinimapScreen> {
                 CustomInfoWindow(
                   controller: _infoWindowcontroller,
                   height: 12.h,
-                  width: 40.w,
+                  width: 48.w,
                   offset: 16.h,
                 )
               ],

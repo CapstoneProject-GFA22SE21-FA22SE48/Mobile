@@ -18,6 +18,7 @@ import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
 import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/category_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
+import 'package:vnrdn_tai/screens/scribe/list_rom/list_rom_screen.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_screen.dart';
 import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
@@ -295,38 +296,62 @@ class ContainerScreen extends GetView<GlobalController> {
                 }
               },
             ),
-            ListTile(
-              iconColor: kPrimaryButtonColor,
-              textColor: kPrimaryButtonColor,
-              leading: const Icon(Icons.info_outline),
-              title: const Text(
-                'Thông tin',
-                style: TextStyle(
-                  fontSize: FONTSIZES.textPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ), // Feedbacks
-              // selected: controller.sideBar.value == 2,
-              selectedColor: Colors.white,
-              selectedTileColor: Colors.blueAccent,
-              onTap: () {
-                if (controller.userId.isNotEmpty) {
-                  Navigator.pop(context); // close the drawer
-                  controller.updateSideBar(2);
-                  Get.to(const CommentsScreen());
-                } else {
-                  DialogUtil.showTextDialog(
-                    context,
-                    "Cảnh báo",
-                    "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
-                    [
-                      TemplatedButtons.yes(context, const LoginScreen()),
-                      TemplatedButtons.no(context),
-                    ],
-                  );
-                }
-              },
-            ),
+            // ListTile(
+            //   iconColor: kPrimaryButtonColor,
+            //   textColor: kPrimaryButtonColor,
+            //   leading: const Icon(Icons.info_outline),
+            //   title: const Text(
+            //     'Thông tin',
+            //     style: TextStyle(
+            //       fontSize: FONTSIZES.textPrimary,
+            //       fontWeight: FontWeight.bold,
+            //     ),
+            //   ), // Feedbacks
+            //   // selected: controller.sideBar.value == 2,
+            //   selectedColor: Colors.white,
+            //   selectedTileColor: Colors.blueAccent,
+            //   onTap: () {
+            //     if (controller.userId.isNotEmpty) {
+            //       Navigator.pop(context); // close the drawer
+            //       controller.updateSideBar(3);
+            //       Get.to(const CommentsScreen());
+            //     } else {
+            //       DialogUtil.showTextDialog(
+            //         context,
+            //         "Cảnh báo",
+            //         "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
+            //         [
+            //           TemplatedButtons.yes(context, const LoginScreen()),
+            //           TemplatedButtons.no(context),
+            //         ],
+            //       );
+            //     }
+            //   },
+            // ),
+            ac.role.value == 1 || controller.username.value.contains('scribe')
+                ? ListTile(
+                    iconColor: kNeutralButtonColor,
+                    textColor: kNeutralButtonColor,
+                    leading: const Icon(Icons.content_paste_rounded),
+                    title: const Text(
+                      'Danh sách yêu cầu',
+                      style: TextStyle(
+                        fontSize: FONTSIZES.textPrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ), // Feedbacks
+                    // selected: controller.sideBar.value == 2,
+                    selectedColor: Colors.white,
+                    selectedTileColor: Colors.blueAccent,
+                    onTap: () {
+                      if (controller.userId.isNotEmpty) {
+                        Navigator.pop(context);
+                        controller.updateSideBar(4);
+                        Get.to(ListRomScreen());
+                      }
+                    },
+                  )
+                : const SizedBox(),
           ],
         ),
       ),

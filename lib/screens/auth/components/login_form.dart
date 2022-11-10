@@ -53,10 +53,10 @@ class _LoginFormState extends State<LoginForm> {
   void handleLogin(BuildContext context) async {
     await AuthService()
         .loginWithUsername(usernameController.text, passwordController.text)
-        .then(((value) {
-      if (value.length > 1) {
+        .then(((token) {
+      if (token.length > 1) {
         ScaffoldMessenger.of(context).clearSnackBars();
-        afterLoggedIn(value);
+        afterLoggedIn(context, token);
       } else {
         // ignore: use_build_context_synchronously
         DialogUtil.showTextDialog(context, "Đăng nhập thất bại",
@@ -66,9 +66,9 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void handleGLogin(BuildContext context, String gmail) async {
-    await AuthService().loginWithGmail(gmail).then(((value) => {
-          if (value.length > 1)
-            {afterLoggedIn(value)}
+    await AuthService().loginWithGmail(gmail).then(((token) => {
+          if (token.length > 1)
+            {afterLoggedIn(context, token)}
           else
             {
               DialogUtil.showTextDialog(context, "Đăng nhập thất bại",
@@ -78,27 +78,45 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   // do after logged in
-  void afterLoggedIn(String token) async {
+  void afterLoggedIn(BuildContext context, String token) async {
     await IOUtils.saveToStorage('token', token);
+    IOUtils.setUserInfoController(token)
+        ? Get.to(() => const ContainerScreen())
+        // ignore: use_build_context_synchronously
+        : DialogUtil.showDCDialog(context, DialogUtil.failedText("Thất bại"),
+            "Một lỗi không mong muốn đã xảy ra.\nMời bạn đăng nhập lại", [
+            // ignore: use_build_context_synchronously
+            TemplatedButtons.ok(context),
+          ]);
 
-    AuthController ac = Get.put(AuthController());
-    Jwt.parseJwt(token).forEach((key, value) {
-      IOUtils.saveToStorage(key, value.toString());
-      if (key == 'Id') {
-        gc.updateUserId(value);
-      }
-      if (key == 'Username') {
-        gc.updateUsername(value);
-      }
-      if (key == 'Email') {
-        ac.updateEmail(value);
-      }
-      if (key == 'Status') {
-        ac.updateStatus(int.parse(value));
-      }
+    // AuthController ac = Get.put(AuthController());
+    // Jwt.parseJwt(token).forEach((key, value) {
+    //   IOUtils.saveToStorage(key, value.toString());
 
-      Get.to(() => const ContainerScreen());
-    });
+    //   if (key == 'Id') {
+    //     gc.updateUserId(value);
+    //   }
+    //   if (key == 'Username') {
+    //     gc.updateUsername(value);
+    //   }
+    //   if (key == 'Email') {
+    //     ac.updateEmail(value);
+    //   }
+    //   if (key == 'Role') {
+    //     ac.updateRole(int.parse(value));
+    //   }
+    //   if (key == 'Status') {
+    //     ac.updateStatus(int.parse(value));
+    //   }
+    //   if (key == 'Avatar') {
+    //     ac.updateAvatar(value);
+    //   }
+    //   if (key == 'DisplayName') {
+    //     ac.updateDisplayName(value);
+    //   }
+
+    //   Get.to(() => const ContainerScreen());
+    // });
   }
 
   @override

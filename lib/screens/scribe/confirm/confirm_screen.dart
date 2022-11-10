@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/dropdown/gf_dropdown.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -15,53 +16,55 @@ import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
+import 'package:vnrdn_tai/screens/scribe/list_rom/list_rom_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
+import 'package:vnrdn_tai/services/SignModificationRequestService.dart';
+import 'package:vnrdn_tai/services/UserService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/dialogUtil.dart';
 import 'package:vnrdn_tai/utils/location_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
-class FeedbacksScreen extends StatefulWidget {
-  FeedbacksScreen({
+class ConfirmEvidenceScreen extends StatefulWidget {
+  ConfirmEvidenceScreen({
     super.key,
-    this.romId = '',
-    this.sign,
+    required this.romId,
+    required this.imageUrl,
+    required this.operationType,
   });
 
   String romId;
-  GPSSign? sign;
+  String imageUrl;
+  int operationType;
 
   @override
-  State<StatefulWidget> createState() => _FeedbackClassState();
+  State<StatefulWidget> createState() => _ConfirmEvidenceState();
 }
 
-class _FeedbackClassState extends State<FeedbacksScreen> {
-  final List<DropdownMenuItem<String>> _listDropdown =
-      <DropdownMenuItem<String>>[
-    const DropdownMenuItem<String>(
-      value: "noSignHere",
-      child: Text.rich(
-        TextSpan(children: [
-          TextSpan(
-              text: "Tôi không thấy biển báo ở đây") //nhưng bản đồ hiển thị
-        ]),
-      ),
-    ),
-    const DropdownMenuItem<String>(
-      value: "hasSignHere",
-      child: Text("Biển báo ở đây nhưng bản đồ không hiển thị",
-          overflow: TextOverflow.ellipsis),
-    ),
-    const DropdownMenuItem<String>(
-      value: "wrongSign",
-      child: Text("Biển báo không giống như trên bản đồ",
-          overflow: TextOverflow.ellipsis),
-    ),
-  ];
-  dynamic reason;
+class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
+  final imagePicker = ImagePicker();
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
+  dynamic adminId;
+  dynamic status;
+
+  late List<DropdownMenuItem> _listDropdownAdmin = [];
+
+  final List<DropdownMenuItem<int>> _listDropdown = <DropdownMenuItem<int>>[
+    const DropdownMenuItem<int>(
+      value: 2,
+      child: Text(
+        "Đã xử lý",
+      ),
+    ),
+    const DropdownMenuItem<int>(
+      value: 4,
+      child: Text(
+        "Đã từ chối",
+      ),
+    ),
+  ];
 
   String getTitle(String type) {
     switch (type) {
@@ -83,10 +86,24 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
     });
   }
 
+  Future captureImage() async {
+    final captured = await imagePicker.getImage(source: ImageSource.camera);
+    if (captured == null) return;
+
+    setState(() {
+      pickedFile = PlatformFile(
+          name: captured.path.split('/').last,
+          path: captured.path,
+          size: 1024 * 1024 * 30);
+    });
+  }
+
   Future uploadImage() async {
     GlobalController gc = Get.put(GlobalController());
+    // final oldFile = widget.imageUrl.split('user-feedbacks/sign-position/').last;
     final ext = pickedFile!.name.split('.').last;
-    final path = 'user-feedbacks/${gc.userId.value}_${DateTime.now()}.${ext}';
+    final path =
+        'user-feedbacks/sign-position/confirmed_${gc.userId.value}_${DateTime.now().toUtc()}.$ext';
     final file = File(pickedFile!.path!);
 
     final ref = FirebaseStorage.instance.ref().child(path);
@@ -95,46 +112,40 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
     final snapshot = await uploadTask!.whenComplete(() {});
 
     await snapshot.ref.getDownloadURL().then((url) {
-      MapsController mapsController = Get.put(MapsController());
-
-      mapsController.location.getLocation().then((location) {
-        // switch (reason) {
-        //   case "noSignHere":
-        //     break;
-        //   case "hasSignHere":
-        //     break;
-        //   case "wrongSign":
-        //     break;
-        // }
-
-        GPSSignService()
-            .AddGpsSign(
-          widget.sign!.id,
-          location.latitude!,
-          location.longitude!,
-        )
-            .then((newSign) {
-          FeedbackService()
-              .createGpsSignsModificationRequest(
-            reason,
-            url,
-            widget.sign,
-            newSign,
-          )
-              .then((value) {
-            if (value != null) {
-              DialogUtil.showTextDialog(
-                context,
-                "Phản hồi",
-                "Cảm ơn về phản hồi của bạn.\n Chúng tôi sẽ kiểm tra và chỉnh sửa sớm nhất có thể.",
-                [TemplatedButtons.okWithscreen(context, MinimapScreen())],
-              );
-            }
-            print(value);
-          });
-        });
+      SignModificationRequestService()
+          .confirmEvidence(
+              widget.romId, status, url.split('&token').first, adminId)
+          .then((value) {
+        if (value != null) {
+          DialogUtil.showTextDialog(context, "Thành công",
+              "Xác nhận thành công!\nQuay về danh sách phản hồi", [
+            TemplatedButtons.okWithscreen(context, ListRomScreen()),
+          ]);
+        } else {
+          DialogUtil.showTextDialog(context, "Thất bại",
+              "Xác nhận thất bại.\n Vui lòng kiểm tra lại", [
+            TemplatedButtons.ok(context),
+          ]);
+        }
       });
     });
+  }
+
+  @override
+  void initState() {
+    UserService().getAdmins().then((list) {
+      print(list);
+      if (list.isNotEmpty) {
+        list.forEach((element) {
+          _listDropdownAdmin.add(DropdownMenuItem<String>(
+            value: element.id,
+            child: Text(element.displayName ?? element.username),
+          ));
+        });
+      }
+      setState(() {});
+    });
+    super.initState();
   }
 
   @override
@@ -149,65 +160,96 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
       body: KeyboardVisibilityBuilder(
         builder: (context, isKeyboardVisible) {
           return SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Container(
-              height: 90.h,
-              width: 100.w,
-              padding: const EdgeInsets.symmetric(
-                horizontal: kDefaultPaddingValue,
-                vertical: kDefaultPaddingValue,
-              ),
-              color: Colors.white70,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        'Hình ảnh xác nhận:',
-                        style: TextStyle(
-                          fontSize: FONTSIZES.textPrimary,
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const Spacer(),
-                      ElevatedButton(
-                        onPressed: selectImage,
-                        child: const Text('Tải lên'),
-                      ),
-                    ],
+            padding: kDefaultPadding,
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Gửi yêu cầu tới:',
+                  style: TextStyle(
+                    fontSize: FONTSIZES.textPrimary,
+                    color: Colors.blueAccent,
+                    fontWeight: FontWeight.bold,
                   ),
-                  SizedBox(
-                    height: 50.h,
-                    width: 100.w,
-                    child: pickedFile != null
-                        ? Expanded(
-                            child: Container(
-                              height: 15.h,
-                              width: 80.w,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.grey,
-                                  style: BorderStyle.solid,
-                                  width: 3,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                  kDefaultPaddingValue / 2,
-                                ),
-                              ),
-                              child: Center(
-                                child: Image.file(
-                                  File(pickedFile!.path!),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                          )
-                        : Container(
-                            height: 10.h,
-                            width: 100.h,
+                ),
+                const SizedBox(height: kDefaultPaddingValue / 2),
+                DropdownButtonHideUnderline(
+                  child: GFDropdown(
+                    hint: const Text('Chọn quản trị viên'),
+                    padding: const EdgeInsets.all(kDefaultPaddingValue / 2),
+                    borderRadius: BorderRadius.circular(5),
+                    border: const BorderSide(color: Colors.grey, width: 1),
+                    dropdownButtonColor: Colors.white,
+                    value: adminId,
+                    onChanged: (newValue) {
+                      setState(() {
+                        adminId = newValue ?? 3;
+                      });
+                    },
+                    items: _listDropdownAdmin,
+                    isExpanded: true,
+                  ),
+                ),
+                const SizedBox(height: kDefaultPaddingValue),
+                const Text(
+                  'Trạng thái:',
+                  style: TextStyle(
+                    fontSize: FONTSIZES.textPrimary,
+                    color: Colors.blueAccent,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: kDefaultPaddingValue / 2),
+                DropdownButtonHideUnderline(
+                  child: GFDropdown(
+                    hint: const Text('Chọn trạng thái xử lý'),
+                    padding: const EdgeInsets.all(kDefaultPaddingValue / 2),
+                    borderRadius: BorderRadius.circular(5),
+                    border: const BorderSide(color: Colors.grey, width: 1),
+                    dropdownButtonColor: Colors.white,
+                    value: status,
+                    onChanged: (newValue) {
+                      setState(() {
+                        status = newValue ?? 3;
+                      });
+                    },
+                    items: _listDropdown,
+                    isExpanded: true,
+                  ),
+                ),
+                const SizedBox(height: kDefaultPaddingValue),
+                Row(
+                  children: [
+                    const Text(
+                      'Hình ảnh xác nhận:',
+                      style: TextStyle(
+                        fontSize: FONTSIZES.textPrimary,
+                        color: Colors.blueAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    ElevatedButton(
+                      onPressed: captureImage,
+                      child: const Icon(Icons.camera_alt_rounded),
+                    ),
+                    SizedBox(width: 1.w),
+                    ElevatedButton(
+                      onPressed: selectImage,
+                      child: const Icon(Icons.upload_rounded),
+                    ),
+                  ],
+                ),
+                Container(
+                  height: 50.h,
+                  width: 100.w,
+                  margin: const EdgeInsets.only(top: kDefaultPaddingValue / 2),
+                  child: pickedFile != null
+                      ? Expanded(
+                          child: Container(
+                            height: 15.h,
+                            width: 80.w,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               border: Border.all(
@@ -219,20 +261,41 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                                 kDefaultPaddingValue / 2,
                               ),
                             ),
+                            child: Center(
+                              child: Image.file(
+                                File(pickedFile!.path!),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
                           ),
+                        )
+                      : Container(
+                          height: 10.h,
+                          width: 100.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Colors.grey,
+                              style: BorderStyle.solid,
+                              width: 3,
+                            ),
+                            borderRadius: BorderRadius.circular(
+                              kDefaultPaddingValue / 2,
+                            ),
+                          ),
+                        ),
+                ),
+                const SizedBox(
+                  height: kDefaultPaddingValue,
+                ),
+                ElevatedButton(
+                  onPressed: pickedFile != null ? uploadImage : () {},
+                  child: Padding(
+                    padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),
+                    child: const Text('Gửi Xác nhận'),
                   ),
-                  const SizedBox(
-                    height: kDefaultPaddingValue,
-                  ),
-                  ElevatedButton(
-                    onPressed: uploadImage,
-                    child: Padding(
-                      padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),
-                      child: const Text('Gửi Xác nhận'),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },
