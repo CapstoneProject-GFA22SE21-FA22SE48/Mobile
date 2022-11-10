@@ -18,12 +18,13 @@ Future<File> compressFile(File file) async {
   final splitted = filePath.substring(0, (lastIndex));
   final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
   var result = (await FlutterImageCompress.compressAndGetFile(
-    minHeight: 640,
-    minWidth: 640,
+    // minHeight: 640,
+    // minWidth: 640,
     file.absolute.path,
     outPath,
-    quality: 50,
+    // quality: 50,
   ))!;
+
 
   print(file.lengthSync());
   print(result.lengthSync());
@@ -35,6 +36,8 @@ upload(File imageFile, {bool cont = true}) async {
   if (!cont) return "[]";
   // open a bytestream
   var _imageFile = await compressFile(imageFile);
+  // var _imageFile = imageFile;
+
   var stream = http.ByteStream(DelegatingStream.typed(_imageFile.openRead()));
   // get file length
   var length = await _imageFile.length();
@@ -43,7 +46,7 @@ upload(File imageFile, {bool cont = true}) async {
 
   // create multipart request
   var request = http.MultipartRequest("POST", uri);
-
+  print(uri);
   // multipart that takes file
   var multipartFile = http.MultipartFile('file', stream, length,
       filename: basename(_imageFile.path));
@@ -59,8 +62,13 @@ upload(File imageFile, {bool cont = true}) async {
   // add file to multipart
   request.headers.addAll(headers);
   // send
-  var response = await request.send();
-  return await response.stream.bytesToString();
+  print('sent');
+  try {
+    var response = await request.send();
+    return await response.stream.bytesToString();
+  } on Exception catch (ex) {
+    print(ex);
+  }
 }
 
 numberEngToVietWord(String input) {

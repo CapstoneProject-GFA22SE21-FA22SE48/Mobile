@@ -10,7 +10,7 @@ class SignModificationRequest {
   final int operationType;
   final String imageUrl;
   final int? status; // get
-  final DateTime? createdDate; // get
+  final String? createdDate; // get
 
   factory SignModificationRequest.fromJson(Map<String, dynamic> data) {
     return SignModificationRequest(

@@ -91,7 +91,6 @@ class TestResultSerivce {
   }
 
   Future<bool> saveTestResult(TestResult testResult) async {
-    print(jsonEncode(testResult));
     try {
       final res = await http.post(
         Uri.parse('${url}TestResults'),
