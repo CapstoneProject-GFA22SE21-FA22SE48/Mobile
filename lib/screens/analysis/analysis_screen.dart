@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:vnrdn_tai/controllers/analysis_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/feedbacks/sign_content_feedback_screen.dart';
@@ -222,8 +223,9 @@ class AnalysisScreen extends StatelessWidget {
                                           left: kDefaultPaddingValue),
                                       child: ElevatedButton(
                                         onPressed: () async {
-                                          Get.to(() =>
-                                              SignContentFeedbackScreen());
+                                          Get.to(() => LoaderOverlay(
+                                              child:
+                                                  SignContentFeedbackScreen()));
                                         },
                                         style: ElevatedButton.styleFrom(),
                                         child: Text('Báo cáo ngay',

@@ -76,6 +76,7 @@ class AnalysisController extends GetxController {
     update();
   }
 
+
   clearFeedbackImage() {
     _image = null;
     _imagePath = "";

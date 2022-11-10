@@ -52,6 +52,7 @@ dependencies:
   yaml:
   number_to_words_english:
   translator:
+  loader_overlay:
   flutter:
     sdk: flutter
   shared_preferences: "^2.0.15"
