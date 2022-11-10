@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vnrdn_tai/controllers/analysis_controller.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
@@ -19,6 +20,7 @@ class SignContentFeedbackScreen extends StatelessWidget {
   const SignContentFeedbackScreen({super.key});
 
   Future uploadRom(AnalysisController ac) async {
+    GlobalController gc = Get.find<GlobalController>();
     var pickedFile = ac.image;
     final path = 'user-feedbacks/SignContentFeedbacks/${pickedFile!.name}';
     final file = File(pickedFile.path);
@@ -33,7 +35,7 @@ class SignContentFeedbackScreen extends StatelessWidget {
           null,
           null,
           null,
-          null,
+          gc.userId.value.isNotEmpty ? gc.userId.value : null,
           null,
           null,
           3,
