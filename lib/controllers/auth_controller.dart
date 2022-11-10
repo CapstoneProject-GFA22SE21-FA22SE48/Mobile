@@ -9,6 +9,9 @@ class AuthController extends GetxController {
   late Rx<UserInfo?> _user;
   final email = ''.obs;
   final status = 0.obs;
+  final avatar = ''.obs;
+  final displayName = ''.obs;
+  final role = 2.obs;
 
   // FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -20,6 +23,7 @@ class AuthController extends GetxController {
 
   @override
   dispose() {
+    instance.dispose();
     super.dispose();
   }
 
@@ -27,7 +31,19 @@ class AuthController extends GetxController {
     email(value);
   }
 
+  updateRole(value) {
+    role(value);
+  }
+
   updateStatus(value) {
     status(value);
+  }
+
+  updateAvatar(value) {
+    avatar(value);
+  }
+
+  updateDisplayName(value) {
+    displayName(value);
   }
 }

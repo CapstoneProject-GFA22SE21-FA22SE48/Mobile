@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'dart:developer';
 
@@ -22,6 +23,7 @@ class GlobalController extends GetxController
   final query = "".obs;
 
   final pushNotiMode = true.obs;
+
   final oldObSecure = true.obs;
   final newObSecure = true.obs;
   final confirmObSecure = true.obs;
@@ -33,6 +35,10 @@ class GlobalController extends GetxController
   Future<void> onInit() async {
     WidgetsFlutterBinding.ensureInitialized();
     _cameras = await availableCameras();
+
+    await Permission.notification.request().isGranted.then((value) {
+      updatePushNotiMode(value);
+    });
 
     // init user
     log('initializing...');

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vnrdn_tai/shared/constants.dart';
 
 class DialogUtil {
   static void showTextDialog(BuildContext context, String title,
@@ -59,4 +60,29 @@ class DialogUtil {
       },
     );
   }
+
+  static Text failedText(String text) => Text(
+        text,
+        style: const TextStyle(
+          color: kDangerButtonColor,
+        ),
+      );
+  static Text successText(String text) => Text(
+        text,
+        style: const TextStyle(
+          color: kSuccessButtonColor,
+        ),
+      );
+  static Text primaryText(String text) => Text(
+        text,
+        style: const TextStyle(
+          color: kPrimaryButtonColor,
+        ),
+      );
+  static Text alertText(String text) => Text(
+        text,
+        style: const TextStyle(
+          color: kWarningButtonColor,
+        ),
+      );
 }

@@ -12,14 +12,16 @@ class GPSSignService {
     return parsed.map<GPSSign>((json) => GPSSign.fromJson(json)).toList();
   }
 
-  Future<GPSSign> parseGPSSign(String responseBody) {
-    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-    return parsed.map<GPSSign>((json) => GPSSign.fromJson(parsed));
+  GPSSign parseGPSSign(String responseBody) {
+    Map<String, dynamic> parsed = json.decode(responseBody);
+    return GPSSign(parsed['id'], parsed['signId'], parsed['imageUrl'],
+        parsed['latitude'], parsed['longitude']);
   }
 
   // distance can be modified
   Future<List<GPSSign>> GetNearbySigns(
       double latitude, double longitude, double distance) async {
+    log('$latitude, $longitude, $distance');
     try {
       final res = await http
           .get(
@@ -42,7 +44,7 @@ class GPSSignService {
   Future<GPSSign?> AddGpsSign(
     String signId,
     double latitude,
-    double longtitude,
+    double longitude,
   ) async {
     try {
       final res = await http
@@ -52,11 +54,12 @@ class GPSSignService {
               "Content-Type": "application/json; charset=UTF-8"
             },
             body: jsonEncode(
-              GPSSign(signId, signId, null, latitude, longtitude),
+              GPSSign(signId, signId, "", latitude, longitude),
             ),
           )
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
+        log(res.body);
         return parseGPSSign(res.body);
       } else {
         log(res.body);

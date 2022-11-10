@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
+import 'package:vnrdn_tai/models/dtos/GPSSignFeedbackDTO.dart';
 import '../shared/constants.dart';
 import 'SignModificationRequestService.dart';
 
@@ -43,62 +44,30 @@ class FeedbackService {
       GPSSign? oldGpsSign,
       GPSSign? newGpsSign) async {
     GlobalController gc = Get.put(GlobalController());
-    SignModificationRequest request;
+    GPSSignFeedbackDTO request;
     try {
       switch (requestType) {
         case 'noSignHere':
-          request = SignModificationRequest(
-              null,
-              null,
-              null,
-              newGpsSign!.id,
-              oldGpsSign!.id,
-              gc.userId.value,
-              null,
-              null,
-              2,
-              imageUrl,
-              0,
-              DateTime.now().toString());
+          request = GPSSignFeedbackDTO(newGpsSign!.id, newGpsSign.id,
+              oldGpsSign!.id, gc.userId.value, null, 2, imageUrl, 1);
           break;
         case 'wrongSign':
-          request = SignModificationRequest(
-              null,
-              null,
-              null,
-              newGpsSign!.id,
-              oldGpsSign!.id,
-              gc.userId.value,
-              null,
-              null,
-              1,
-              imageUrl,
-              0,
-              DateTime.now().toString());
+          request = GPSSignFeedbackDTO(newGpsSign!.id, newGpsSign.id,
+              oldGpsSign!.id, gc.userId.value, null, 1, imageUrl, 1);
           break;
         default:
-          request = SignModificationRequest(
-              null,
-              null,
-              null,
-              newGpsSign!.id,
-              null,
-              gc.userId.value,
-              null,
-              null,
-              0,
-              imageUrl,
-              0,
-              DateTime.now().toString());
+          request = GPSSignFeedbackDTO(newGpsSign!.id, newGpsSign.id, null,
+              gc.userId.value, null, 0, imageUrl, 1);
       }
-      final res = await http.post(
-        Uri.parse("${url}SignModificationRequests"),
-        headers: <String, String>{
-          "Content-Type": "application/json; charset=UTF-8"
-        },
-        body: {request},
-      ).timeout(const Duration(seconds: TIME_OUT));
+      final res = await http
+          .post(Uri.parse("${url}SignModificationRequests"),
+              headers: <String, String>{
+                "Content-Type": "application/json; charset=UTF-8"
+              },
+              body: jsonEncode(request))
+          .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
+        log(res.body);
         return SignModificationRequestService.parseSignModificationRequest(
             res.body);
       } else {

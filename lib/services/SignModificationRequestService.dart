@@ -20,24 +20,23 @@ class SignModificationRequestService {
 
   static SignModificationRequest parseSignModificationRequest(
       String responseBody) {
-    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    final parsed = Map<String, dynamic>.from(json.decode(responseBody));
     return SignModificationRequest.fromJson(parsed);
   }
 
   // get all SignModificationRequests of Claimed (2) status
-  Future<List<SignModificationRequest>> getClaimedRequests(
-    int status,
-  ) async {
+  Future<List<SignModificationRequest>> getClaimedRequests() async {
     GlobalController gc = Get.put(GlobalController());
     try {
       final res = await http
           .get(
             Uri.parse(
-              "${url}SignModificationRequests/Scribes/${gc.userId.value}/$status",
+              "${url}SignModificationRequests/Scribes/${gc.userId.value}/2",
             ),
           )
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
+        log(res.body);
         return parseSignModificationRequestList(res.body);
 
       } else {
@@ -51,16 +50,22 @@ class SignModificationRequestService {
 
   // put an update of Confirmation with image as evidence
   Future<SignModificationRequest?> confirmEvidence(
-      String gpsSignRomId, String imageUrl) async {
+      String gpsSignRomId, int status, String imageUrl, String adminId) async {
     try {
-      final res = await http.put(
-        Uri.parse("${url}SignModificationRequests/GPSSigns/${gpsSignRomId}"),
-        headers: <String, String>{
-          "Content-Type": "application/json; charset=UTF-8"
-        },
-        body: {imageUrl},
-      ).timeout(const Duration(seconds: TIME_OUT));
+      // chưa có ở BE
+      final res = await http
+          .put(
+            // need add /$status
+            Uri.parse(
+                "${url}SignModificationRequests/GPSSigns/$gpsSignRomId/$status/$adminId"),
+            headers: <String, String>{
+              "Content-Type": "application/json; charset=UTF-8"
+            },
+            body: jsonEncode(imageUrl),
+          )
+          .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
+        log(res.body);
         return parseSignModificationRequest(res.body);
       } else {
         log(res.body);

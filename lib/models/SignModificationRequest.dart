@@ -10,22 +10,26 @@ class SignModificationRequest {
   final int operationType;
   final String imageUrl;
   final int? status; // get
-  final String? createdDate; // get
+  final String? deniedReason; // get
+  final String createdDate; // get
+  final bool isDeleted; // get
 
   factory SignModificationRequest.fromJson(Map<String, dynamic> data) {
     return SignModificationRequest(
       data['id'],
       data['modifyingSignId'],
       data['modifiedSignId'],
-      data['modifyingGpssignId'],
-      data['modifiedGpssignId'],
+      data['modifyingGPSSignId'],
+      data['modifiedGPSSignId'],
       data['userId'],
       data['scribeId'],
       data['adminId'],
       data['operationType'],
       data['imageUrl'],
       data['status'],
+      data['deniedReason'],
       data['createdDate'],
+      data['isDeleted'],
     );
   }
 
@@ -34,14 +38,17 @@ class SignModificationRequest {
       'id': id,
       'modifyingSignId': modifyingSignId,
       'modifiedSignId': modifiedSignId,
-      'modifyingGpssignId': modifyingGpssignId,
-      'modifiedGpssignId': modifiedGpssignId,
+      'modifyingGPSSignId': modifyingGpssignId,
+      'modifiedGPSSignId': modifiedGpssignId,
       'userId': userId,
+      'scribeId': scribeId,
       'adminId': adminId,
       'operationType': operationType,
       'imageUrl': imageUrl,
       'status': status,
-      'createdDate': createdDate
+      'deniedReason': deniedReason,
+      'createdDate': createdDate,
+      'isDeleted': isDeleted
     };
   }
 
@@ -57,6 +64,8 @@ class SignModificationRequest {
     this.operationType,
     this.imageUrl,
     this.status,
+    this.deniedReason,
     this.createdDate,
+    this.isDeleted,
   );
 }

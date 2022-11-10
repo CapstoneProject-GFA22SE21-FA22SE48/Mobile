@@ -7,6 +7,7 @@ const kPrimaryButtonColor = Color.fromARGB(255, 51, 102, 255);
 const kDangerButtonColor = Color.fromARGB(255, 239, 68, 68);
 const kSuccessButtonColor = Color.fromARGB(255, 34, 197, 94);
 const kWarningButtonColor = Color.fromARGB(255, 245, 159, 11);
+const kNeutralButtonColor = Color.fromARGB(255, 160, 44, 255);
 const kDisabledButtonColor = Color.fromARGB(255, 108, 117, 125);
 const kPrimaryTextColor = Color.fromARGB(255, 51, 51, 51);
 const kDisabledTextColor = Color.fromARGB(255, 102, 102, 102);
