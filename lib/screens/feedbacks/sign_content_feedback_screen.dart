@@ -7,6 +7,8 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:path/path.dart';
 import 'package:sizer/sizer.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vnrdn_tai/controllers/analysis_controller.dart';
@@ -15,20 +17,21 @@ import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/shared/snippets.dart';
 
 class SignContentFeedbackScreen extends StatelessWidget {
   const SignContentFeedbackScreen({super.key});
 
-  Future uploadRom(AnalysisController ac) async {
+  Future uploadRom(AnalysisController ac, BuildContext context) async {
     GlobalController gc = Get.find<GlobalController>();
     var pickedFile = ac.image;
     final path = 'user-feedbacks/SignContentFeedbacks/${pickedFile!.name}';
     final file = File(pickedFile.path);
     final ref = FirebaseStorage.instance.ref().child(path);
     var uploadTask = ref.putFile(file);
+    context.loaderOverlay.show();
     final snapshot = await uploadTask.whenComplete(() {});
     await snapshot.ref.getDownloadURL().then((url) async {
-      print(url);
       SignModificationRequest rom = SignModificationRequest(
           Uuid().v4(),
           null,
@@ -40,7 +43,7 @@ class SignContentFeedbackScreen extends StatelessWidget {
           null,
           3,
           url,
-          0,
+          1,
           DateTime.now().toString());
       var res = await FeedbackService().createSignsModificationRequest(rom);
       if (res == true) {
@@ -49,6 +52,7 @@ class SignContentFeedbackScreen extends StatelessWidget {
         Get.snackbar('Cảm ơn',
             'Cảm ơn vì đã gửi phản hồi! Chúng tôi thành thật xin lỗi vì bất tiện này!',
             colorText: Colors.green, isDismissible: true);
+        context.loaderOverlay.hide();
       }
     });
   }
@@ -56,7 +60,6 @@ class SignContentFeedbackScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AnalysisController ac = Get.put(AnalysisController());
-
     return GetBuilder<AnalysisController>(
         init: ac,
         builder: (controller) {
@@ -71,7 +74,7 @@ class SignContentFeedbackScreen extends StatelessWidget {
                       ),
                       onPressed: () {
                         ac.image != null
-                            ? uploadRom(ac)
+                            ? uploadRom(ac, context)
                             : Get.snackbar(
                                 'Lưu ý', 'Vui lòng cung cấp hình ảnh trước',
                                 colorText: Colors.blueGrey,

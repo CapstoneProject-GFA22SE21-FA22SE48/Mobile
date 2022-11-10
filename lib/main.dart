@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -83,7 +84,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         // home: const LoginScreen(),
-        home: const ContainerScreen(),
+        home: const LoaderOverlay(child: ContainerScreen()),
         initialBinding: GlobalBinding(),
       );
     });
