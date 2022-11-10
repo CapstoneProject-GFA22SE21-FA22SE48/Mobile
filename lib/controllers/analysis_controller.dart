@@ -86,7 +86,7 @@ class AnalysisController extends GetxController {
     GlobalController gc = Get.find<GlobalController>();
     List<CameraDescription> cameras = gc.cameras;
     _cameraController =
-        CameraController(cameras[0], ResolutionPreset.low, enableAudio: false);
+        CameraController(cameras[0], ResolutionPreset.max, enableAudio: false);
     _cameraController.initialize().then((_) {
       // vision = FlutterVision();
       // if (gc.modelLoad.value == false) {
@@ -115,34 +115,42 @@ class AnalysisController extends GetxController {
 
   Future<String> takePicAndDetect() async {
     _cameraController.setFlashMode(FlashMode.auto);
-    final xFile = await _cameraController.takePicture();
-    final path = xFile.path;
-    // _imagePath = path;
-    io.File file = io.File(xFile.path);
-    final res = await upload(file, cont: _isDetecting);
-    if (res != "[]") {
+    try {
+      final xFile = await _cameraController.takePicture();
+      final path = xFile.path;
       // _imagePath = path;
+      io.File file = io.File(xFile.path);
+      print(file.lengthSync());
+      final res = await upload(file, cont: _isDetecting);
+      print(res);
+      if (res != "[]") {
+        _imagePath = path;
+      }
+      if (res != null) {
+        return res != "[]" && !res.contains('Error') ? res : "[]";
+      }
+    } on Exception catch (ex) {
+      print(ex);
     }
-    return res != "[]" && !res.contains('Error') ? res : "[]";
+    return "";
   }
 
   void startTimer() {
     // _boxes.clear();
-    _timer = Timer.periodic(Duration(milliseconds: 10), (Timer t) async {
+    _timer = Timer.periodic(Duration(milliseconds: 100), (Timer t) async {
       _timer!.cancel();
       if (!_isDetecting) {
         t.cancel();
       }
-      await Future.delayed(Duration(milliseconds: 50));
+      await Future.delayed(Duration(milliseconds: 100));
       final stopwatch = Stopwatch()..start();
       var res = await takePicAndDetect();
-      print(res);
       print('executed in ${stopwatch.elapsed}');
       stopwatch.stop();
 
       // _detected = res;
       List<List<dynamic>> b = [];
-      if (res != "[]") {
+      if (res != "[]" && res != "") {
         res = res
             .replaceAll("[", "")
             .replaceAll("]", "")

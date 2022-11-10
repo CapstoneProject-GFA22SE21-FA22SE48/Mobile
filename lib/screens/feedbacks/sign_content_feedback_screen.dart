@@ -8,8 +8,11 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
+import 'package:uuid/uuid.dart';
 import 'package:vnrdn_tai/controllers/analysis_controller.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
+import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
@@ -17,16 +20,36 @@ class SignContentFeedbackScreen extends StatelessWidget {
   const SignContentFeedbackScreen({super.key});
 
   Future uploadRom(AnalysisController ac) async {
+    GlobalController gc = Get.find<GlobalController>();
     var pickedFile = ac.image;
     final path = 'user-feedbacks/SignContentFeedbacks/${pickedFile!.name}';
     final file = File(pickedFile.path);
     final ref = FirebaseStorage.instance.ref().child(path);
     var uploadTask = ref.putFile(file);
     final snapshot = await uploadTask.whenComplete(() {});
-    await snapshot.ref.getDownloadURL().then((url) {
-      SignModificationRequest rom = new SignModificationRequest('', null, null,
-          null, null, null, null, null, 3, url, 0, DateTime.now());
-      FeedbackService().createSignsModificationRequest(rom);
+    await snapshot.ref.getDownloadURL().then((url) async {
+      print(url);
+      SignModificationRequest rom = SignModificationRequest(
+          Uuid().v4(),
+          null,
+          null,
+          null,
+          null,
+          gc.userId.value.isNotEmpty ? gc.userId.value : null,
+          null,
+          null,
+          3,
+          url,
+          0,
+          DateTime.now().toString());
+      var res = await FeedbackService().createSignsModificationRequest(rom);
+      if (res == true) {
+        ac.clearFeedbackImage();
+        Get.to(() => ContainerScreen());
+        Get.snackbar('Cảm ơn',
+            'Cảm ơn vì đã gửi phản hồi! Chúng tôi thành thật xin lỗi vì bất tiện này!',
+            colorText: Colors.green, isDismissible: true);
+      }
     });
   }
 
@@ -209,21 +232,24 @@ class SignContentFeedbackScreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  Positioned(
-                    left: 65.w,
-                    top: 50.h,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 20, left: 18),
-                      child: ElevatedButton(
-                          onPressed: () async {
-                            await controller.takeSignContentFeebackImage();
-                          },
-                          style: ElevatedButton.styleFrom(
-                              shape: const CircleBorder(),
-                              fixedSize: const Size(50, 50)),
-                          child: const Icon(Icons.camera_alt, size: 28)),
-                    ),
-                  ),
+                  controller.imagePath == ""
+                      ? Positioned(
+                          left: 65.w,
+                          top: 50.h,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 20, left: 18),
+                            child: ElevatedButton(
+                                onPressed: () async {
+                                  await controller
+                                      .takeSignContentFeebackImage();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    shape: const CircleBorder(),
+                                    fixedSize: const Size(50, 50)),
+                                child: const Icon(Icons.camera_alt, size: 28)),
+                          ),
+                        )
+                      : Container(),
                   controller.imagePath != ""
                       ? Positioned(
                           right: 1.w,

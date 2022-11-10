@@ -59,7 +59,7 @@ class FeedbackService {
               2,
               imageUrl,
               0,
-              DateTime.now());
+              DateTime.now().toString());
           break;
         case 'wrongSign':
           request = SignModificationRequest(
@@ -74,7 +74,7 @@ class FeedbackService {
               1,
               imageUrl,
               0,
-              DateTime.now());
+              DateTime.now().toString());
           break;
         default:
           request = SignModificationRequest(
@@ -89,7 +89,7 @@ class FeedbackService {
               0,
               imageUrl,
               0,
-              DateTime.now());
+              DateTime.now().toString());
       }
       final res = await http.post(
         Uri.parse("${url}SignModificationRequests"),
@@ -110,19 +110,18 @@ class FeedbackService {
     }
   }
 
-  Future<SignModificationRequest?> createSignsModificationRequest(
+  Future<bool?> createSignsModificationRequest(
       SignModificationRequest rom) async {
     try {
-      final res = await http.post(Uri.parse("${url}SignModificationRequests"),
-          headers: <String, String>{
-            "Content-Type": "application/json; charset=UTF-8"
-          },
-          body: {
-            jsonEncode(rom)
-          }).timeout(const Duration(seconds: TIME_OUT));
+      final res = await http
+          .post(Uri.parse("${url}SignModificationRequests"),
+              headers: <String, String>{
+                "Content-Type": "application/json; charset=UTF-8"
+              },
+              body: jsonEncode(rom))
+          .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
-        return SignModificationRequestService.parseSignModificationRequest(
-            res.body);
+        return true;
       } else {
         log(res.body);
         return null;
