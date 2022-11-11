@@ -11,8 +11,18 @@ class GPSSign {
       data['signId'],
       data['imageUrl'],
       data['latitude'],
-      data['longtitude'],
+      data['longitude'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'signId': signId,
+      'imageUrl': imageUrl,
+      'latitude': latitude,
+      'longitude': longitude
+    };
   }
 
   GPSSign(

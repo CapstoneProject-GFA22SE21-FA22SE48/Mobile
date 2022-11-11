@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decode/jwt_decode.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
@@ -16,16 +17,14 @@ class AuthService {
     return token["token"];
   }
 
-  Future<String?> isAuthenticated() async {
+  Future<bool> isAuthenticated() async {
     String token = '';
     await IOUtils.getFromStorage("token").then(((value) => token = value));
     if (token.isNotEmpty) {
-      String username = '';
-      await IOUtils.getFromStorage("username")
-          .then(((value) => username = value));
-      return username;
+      return IOUtils.setUserInfoController(token);
     }
-    return null;
+
+    return false;
   }
 
   Future<String> loginWithUsername(String username, String password) async {
