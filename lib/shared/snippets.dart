@@ -32,7 +32,7 @@ Future<File> compressFile(File file) async {
   return result;
 }
 
-upload(File imageFile, {bool cont = true}) async {
+upload(File imageFile, {bool cont = true, String url = ai_url}) async {
   if (!cont) return "[]";
   // open a bytestream
   var _imageFile = await compressFile(imageFile);
@@ -42,11 +42,10 @@ upload(File imageFile, {bool cont = true}) async {
   // get file length
   var length = await _imageFile.length();
   // string to uri
-  var uri = Uri.parse(ai_url);
+  var uri = Uri.parse(url);
 
   // create multipart request
   var request = http.MultipartRequest("POST", uri);
-  print(uri);
   // multipart that takes file
   var multipartFile = http.MultipartFile('file', stream, length,
       filename: basename(_imageFile.path));

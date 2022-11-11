@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io' as io;
 import 'package:camera/camera.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vision/flutter_vision.dart';
@@ -55,6 +57,10 @@ class AnalysisController extends GetxController {
   late String? _imagePath = "";
   String? get imagePath => this._imagePath;
 
+  //Feedback Sign starts here
+  late String _aiurl = "";
+  String get aiurl => this._aiurl;
+
   late XFile? _image = null;
   XFile? get image => this._image;
 
@@ -76,7 +82,6 @@ class AnalysisController extends GetxController {
     update();
   }
 
-
   clearFeedbackImage() {
     _image = null;
     _imagePath = "";
@@ -84,21 +89,27 @@ class AnalysisController extends GetxController {
   }
 
   initCamera() {
-    GlobalController gc = Get.find<GlobalController>();
-    List<CameraDescription> cameras = gc.cameras;
-    _cameraController =
-        CameraController(cameras[0], ResolutionPreset.max, enableAudio: false);
-    _cameraController.initialize().then((_) {
-      // vision = FlutterVision();
-      // if (gc.modelLoad.value == false) {
-      //   loadYoloModel().then((value) {
-      //     gc.updateModelLoad(true);
-      //   });
-      // }
-      _isDetecting = false;
-      _modelResults = [];
-      _isLoaded = true;
-      update();
+    DatabaseReference firebaseDatabase =
+        FirebaseDatabase.instance.ref('ai_url');
+    firebaseDatabase.onValue.listen((DatabaseEvent event) {
+      _aiurl = event.snapshot.value.toString();
+      // updateStarCount(data);
+      GlobalController gc = Get.find<GlobalController>();
+      List<CameraDescription> cameras = gc.cameras;
+      _cameraController = CameraController(cameras[0], ResolutionPreset.max,
+          enableAudio: false);
+      _cameraController.initialize().then((_) {
+        // vision = FlutterVision();
+        // if (gc.modelLoad.value == false) {
+        //   loadYoloModel().then((value) {
+        //     gc.updateModelLoad(true);
+        //   });
+        // }
+        _isDetecting = false;
+        _modelResults = [];
+        _isLoaded = true;
+        update();
+      });
     });
   }
 
@@ -122,7 +133,7 @@ class AnalysisController extends GetxController {
       // _imagePath = path;
       io.File file = io.File(xFile.path);
       print(file.lengthSync());
-      final res = await upload(file, cont: _isDetecting);
+      final res = await upload(file, cont: _isDetecting, url: _aiurl);
       print(res);
       if (res != "[]") {
         _imagePath = path;
