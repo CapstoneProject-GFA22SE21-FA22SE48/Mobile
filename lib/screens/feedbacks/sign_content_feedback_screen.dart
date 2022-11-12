@@ -43,7 +43,7 @@ class SignContentFeedbackScreen extends StatelessWidget {
         ac.clearFeedbackImage();
         // ignore: use_build_context_synchronously
         DialogUtil.showDCDialog(context, DialogUtil.successText("Thành công"),
-            'Thông tin của bạn đã được thay đổi thành công!',
+            'Cảm ơn vì đã gửi phản hồi!\nChúng tôi thành thật xin lỗi vì một số bất tiện này!',
             // ignore: use_build_context_synchronously
             [TemplatedButtons.okWithscreen(context, const ContainerScreen())]);
         // Get.to(() => const ContainerScreen());
@@ -71,6 +71,7 @@ class SignContentFeedbackScreen extends StatelessWidget {
           return Scaffold(
               appBar: AppBar(
                 title: const Text("Báo cáo sự cố"),
+                elevation: 0,
                 actions: [
                   IconButton(
                       icon: const Icon(
