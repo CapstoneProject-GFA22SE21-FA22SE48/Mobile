@@ -118,6 +118,8 @@ class ContainerScreen extends GetView<GlobalController> {
     final MyTabController _tabx = Get.put(MyTabController());
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
+      extendBodyBehindAppBar: true,
       // backgroundColor: ThemeData().backgroundColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -296,38 +298,6 @@ class ContainerScreen extends GetView<GlobalController> {
                 }
               },
             ),
-            // ListTile(
-            //   iconColor: kPrimaryButtonColor,
-            //   textColor: kPrimaryButtonColor,
-            //   leading: const Icon(Icons.info_outline),
-            //   title: const Text(
-            //     'Thông tin',
-            //     style: TextStyle(
-            //       fontSize: FONTSIZES.textPrimary,
-            //       fontWeight: FontWeight.bold,
-            //     ),
-            //   ), // Feedbacks
-            //   // selected: controller.sideBar.value == 2,
-            //   selectedColor: Colors.white,
-            //   selectedTileColor: Colors.blueAccent,
-            //   onTap: () {
-            //     if (controller.userId.isNotEmpty) {
-            //       Navigator.pop(context); // close the drawer
-            //       controller.updateSideBar(3);
-            //       Get.to(const CommentsScreen());
-            //     } else {
-            //       DialogUtil.showTextDialog(
-            //         context,
-            //         "Cảnh báo",
-            //         "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
-            //         [
-            //           TemplatedButtons.yes(context, const LoginScreen()),
-            //           TemplatedButtons.no(context),
-            //         ],
-            //       );
-            //     }
-            //   },
-            // ),
             ac.role.value == 1 || controller.username.value.contains('scribe')
                 ? ListTile(
                     iconColor: kNeutralButtonColor,

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
@@ -81,10 +82,10 @@ class _ChangePasswordState extends State<ChangeForgotPasswordScreen> {
     confirmObSecure = gc.confirmObSecure.value;
 
     return Scaffold(
-      backgroundColor: kPrimaryBackgroundColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
-        title: const Text("Change Password"),
+        title: const Text("Đổi mật khẩu"),
+        elevation: 0,
       ),
       body: Column(children: [
         // Image.asset(
@@ -95,9 +96,22 @@ class _ChangePasswordState extends State<ChangeForgotPasswordScreen> {
           height: 20.0,
         ),
         Padding(
-          padding: const EdgeInsets.all(kDefaultPaddingValue),
+          padding:
+              const EdgeInsets.symmetric(horizontal: kDefaultPaddingValue * 2),
           child: Column(
             children: [
+              const Text(
+                'Mời bạn đổi mật khẩu mới',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.blueAccent,
+                  fontSize: FONTSIZES.textLarger,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: kDefaultPaddingValue),

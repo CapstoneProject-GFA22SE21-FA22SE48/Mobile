@@ -24,7 +24,7 @@ const kLightBlueBackground = Color(0xFFA9CAFF);
 const kPrimaryBackgroundColor = Color.fromARGB(255, 255, 255, 255);
 
 const double kDefaultPaddingValue = 16;
-const kDefaultPadding = EdgeInsets.all(16);
+const kDefaultPadding = EdgeInsets.all(kDefaultPaddingValue);
 
 const quizTime = 60 * 19; // 25 cau
 const quizTimeA2 = 60 * 20; // 30 cau
@@ -82,6 +82,8 @@ class FONTSIZES {
 const TIME_OUT = 60;
 
 const emptyUserId = "00000000-0000-0000-0000-000000000000"; // jwt fixed
+const defaultAvatarUrl =
+    "https://firebasestorage.googleapis.com/v0/b/vnrdntai.appspot.com/o/images%2Favatar%2Fdefault_avatar_x05.png?alt=media";
 
 const String google_api_key = "AIzaSyBEre7YKax4irpLfr0I2jrkACu_ZiBL3JU";
 LatLng schoolLocation = // FPT daigaku
@@ -93,26 +95,3 @@ const url = "https://vnrdntaiapi.azurewebsites.net/api/";
 // const ai_url = "http://10.0.2.2:5000/";
 const ai_url = "https://vnrdntai-ai.azurewebsites.net/";
 // const ai_url = "https://cac3-14-169-2-3.ap.ngrok.io";
-
-
-
-
-
-
-// {
-//         "id": "7df14016-d391-4a5b-9151-dc810e98c9aa",
-//         "username": "user0",
-//         "password": "123456789",
-//         "role": 2,
-//         "status": 5,
-//         "createdDate": "2020-10-01T00:00:00",
-//         "isDeleted": false,
-//         "comments": [],
-//         "paragraphModificationRequestAdmins": [],
-//         "paragraphModificationRequestScribes": [],
-//         "testResults": [],
-//         "userModificationRequestArbitratingAdmins": [],
-//         "userModificationRequestModifiedUsers": [],
-//         "userModificationRequestModifyingUsers": [],
-//         "userModificationRequestPromotingAdmins": []
-//     }

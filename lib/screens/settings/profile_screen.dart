@@ -1,12 +1,21 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image/image.dart' as Im;
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:getwidget/components/avatar/gf_avatar.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/models/UserInfo.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
-import 'package:vnrdn_tai/services/AuthService.dart';
+import 'package:vnrdn_tai/services/UserService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/firebase_options.dart';
 import 'package:vnrdn_tai/utils/form_validator.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
@@ -14,30 +23,124 @@ class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _ChangePasswordState();
+  State<StatefulWidget> createState() => _ProfileState();
 }
 
-class _ChangePasswordState extends State<ProfileScreen> {
+class _ProfileState extends State<ProfileScreen> {
   final displayNameController = TextEditingController();
   final emailController = TextEditingController();
-  final newPasswordConfirmController = TextEditingController();
+  String lastImageUrl = '';
 
   GlobalController gc = Get.put(GlobalController());
   AuthController ac = Get.put(AuthController());
+
+  final imagePicker = ImagePicker();
+  PlatformFile? pickedFile;
+  UploadTask? uploadTask;
 
   @override
   void dispose() {
     displayNameController.dispose();
     emailController.dispose();
-    newPasswordConfirmController.dispose();
     super.dispose();
   }
 
-  void handleChangePassword(String oldPassword, String newPassword) {
-    AuthService().changePassword(oldPassword, newPassword).then((value) {
-      if (value.isNotEmpty) {
-        if (value.toLowerCase().contains('không đúng') || value.isEmpty) {
-          // oldP is wrong
+  Future selectImage() async {
+    final picked = await FilePicker.platform.pickFiles();
+    if (picked == null) return;
+
+    setState(() {
+      pickedFile = picked.files.first;
+    });
+  }
+
+  Future captureImage() async {
+    final captured = await imagePicker.getImage(source: ImageSource.camera);
+    if (captured == null) return;
+
+    setState(() {
+      pickedFile = PlatformFile(
+          name: captured.path.split('/').last,
+          path: captured.path,
+          size: 1024 * 1024 * 30);
+      uploadTempImage();
+    });
+  }
+
+  Future<String> uploadTempImage() async {
+    if (pickedFile != null) {
+      GlobalController gc = Get.put(GlobalController());
+      final ext = pickedFile!.name.split('.').last;
+      final path =
+          'images/avatar/temp/${gc.userId.value}_${DateTime.now().toUtc()}.$ext';
+      final file = File(pickedFile!.path!);
+
+      final ref = FirebaseStorage.instance.ref().child(path);
+      uploadTask = ref.putFile(file);
+
+      final snapshot = await uploadTask!.whenComplete(() {});
+
+      await snapshot.ref.getDownloadURL().then((url) {
+        url = url.split('&token').first;
+        ac.updateAvatar(url);
+        setState(() {
+          print(url);
+        });
+        return url;
+      });
+      return '';
+    }
+    return 'doNotPick';
+  }
+
+  Future<String> uploadImage() async {
+    if (pickedFile != null) {
+      GlobalController gc = Get.put(GlobalController());
+      final ext = pickedFile!.name.split('.').last;
+      final path =
+          'images/avatar/${gc.userId.value}_${DateTime.now().toUtc()}.$ext';
+      final file = File(pickedFile!.path!);
+
+      final ref = FirebaseStorage.instance.ref().child(path);
+      uploadTask = ref.putFile(file);
+
+      final snapshot = await uploadTask!.whenComplete(() {});
+
+      await snapshot.ref.getDownloadURL().then((url) {
+        return url.split('&token').first;
+      });
+      return '';
+    }
+    return 'doNotPick';
+  }
+
+  void handleUpdateProfile() async {
+    String imageUrl = ac.avatar.value;
+    // if (imageUrl.contains('doNotPick')) {
+    //   imageUrl = ac.avatar.value;
+    //   print(imageUrl);
+    // }
+    if (imageUrl.isNotEmpty) {
+      await UserService()
+          .updateProfile(
+              imageUrl, emailController.text, displayNameController.text)
+          .then((value) {
+        if (value.isNotEmpty) {
+          if (value.toLowerCase().contains('thay đổi')) {
+            // deleteOldImage();
+            // info changed
+            DialogUtil.showDCDialog(
+                context,
+                DialogUtil.successText("Thành công"),
+                'Thông tin của bạn đã được thay đổi thành công!', [
+              TemplatedButtons.okWithscreen(context, const SettingsScreen())
+            ]);
+          } else {
+            DialogUtil.showDCDialog(context, DialogUtil.failedText("Thất bại"),
+                value, [TemplatedButtons.ok(context)]);
+          }
+        } else {
+          // Something went wrong
           DialogUtil.showDCDialog(
               context,
               const Text(
@@ -46,138 +149,154 @@ class _ChangePasswordState extends State<ProfileScreen> {
                   color: kDangerButtonColor,
                 ),
               ),
-              value,
+              value.isNotEmpty ? value : 'Thông tin người dùng không đúng.',
               [TemplatedButtons.ok(context)]);
-        } else {
-          // password changed
-          DialogUtil.showDCDialog(
-              context,
-              const Text(
-                "Thành công",
-                style: TextStyle(
-                  color: kSuccessButtonColor,
-                ),
-              ),
-              value,
-              [TemplatedButtons.okWithscreen(context, const SettingsScreen())]);
         }
-      } else {
-        // Something went wrong
-        DialogUtil.showDCDialog(
-            context,
-            const Text(
-              "Thất bại",
-              style: TextStyle(
-                color: kDangerButtonColor,
-              ),
-            ),
-            value.isNotEmpty ? value : 'Thông tin người dùng không khớp.',
-            [TemplatedButtons.ok(context)]);
-      }
-    });
+      });
+    } else {
+      // Something went wrong
+      // ignore: use_build_context_synchronously
+      DialogUtil.showDCDialog(context, DialogUtil.failedText("Thất bại"),
+          'Có sự cố đã xảy ra.\nVui lòng thử lại sau.',
+          // ignore: use_build_context_synchronously
+          [TemplatedButtons.ok(context)]);
+    }
+  }
+
+  handleCancel() {
+    Get.offAll(const SettingsScreen());
+  }
+
+  deleteOldImage() async {
+    if (!lastImageUrl.contains('default')) {
+      final storageRef = FirebaseStorage.instance.ref();
+      lastImageUrl = lastImageUrl.split('images').last;
+      final desertRef =
+          storageRef.child('images${lastImageUrl.split('?').first}');
+      await desertRef.delete();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    lastImageUrl = ac.avatar.value;
   }
 
   @override
   Widget build(BuildContext context) {
+    displayNameController.text = ac.displayName.value;
+    emailController.text = ac.email.value;
+
     return Scaffold(
       key: UniqueKey(),
       backgroundColor: kPrimaryBackgroundColor,
       appBar: AppBar(
-        title: const Text("Change Password"),
+        title: const Text("Update Profile"),
+        elevation: 1,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: handleCancel,
         ),
       ),
-      body: Column(children: [
-        // Image.asset(
-        //   "assets/images/snapchat.png",
-        //   fit: BoxFit.contain,
-        // ),
-        const SizedBox(
-          height: 20.0,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(kDefaultPaddingValue),
-          child: Column(
-            children: [
-              TextFormField(
-                validator: (value) => FormValidator.validPassword(value),
-                controller: displayNameController,
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.next,
-                cursorColor: kPrimaryButtonColor,
-                onSaved: (username) {},
-                decoration: InputDecoration(
-                  labelText: "Tên hiển thị",
-                  hintText: ac.displayName.value,
-                  prefixIcon: const Padding(
-                    padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-                    child: Icon(Icons.lock),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        scrollDirection: Axis.vertical,
+        child: Column(children: [
+          const SizedBox(
+            height: 20.0,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(kDefaultPaddingValue),
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    captureImage();
+                  },
+                  child: GFAvatar(
+                    radius: 30.w,
+                    backgroundImage: ac.avatar.value.isNotEmpty
+                        ? NetworkImage(ac.avatar.value)
+                        : const NetworkImage(defaultAvatarUrl),
                   ),
                 ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: kDefaultPaddingValue),
-                child: TextFormField(
+                TextFormField(
                   validator: (value) => FormValidator.validPassword(value),
-                  controller: emailController,
-                  textInputAction: TextInputAction.done,
+                  controller: displayNameController,
+                  keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.next,
                   cursorColor: kPrimaryButtonColor,
                   decoration: InputDecoration(
-                    labelText: "Email",
-                    hintText: ac.email.value,
+                    labelText: "Tên hiển thị",
+                    hintText: ac.displayName.value,
                     prefixIcon: const Padding(
                       padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-                      child: Icon(Icons.mail_outline_rounded),
+                      child: Icon(Icons.ac_unit_rounded),
                     ),
                   ),
                 ),
-              ),
-              // Padding(
-              //   padding:
-              //       const EdgeInsets.symmetric(vertical: kDefaultPaddingValue),
-              //   child: TextFormField(
-              //     validator: (value) => FormValidator.validPasswordConfirm(
-              //         emailController.text, value),
-              //     controller: newPasswordConfirmController,
-              //     textInputAction: TextInputAction.done,
-              //     cursorColor: kPrimaryButtonColor,
-              //     decoration: InputDecoration(
-              //       labelText: "Tên đăng nhập",
-              //       hintText: gc.username.value,
-              //       prefixIcon: const Padding(
-              //         padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-              //         child: Icon(Icons.lock),
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              const SizedBox(height: kDefaultPaddingValue),
-              Hero(
-                tag: "update_btn",
-                child: ElevatedButton(
-                  onPressed: () {
-                    handleChangePassword(
-                        displayNameController.text, emailController.text);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: kDefaultPaddingValue),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Cập nhật ngay".toUpperCase()),
-                      ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: kDefaultPaddingValue),
+                  child: TextFormField(
+                    validator: (value) => FormValidator.validPassword(value),
+                    controller: emailController,
+                    textInputAction: TextInputAction.done,
+                    cursorColor: kPrimaryButtonColor,
+                    decoration: InputDecoration(
+                      labelText: "Email",
+                      hintText: ac.email.value,
+                      prefixIcon: const Padding(
+                        padding: EdgeInsets.all(kDefaultPaddingValue / 2),
+                        child: Icon(Icons.mail_outline_rounded),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+                // Padding(
+                //   padding:
+                //       const EdgeInsets.symmetric(vertical: kDefaultPaddingValue),
+                //   child: TextFormField(
+                //     validator: (value) => FormValidator.validPasswordConfirm(
+                //         emailController.text, value),
+                //     controller: newPasswordConfirmController,
+                //     textInputAction: TextInputAction.done,
+                //     cursorColor: kPrimaryButtonColor,
+                //     decoration: InputDecoration(
+                //       labelText: "Tên đăng nhập",
+                //       hintText: gc.username.value,
+                //       prefixIcon: const Padding(
+                //         padding: EdgeInsets.all(kDefaultPaddingValue / 2),
+                //         child: Icon(Icons.lock),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                const SizedBox(height: kDefaultPaddingValue),
+                Hero(
+                  tag: "update_btn",
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (avatarsPath.isNotEmpty) handleUpdateProfile();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: kDefaultPaddingValue),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Cập nhật ngay".toUpperCase()),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 }

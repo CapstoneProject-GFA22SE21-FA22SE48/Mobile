@@ -7,8 +7,10 @@ class FormValidator {
     } else if (username.contains(RegExp('[{}\$&#!]'))) {
       // return 'Username must not includes {,},\$,&,#,!';
       return 'Tên đăng nhập không chứa kí tự không hợp lệ';
-    } else if (username.length > 255) {
-      return 'Tên đăng nhập không dài hơn 255 kí tự';
+    } else if (username.length > 20) {
+      return 'Tên đăng nhập không dài hơn 20 kí tự';
+    } else if (username.length < 6) {
+      return 'Tên đăng nhập không ngắn hơn 6 kí tự';
     }
     return null;
   }
@@ -16,20 +18,11 @@ class FormValidator {
   static String? validPassword(String? password) {
     if (password == null || password.trim().isEmpty) {
       return 'Mật khẩu không được bỏ trống';
+    } else if (password.length > 20) {
+      return 'Mật khẩu không dài hơn 20 kí tự';
+    } else if (password.length < 6) {
+      return 'Mật khẩu không ngắn hơn 6 kí tự';
     }
-    // else if (password.contains(RegExp('[{}\$&#!\\/]'))) {
-    //   return 'Password must not includes {,},\$,&,#,!,\\,/';
-    // }
-    else if (password.length > 40) {
-      return 'Mật khẩu không dài hơn 40 kí tự';
-    }
-    // else {
-    //   int iOpenBracket = password.indexOf('{');
-    //   int iOpen = password.indexOf('{');
-    //   if (iOpenBracket > 0 && password.indexOf('}') > iOpenBracket) {
-    //     return 'Password contains characters not allowed';
-    //   }
-    // }
     return null;
   }
 

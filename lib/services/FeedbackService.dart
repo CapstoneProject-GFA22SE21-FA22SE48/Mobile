@@ -8,6 +8,7 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import 'package:vnrdn_tai/models/dtos/GPSSignFeedbackDTO.dart';
+import 'package:vnrdn_tai/models/dtos/SignFeedbackDTO.dart';
 import '../shared/constants.dart';
 import 'SignModificationRequestService.dart';
 
@@ -79,8 +80,7 @@ class FeedbackService {
     }
   }
 
-  Future<bool?> createSignsModificationRequest(
-      SignModificationRequest rom) async {
+  Future<bool?> createSignsModificationRequest(SignFeedbackDTO rom) async {
     try {
       final res = await http
           .post(Uri.parse("${url}SignModificationRequests"),
@@ -90,6 +90,7 @@ class FeedbackService {
               body: jsonEncode(rom))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
+        log(res.body);
         return true;
       } else {
         log(res.body);

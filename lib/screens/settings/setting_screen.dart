@@ -7,11 +7,11 @@ import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/settings/change_password_screen.dart';
+import 'package:vnrdn_tai/screens/settings/profile_screen.dart';
 import 'package:vnrdn_tai/services/UserService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/dialogUtil.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
-import 'package:vnrdn_tai/widgets/switch.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -74,7 +74,7 @@ class _SwitchClassState extends State<SettingsScreen> {
         title: const Text('Cài đặt'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.to(ContainerScreen()),
+          onPressed: () => Get.offAll(ContainerScreen()),
         ),
       ),
       body: SizedBox(
@@ -84,7 +84,9 @@ class _SwitchClassState extends State<SettingsScreen> {
           child: Column(
             children: [
               Container(
-                margin: const EdgeInsets.all(10),
+                margin: const EdgeInsets.symmetric(
+                    vertical: kDefaultPaddingValue / 2,
+                    horizontal: kDefaultPaddingValue),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   border: Border.all(color: Colors.grey.shade200),
@@ -135,45 +137,56 @@ class _SwitchClassState extends State<SettingsScreen> {
                 ),
               ),
               // helps
-              Container(
-                margin: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey.shade200),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromARGB(197, 189, 189, 189),
-                      offset: Offset(0, 2),
-                      blurRadius: 2,
-                    )
-                  ],
-                ),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 20.0),
-                  leading: const Icon(Icons.account_box_rounded),
-                  title: GestureDetector(
-                    onTap: () {},
-                    child: Row(
-                      children: const [
-                        Text(
-                          'Cập nhật thông tin',
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: FONTSIZES.textMediumLarge,
-                            fontWeight: FontWeight.bold,
+              gc.userId.value.isNotEmpty
+                  ? Container(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: kDefaultPaddingValue / 2,
+                          horizontal: kDefaultPaddingValue),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.grey.shade200),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color.fromARGB(197, 189, 189, 189),
+                            offset: Offset(0, 2),
+                            blurRadius: 2,
+                          )
+                        ],
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 20.0),
+                        leading: const Icon(
+                          Icons.account_box_rounded,
+                          color: kSuccessButtonColor,
+                        ),
+                        title: GestureDetector(
+                          onTap: () {
+                            Get.to(const ProfileScreen());
+                          },
+                          child: Row(
+                            children: const [
+                              Text(
+                                'Cập nhật thông tin',
+                                style: TextStyle(
+                                  color: kSuccessButtonColor,
+                                  fontSize: FONTSIZES.textMediumLarge,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+                      ),
+                    )
+                  : Container(),
               // change password
               gc.userId.value.isNotEmpty
                   ? Container(
-                      margin: const EdgeInsets.all(10),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: kDefaultPaddingValue / 2,
+                          horizontal: kDefaultPaddingValue),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(color: Colors.grey.shade200),
@@ -190,7 +203,10 @@ class _SwitchClassState extends State<SettingsScreen> {
                         contentPadding: const EdgeInsets.symmetric(
                             vertical: 10.0, horizontal: 20.0),
                         tileColor: Colors.white,
-                        leading: const Icon(Icons.password_rounded),
+                        leading: const Icon(
+                          Icons.password_rounded,
+                          color: kWarningButtonColor,
+                        ),
                         title: GestureDetector(
                           onTap: () {
                             Get.to(ChangePasswordScreen());
@@ -201,7 +217,7 @@ class _SwitchClassState extends State<SettingsScreen> {
                                 'Đổi mật khẩu',
                                 style: TextStyle(
                                   backgroundColor: Colors.white,
-                                  color: Colors.black54,
+                                  color: kWarningButtonColor,
                                   fontSize: FONTSIZES.textMediumLarge,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -214,7 +230,9 @@ class _SwitchClassState extends State<SettingsScreen> {
                   : Container(),
               // helps
               Container(
-                margin: const EdgeInsets.all(10),
+                margin: const EdgeInsets.symmetric(
+                    vertical: kDefaultPaddingValue / 2,
+                    horizontal: kDefaultPaddingValue),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   border: Border.all(color: Colors.grey.shade200),
@@ -255,7 +273,9 @@ class _SwitchClassState extends State<SettingsScreen> {
               // deactivate
               gc.userId.value.isNotEmpty
                   ? Container(
-                      margin: const EdgeInsets.all(10),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: kDefaultPaddingValue / 2,
+                          horizontal: kDefaultPaddingValue),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(color: Colors.grey.shade200),

@@ -28,34 +28,6 @@ class _SearchLawScreenState extends State<SearchLawScreen>
   late Future<List<Keyword>> keywords = KeywordSerivce().GetKeywordList();
   GlobalController gc = Get.find<GlobalController>();
   SearchController sc = Get.put(SearchController());
-  // final List<IconData> iconData = <IconData>[
-  //   Icons.dangerous_outlined,
-  //   Icons.turn_right,
-  //   Icons.perm_device_info,
-  //   Icons.speed,
-  //   Icons.fire_truck,
-  //   Icons.local_parking,
-  //   Icons.swap_vert,
-  //   Icons.train,
-  //   Icons.shop,
-  //   Icons.invert_colors,
-  //   Icons.style,
-  //   Icons.ice_skating
-  // ];
-  // final List<Color> iconColors = <Color>[
-  //   Colors.deepOrange,
-  //   Colors.greenAccent.shade200,
-  //   Colors.yellow.shade700,
-  //   Colors.purpleAccent,
-  //   Colors.blueAccent,
-  //   Colors.redAccent.shade200,
-  //   Colors.lightGreenAccent.shade700,
-  //   Colors.indigoAccent.shade200,
-  //   Colors.tealAccent.shade700,
-  //   Colors.pinkAccent,
-  //   Colors.deepOrangeAccent.shade100,
-  //   Colors.grey.shade300
-  // ];
   final List<Image> images = <Image>[
     Image.asset("assets/images/law/turn_left.png", scale: 10), // 0
     Image.asset("assets/images/law/speed_limit.png", scale: 10), // 1
@@ -140,7 +112,7 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                                 length: 3,
                                 child: Container(
                                   width: 100.w,
-                                  height: 8.h,
+                                  height: 7.h,
                                   color: Colors.white,
                                   child: TabBar(
                                       controller: _tabController,

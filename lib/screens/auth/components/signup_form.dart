@@ -101,23 +101,34 @@ class _SignUpFormState extends State<SignUpForm> {
         .then(((value) {
       ScaffoldMessenger.of(context).clearSnackBars();
       if (value.length > 1) {
-        if (value.contains("lỗi")) {
-          DialogUtil.showTextDialog(context, "Đăng ký thất bại", value,
+        if (value.contains("lỗi") || value.contains('đã')) {
+          DialogUtil.showDCDialog(
+              context,
+              DialogUtil.failedText("Đăng ký thất bại"),
+              value,
               [TemplatedButtons.ok(context)]);
         } else {
           afterRegistered(value);
         }
       } else {
         // need fix content
-        DialogUtil.showTextDialog(
-            context, "Đăng ký thất bại", value, [TemplatedButtons.ok(context)]);
+        DialogUtil.showDCDialog(
+            context,
+            DialogUtil.failedText("Đăng ký thất bại"),
+            value,
+            [TemplatedButtons.ok(context)]);
       }
     }));
   }
 
   // do after logged in
   void afterRegistered(String user) {
-    Get.to(const LoginScreen());
+    DialogUtil.showDCDialog(
+        context,
+        DialogUtil.successText("Thành công"),
+        "Đăng ký thành công!\nĐăng nhập ngay để trải nghiệm những tính năng thú vị nào!!!",
+        [TemplatedButtons.okWithscreen(context, const LoginScreen())]);
+
     // if (emailController.text.isEmpty) {
     //   ScaffoldMessenger.of(context).showSnackBar(
     //     SnackBar(
