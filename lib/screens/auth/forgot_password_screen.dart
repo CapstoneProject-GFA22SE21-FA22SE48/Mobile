@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/screens/auth/components/change_forgot_password.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
@@ -21,10 +22,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPasswordScreen> {
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  late String resendOtp = '';
 
   TextButton handleVerify(BuildContext context, Widget screen) {
     AuthController ac = Get.put(AuthController());
@@ -48,13 +46,29 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
         recipientMail: ac.email.value, userOtp: verificationCode);
 
     if (res) {
+      FocusManager.instance.primaryFocus?.unfocus();
       DialogUtil.showTextDialog(context, "Thành công", "Xác nhận thành công.", [
-        handleVerify(context, ChangeForgotPasswordScreen()),
+        handleVerify(context, const ChangeForgotPasswordScreen()),
       ]);
     } else {
       DialogUtil.showTextDialog(context, "Thất bại", "Xác nhận thất bại.",
           [TemplatedButtons.ok(context)]);
+      resendOtp.isEmpty
+          ? setState(() {
+              resendOtp = 'Gửi lại mã xác nhận';
+            })
+          : () {};
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -69,7 +83,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.home),
-            onPressed: () => Get.offAll(LoginScreen()),
+            onPressed: () => Get.offAll(() => const LoginScreen()),
           ),
         ],
       ),
@@ -98,6 +112,14 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                   onSubmit: (String verificationCode) {
                     verifyOTP(verificationCode);
                   },
+                ),
+                Container(
+                  height: 6.h,
+                  alignment: Alignment.bottomCenter,
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Text(resendOtp),
+                  ),
                 ),
               ],
             ),

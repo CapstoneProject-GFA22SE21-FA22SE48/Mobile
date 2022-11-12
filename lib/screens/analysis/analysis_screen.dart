@@ -83,7 +83,25 @@ class AnalysisScreen extends StatelessWidget {
         init: ac,
         builder: (controller) {
           return Scaffold(
-            appBar: AppBar(),
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              leading: IconButton(
+                onPressed: (() {
+                  Get.offAll(() => const ContainerScreen());
+                }),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                ),
+              ),
+              centerTitle: true,
+              title: const Text(
+                "Nhận diện biển báo",
+                style: TextStyle(color: Colors.white),
+              ),
+              elevation: 0,
+            ),
             body: !controller.isLoaded
                 ? loadingScreen()
                 : Stack(
@@ -92,11 +110,12 @@ class AnalysisScreen extends StatelessWidget {
                       // controller.imagePath == ""
                       // ?
                       AspectRatio(
-                          aspectRatio:
-                              controller.cameraController.value.aspectRatio,
-                          child: CameraPreview(
-                            controller.cameraController,
-                          ))
+                        aspectRatio:
+                            controller.cameraController.value.aspectRatio,
+                        child: CameraPreview(
+                          controller.cameraController,
+                        ),
+                      )
                       // : Image.file(
                       //     io.File(controller.imagePath!),
                       //     fit: BoxFit.fill,
@@ -123,45 +142,53 @@ class AnalysisScreen extends StatelessWidget {
                             height: 30.h,
                             child: Column(
                               children: [
-                                controller.isDetecting
-                                    ? Center(
-                                        child: RippleAnimation(
-                                            minRadius: 100,
-                                            ripplesCount: 15,
-                                            repeat: controller.isDetecting,
-                                            color: Colors.white,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 20, left: 18),
-                                              child: ElevatedButton(
-                                                  onPressed: () async {
-                                                    await controller
-                                                        .stopImageStream();
-                                                  },
-                                                  style: ElevatedButton.styleFrom(
-                                                      shape:
-                                                          const CircleBorder(),
-                                                      fixedSize:
-                                                          const Size(60, 60)),
-                                                  child: const Icon(Icons.stop,
-                                                      size: 32,
-                                                      color: Colors.red)),
-                                            )),
-                                      )
-                                    : Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 20, left: 18),
-                                        child: ElevatedButton(
-                                            onPressed: () async {
-                                              await controller
-                                                  .startImageStream();
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                                shape: const CircleBorder(),
-                                                fixedSize: const Size(60, 60)),
-                                            child: const Icon(Icons.play_arrow,
-                                                size: 32)),
+                                SizedBox(
+                                  height: 15.h,
+                                ),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: kDefaultPaddingValue * 4),
+                                      child: Text(
+                                        'Không tìm thấy biển báo?',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5
+                                            ?.copyWith(
+                                                fontSize: FONTSIZES.textMedium,
+                                                color:
+                                                    Colors.blueAccent.shade200,
+                                                fontWeight: FontWeight.bold),
                                       ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: kDefaultPaddingValue),
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          Get.to(
+                                            () => LoaderOverlay(
+                                              child:
+                                                  SignContentFeedbackScreen(),
+                                            ),
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(),
+                                        child: Text(
+                                          'Báo cáo ngay',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6
+                                              ?.copyWith(
+                                                  fontSize: FONTSIZES.textSmall,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                                 Center(
                                   child: Padding(
                                     padding: const EdgeInsets.only(
@@ -172,8 +199,7 @@ class AnalysisScreen extends StatelessWidget {
                                                 .textTheme
                                                 .headline5
                                                 ?.copyWith(
-                                                    color: Colors
-                                                        .blueAccent.shade200,
+                                                    color: Colors.white,
                                                     fontWeight:
                                                         FontWeight.bold))
                                         : controller.boxes.length > 0
@@ -182,66 +208,63 @@ class AnalysisScreen extends StatelessWidget {
                                                 textAlign: TextAlign.center,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .headline5
+                                                    .headline6
                                                     ?.copyWith(
-                                                        color: Colors.blueAccent
-                                                            .shade200,
+                                                        color: Colors.white,
                                                         fontWeight:
                                                             FontWeight.bold),
                                               )
                                             : Text(
-                                                ' Bấm nút phía trên để bắt đầu quét',
+                                                ' Bấm nút phía dưới để bắt đầu quét',
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .headline5
+                                                    .headline6
                                                     ?.copyWith(
-                                                        color: Colors.blueAccent
-                                                            .shade200,
+                                                        color: Colors.white,
                                                         fontWeight:
                                                             FontWeight.bold),
                                               ),
                                   ),
                                 ),
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: kDefaultPaddingValue * 4),
-                                      child: Text('Không tìm thấy biển báo?',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5
-                                              ?.copyWith(
-                                                  fontSize:
-                                                      FONTSIZES.textMedium,
-                                                  color: Colors
-                                                      .blueAccent.shade200,
-                                                  fontWeight: FontWeight.bold)),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: kDefaultPaddingValue),
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          Get.to(() => LoaderOverlay(
-                                              child:
-                                                  SignContentFeedbackScreen()));
-                                        },
-                                        style: ElevatedButton.styleFrom(),
-                                        child: Text('Báo cáo ngay',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline6
-                                                ?.copyWith(
-                                                    fontSize:
-                                                        FONTSIZES.textSmall,
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                // controller.isDetecting
+                                //     ? Center(
+                                //         child: RippleAnimation(
+                                //             minRadius: 100,
+                                //             ripplesCount: 15,
+                                //             repeat: controller.isDetecting,
+                                //             color: Colors.white,
+                                //             child: Padding(
+                                //               padding: const EdgeInsets.only(
+                                //                   top: 20, left: 18),
+                                //               child: ElevatedButton(
+                                //                   onPressed: () async {
+                                //                     await controller
+                                //                         .stopImageStream();
+                                //                   },
+                                //                   style: ElevatedButton.styleFrom(
+                                //                       shape:
+                                //                           const CircleBorder(),
+                                //                       fixedSize:
+                                //                           const Size(60, 60)),
+                                //                   child: const Icon(Icons.stop,
+                                //                       size: 32,
+                                //                       color: Colors.red)),
+                                //             )),
+                                //       )
+                                //     : Padding(
+                                //         padding: const EdgeInsets.only(
+                                //             top: 20, left: 18),
+                                //         child: ElevatedButton(
+                                //             onPressed: () async {
+                                //               await controller
+                                //                   .startImageStream();
+                                //             },
+                                //             style: ElevatedButton.styleFrom(
+                                //                 shape: const CircleBorder(),
+                                //                 fixedSize: const Size(60, 60)),
+                                //             child: const Icon(Icons.play_arrow,
+                                //                 size: 32)),
+                                //       ),
 
                                 // Padding(
                                 //     padding: const EdgeInsets.only(
@@ -261,6 +284,42 @@ class AnalysisScreen extends StatelessWidget {
                       ),
                     ],
                   ),
+            bottomNavigationBar: Container(
+              width: 100.w,
+              height: 12.h,
+              alignment: Alignment.topCenter,
+              child: controller.isLoaded && controller.isDetecting
+                  ? Center(
+                      child: RippleAnimation(
+                          minRadius: 100,
+                          ripplesCount: 15,
+                          repeat: controller.isDetecting,
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 20, left: 18),
+                            child: ElevatedButton(
+                                onPressed: () async {
+                                  await controller.stopImageStream();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    shape: const CircleBorder(),
+                                    fixedSize: const Size(60, 60)),
+                                child: const Icon(Icons.stop,
+                                    size: 32, color: Colors.red)),
+                          )),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 18),
+                      child: ElevatedButton(
+                          onPressed: () async {
+                            await controller.startImageStream();
+                          },
+                          style: ElevatedButton.styleFrom(
+                              shape: const CircleBorder(),
+                              fixedSize: const Size(60, 60)),
+                          child: const Icon(Icons.play_arrow, size: 32)),
+                    ),
+            ),
           );
         });
   }

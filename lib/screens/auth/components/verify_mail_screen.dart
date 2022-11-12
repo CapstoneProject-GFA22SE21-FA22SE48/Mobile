@@ -71,7 +71,8 @@ class _ForgotPasswordState extends State<VerifyMailScreen> {
             if (res) {
               DialogUtil.showTextDialog(context, "Thành công",
                   "Một mã xác nhận đã được gửi tới email của bạn.", [
-                TemplatedButtons.okWithscreen(context, ForgotPasswordScreen())
+                TemplatedButtons.okWithscreen(
+                    context, const ForgotPasswordScreen())
               ]);
             } else {
               DialogUtil.showTextDialog(

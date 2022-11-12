@@ -14,10 +14,13 @@ import 'package:uuid/uuid.dart';
 import 'package:vnrdn_tai/controllers/analysis_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
+import 'package:vnrdn_tai/models/dtos/SignFeedbackDTO.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
+import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class SignContentFeedbackScreen extends StatelessWidget {
   const SignContentFeedbackScreen({super.key});
@@ -32,28 +35,31 @@ class SignContentFeedbackScreen extends StatelessWidget {
     context.loaderOverlay.show();
     final snapshot = await uploadTask.whenComplete(() {});
     await snapshot.ref.getDownloadURL().then((url) async {
-      SignModificationRequest rom = SignModificationRequest(
-          Uuid().v4(),
-          null,
-          null,
-          null,
-          null,
-          gc.userId.value.isNotEmpty ? gc.userId.value : null,
-          null,
-          null,
-          3,
-          url,
-          1,
-          DateTime.now().toString(),
-          "",
-          false);
+      url = url.split('&token').first;
+      print(url);
+      SignFeedbackDTO rom = SignFeedbackDTO(null, null, null,
+          gc.userId.value.isNotEmpty ? gc.userId.value : null, null, 3, url, 1);
       var res = await FeedbackService().createSignsModificationRequest(rom);
       if (res == true) {
         ac.clearFeedbackImage();
-        Get.to(() => ContainerScreen());
-        Get.snackbar('Cảm ơn',
-            'Cảm ơn vì đã gửi phản hồi! Chúng tôi thành thật xin lỗi vì bất tiện này!',
-            colorText: Colors.green, isDismissible: true);
+        // ignore: use_build_context_synchronously
+        DialogUtil.showDCDialog(
+            context,
+            DialogUtil.successText("Thành công"),
+            'Thông tin của bạn đã được thay đổi thành công!',
+            [TemplatedButtons.okWithscreen(context, const ContainerScreen())]);
+        // Get.to(() => const ContainerScreen());
+        // Get.snackbar('Cảm ơn',
+        //     'Cảm ơn vì đã gửi phản hồi! Chúng tôi thành thật xin lỗi vì bất tiện này!',
+        //     colorText: Colors.green, isDismissible: true);
+        context.loaderOverlay.hide();
+      } else {
+        // ignore: use_build_context_synchronously
+        DialogUtil.showDCDialog(
+            context,
+            DialogUtil.failedText("Thất bại"),
+            "Gửi đánh giá thất bại bởi một lỗi không xác định. Vui lòng thử lại sau.",
+            [TemplatedButtons.ok(context)]);
         context.loaderOverlay.hide();
       }
     });

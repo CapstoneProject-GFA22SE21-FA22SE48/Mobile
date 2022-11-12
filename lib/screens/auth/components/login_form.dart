@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/UserInfo.dart';
@@ -37,6 +40,8 @@ class _LoginFormState extends State<LoginForm> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
+  late String guessContinue = '';
+
   GlobalController gc = Get.put(GlobalController());
   bool oldObSecure = true;
 
@@ -51,6 +56,7 @@ class _LoginFormState extends State<LoginForm> {
 
   // handle login
   void handleLogin(BuildContext context) async {
+    FocusManager.instance.primaryFocus?.unfocus();
     await AuthService()
         .loginWithUsername(usernameController.text, passwordController.text)
         .then(((token) {
@@ -65,16 +71,19 @@ class _LoginFormState extends State<LoginForm> {
     }));
   }
 
-  void handleGLogin(BuildContext context, String gmail) async {
-    await AuthService().loginWithGmail(gmail).then(((token) => {
-          if (token.length > 1)
-            {afterLoggedIn(context, token)}
-          else
-            {
-              DialogUtil.showTextDialog(context, "Đăng nhập thất bại",
-                  "Sai tên đăng nhập hoặc mật khẩu.", null)
-            }
-        }));
+  void handleGLogin(BuildContext context) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    DialogUtil.showTextDialog(context, "Thông báo",
+        "Chức năng hiện không khả dụng!", [TemplatedButtons.ok(context)]);
+    // await AuthService().loginWithGmail(gmail).then(((token) => {
+    //       if (token.length > 1)
+    //         {afterLoggedIn(context, token)}
+    //       else
+    //         {
+    //           DialogUtil.showTextDialog(context, "Đăng nhập thất bại",
+    //               "Sai tên đăng nhập hoặc mật khẩu.", null)
+    //         }
+    //     }));
   }
 
   // do after logged in
@@ -117,6 +126,16 @@ class _LoginFormState extends State<LoginForm> {
 
     //   Get.to(() => const ContainerScreen());
     // });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Timer(const Duration(seconds: 3), () {
+      setState(() {
+        guessContinue = 'Tiếp tục với tư cách khách';
+      });
+    });
   }
 
   @override
@@ -179,7 +198,7 @@ class _LoginFormState extends State<LoginForm> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   GestureDetector(
-                    onTap: () => {Get.to(const ForgotPasswordScreen())},
+                    onTap: () => {Get.to(const VerifyMailScreen())},
                     child: const Text(
                       "Quên mật khẩu?",
                       style: TextStyle(
@@ -231,13 +250,7 @@ class _LoginFormState extends State<LoginForm> {
               Hero(
                 tag: "g_login_btn",
                 child: ElevatedButton(
-                  onPressed: () {
-                    // handleGLogin(context, "");
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return const ContainerScreen();
-                    }));
-                  },
+                  onPressed: () => handleGLogin(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     alignment: Alignment.center,
@@ -247,10 +260,10 @@ class _LoginFormState extends State<LoginForm> {
                         vertical: kDefaultPaddingValue - 6),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset('assets/images/auth/google.png', width: 32),
-                        const SizedBox(width: kDefaultPaddingValue * 4),
+                        const SizedBox(width: kDefaultPaddingValue * 2),
                         const Text(
                           "Đăng nhập với Google",
                           textScaleFactor: 1.2,
@@ -274,7 +287,26 @@ class _LoginFormState extends State<LoginForm> {
                   );
                 },
               ),
-              SizedBox(height: isKeyboardVisible ? 320 : 40),
+              const SizedBox(height: kDefaultPaddingValue * 2),
+              SizedBox(
+                height: 3.h,
+                child: guessContinue.isNotEmpty
+                    ? GestureDetector(
+                        onTap: () {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          Get.to(() => const ContainerScreen());
+                        },
+                        child: Text(
+                          guessContinue,
+                          style: const TextStyle(
+                            color: kDisabledTextColor,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      )
+                    : Container(),
+              ),
+              SizedBox(height: isKeyboardVisible ? 32.h : 1.h),
             ],
           ),
         );

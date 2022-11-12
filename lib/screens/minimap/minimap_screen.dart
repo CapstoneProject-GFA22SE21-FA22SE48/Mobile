@@ -12,6 +12,7 @@ import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
+import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
@@ -29,6 +30,7 @@ class MinimapScreen extends StatefulWidget {
 }
 
 class _MinimapState extends State<MinimapScreen> {
+  GlobalController gc = Get.put(GlobalController());
   AuthController ac = Get.put(AuthController());
   final Completer<GoogleMapController> gmapController = Completer();
   final CustomInfoWindowController _infoWindowcontroller =
@@ -46,12 +48,17 @@ class _MinimapState extends State<MinimapScreen> {
     _markers.clear();
 
     for (var s in list) {
-      var request = await http.get(Uri.parse(s.imageUrl!));
+      List<String> sParts = s.imageUrl!.split('sign-collection');
+      String sName = s.imageUrl!.split("%2F")[2].split(".png")[0];
+      String ext = s.imageUrl!.split('.').last;
+      String folderScale = mc.zoom > 17 ? 'x05' : 'x025';
+      String scale = mc.zoom > 17 ? '0_50x' : '0_25x';
+      String newUrl =
+          '${sParts.first}sign-collection%2F$folderScale%2F$sName-standard-scale-$scale.$ext';
+      print(newUrl);
+      var request = await http.get(Uri.parse(newUrl));
       var bytes = request.bodyBytes;
       Uint8List dataBytes = bytes;
-      String sTitle =
-          s.imageUrl!.split("%2F")[2].split(".png")[0].removeAllWhitespace;
-      // print(sTitle);
 
       if (mounted) {
         setState(() {
@@ -62,6 +69,9 @@ class _MinimapState extends State<MinimapScreen> {
       _markers.add(
         Marker(
           onTap: () {
+            // setState(() {
+            //   mc.updateZoom(18.0);
+            // });
             _infoWindowcontroller.addInfoWindow!(
               GestureDetector(
                 onTap: (() {
@@ -92,7 +102,7 @@ class _MinimapState extends State<MinimapScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              'Biển số: $sTitle',
+                              'Biển số: $sName',
                               style: const TextStyle(
                                 color: Colors.black54,
                                 fontSize: FONTSIZES.textLarger,
@@ -120,15 +130,32 @@ class _MinimapState extends State<MinimapScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              GestureDetector(
-                                onTap: ac.role.value == 2
-                                    ? () => Get.to(FeedbacksScreen(
-                                          type: '',
-                                          sign: s,
-                                        ))
-                                    : () {},
-                                child: Text("Thông tin chưa đúng?"),
-                              )
+                              ac.role.value == 2
+                                  ? GestureDetector(
+                                      onTap: gc.userId.value.isNotEmpty
+                                          ? () => Get.to(FeedbacksScreen(
+                                                type: '',
+                                                sign: s,
+                                              ))
+                                          : () => DialogUtil.showTextDialog(
+                                                context,
+                                                "Cảnh báo",
+                                                "Bạn cần đăng nhập để có thể sử dụng tính năng này.\nĐến trang đăng nhập?",
+                                                [
+                                                  TemplatedButtons.yes(context,
+                                                      const LoginScreen()),
+                                                  TemplatedButtons.no(context),
+                                                ],
+                                              ),
+                                      child: const Text(
+                                        "Thông tin chưa đúng?",
+                                        style: TextStyle(
+                                            color: Colors.blueAccent,
+                                            decoration:
+                                                TextDecoration.underline),
+                                      ),
+                                    )
+                                  : Container(),
                             ],
                           ),
                         ),
@@ -234,8 +261,8 @@ class _MinimapState extends State<MinimapScreen> {
                   myLocationButtonEnabled: true,
                   myLocationEnabled: true,
                   trafficEnabled: true,
-                  zoomGesturesEnabled: false,
-                  zoomControlsEnabled: false,
+                  // zoomGesturesEnabled: false,
+                  // zoomControlsEnabled: false,
                   minMaxZoomPreference: const MinMaxZoomPreference(10, 25),
                   initialCameraPosition: CameraPosition(
                     target: LatLng(
@@ -250,6 +277,19 @@ class _MinimapState extends State<MinimapScreen> {
                   },
                   onCameraMove: (position) {
                     _infoWindowcontroller.onCameraMove!();
+                    // gmapController.future.then((controller) =>
+                    //     controller.animateCamera(CameraUpdate.zoomTo(18.0)));
+                    _infoWindowcontroller.googleMapController!
+                        .getZoomLevel()
+                        .then((value) {
+                      if (value != mc.zoom.value) {
+                        if ((mc.zoom.value > 17 && value <= 17) ||
+                            (mc.zoom.value <= 17 && value > 17)) {
+                          getSignsList(currentLocation!);
+                        }
+                        mc.updateZoom(value);
+                      }
+                    });
                   },
                   onMapCreated: (controller) {
                     gmapController.complete(controller);
@@ -260,7 +300,7 @@ class _MinimapState extends State<MinimapScreen> {
                   controller: _infoWindowcontroller,
                   height: 12.h,
                   width: 48.w,
-                  offset: 16.h,
+                  offset: 9.h,
                 )
               ],
             ),

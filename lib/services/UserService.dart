@@ -5,6 +5,9 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/dtos/AdminDTO.dart';
+import 'package:vnrdn_tai/models/dtos/ProfileDTO.dart';
+import 'package:vnrdn_tai/services/AuthService.dart';
+import 'package:vnrdn_tai/utils/io_utils.dart';
 
 import '../models/UserInfo.dart';
 import '../shared/constants.dart';
@@ -46,19 +49,26 @@ class UserService {
     }
   }
 
-  Future<String> updateProfile(UserInfo newUser) async {
+  Future<String> updateProfile(
+      String avatar, String email, String displayName) async {
     try {
       GlobalController gc = Get.put(GlobalController());
 
       if (gc.userId.value != '') {
-        final res = await http.put(
-          Uri.parse("${url}Users"),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: {jsonEncode(newUser)},
-        ).timeout(const Duration(seconds: TIME_OUT));
+        final res = await http
+            .put(
+              Uri.parse("${url}Users/${gc.userId.value}/UpdateProfile"),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode(ProfileDTO(email, avatar, displayName)),
+            )
+            .timeout(const Duration(seconds: TIME_OUT));
         if (res.statusCode == 200) {
+          log(res.body);
+          String token = AuthService().parseToken(res.body);
+          IOUtils.setUserInfoController(token);
+          IOUtils.saveToStorage('token', token);
           return "Thông tin đã được thay đổi";
         } else if (res.statusCode == 500) {
           log(res.body);

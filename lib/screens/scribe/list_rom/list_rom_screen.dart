@@ -118,16 +118,16 @@ class _ListRomScreenState extends State<ListRomScreen> {
                             fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Padding(
+                    Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: kDefaultPaddingValue,
                         vertical: kDefaultPaddingValue,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: kDefaultPaddingValue * 2),
-                          Padding(
+                          Container(
+                            height: 82.h,
                             padding: const EdgeInsets.symmetric(
                               vertical: 0,
                             ),
@@ -151,7 +151,10 @@ class _ListRomScreenState extends State<ListRomScreen> {
                                   child: Container(
                                     width: 100.w,
                                     height: 36.h,
-                                    padding: kDefaultPadding,
+                                    margin: EdgeInsets.symmetric(
+                                      horizontal: kDefaultPaddingValue,
+                                    ),
+                                    padding: kDefaultPadding / 2,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       boxShadow: const [
@@ -173,7 +176,7 @@ class _ListRomScreenState extends State<ListRomScreen> {
                                       children: [
                                         Container(
                                           width: 80.w,
-                                          height: 20.h,
+                                          height: 23.h,
                                           color: Colors.grey,
                                           child: CachedNetworkImage(
                                             imageUrl:

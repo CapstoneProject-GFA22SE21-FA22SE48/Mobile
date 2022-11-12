@@ -44,9 +44,7 @@ class CommentService {
     log(url);
     try {
       final res = await http
-          .post(
-              Uri.parse(
-                  "${url}Comments/${gc.userId.value.isNotEmpty ? gc.userId.value : emptyUserId}"),
+          .post(Uri.parse("${url}Comments/${gc.userId.value}"),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
