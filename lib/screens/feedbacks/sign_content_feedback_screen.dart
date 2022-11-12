@@ -36,17 +36,15 @@ class SignContentFeedbackScreen extends StatelessWidget {
     final snapshot = await uploadTask.whenComplete(() {});
     await snapshot.ref.getDownloadURL().then((url) async {
       url = url.split('&token').first;
-      print(url);
-      SignFeedbackDTO rom = SignFeedbackDTO(null, null, null,
-          gc.userId.value.isNotEmpty ? gc.userId.value : null, null, 3, url, 1);
+      SignFeedbackDTO rom = SignFeedbackDTO(
+          gc.userId.value, null, null, gc.userId.value, null, 3, url, 1);
       var res = await FeedbackService().createSignsModificationRequest(rom);
       if (res == true) {
         ac.clearFeedbackImage();
         // ignore: use_build_context_synchronously
-        DialogUtil.showDCDialog(
-            context,
-            DialogUtil.successText("Thành công"),
+        DialogUtil.showDCDialog(context, DialogUtil.successText("Thành công"),
             'Thông tin của bạn đã được thay đổi thành công!',
+            // ignore: use_build_context_synchronously
             [TemplatedButtons.okWithscreen(context, const ContainerScreen())]);
         // Get.to(() => const ContainerScreen());
         // Get.snackbar('Cảm ơn',
@@ -55,10 +53,9 @@ class SignContentFeedbackScreen extends StatelessWidget {
         context.loaderOverlay.hide();
       } else {
         // ignore: use_build_context_synchronously
-        DialogUtil.showDCDialog(
-            context,
-            DialogUtil.failedText("Thất bại"),
+        DialogUtil.showDCDialog(context, DialogUtil.failedText("Thất bại"),
             "Gửi đánh giá thất bại bởi một lỗi không xác định. Vui lòng thử lại sau.",
+            // ignore: use_build_context_synchronously
             [TemplatedButtons.ok(context)]);
         context.loaderOverlay.hide();
       }
@@ -73,7 +70,7 @@ class SignContentFeedbackScreen extends StatelessWidget {
         builder: (controller) {
           return Scaffold(
               appBar: AppBar(
-                title: Text("Báo cáo sự cố"),
+                title: const Text("Báo cáo sự cố"),
                 actions: [
                   IconButton(
                       icon: const Icon(
@@ -248,7 +245,8 @@ class SignContentFeedbackScreen extends StatelessWidget {
                           left: 65.w,
                           top: 50.h,
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 20, left: 18),
+                            padding: const EdgeInsets.only(
+                                top: kDefaultPaddingValue, left: 18),
                             child: ElevatedButton(
                                 onPressed: () async {
                                   await controller
@@ -266,7 +264,8 @@ class SignContentFeedbackScreen extends StatelessWidget {
                           right: 1.w,
                           top: 0.h,
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 20, left: 18),
+                            padding: const EdgeInsets.only(
+                                top: kDefaultPaddingValue, left: 18),
                             child: ElevatedButton(
                                 onPressed: () {
                                   controller.clearFeedbackImage();
