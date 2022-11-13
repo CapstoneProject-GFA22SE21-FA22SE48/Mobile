@@ -168,7 +168,6 @@ flutter:
   assets:
     - assets/
     - assets/dict.json
-    - assets/ml/
     - assets/icons/
     - assets/images/
     - assets/images/quiz/
