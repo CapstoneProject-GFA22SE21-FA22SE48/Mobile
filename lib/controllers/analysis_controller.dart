@@ -66,9 +66,9 @@ class AnalysisController extends GetxController {
 
   @override
   onInit() async {
-    var data = await rootBundle.loadString('assets/ml/custom.yaml');
-    var d = loadYaml(data);
-    _mapData = d['names'];
+    // var data = await rootBundle.loadString('assets/ml/custom.yaml');
+    // var d = loadYaml(data);
+    // _mapData = d['names'];
     initCamera();
     super.onInit();
   }
