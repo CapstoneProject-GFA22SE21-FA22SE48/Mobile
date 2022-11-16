@@ -28,8 +28,9 @@ class AnalysisScreen extends StatelessWidget {
     double ymin = double.parse(coords[2]) * height;
     double xmax = double.parse(coords[3]) * width - width / 2;
     double ymax = double.parse(coords[4]) * height;
-    var name = 'here';
-    // ac.mapData![int.parse(coords[0].replaceAll(".0", ""))].toString();
+    // var name = 'here';
+    var name =
+        ac.mapData![int.parse(coords[0].replaceAll(".0", ""))].toString();
     // var ratioH = height / 240;
     // var ratioW = width / 320;
     // print(coords[0]);
@@ -129,11 +130,15 @@ class AnalysisScreen extends StatelessWidget {
                       ,
                       controller.boxes == []
                           ? Container()
-                          : Stack(children: <Widget>[
-                              for (var box in controller.boxes)
-                                getBoundingBoxes(box, height - 80, width)
-                              // getBoundingBoxes(box, height, width)
-                            ]),
+                          : SizedBox(
+                              width: 100.h,
+                              height: 100.w,
+                              child: Stack(children: <Widget>[
+                                for (var box in controller.boxes)
+                                  getBoundingBoxes(box, height - 80, width)
+                                // getBoundingBoxes(box, height, width)
+                              ]),
+                            ),
                       Positioned(
                         bottom: 0.h,
                         width: MediaQuery.of(context).size.width,

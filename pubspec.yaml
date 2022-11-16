@@ -167,6 +167,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - assets/ml
+    - assets/ml/custom.yaml
     - assets/dict.json
     - assets/icons/
     - assets/images/
