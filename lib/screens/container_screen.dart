@@ -110,6 +110,16 @@ class ContainerScreen extends GetView<GlobalController> {
     return true;
   }
 
+  getWelcomeName(AuthController ac) {
+    if (ac.displayName.value.isEmpty) {
+      if (controller.username.value.isEmpty) {
+        return ac.email.value;
+      }
+      return controller.username.value;
+    }
+    return ac.displayName.value;
+  }
+
   @override
   Widget build(BuildContext context) {
     AuthController ac = Get.put(AuthController());
@@ -178,7 +188,7 @@ class ContainerScreen extends GetView<GlobalController> {
                 ? ListTile(
                     leading: const Icon(Icons.account_circle, size: 36),
                     title: Obx(() => Text(
-                          'Xin chào, ${controller.username.value.isNotEmpty ? controller.username.value : ac.email.value}.',
+                          'Xin chào, ${getWelcomeName(ac)}.',
                           style: const TextStyle(
                               fontSize: FONTSIZES.textMediumLarge),
                         )),
@@ -269,7 +279,7 @@ class ContainerScreen extends GetView<GlobalController> {
             ListTile(
               iconColor: kWarningButtonColor,
               textColor: kWarningButtonColor,
-              leading: const Icon(Icons.comment_rounded),
+              leading: const Icon(Icons.star_rounded),
               title: const Text(
                 'Đánh giá',
                 style: TextStyle(

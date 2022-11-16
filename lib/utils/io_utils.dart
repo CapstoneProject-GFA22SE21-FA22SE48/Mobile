@@ -7,6 +7,10 @@ import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 
 class IOUtils {
+  static Future initialize() async {
+    await getFromStorage('token');
+  }
+
   static Future<bool> saveToStorage(String key, String value) async {
     try {
       // obtain shared preferences

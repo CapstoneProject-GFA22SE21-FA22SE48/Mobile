@@ -16,14 +16,14 @@ import 'package:vnrdn_tai/services/CommentService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 
-class CommentsScreen extends StatefulWidget {
-  const CommentsScreen({Key? key}) : super(key: key);
+class RatingScreen extends StatefulWidget {
+  const RatingScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _CommentsState();
+  State<StatefulWidget> createState() => _RatingState();
 }
 
-class _CommentsState extends State<CommentsScreen> {
+class _RatingState extends State<RatingScreen> {
   GlobalController gc = Get.put(GlobalController());
   AuthController ac = Get.put(AuthController());
   late Future<List<Comment>> comments = CommentService().getComments();
@@ -107,16 +107,11 @@ class _CommentsState extends State<CommentsScreen> {
                       getAverageRating(snapshot.data!);
                       return snapshot.data!.isEmpty
                           ? const Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    top: kDefaultPaddingValue * 2),
-                                child: Text(
-                                  "Hiện tại chưa có phản hồi nào",
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: FONTSIZES.textLarge,
-                                    fontStyle: FontStyle.italic,
-                                  ),
+                              child: Text(
+                                "Hiện tại chưa có phản hồi nào",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: FONTSIZES.textPrimary,
                                 ),
                               ),
                             )
@@ -195,7 +190,7 @@ class _CommentsState extends State<CommentsScreen> {
                                           children: [
                                             GFRating(
                                               onChanged: (value) {},
-                                              value: 4.5,
+                                              value: 4,
                                               allowHalfRating: true,
                                               filledIcon: const Icon(
                                                 Icons.star_rounded,

@@ -97,35 +97,6 @@ class _LoginFormState extends State<LoginForm> {
             // ignore: use_build_context_synchronously
             TemplatedButtons.ok(context),
           ]);
-
-    // AuthController ac = Get.put(AuthController());
-    // Jwt.parseJwt(token).forEach((key, value) {
-    //   IOUtils.saveToStorage(key, value.toString());
-
-    //   if (key == 'Id') {
-    //     gc.updateUserId(value);
-    //   }
-    //   if (key == 'Username') {
-    //     gc.updateUsername(value);
-    //   }
-    //   if (key == 'Email') {
-    //     ac.updateEmail(value);
-    //   }
-    //   if (key == 'Role') {
-    //     ac.updateRole(int.parse(value));
-    //   }
-    //   if (key == 'Status') {
-    //     ac.updateStatus(int.parse(value));
-    //   }
-    //   if (key == 'Avatar') {
-    //     ac.updateAvatar(value);
-    //   }
-    //   if (key == 'DisplayName') {
-    //     ac.updateDisplayName(value);
-    //   }
-
-    //   Get.to(() => const ContainerScreen());
-    // });
   }
 
   @override
