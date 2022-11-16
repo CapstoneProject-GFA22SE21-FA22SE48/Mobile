@@ -29,7 +29,8 @@ class AnalysisScreen extends StatelessWidget {
     double xmax = double.parse(coords[3]) * width - width / 2;
     double ymax = double.parse(coords[4]) * height;
     // var name = 'here';
-    // ac.mapData![int.parse(coords[0].replaceAll(".0", ""))].toString();
+    var name =
+        ac.mapData![int.parse(coords[0].replaceAll(".0", ""))].toString();
     // var ratioH = height / 240;
     // var ratioW = width / 320;
     // print(coords[0]);
@@ -38,8 +39,7 @@ class AnalysisScreen extends StatelessWidget {
     // double ymin = coords[2];
     // double xmax = coords[3];
     // double ymax = coords[4];
-    
-    var name = coords[0];
+    // var name = coords[0];
 
     return Positioned(
         left: xmin + width / 2,
