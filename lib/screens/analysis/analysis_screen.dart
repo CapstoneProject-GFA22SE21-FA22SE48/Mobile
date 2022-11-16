@@ -129,11 +129,15 @@ class AnalysisScreen extends StatelessWidget {
                       ,
                       controller.boxes == []
                           ? Container()
-                          : Stack(children: <Widget>[
-                              for (var box in controller.boxes)
-                                getBoundingBoxes(box, height - 80, width)
-                              // getBoundingBoxes(box, height, width)
-                            ]),
+                          : SizedBox(
+                              width: 100.h,
+                              height: 100.w,
+                              child: Stack(children: <Widget>[
+                                for (var box in controller.boxes)
+                                  getBoundingBoxes(box, height - 80, width)
+                                // getBoundingBoxes(box, height, width)
+                              ]),
+                            ),
                       Positioned(
                         bottom: 0.h,
                         width: MediaQuery.of(context).size.width,
