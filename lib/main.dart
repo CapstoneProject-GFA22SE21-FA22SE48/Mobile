@@ -9,6 +9,8 @@ import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/shared/bindings.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
+import 'shared/themes.dart';
+
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -38,27 +40,7 @@ class MyApp extends StatelessWidget {
         // enableLog: false,
         themeMode: ThemeMode.light,
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          fontFamily: 'SVN_Aleo',
-          backgroundColor: const Color(0xFFF3F3F3),
-          primaryColor: Colors.white,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.white,
-            titleTextStyle: TextStyle(
-              color: Colors.blueAccent,
-              fontSize: FONTSIZES.textLarge,
-              fontWeight: FontWeight.bold,
-            ),
-            actionsIconTheme: IconThemeData(
-              color: Colors.black54,
-              size: FONTSIZES.textHuge,
-            ),
-            iconTheme: IconThemeData(
-              color: Colors.black54,
-              size: FONTSIZES.textHuge,
-            ),
-          ),
-        ),
+        theme: defaultTheme,
         darkTheme: ThemeData(
           fontFamily: 'SVN_Aleo',
           backgroundColor: Color(0xFF131313),
