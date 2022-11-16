@@ -12,9 +12,12 @@ import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/Comment.dart';
 import 'package:vnrdn_tai/screens/feedbacks/components/comment-card/comment_card.dart';
+import 'package:vnrdn_tai/screens/feedbacks/components/rating_tab.dart';
 import 'package:vnrdn_tai/services/CommentService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
+import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class CommentsScreen extends StatefulWidget {
   const CommentsScreen({Key? key}) : super(key: key);
@@ -29,9 +32,10 @@ class _CommentsState extends State<CommentsScreen> {
   late Future<List<Comment>> comments = CommentService().getComments();
   final commentController = TextEditingController();
   final ratingController = TextEditingController();
-  final List<double> _listRateOfRating = [0.0, 0.0, 0.0, 0.0, 0.0];
+  List<double> _listRateOfRating = [0.0, 0.0, 0.0, 0.0, 0.0];
   double average = 0.0;
   int rating = 5;
+  bool isSentComment = false;
 
   getAverageRating(List<Comment> list) {
     average = 0.0;
@@ -46,12 +50,14 @@ class _CommentsState extends State<CommentsScreen> {
   }
 
   getRateOfRating(List<Comment> list) {
+    _listRateOfRating = [0.0, 0.0, 0.0, 0.0, 0.0];
     if (list.isNotEmpty) {
       list.forEach((e) {
-        _listRateOfRating[e.rating]++;
+        _listRateOfRating[e.rating - 1]++;
       });
-      _listRateOfRating.forEach((rate) {
-        rate /= list.length;
+      _listRateOfRating.asMap().forEach((index, rate) {
+        _listRateOfRating[index] = rate / list.length;
+        print(_listRateOfRating);
       });
     }
   }
@@ -64,6 +70,23 @@ class _CommentsState extends State<CommentsScreen> {
       setState(() {
         comments = CommentService().getComments();
       });
+    });
+  }
+
+  _onCloseRating(BuildContext context, void value) {
+    if (isSentComment) {
+      DialogUtil.showDCDialog(context, DialogUtil.successText("Thành công"),
+          "Cảm ơn bạn đã đánh giá!", [TemplatedButtons.ok(context)]);
+      setState(() {
+        isSentComment = false;
+        comments = CommentService().getComments();
+      });
+    }
+  }
+
+  callback(newIsSent) {
+    setState(() {
+      isSentComment = newIsSent;
     });
   }
 
@@ -105,6 +128,7 @@ class _CommentsState extends State<CommentsScreen> {
                       throw Exception(snapshot.error);
                     } else {
                       getAverageRating(snapshot.data!);
+                      getRateOfRating(snapshot.data!);
                       return snapshot.data!.isEmpty
                           ? const Center(
                               child: Padding(
@@ -218,7 +242,7 @@ class _CommentsState extends State<CommentsScreen> {
                                             ),
                                             SizedBox(width: 5.w),
                                             Text(
-                                              '$average out of 5',
+                                              '$average trên 5',
                                               style: const TextStyle(
                                                 color: Colors.black54,
                                               ),
@@ -226,6 +250,50 @@ class _CommentsState extends State<CommentsScreen> {
                                           ],
                                         ),
                                       ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: kDefaultPaddingValue / 2),
+                                        child: Text(
+                                          '${snapshot.data!.length} người dùng đã đánh giá',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.blueAccent,
+                                            fontSize: FONTSIZES.textMediumLarge,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                            top: kDefaultPaddingValue),
+                                        width: 80.w,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text('5 sao'),
+                                            Container(
+                                              width: 54.w,
+                                              child: GFProgressBar(
+                                                percentage:
+                                                    _listRateOfRating[4] > 1
+                                                        ? 1
+                                                        : _listRateOfRating[4],
+                                                lineHeight: 16,
+                                                alignment: MainAxisAlignment
+                                                    .spaceBetween,
+                                                backgroundColor:
+                                                    Colors.grey.shade400,
+                                                progressBarColor:
+                                                    GFColors.WARNING,
+                                              ),
+                                            ),
+                                            Text(
+                                                '${_listRateOfRating[4] * 100}%'),
+                                          ],
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
@@ -235,7 +303,7 @@ class _CommentsState extends State<CommentsScreen> {
                                   child: Row(
                                     children: const [
                                       Text(
-                                        "Nhận xét hàng đầu",
+                                        "Các đánh giá",
                                         style: TextStyle(
                                           color: Colors.blueAccent,
                                           fontSize: FONTSIZES.textLarger,
@@ -280,7 +348,25 @@ class _CommentsState extends State<CommentsScreen> {
                     horizontal: kDefaultPaddingValue,
                     vertical: kDefaultPaddingValue),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Future<void> future = showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(kDefaultPaddingValue)),
+                      ),
+                      backgroundColor: Colors.white,
+                      builder: ((context) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom),
+                          child: RatingTab(callback: callback),
+                        );
+                      }),
+                    );
+                    future.then((void value) => _onCloseRating(context, value));
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     textStyle: const TextStyle(
@@ -306,7 +392,6 @@ class _CommentsState extends State<CommentsScreen> {
           );
         },
       ),
-      // bottomSheet: const RatingTab(),
     );
   }
 }

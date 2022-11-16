@@ -69,8 +69,8 @@ class CommentService {
 
   Future<String> createComment(String content, int rating) async {
     GlobalController gc = Get.put(GlobalController());
-    log(url);
     try {
+      log(gc.userId.value);
       final res = await http
           .post(Uri.parse("${url}Comments/${gc.userId.value}"),
               headers: <String, String>{
