@@ -30,7 +30,6 @@ class CommentService {
 
   Future<List<Comment>> getComments() async {
     GlobalController gc = Get.put(GlobalController());
-    log(gc.userId.value);
     try {
       final res = await http
           .get(Uri.parse("${url}Comments/All"))
@@ -43,24 +42,6 @@ class CommentService {
       } else {
         log(res.body);
         return [];
-      }
-    } on TimeoutException {
-      throw Exception('Không tải được dữ liệu.');
-    }
-  }
-
-  Future<Comment?> getMyComment() async {
-    GlobalController gc = Get.put(GlobalController());
-    log(gc.userId.value);
-    try {
-      final res = await http
-          .get(Uri.parse("${url}Comments/Members/${gc.userId.value}"))
-          .timeout(const Duration(seconds: TIME_OUT));
-      if (res.statusCode == 200) {
-        return parseComment(res.body);
-      } else {
-        log(res.body);
-        return null;
       }
     } on TimeoutException {
       throw Exception('Không tải được dữ liệu.');
@@ -90,26 +71,4 @@ class CommentService {
       throw Exception('Không tải được dữ liệu.');
     }
   }
-
-  // delete
-  // Future<String> deleteComment(String content) async {
-  //   GlobalController gc = Get.put(GlobalController());
-  //   try {
-  //     final res = await http
-  //         .delete(Uri.parse("${url}Comments"),
-  //             headers: <String, String>{
-  //               'Content-Type': 'application/json; charset=UTF-8',
-  //             },
-  //             body: jsonEncode(CommentSendDTO(gc.userId.value, content)))
-  //         .timeout(const Duration(seconds: TIME_OUT));
-  //     if (res.statusCode == 201) {
-  //       return res.body;
-  //     } else {
-  //       log(res.body);
-  //       return '';
-  //     }
-  //   } on TimeoutException {
-  //     throw Exception('Không tải được dữ liệu.');
-  //   }
-  // }
 }

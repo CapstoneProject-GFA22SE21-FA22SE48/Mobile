@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,7 +16,7 @@ import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:sizer/sizer.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/widgets/animation/ripple.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
@@ -303,15 +304,13 @@ class AnalysisScreen extends StatelessWidget {
             child: SignContentFeedbackScreen(),
           ));
     } else {
-      DialogUtil.showTextDialog(
-        context,
-        "Cảnh báo",
-        "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
-        [
-          TemplatedButtons.yes(context, const LoginScreen()),
-          TemplatedButtons.no(context),
-        ],
-      );
+      DialogUtil.showAwesomeDialog(
+          context,
+          DialogType.warning,
+          "Cảnh báo",
+          "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
+          () => Get.off(() => const LoginScreen()),
+          () {});
     }
   }
 

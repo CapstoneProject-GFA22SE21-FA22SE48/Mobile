@@ -1,25 +1,21 @@
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:path/path.dart';
 import 'package:sizer/sizer.dart';
-import 'package:uuid/uuid.dart';
 import 'package:vnrdn_tai/controllers/analysis_controller.dart';
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import 'package:vnrdn_tai/models/dtos/SignFeedbackDTO.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/shared/snippets.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class SignContentFeedbackScreen extends StatelessWidget {
@@ -42,21 +38,23 @@ class SignContentFeedbackScreen extends StatelessWidget {
       if (res == true) {
         ac.clearFeedbackImage();
         // ignore: use_build_context_synchronously
-        DialogUtil.showDCDialog(context, DialogUtil.successText("Thành công"),
-            'Cảm ơn vì đã gửi phản hồi!\nChúng tôi thành thật xin lỗi vì một số bất tiện này!',
-            // ignore: use_build_context_synchronously
-            [TemplatedButtons.okWithscreen(context, const ContainerScreen())]);
-        // Get.to(() => const ContainerScreen());
-        // Get.snackbar('Cảm ơn',
-        //     'Cảm ơn vì đã gửi phản hồi! Chúng tôi thành thật xin lỗi vì bất tiện này!',
-        //     colorText: Colors.green, isDismissible: true);
+        DialogUtil.showAwesomeDialog(
+            context,
+            DialogType.success,
+            "Phản hồi thành công",
+            "Cảm ơn về phản hồi của bạn!\nChúng tôi sẽ kiểm tra và chỉnh sửa sớm nhất có thể.",
+            () => Get.to(() => const ContainerScreen()),
+            null);
         context.loaderOverlay.hide();
       } else {
         // ignore: use_build_context_synchronously
-        DialogUtil.showDCDialog(context, DialogUtil.failedText("Thất bại"),
-            "Gửi đánh giá thất bại bởi một lỗi không xác định. Vui lòng thử lại sau.",
-            // ignore: use_build_context_synchronously
-            [TemplatedButtons.ok(context)]);
+        DialogUtil.showAwesomeDialog(
+            context,
+            DialogType.error,
+            "Phản hồi thất bại",
+            "Một sự cố không mong muốn đã xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
+            () {},
+            null);
         context.loaderOverlay.hide();
       }
     });
@@ -64,6 +62,7 @@ class SignContentFeedbackScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AuthController auc = Get.put(AuthController());
     AnalysisController ac = Get.put(AnalysisController());
     return GetBuilder<AnalysisController>(
         init: ac,
@@ -115,7 +114,7 @@ class SignContentFeedbackScreen extends StatelessWidget {
                                               fontWeight: FontWeight.normal,
                                               fontSize: FONTSIZES.textLarge)),
                                 ),
-                                Text('Người dùng tự do',
+                                Text(auc.displayName.value,
                                     style: Theme.of(context)
                                         .textTheme
                                         .headline4

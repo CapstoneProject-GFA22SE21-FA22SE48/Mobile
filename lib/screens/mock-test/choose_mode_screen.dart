@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
@@ -16,7 +17,7 @@ import 'package:vnrdn_tai/screens/mock-test/test_set_screen.dart';
 import 'package:vnrdn_tai/services/TestResultService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
@@ -187,15 +188,13 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                       categoryId: qc.testCategoryId.value,
                                     ));
                               } else {
-                                DialogUtil.showTextDialog(
+                                DialogUtil.showAwesomeDialog(
                                     context,
+                                    DialogType.warning,
                                     "Cảnh báo",
                                     "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
-                                    [
-                                      TemplatedButtons.yes(
-                                          context, const LoginScreen()),
-                                      TemplatedButtons.no(context),
-                                    ]);
+                                    () => Get.to(() => const LoginScreen()),
+                                    () {});
                               }
                             },
                             child: Container(
@@ -268,15 +267,13 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                 Get.to(
                                     () => TestResultScreen(testResults: res));
                               } else {
-                                DialogUtil.showTextDialog(
+                                DialogUtil.showAwesomeDialog(
                                     context,
-                                    "Authenticator",
-                                    "You need to logged in to continue.\nGo to login page?",
-                                    [
-                                      TemplatedButtons.yes(
-                                          context, const LoginScreen()),
-                                      TemplatedButtons.no(context),
-                                    ]);
+                                    DialogType.warning,
+                                    "Cảnh báo",
+                                    "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
+                                    () => Get.to(() => const LoginScreen()),
+                                    () {});
                               }
                             },
                             child: Container(
@@ -353,15 +350,13 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                                       title: "Xem câu sai",
                                     ));
                               } else {
-                                DialogUtil.showTextDialog(
+                                DialogUtil.showAwesomeDialog(
                                     context,
-                                    "Authenticator",
-                                    "You need to logged in to continue.\nGo to login page?",
-                                    [
-                                      TemplatedButtons.yes(
-                                          context, const LoginScreen()),
-                                      TemplatedButtons.no(context),
-                                    ]);
+                                    DialogType.warning,
+                                    "Cảnh báo",
+                                    "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
+                                    () => Get.to(() => const LoginScreen()),
+                                    () {});
                               }
                             },
                             child: Container(

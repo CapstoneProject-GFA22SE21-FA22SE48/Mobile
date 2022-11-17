@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -10,7 +11,7 @@ import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/settings/change_password_screen.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/form_validator.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
@@ -69,34 +70,40 @@ class _ForgotPasswordState extends State<VerifyMailScreen> {
           (res) {
             ScaffoldMessenger.of(context).clearSnackBars();
             if (res) {
-              DialogUtil.showTextDialog(context, "Thành công",
-                  "Một mã xác nhận đã được gửi tới email của bạn.", [
-                TemplatedButtons.okWithscreen(
-                    context, const ForgotPasswordScreen())
-              ]);
-            } else {
-              DialogUtil.showTextDialog(
+              DialogUtil.showAwesomeDialog(
                   context,
+                  DialogType.success,
+                  "Thành công",
+                  "Một mã xác nhận đã được gửi tới email của bạn.",
+                  () => Get.to(() => const ForgotPasswordScreen()),
+                  null);
+            } else {
+              DialogUtil.showAwesomeDialog(
+                  context,
+                  DialogType.success,
                   "Thất bại",
                   "Rất tiếc! Email xác nhận không thể gửi tới địa chỉ này.",
-                  [TemplatedButtons.ok(context)]);
+                  () {},
+                  null);
             }
           },
         );
       } else {
         ScaffoldMessenger.of(context).clearSnackBars();
-        DialogUtil.showTextDialog(
+        DialogUtil.showAwesomeDialog(
             context,
+            DialogType.success,
             "Thất bại",
             "Email không tồn tại trong hệ thống!\n Vui lòng kiểm tra lại thông tin.",
-            [TemplatedButtons.ok(context)]);
+            () {},
+            null);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final _forgotFormKey = GlobalKey<FormState>();
+    final forgotFormKey = GlobalKey<FormState>();
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -113,7 +120,7 @@ class _ForgotPasswordState extends State<VerifyMailScreen> {
       body: KeyboardVisibilityBuilder(
         builder: (context, isKeyboardVisible) {
           return Form(
-            key: _forgotFormKey,
+            key: forgotFormKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -158,7 +165,7 @@ class _ForgotPasswordState extends State<VerifyMailScreen> {
                       onPressed: () => {
                         if (emailController.text.isNotEmpty)
                           {
-                            if (_forgotFormKey.currentState!.validate())
+                            if (forgotFormKey.currentState!.validate())
                               {
                                 FocusManager.instance.primaryFocus?.unfocus(),
                                 ScaffoldMessenger.of(context).showSnackBar(

@@ -1,8 +1,10 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
@@ -10,7 +12,7 @@ import 'package:vnrdn_tai/screens/settings/change_password_screen.dart';
 import 'package:vnrdn_tai/screens/settings/profile_screen.dart';
 import 'package:vnrdn_tai/services/UserService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
@@ -35,21 +37,14 @@ class _SwitchClassState extends State<SettingsScreen> {
   }
 
   confirmDeactivate() {
-    Widget yes = TextButton(
-      child: const Text("CÓ"),
-      onPressed: () {
-        Navigator.pop(context, 'CÓ');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Row(children: const [Text('Đang xử lí')])),
-        );
-        selfDeactivate();
-      },
-    );
-    DialogUtil.showDCDialog(
-        context,
-        DialogUtil.alertText("Cảnh báo"),
+    DialogUtil.showAwesomeDialog(context, DialogType.warning, "Cảnh báo",
         "Bạn cần phải liên hệ đội ngũ phát triển để có thể kích hoạt lại tài khoản.",
-        [yes, TemplatedButtons.no(context)]);
+        () {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Row(children: const [Text('Đang xử lí')])),
+      );
+      selfDeactivate();
+    }, () {});
   }
 
   selfDeactivate() {
@@ -57,11 +52,14 @@ class _SwitchClassState extends State<SettingsScreen> {
       if (value.contains('thành công')) {
         IOUtils.removeAllData();
         IOUtils.clearUserInfoController();
-        DialogUtil.showDCDialog(
+
+        DialogUtil.showAwesomeDialog(
             context,
-            DialogUtil.successText("Thành công"),
-            "Bạn đã huỷ kích hoạt tài khoản thành công!\nnVui lòng liên hệ đội ngũ phát triển nếu muốn kích hoạt lại.",
-            [TemplatedButtons.okWithscreen(context, ContainerScreen())]);
+            DialogType.success,
+            "Thành công",
+            'Tài khoản đã ngưng hoạt động!\nnVui lòng liên hệ đội ngũ phát triển nếu muốn kích hoạt lại.',
+            () => Get.to(() => const ContainerScreen()),
+            null);
       }
     });
   }
@@ -163,7 +161,7 @@ class _SwitchClassState extends State<SettingsScreen> {
                         ),
                         title: GestureDetector(
                           onTap: () {
-                            Get.to(const ProfileScreen());
+                            Get.to(const LoaderOverlay(child: ProfileScreen()));
                           },
                           child: Row(
                             children: const [

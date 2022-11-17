@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/location_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
@@ -116,10 +117,14 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
       mapsController.location.getLocation().then((location) {
         GPSSignService()
             .AddGpsSign(
-          widget.sign!.signId,
-          location.latitude!,
-          location.longitude!,
-        )
+                widget.sign != null ? widget.sign!.signId : null,
+                widget.sign != null
+                    ? widget.sign!.latitude
+                    : location.latitude!,
+                widget.sign != null
+                    ? widget.sign!.longitude
+                    : location.longitude!,
+                reason == 'noSignHere' ? true : false)
             .then((newSign) {
           FeedbackService()
               .createGpsSignsModificationRequest(
@@ -130,19 +135,21 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
           )
               .then((value) {
             if (value != null) {
-              DialogUtil.showDCDialog(
-                context,
-                DialogUtil.successText("Phản hồi thành công"),
-                "Cảm ơn về phản hồi của bạn!\nChúng tôi sẽ kiểm tra và chỉnh sửa sớm nhất có thể.",
-                [TemplatedButtons.okWithscreen(context, ContainerScreen())],
-              );
+              DialogUtil.showAwesomeDialog(
+                  context,
+                  DialogType.success,
+                  "Phản hồi thành công",
+                  "Cảm ơn về phản hồi của bạn!\nChúng tôi sẽ kiểm tra và chỉnh sửa sớm nhất có thể.",
+                  () => Get.to(() => const ContainerScreen()),
+                  null);
             } else {
-              DialogUtil.showDCDialog(
-                context,
-                DialogUtil.failedText("Phản hồi thất bại"),
-                "Một sự cố không mong muốn đã xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
-                [TemplatedButtons.okWithscreen(context, ContainerScreen())],
-              );
+              DialogUtil.showAwesomeDialog(
+                  context,
+                  DialogType.error,
+                  "Phản hồi thất bại",
+                  "Một sự cố không mong muốn đã xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
+                  () {},
+                  null);
             }
           });
         });
@@ -241,36 +248,34 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                     margin:
                         const EdgeInsets.only(top: kDefaultPaddingValue / 2),
                     child: pickedFile != null
-                        ? Expanded(
-                            child: Container(
-                              height: 15.h,
-                              width: 80.w,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.grey,
-                                  style: BorderStyle.solid,
-                                  width: 3,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                  kDefaultPaddingValue / 2,
-                                ),
+                        ? Container(
+                            height: 15.h,
+                            width: 80.w,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.grey,
+                                style: BorderStyle.solid,
+                                width: 3,
                               ),
-                              child: Center(
-                                child: pickedFile != null
-                                    ? Image.file(
-                                        File(pickedFile!.path!),
-                                        fit: BoxFit.contain,
-                                      )
-                                    : const Text(
-                                        "Xem trước tại đây",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.black54,
-                                        ),
+                              borderRadius: BorderRadius.circular(
+                                kDefaultPaddingValue / 2,
+                              ),
+                            ),
+                            child: Center(
+                              child: pickedFile != null
+                                  ? Image.file(
+                                      File(pickedFile!.path!),
+                                      fit: BoxFit.contain,
+                                    )
+                                  : const Text(
+                                      "Xem trước tại đây",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.black54,
                                       ),
-                              ),
+                                    ),
                             ),
                           )
                         : Container(

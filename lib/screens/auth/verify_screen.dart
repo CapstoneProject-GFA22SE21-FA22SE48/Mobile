@@ -1,11 +1,13 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
+import 'package:vnrdn_tai/screens/auth/components/change_forgot_password.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class MailVerifyScreen extends StatefulWidget {
@@ -45,15 +47,16 @@ class _MailVerifyState extends State<MailVerifyScreen> {
   void handleVerify(BuildContext context) {
     verifyOTP().then((res) {
       if (res) {
-        print("OTP Verified.");
-        DialogUtil.showTextDialog(context, "Thành công",
-            "Xác nhận thành công. Mời bạn đăng nhập để tiếp tục.", [
-          afterVerified(context, LoginScreen()),
-        ]);
+        DialogUtil.showAwesomeDialog(
+            context,
+            DialogType.success,
+            "Thành công",
+            "Xác nhận OTP thành công. Mời bạn đăng nhập để tiếp tục.",
+            () => Get.off(() => const ChangeForgotPasswordScreen()),
+            () {});
       } else {
-        print("OTP is Invalid.");
-        DialogUtil.showTextDialog(context, "Thất bại", "Xác nhận thất bại.",
-            [TemplatedButtons.ok(context)]);
+        DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
+            "Xác nhận OTP thất bại. Vui lòng thử lại.", () {}, null);
       }
     });
   }

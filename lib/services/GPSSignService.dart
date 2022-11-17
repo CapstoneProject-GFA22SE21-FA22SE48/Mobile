@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
+import 'package:vnrdn_tai/models/dtos/GPSSignManipulateDTO.dart';
 import '../shared/constants.dart';
 
 class GPSSignService {
@@ -42,10 +44,7 @@ class GPSSignService {
   }
 
   Future<GPSSign?> AddGpsSign(
-    String signId,
-    double latitude,
-    double longitude,
-  ) async {
+      String? signId, double latitude, double longitude, bool isDeleted) async {
     try {
       final res = await http
           .post(
@@ -54,7 +53,7 @@ class GPSSignService {
               "Content-Type": "application/json; charset=UTF-8"
             },
             body: jsonEncode(
-              GPSSign(signId, signId, "", latitude, longitude),
+              GPSSignManipulateDTO(signId, latitude, longitude, isDeleted),
             ),
           )
           .timeout(const Duration(seconds: TIME_OUT));

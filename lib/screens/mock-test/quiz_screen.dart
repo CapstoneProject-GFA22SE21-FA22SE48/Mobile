@@ -10,7 +10,7 @@ import 'package:vnrdn_tai/screens/mock-test/score_screen.dart';
 import 'package:vnrdn_tai/services/QuestionService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 
 class QuizScreen extends StatefulWidget {
   QuizScreen(
@@ -39,7 +39,6 @@ class _QuizScreenState extends State<QuizScreen> {
     super.initState();
     // ignore: unrelated_type_equality_checks
     if (gc.test_mode == TEST_TYPE.STUDY) {
-      // DialogUtil.showAlertDialog(context, 'Log', '${widget.categoryId}');
       _questions = QuestionSerivce().GetStudySetByCategoryAndSeparator(
           widget.categoryId, widget.questionCategoryId, widget.separator);
     } else {

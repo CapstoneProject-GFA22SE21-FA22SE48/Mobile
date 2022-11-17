@@ -74,7 +74,7 @@ class AnalysisController extends GetxController {
   }
 
   takeSignContentFeebackImage() async {
-    _cameraController.setFlashMode(FlashMode.auto);
+    _cameraController.setFlashMode(FlashMode.off);
     final xFile = await _cameraController.takePicture();
     _image = xFile;
     final path = xFile.path;
