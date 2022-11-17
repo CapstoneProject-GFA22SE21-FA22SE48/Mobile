@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/services/SignModificationRequestService.dart';
 import 'package:vnrdn_tai/services/UserService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/location_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
@@ -117,15 +118,16 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
               widget.romId, status, url.split('&token').first, adminId)
           .then((value) {
         if (value != null) {
-          DialogUtil.showTextDialog(context, "Thành công",
-              "Xác nhận thành công!\nQuay về danh sách phản hồi", [
-            TemplatedButtons.okWithscreen(context, ListRomScreen()),
-          ]);
+          DialogUtil.showAwesomeDialog(
+              context,
+              DialogType.success,
+              "Thành công",
+              "Xác nhận thành công!\nQuay về danh sách phản hồi",
+              () => Get.off(() => ListRomScreen()),
+              () {});
         } else {
-          DialogUtil.showTextDialog(context, "Thất bại",
-              "Xác nhận thất bại.\n Vui lòng kiểm tra lại", [
-            TemplatedButtons.ok(context),
-          ]);
+          DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
+              "Xác nhận thất bại.\n Vui lòng kiểm tra lại", () {}, null);
         }
       });
     });

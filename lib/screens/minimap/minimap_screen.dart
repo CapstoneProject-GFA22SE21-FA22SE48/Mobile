@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,7 +19,7 @@ import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/location_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
@@ -137,16 +138,14 @@ class _MinimapState extends State<MinimapScreen> {
                                                 type: '',
                                                 sign: s,
                                               ))
-                                          : () => DialogUtil.showTextDialog(
-                                                context,
-                                                "Cảnh báo",
-                                                "Bạn cần đăng nhập để có thể sử dụng tính năng này.\nĐến trang đăng nhập?",
-                                                [
-                                                  TemplatedButtons.yes(context,
-                                                      const LoginScreen()),
-                                                  TemplatedButtons.no(context),
-                                                ],
-                                              ),
+                                          : () => DialogUtil.showAwesomeDialog(
+                                              context,
+                                              DialogType.warning,
+                                              "Cảnh báo",
+                                              "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
+                                              () => Get.to(
+                                                  () => const LoginScreen()),
+                                              () {}),
                                       child: const Text(
                                         "Thông tin chưa đúng?",
                                         style: TextStyle(
@@ -263,7 +262,7 @@ class _MinimapState extends State<MinimapScreen> {
                   trafficEnabled: true,
                   // zoomGesturesEnabled: false,
                   // zoomControlsEnabled: false,
-                  minMaxZoomPreference: const MinMaxZoomPreference(10, 25),
+                  minMaxZoomPreference: const MinMaxZoomPreference(15, 25),
                   initialCameraPosition: CameraPosition(
                     target: LatLng(
                       currentLocation!.latitude!,

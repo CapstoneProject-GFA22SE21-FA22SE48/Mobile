@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
@@ -6,7 +7,7 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/form_validator.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
@@ -39,39 +40,22 @@ class _ChangePasswordState extends State<ChangeForgotPasswordScreen> {
     AuthService().forgotPassword(newPassword).then((value) {
       if (value.isNotEmpty) {
         if (value.toLowerCase().contains('thất bại')) {
-          DialogUtil.showDCDialog(
-              context,
-              const Text(
-                "Thất bại",
-                style: TextStyle(
-                  color: kDangerButtonColor,
-                ),
-              ),
-              value,
-              [TemplatedButtons.ok(context)]);
+          DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
+              "Thay đổi mật khẩu thất bại. Vui lòng thử lại sau.", () {}, null);
         } else {
-          DialogUtil.showDCDialog(
+          DialogUtil.showAwesomeDialog(
               context,
-              const Text(
-                "Thành công",
-                style: TextStyle(
-                  color: kSuccessButtonColor,
-                ),
-              ),
-              value,
-              [TemplatedButtons.okWithscreen(context, const LoginScreen())]);
+              DialogType.success,
+              "Thành công",
+              value.isNotEmpty
+                  ? value
+                  : "Thay đổi mật khẩu thành công. Mời bạn đăng nhập để tiếp tục.",
+              () => Get.off(() => const LoginScreen()),
+              () {});
         }
       } else {
-        DialogUtil.showDCDialog(
-            context,
-            const Text(
-              "Thất bại",
-              style: TextStyle(
-                color: kDangerButtonColor,
-              ),
-            ),
-            value,
-            [TemplatedButtons.ok(context)]);
+        DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
+            "Thay đổi mật khẩu thất bại. Vui lòng thử lại sau.", () {}, null);
       }
     });
   }

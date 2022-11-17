@@ -5,7 +5,7 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/form_validator.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 

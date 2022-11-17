@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -7,11 +8,8 @@ import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/screens/auth/components/change_forgot_password.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
-import 'package:vnrdn_tai/screens/settings/change_password_screen.dart';
-import 'package:vnrdn_tai/services/AuthService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
-import 'package:vnrdn_tai/utils/form_validator.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -25,7 +23,6 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
   late String resendOtp = '';
 
   TextButton handleVerify(BuildContext context, Widget screen) {
-    AuthController ac = Get.put(AuthController());
     return TextButton(
       style: TemplatedButtons().confirmStyle,
       onPressed: () {
@@ -47,17 +44,22 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
 
     if (res) {
       FocusManager.instance.primaryFocus?.unfocus();
-      DialogUtil.showTextDialog(context, "Thành công", "Xác nhận thành công.", [
-        handleVerify(context, const ChangeForgotPasswordScreen()),
-      ]);
+      DialogUtil.showAwesomeDialog(
+          context,
+          DialogType.success,
+          "Thành công",
+          "Xác nhận thành công.",
+          () => Get.off(() => const ChangeForgotPasswordScreen()),
+          () {});
     } else {
-      DialogUtil.showTextDialog(context, "Thất bại", "Xác nhận thất bại.",
-          [TemplatedButtons.ok(context)]);
-      resendOtp.isEmpty
-          ? setState(() {
-              resendOtp = 'Gửi lại mã xác nhận';
-            })
-          : () {};
+      DialogUtil.showAwesomeDialog(
+          context, DialogType.error, "Thất bại", "Xác nhận thất bại.", () {
+        resendOtp.isEmpty
+            ? setState(() {
+                resendOtp = 'Gửi lại mã xác nhận';
+              })
+            : () {};
+      }, null);
     }
   }
 

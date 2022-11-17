@@ -86,6 +86,7 @@ const defaultAvatarUrl =
     "https://firebasestorage.googleapis.com/v0/b/vnrdntai.appspot.com/o/images%2Favatar%2Fdefault_avatar_x05.png?alt=media";
 
 const String google_api_key = "AIzaSyBEre7YKax4irpLfr0I2jrkACu_ZiBL3JU";
+const String maps_key = "AIzaSyBlneunCaPQj1GRpM0EzkMGTClr23RxHwk";
 LatLng schoolLocation = // FPT daigaku
     const LatLng(10.841809162754405, 106.8097469445683);
 

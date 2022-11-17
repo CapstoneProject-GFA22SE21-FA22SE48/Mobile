@@ -54,7 +54,7 @@ class _CommentCardState extends State<CommentCard> {
               children: [
                 Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                   GFAvatar(
-                    radius: 10.w,
+                    radius: 8.w,
                     backgroundImage: ac.avatar.value.isNotEmpty
                         ? NetworkImage(ac.avatar.value)
                         : const NetworkImage(defaultAvatarUrl),

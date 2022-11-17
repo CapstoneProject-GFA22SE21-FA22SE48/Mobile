@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -9,7 +10,7 @@ import 'package:getwidget/types/gf_button_type.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/services/CommentService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/form_validator.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
@@ -35,8 +36,13 @@ class _RatingTabState extends State<RatingTab> {
         widget.callback(true);
         Navigator.pop(context);
       } else {
-        DialogUtil.showDCDialog(context, DialogUtil.failedText("Thất bại"),
-            value, [TemplatedButtons.ok(context)]);
+        DialogUtil.showAwesomeDialog(
+            context,
+            DialogType.error,
+            "Đánh giá thất bại",
+            "Một sự cố không mong muốn đã xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
+            () {},
+            null);
       }
     });
   }
