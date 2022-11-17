@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -39,42 +40,34 @@ class _ChangePasswordState extends State<ChangePasswordScreen> {
     AuthService().changePassword(oldPassword, newPassword).then((value) {
       if (value.isNotEmpty) {
         if (value.toLowerCase().contains('không đúng') || value.isEmpty) {
-          // oldP is wrong
-          DialogUtil.showDCDialog(
+          DialogUtil.showAwesomeDialog(
               context,
-              const Text(
-                "Thất bại",
-                style: TextStyle(
-                  color: kDangerButtonColor,
-                ),
-              ),
-              value,
-              [TemplatedButtons.ok(context)]);
+              DialogType.error,
+              "Thất bại",
+              value.isNotEmpty
+                  ? value
+                  : "Một sự cố không mong muốn đã xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
+              () {},
+              null);
         } else {
           // password changed
-          DialogUtil.showDCDialog(
+          DialogUtil.showAwesomeDialog(
               context,
-              const Text(
-                "Thành công",
-                style: TextStyle(
-                  color: kSuccessButtonColor,
-                ),
-              ),
+              DialogType.success,
+              "Thành công",
               value,
-              [TemplatedButtons.okWithscreen(context, const SettingsScreen())]);
+              () => Get.to(() => const SettingsScreen()),
+              null);
         }
       } else {
         // Something went wrong
-        DialogUtil.showDCDialog(
+        DialogUtil.showAwesomeDialog(
             context,
-            const Text(
-              "Thất bại",
-              style: TextStyle(
-                color: kDangerButtonColor,
-              ),
-            ),
+            DialogType.error,
+            "Thất bại",
             value.isNotEmpty ? value : 'Thông tin người dùng không khớp.',
-            [TemplatedButtons.ok(context)]);
+            () {},
+            null);
       }
     });
   }
