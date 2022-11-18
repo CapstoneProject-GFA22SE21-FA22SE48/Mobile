@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:camera/camera.dart';
@@ -19,6 +20,7 @@ import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/widgets/animation/ripple.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
+import 'dart:math' as math;
 
 class AnalysisScreen extends StatelessWidget {
   AnalysisScreen({super.key});
@@ -30,7 +32,7 @@ class AnalysisScreen extends StatelessWidget {
     double xmax = double.parse(coords[3]) * width - width / 2;
     double ymax = double.parse(coords[4]) * height;
     // var name = 'here';
-    var name =
+    String name =
         ac.mapData![int.parse(coords[0].replaceAll(".0", ""))].toString();
     // var ratioH = height / 240;
     // var ratioW = width / 320;
@@ -64,7 +66,10 @@ class AnalysisScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border.all(
                   width: 5,
-                  color: Colors.yellow[100]!,
+                  color: Colors.primaries[(int.tryParse(name[0])! +
+                          int.tryParse(name[1])! +
+                          int.tryParse(name[2])!) ??
+                      Random().nextInt(Colors.primaries.length)],
                 ),
               ),
               child: Text(
@@ -144,15 +149,61 @@ class AnalysisScreen extends StatelessWidget {
                         bottom: 0.h,
                         width: MediaQuery.of(context).size.width,
                         child: Container(
-                          height: 30.h,
+                          height: 35.h,
                           width: 15.h,
                           child: SizedBox(
                             width: 100.w,
-                            height: 30.h,
+                            height: 20.h,
                             child: Column(
                               children: [
                                 SizedBox(
-                                  height: 15.h,
+                                  height: 10.h,
+                                ),
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: kDefaultPaddingValue),
+                                    child: controller.isLoaded &&
+                                            controller.isDetecting
+                                        ? RippleAnimation(
+                                            minRadius: 100,
+                                            ripplesCount: 15,
+                                            repeat: controller.isDetecting,
+                                            color: Colors.white,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 20, left: 18.0),
+                                              child: ElevatedButton(
+                                                  onPressed: () async {
+                                                    await controller
+                                                        .stopImageStream();
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                      shape:
+                                                          const CircleBorder(),
+                                                      fixedSize:
+                                                          const Size(60, 60)),
+                                                  child: const Icon(Icons.stop,
+                                                      size: 32,
+                                                      color: Colors.red)),
+                                            ))
+                                        : Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 20, left: 18),
+                                            child: ElevatedButton(
+                                                onPressed: () async {
+                                                  await controller
+                                                      .startImageStream();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    shape: const CircleBorder(),
+                                                    fixedSize:
+                                                        const Size(60, 60)),
+                                                child: const Icon(
+                                                    Icons.play_arrow,
+                                                    size: 32)),
+                                          ),
+                                  ),
                                 ),
                                 FutureBuilder(
                                   key: UniqueKey(),
@@ -160,94 +211,6 @@ class AnalysisScreen extends StatelessWidget {
                                   builder: (context, snapshot) =>
                                       stillNotFound(context),
                                 ),
-                                Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: kDefaultPaddingValue),
-                                    child: controller.isDetecting
-                                        ? Text('Đang tìm kiếm biển báo...',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline5
-                                                ?.copyWith(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.bold))
-                                        : controller.boxes.length > 0
-                                            ? Text(
-                                                ' Hệ thống đã nhận diện được ${controller.boxes.length} biển báo',
-                                                textAlign: TextAlign.center,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline6
-                                                    ?.copyWith(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                              )
-                                            : Text(
-                                                ' Bấm nút phía dưới để bắt đầu quét',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline6
-                                                    ?.copyWith(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                              ),
-                                  ),
-                                ),
-                                // controller.isDetecting
-                                //     ? Center(
-                                //         child: RippleAnimation(
-                                //             minRadius: 100,
-                                //             ripplesCount: 15,
-                                //             repeat: controller.isDetecting,
-                                //             color: Colors.white,
-                                //             child: Padding(
-                                //               padding: const EdgeInsets.only(
-                                //                   top: 20, left: 18),
-                                //               child: ElevatedButton(
-                                //                   onPressed: () async {
-                                //                     await controller
-                                //                         .stopImageStream();
-                                //                   },
-                                //                   style: ElevatedButton.styleFrom(
-                                //                       shape:
-                                //                           const CircleBorder(),
-                                //                       fixedSize:
-                                //                           const Size(60, 60)),
-                                //                   child: const Icon(Icons.stop,
-                                //                       size: 32,
-                                //                       color: Colors.red)),
-                                //             )),
-                                //       )
-                                //     : Padding(
-                                //         padding: const EdgeInsets.only(
-                                //             top: 20, left: 18),
-                                //         child: ElevatedButton(
-                                //             onPressed: () async {
-                                //               await controller
-                                //                   .startImageStream();
-                                //             },
-                                //             style: ElevatedButton.styleFrom(
-                                //                 shape: const CircleBorder(),
-                                //                 fixedSize: const Size(60, 60)),
-                                //             child: const Icon(Icons.play_arrow,
-                                //                 size: 32)),
-                                //       ),
-
-                                // Padding(
-                                //     padding: const EdgeInsets.only(
-                                //         top: kDefaultPaddingValue),
-                                //     child: Text('${controller.detected}',
-                                //         style: Theme.of(context)
-                                //             .textTheme
-                                //             .headline5
-                                //             ?.copyWith(
-                                //                 color:
-                                //                     Colors.blueAccent.shade200,
-                                //                 fontWeight: FontWeight.bold))),
                               ],
                             ),
                           ),
@@ -259,39 +222,90 @@ class AnalysisScreen extends StatelessWidget {
               width: 100.w,
               height: 15.h,
               alignment: Alignment.topCenter,
-              child: controller.isLoaded && controller.isDetecting
-                  ? Center(
-                      child: RippleAnimation(
-                          minRadius: 100,
-                          ripplesCount: 15,
-                          repeat: controller.isDetecting,
-                          color: Colors.white,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: kDefaultPaddingValue, left: 18),
-                            child: ElevatedButton(
-                                onPressed: () async {
-                                  await controller.stopImageStream();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    shape: const CircleBorder(),
-                                    fixedSize: const Size(60, 60)),
-                                child: const Icon(Icons.stop,
-                                    size: 32, color: Colors.red)),
-                          )),
+              child: controller.isDetecting && controller.boxes.isEmpty
+                  ? Padding(
+                      padding:
+                          const EdgeInsets.only(top: kDefaultPaddingValue * 2),
+                      child: Text('Đang tìm kiếm biển báo...',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline5
+                              ?.copyWith(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold)),
                     )
-                  : Padding(
-                      padding: const EdgeInsets.only(
-                          top: kDefaultPaddingValue, left: 18),
-                      child: ElevatedButton(
-                          onPressed: () async {
-                            await controller.startImageStream();
-                          },
-                          style: ElevatedButton.styleFrom(
-                              shape: const CircleBorder(),
-                              fixedSize: const Size(60, 60)),
-                          child: const Icon(Icons.play_arrow, size: 32)),
-                    ),
+                  : controller.boxes.isNotEmpty
+                      ? ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: List.generate(controller.boxes.length,
+                              (int index) {
+                            // var name = "102";
+                            var name = ac.mapData![int.parse(controller
+                                    .boxes[index][0]
+                                    .replaceAll(".0", ""))]
+                                .toString();
+                            return InkWell(
+                              onTap: () {
+                                SearchController sc =
+                                    Get.put(SearchController());
+                                ac.stopImageStream();
+                                sc.updateQuery(name);
+                                sc.updateIsFromAnalysis(true);
+                                Get.offAll(() => ContainerScreen());
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 8.0,
+                                    right: kDefaultPaddingValue / 2,
+                                    left: kDefaultPaddingValue),
+                                child: Container(
+                                    width: 18.w,
+                                    // height: 10.h,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.primaries[(int
+                                                        .tryParse(name[0])! +
+                                                    int.tryParse(name[1])! +
+                                                    int.tryParse(name[2])!) ??
+                                                Random().nextInt(
+                                                    Colors.primaries.length)],
+                                            width: 5)),
+                                    child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                              'assets/gps/x025/${name}.png'),
+                                          Text(
+                                            ' Biển ${name}',
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6
+                                                ?.copyWith(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize:
+                                                        FONTSIZES.textSmall),
+                                          ),
+                                        ])),
+                              ),
+                            );
+                          }),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(
+                              top: kDefaultPaddingValue * 2),
+                          child: Text(
+                            ' Bấm nút phía trên để bắt đầu quét',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline6
+                                ?.copyWith(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                        ),
             ),
           );
         });

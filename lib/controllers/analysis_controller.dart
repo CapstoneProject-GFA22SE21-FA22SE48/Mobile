@@ -17,7 +17,7 @@ class AnalysisController extends GetxController {
   late bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
 
-  late bool _isDetecting;
+  late bool _isDetecting = false;
   bool get isDetecting => _isDetecting;
 
   late List<Map<String, dynamic>> _modelResults;
