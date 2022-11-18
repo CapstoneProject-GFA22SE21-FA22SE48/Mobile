@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getwidget/colors/gf_color.dart';
 import 'package:getwidget/components/avatar/gf_avatar.dart';
+import 'package:getwidget/components/rating/gf_rating.dart';
+import 'package:getwidget/size/gf_size.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
@@ -52,23 +55,64 @@ class _CommentCardState extends State<CommentCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                  GFAvatar(
-                    radius: 10.w,
-                    backgroundImage: ac.avatar.value.isNotEmpty
-                        ? NetworkImage(ac.avatar.value)
-                        : const NetworkImage(defaultAvatarUrl),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GFAvatar(
+                      radius: 5.w,
+                      backgroundImage: ac.avatar.value.isNotEmpty
+                          ? NetworkImage(ac.avatar.value)
+                          : const NetworkImage(defaultAvatarUrl),
+                    ),
+                    SizedBox(width: 3.w),
+                    Text(
+                      getName(),
+                      style: TextStyle(
+                        color: Colors.blueAccent,
+                        fontWeight: FontWeight.bold,
+                        fontSize: FONTSIZES.textMediumLarge,
+                      ),
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: kDefaultPaddingValue / 2),
+                  child: GFRating(
+                    onChanged: (value) {},
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
+                    value: widget.comment.rating.toDouble(),
+                    allowHalfRating: true,
+                    filledIcon: const Icon(
+                      Icons.star_rounded,
+                      size: GFSize.SMALL,
+                      color: GFColors.WARNING,
+                    ),
+                    defaultIcon: const Icon(
+                      Icons.star_outline_rounded,
+                      size: GFSize.SMALL,
+                      color: GFColors.WARNING,
+                    ),
+                    halfFilledIcon: const Icon(
+                      Icons.star_half_rounded,
+                      size: GFSize.SMALL,
+                      color: GFColors.WARNING,
+                    ),
+                    itemCount: 5,
+                    borderColor: GFColors.WARNING,
+                    color: GFColors.WARNING,
                   ),
-                  SizedBox(width: 3.w),
-                  Text(getName())
-                ]),
+                ),
                 Expanded(
-                  //illegal
-                  child: Text(
-                    widget.comment.content,
-                    style: Theme.of(context).textTheme.headline6?.copyWith(
-                          color: Colors.black87,
-                        ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: kDefaultPaddingValue / 2),
+                    child: Text(
+                      widget.comment.content,
+                      style: Theme.of(context).textTheme.headline6?.copyWith(
+                            color: Colors.black87,
+                          ),
+                    ),
                   ),
                 ),
                 Row(

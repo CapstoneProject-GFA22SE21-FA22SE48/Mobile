@@ -1,9 +1,10 @@
 import 'dart:async';
 
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/cart_controller.dart';
@@ -22,12 +23,10 @@ import 'package:vnrdn_tai/screens/scribe/list_rom/list_rom_screen.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_screen.dart';
 import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
-import 'package:vnrdn_tai/screens/signs/signs_screen.dart';
 import 'package:vnrdn_tai/screens/welcome/welcome_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
-import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class ContainerScreen extends GetView<GlobalController> {
   const ContainerScreen({super.key});
@@ -75,9 +74,10 @@ class ContainerScreen extends GetView<GlobalController> {
         return IconButton(
           onPressed: () {
             Get.to(
-              () => FeedbacksScreen(
+              () => LoaderOverlay(
+                  child: FeedbacksScreen(
                 type: '',
-              ),
+              )),
             );
           },
           icon: const Icon(
@@ -157,234 +157,238 @@ class ContainerScreen extends GetView<GlobalController> {
           size: FONTSIZES.textHuge,
         ),
       ),
-      drawer: Drawer(
-        elevation: 0,
-        child: ListView(
-          physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 128, 179, 255),
-              ),
-              child: Column(children: [
-                Center(
-                  child: Stack(children: [
-                    Image.asset("assets/images/logo.png", height: 72.0),
-                  ]),
-                ),
-                Container(
-                  alignment: Alignment.bottomCenter,
-                  padding: kDefaultPadding,
-                  child: const Text(
-                    'VNRDnTAI',
-                    style: TextStyle(
-                        color: Colors.white, fontSize: FONTSIZES.textHuge),
-                  ),
-                ),
-              ]),
-            ),
-            controller.userId.value.isNotEmpty
-                ? ListTile(
-                    leading: const Icon(Icons.account_circle, size: 36),
-                    title: Obx(() => Text(
-                          'Xin chào, ${getWelcomeName(ac)}.',
-                          style: const TextStyle(
-                              fontSize: FONTSIZES.textMediumLarge),
-                        )),
-                    // enabled: false,
-                    iconColor: kPrimaryTextColor,
-                    textColor: kPrimaryTextColor,
-                    onTap: () {
-                      // Update the state of the app
-                      // ...
-                      Navigator.pop(context); // close the drawer
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        // clearUserInfo();
-                        return const SettingsScreen();
-                      }));
-                    },
-                  )
-                : Container(),
-            const Divider(color: Colors.white),
-            controller.username.isNotEmpty
-                ? ListTile(
-                    iconColor: kDangerButtonColor,
-                    textColor: kDangerButtonColor,
-                    leading: const Icon(Icons.logout_rounded),
-                    title: const Text(
-                      'Đăng xuất',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: FONTSIZES.textPrimary),
-                    ),
-                    onTap: () {
-                      handleLogout().then((value) {
-                        if (value) {
-                          Get.to(() => const LoginScreen());
-                        }
-                      }); // close the drawer
-                    },
-                  )
-                : ListTile(
-                    iconColor: kSuccessButtonColor,
-                    textColor: kSuccessButtonColor,
-                    leading: const Icon(Icons.login_rounded),
-                    title: const Text(
-                      'Đăng nhập',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: FONTSIZES.textPrimary),
-                    ),
-                    onTap: () {
-                      // Update the state of the app
-                      // ...
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        // clearUserInfo();
-                        return const LoginScreen();
-                      })); // close the drawer
-                    },
-                  ),
-            const Divider(
-              thickness: 1,
-              color: Color.fromRGBO(189, 189, 189, 1),
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text(
-                'Cài đặt',
-                style: TextStyle(
-                  fontSize: FONTSIZES.textPrimary,
-                  color: Colors.black54,
-                  fontWeight: FontWeight.bold,
-                ),
-              ), // Settings
-              // selected: controller.sideBar.value == 1,
-              selectedColor: Colors.white,
-              selectedTileColor: Colors.blueAccent,
-              onTap: () {
-                // Update the state of the app
-                // ...
-                Navigator.pop(context); // close the drawer
-                controller.updateSideBar(1);
-                Get.to(const SettingsScreen());
-              },
-            ),
-            // const Divider(
-            //   thickness: 1,
-            //   color: Colors.blueAccent,
-            // ),
-            ListTile(
-              iconColor: kWarningButtonColor,
-              textColor: kWarningButtonColor,
-              leading: const Icon(Icons.star_rounded),
-              title: const Text(
-                'Đánh giá',
-                style: TextStyle(
-                  fontSize: FONTSIZES.textPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ), // Feedbacks
-              // selected: controller.sideBar.value == 2,
-              selectedColor: Colors.white,
-              selectedTileColor: Colors.blueAccent,
-              onTap: () {
-                if (controller.userId.isNotEmpty) {
-                  Navigator.pop(context); // close the drawer
-                  controller.updateSideBar(2);
-                  Get.to(const CommentsScreen());
-                } else {
-                  DialogUtil.showTextDialog(
-                    context,
-                    "Cảnh báo",
-                    "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
-                    [
-                      TemplatedButtons.yes(context, const LoginScreen()),
-                      TemplatedButtons.no(context),
-                    ],
-                  );
-                }
-              },
-            ),
-            ac.role.value == 1 || controller.username.value.contains('scribe')
-                ? ListTile(
-                    iconColor: kNeutralButtonColor,
-                    textColor: kNeutralButtonColor,
-                    leading: const Icon(Icons.content_paste_rounded),
-                    title: const Text(
-                      'Danh sách yêu cầu',
-                      style: TextStyle(
-                        fontSize: FONTSIZES.textPrimary,
-                        fontWeight: FontWeight.bold,
+      drawer: GFDrawer(
+        elevation: 4,
+        child: SizedBox(
+          height: 100.h,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 60.h,
+                child: ListView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  children: [
+                    DrawerHeader(
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 157, 196, 255),
                       ),
-                    ), // Feedbacks
-                    // selected: controller.sideBar.value == 2,
-                    selectedColor: Colors.white,
-                    selectedTileColor: Colors.blueAccent,
-                    onTap: () {
-                      if (controller.userId.isNotEmpty) {
-                        Navigator.pop(context);
-                        controller.updateSideBar(4);
-                        Get.to(ListRomScreen());
-                      }
-                    },
-                  )
-                : const SizedBox(),
-          ],
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            GFAvatar(
+                              radius: 10.w,
+                              backgroundImage: NetworkImage(
+                                  ac.avatar.value.isNotEmpty
+                                      ? ac.avatar.value
+                                      : defaultAvatarUrl),
+                            ),
+                            controller.userId.value.isNotEmpty
+                                ? Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: kDefaultPaddingValue / 2),
+                                    child: Text(
+                                      getWelcomeName(ac),
+                                      style: TextStyle(
+                                        fontSize: FONTSIZES.textLarge,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.blueAccent.shade700,
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                          ]),
+                    ),
+
+                    ListTile(
+                      leading: const Icon(Icons.settings),
+                      title: const Text(
+                        'Cài đặt',
+                        style: TextStyle(
+                          fontSize: FONTSIZES.textPrimary,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ), // Settings
+                      // selected: controller.sideBar.value == 1,
+                      selectedColor: Colors.white,
+                      selectedTileColor: Colors.blueAccent,
+                      onTap: () {
+                        // Update the state of the app
+                        // ...
+                        Navigator.pop(context); // close the drawer
+                        controller.updateSideBar(1);
+                        Get.to(const SettingsScreen());
+                      },
+                    ),
+                    // const Divider(
+                    //   thickness: 1,
+                    //   color: Colors.blueAccent,
+                    // ),
+                    ListTile(
+                      iconColor: kWarningButtonColor,
+                      textColor: kWarningButtonColor,
+                      leading: const Icon(Icons.star_rounded),
+                      title: const Text(
+                        'Đánh giá',
+                        style: TextStyle(
+                          fontSize: FONTSIZES.textPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ), // Feedbacks
+                      // selected: controller.sideBar.value == 2,
+                      selectedColor: Colors.white,
+                      selectedTileColor: Colors.blueAccent,
+                      onTap: () {
+                        if (controller.userId.isNotEmpty) {
+                          Navigator.pop(context); // close the drawer
+                          controller.updateSideBar(2);
+                          Get.to(const CommentsScreen());
+                        } else {
+                          DialogUtil.showAwesomeDialog(
+                              context,
+                              DialogType.warning,
+                              "Cảnh báo",
+                              "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
+                              () => Get.to(() => const LoginScreen()),
+                              () {});
+                        }
+                      },
+                    ),
+                    ac.role.value == 1 ||
+                            controller.username.value.contains('scribe')
+                        ? ListTile(
+                            iconColor: kNeutralButtonColor,
+                            textColor: kNeutralButtonColor,
+                            leading: const Icon(Icons.content_paste_rounded),
+                            title: const Text(
+                              'Danh sách yêu cầu',
+                              style: TextStyle(
+                                fontSize: FONTSIZES.textPrimary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ), // Feedbacks
+                            // selected: controller.sideBar.value == 2,
+                            selectedColor: Colors.white,
+                            selectedTileColor: Colors.blueAccent,
+                            onTap: () {
+                              if (controller.userId.isNotEmpty) {
+                                Navigator.pop(context);
+                                controller.updateSideBar(4);
+                                Get.to(ListRomScreen());
+                              }
+                            },
+                          )
+                        : const SizedBox(),
+
+                    // controller.userId.value.isNotEmpty
+                    //     ? ListTile(
+                    //         leading: const Icon(Icons.account_circle, size: 36),
+                    //         title: Obx(() => Text(
+                    //               'Xin chào, ${getWelcomeName(ac)}.',
+                    //               style: const TextStyle(
+                    //                   fontSize: FONTSIZES.textMediumLarge),
+                    //             )),
+                    //         // enabled: false,
+                    //         iconColor: kPrimaryTextColor,
+                    //         textColor: kPrimaryTextColor,
+                    //         onTap: () {
+                    //           // Update the state of the app
+                    //           // ...
+                    //           Navigator.pop(context); // close the drawer
+                    //           Navigator.push(context,
+                    //               MaterialPageRoute(builder: (context) {
+                    //             return const LoaderOverlay(
+                    //                 child: SettingsScreen());
+                    //           }));
+                    //         },
+                    //       )
+                    //     : Container(),
+                    const Divider(color: Colors.white),
+                    controller.username.isNotEmpty
+                        ? ListTile(
+                            iconColor: kDangerButtonColor,
+                            textColor: kDangerButtonColor,
+                            leading: const Icon(Icons.logout_rounded),
+                            title: const Text(
+                              'Đăng xuất',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: FONTSIZES.textPrimary),
+                            ),
+                            onTap: () {
+                              handleLogout().then((value) {
+                                if (value) {
+                                  Get.to(() => const LoginScreen());
+                                }
+                              }); // close the drawer
+                            },
+                          )
+                        : ListTile(
+                            iconColor: kSuccessButtonColor,
+                            textColor: kSuccessButtonColor,
+                            leading: const Icon(Icons.login_rounded),
+                            title: const Text(
+                              'Đăng nhập',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: FONTSIZES.textPrimary),
+                            ),
+                            onTap: () {
+                              // Update the state of the app
+                              // ...
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    // clearUserInfo();
+                                    return const LoginScreen();
+                                  },
+                                ),
+                              ); // close the drawer
+                            },
+                          ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              Padding(
+                padding:
+                    const EdgeInsets.only(bottom: kDefaultPaddingValue / 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Stack(children: [
+                        Image.asset(
+                          "assets/images/logo.png",
+                          scale: 8,
+                        ),
+                      ]),
+                    ),
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      padding: kDefaultPadding,
+                      child: const Text(
+                        'VNRDnTAI',
+                        style: TextStyle(
+                          color: Colors.blueAccent,
+                          fontSize: FONTSIZES.textHuge,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       body: Center(child: Obx(() => getScreen(controller.tab.value))),
       bottomNavigationBar: Obx(
-        () =>
-            // CurvedNavigationBar(
-            //   backgroundColor: kLightBlueBackground,
-            //   color: Theme.of(context).primaryColor,
-            //   index: controller.tab.value.index,
-            //   items: <Widget>[
-            //     Icon(
-            //       controller.tab.value.index == 0
-            //           ? Icons.menu_book_rounded
-            //           : Icons.menu_book_outlined,
-            //       size: 30,
-            //       color: controller.tab.value.index == 0
-            //           ? Color(0xFF3485FF)
-            //           : Colors.black54,
-            //     ),
-            //     Icon(
-            //       controller.tab.value.index == 1
-            //           ? Icons.motorcycle_rounded
-            //           : Icons.motorcycle_outlined,
-            //       size: 30,
-            //       color: controller.tab.value.index == 1
-            //           ? Color(0xFF3485FF)
-            //           : Colors.black54,
-            //     ),
-            //     Icon(
-            //       controller.tab.value.index == 2
-            //           ? Icons.remove_circle_rounded
-            //           : Icons.remove_circle_outline,
-            //       size: 30,
-            //       color: controller.tab.value.index == 2
-            //           ? Color(0xFF3485FF)
-            //           : Colors.black54,
-            //     ),
-            //     Icon(
-            //       controller.tab.value.index == 3
-            //           ? Icons.map_rounded
-            //           : Icons.map_outlined,
-            //       size: 30,
-            //       color: controller.tab.value.index == 3
-            //           ? Color(0xFF3485FF)
-            //           : Colors.black54,
-            //     ),
-            //   ],
-            //   onTap: (index) {
-            //     controller.updateTab(index);
-            //   },
-            // ),
-            Container(
+        () => Container(
           height: 10.h,
           width: 100.w,
           decoration: const BoxDecoration(
@@ -394,11 +398,6 @@ class ContainerScreen extends GetView<GlobalController> {
               color: Color(0xFFC0C0C0),
               width: 0.25,
             )),
-            // borderRadius: BorderRadius.only(
-            //     topRight: Radius.circular(30), topLeft: Radius.circular(30)),
-            // boxShadow: [
-            //   BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 10),
-            // ],
           ),
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,

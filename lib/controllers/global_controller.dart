@@ -28,6 +28,8 @@ class GlobalController extends GetxController
   final newObSecure = true.obs;
   final confirmObSecure = true.obs;
 
+  final isLoading = false.obs;
+
   late List<CameraDescription> _cameras;
   List<CameraDescription> get cameras => this._cameras;
 
@@ -121,5 +123,9 @@ class GlobalController extends GetxController
     tab(value);
     log(tab.value.name);
     update();
+  }
+
+  updateIsLoading(value) {
+    isLoading(value);
   }
 }

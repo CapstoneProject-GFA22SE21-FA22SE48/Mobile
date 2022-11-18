@@ -1,12 +1,10 @@
 import 'dart:ui';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/colors/gf_color.dart';
-import 'package:getwidget/components/rating/gf_rating.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
@@ -16,8 +14,9 @@ import 'package:vnrdn_tai/screens/feedbacks/components/rating_tab.dart';
 import 'package:vnrdn_tai/services/CommentService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 class CommentsScreen extends StatefulWidget {
   const CommentsScreen({Key? key}) : super(key: key);
@@ -36,6 +35,7 @@ class _CommentsState extends State<CommentsScreen> {
   double average = 0.0;
   int rating = 5;
   bool isSentComment = false;
+  bool isLoading = true;
 
   getAverageRating(List<Comment> list) {
     average = 0.0;
@@ -45,8 +45,8 @@ class _CommentsState extends State<CommentsScreen> {
       });
       average /= list.length;
     }
-    // return (average * 10).round() / 10;
-    average = average.roundToDouble();
+    return (average * 10).round() / 10;
+    // average = average.roundToDouble();
   }
 
   getRateOfRating(List<Comment> list) {
@@ -75,8 +75,8 @@ class _CommentsState extends State<CommentsScreen> {
 
   _onCloseRating(BuildContext context, void value) {
     if (isSentComment) {
-      DialogUtil.showDCDialog(context, DialogUtil.successText("Thành công"),
-          "Cảm ơn bạn đã đánh giá!", [TemplatedButtons.ok(context)]);
+      DialogUtil.showAwesomeDialog(context, DialogType.success, "Thành công",
+          "Cảm ơn bạn đã đánh giá!", () => {}, null);
       setState(() {
         isSentComment = false;
         comments = CommentService().getComments();
@@ -115,7 +115,10 @@ class _CommentsState extends State<CommentsScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting ||
                       snapshot.data == null) {
-                    return loadingScreen();
+                    return Padding(
+                      padding: EdgeInsets.only(top: 40.h),
+                      child: loadingScreen(),
+                    );
                   } else {
                     if (snapshot.hasError) {
                       Future.delayed(
@@ -147,7 +150,7 @@ class _CommentsState extends State<CommentsScreen> {
                           : Column(
                               children: [
                                 Container(
-                                  height: 40.h,
+                                  height: 45.h,
                                   width: 100.w,
                                   margin: const EdgeInsets.only(
                                     top: kDefaultPaddingValue,
@@ -219,7 +222,7 @@ class _CommentsState extends State<CommentsScreen> {
                                           children: [
                                             GFRating(
                                               onChanged: (value) {},
-                                              value: 4.5,
+                                              value: average,
                                               allowHalfRating: true,
                                               filledIcon: const Icon(
                                                 Icons.star_rounded,
@@ -236,10 +239,98 @@ class _CommentsState extends State<CommentsScreen> {
                                                 size: GFSize.MEDIUM,
                                                 color: GFColors.WARNING,
                                               ),
-                                              itemCount: 5,
+                                              itemCount:
+                                                  (average * 10) % 10 >= 5
+                                                      ? average.round() - 1
+                                                      : average.round(),
                                               borderColor: GFColors.WARNING,
                                               color: GFColors.WARNING,
                                             ),
+                                            average % 10 < 1
+                                                ? Icon(
+                                                    average % 10 < 1 &&
+                                                            average % 10 > 0
+                                                        ? ((average * 10) %
+                                                                    10 >=
+                                                                5
+                                                            ? Icons
+                                                                .star_half_rounded
+                                                            : Icons
+                                                                .star_border_rounded)
+                                                        : Icons
+                                                            .star_border_rounded,
+                                                    size: GFSize.MEDIUM,
+                                                    color: GFColors.WARNING,
+                                                  )
+                                                : Container(),
+                                            average % 10 < 2
+                                                ? Icon(
+                                                    average % 10 < 2 &&
+                                                            average % 10 > 1
+                                                        ? ((average * 10) %
+                                                                    10 >=
+                                                                5
+                                                            ? Icons
+                                                                .star_half_rounded
+                                                            : Icons
+                                                                .star_border_rounded)
+                                                        : Icons
+                                                            .star_border_rounded,
+                                                    size: GFSize.MEDIUM,
+                                                    color: GFColors.WARNING,
+                                                  )
+                                                : Container(),
+                                            average % 10 < 3
+                                                ? Icon(
+                                                    average % 10 < 3 &&
+                                                            average % 10 > 2
+                                                        ? ((average * 10) %
+                                                                    10 >=
+                                                                5
+                                                            ? Icons
+                                                                .star_half_rounded
+                                                            : Icons
+                                                                .star_border_rounded)
+                                                        : Icons
+                                                            .star_border_rounded,
+                                                    size: GFSize.MEDIUM,
+                                                    color: GFColors.WARNING,
+                                                  )
+                                                : Container(),
+                                            average % 10 < 4
+                                                ? Icon(
+                                                    average % 10 < 4 &&
+                                                            average % 10 > 3
+                                                        ? ((average * 10) %
+                                                                    10 >=
+                                                                5
+                                                            ? Icons
+                                                                .star_half_rounded
+                                                            : Icons
+                                                                .star_border_rounded)
+                                                        : Icons
+                                                            .star_border_rounded,
+                                                    size: GFSize.MEDIUM,
+                                                    color: GFColors.WARNING,
+                                                  )
+                                                : Container(),
+                                            average % 10 < 5
+                                                ? Icon(
+                                                    average % 10 < 5 &&
+                                                            average % 10 > 4
+                                                        ? ((average * 10) %
+                                                                    10 >=
+                                                                5
+                                                            ? Icons
+                                                                .star_half_rounded
+                                                            : Icons
+                                                                .star_border_rounded)
+                                                        : Icons
+                                                            .star_border_rounded,
+                                                    size: GFSize.MEDIUM,
+                                                    color: GFColors.WARNING,
+                                                  )
+                                                : Container(),
                                             SizedBox(width: 5.w),
                                             Text(
                                               '$average trên 5',
@@ -256,26 +347,27 @@ class _CommentsState extends State<CommentsScreen> {
                                         child: Text(
                                           '${snapshot.data!.length} người dùng đã đánh giá',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             color: Colors.blueAccent,
                                             fontSize: FONTSIZES.textMediumLarge,
                                           ),
                                         ),
                                       ),
                                       Container(
-                                        margin: EdgeInsets.only(
+                                        margin: const EdgeInsets.only(
                                             top: kDefaultPaddingValue),
                                         width: 80.w,
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceAround,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            Text('5 sao'),
+                                            const Text('5 sao'),
                                             Container(
                                               width: 54.w,
                                               child: GFProgressBar(
+                                                animation: true,
                                                 percentage:
                                                     _listRateOfRating[4] > 1
                                                         ? 1
@@ -290,24 +382,150 @@ class _CommentsState extends State<CommentsScreen> {
                                               ),
                                             ),
                                             Text(
-                                                '${_listRateOfRating[4] * 100}%'),
+                                              '${(_listRateOfRating[4] * 100).toStringAsFixed(2)}%',
+                                              textAlign: TextAlign.left,
+                                            ),
                                           ],
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 2.h, left: kDefaultPaddingValue),
-                                  child: Row(
-                                    children: const [
-                                      Text(
-                                        "Các đánh giá",
-                                        style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontSize: FONTSIZES.textLarger,
-                                          fontWeight: FontWeight.bold,
+                                      ),
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            top: kDefaultPaddingValue),
+                                        width: 80.w,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Text('4 sao'),
+                                            Container(
+                                              width: 54.w,
+                                              child: GFProgressBar(
+                                                animation: true,
+                                                percentage:
+                                                    _listRateOfRating[3] > 1
+                                                        ? 1
+                                                        : _listRateOfRating[3],
+                                                lineHeight: 16,
+                                                alignment: MainAxisAlignment
+                                                    .spaceBetween,
+                                                backgroundColor:
+                                                    Colors.grey.shade400,
+                                                progressBarColor:
+                                                    GFColors.WARNING,
+                                              ),
+                                            ),
+                                            Text(
+                                              '${(_listRateOfRating[3] * 100).toStringAsFixed(2)}%',
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            top: kDefaultPaddingValue),
+                                        width: 80.w,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Text('3 sao'),
+                                            Container(
+                                              width: 54.w,
+                                              child: GFProgressBar(
+                                                animation: true,
+                                                percentage:
+                                                    _listRateOfRating[2] > 1
+                                                        ? 1
+                                                        : _listRateOfRating[2],
+                                                lineHeight: 16,
+                                                alignment: MainAxisAlignment
+                                                    .spaceBetween,
+                                                backgroundColor:
+                                                    Colors.grey.shade400,
+                                                progressBarColor:
+                                                    GFColors.WARNING,
+                                              ),
+                                            ),
+                                            Text(
+                                              '${(_listRateOfRating[2] * 100).toStringAsFixed(2)}%',
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            top: kDefaultPaddingValue),
+                                        width: 80.w,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Text('2 sao'),
+                                            Container(
+                                              width: 54.w,
+                                              child: GFProgressBar(
+                                                animation: true,
+                                                percentage:
+                                                    _listRateOfRating[1] > 1
+                                                        ? 1
+                                                        : _listRateOfRating[1],
+                                                lineHeight: 16,
+                                                alignment: MainAxisAlignment
+                                                    .spaceBetween,
+                                                backgroundColor:
+                                                    Colors.grey.shade400,
+                                                progressBarColor:
+                                                    GFColors.WARNING,
+                                              ),
+                                            ),
+                                            Text(
+                                              '${(_listRateOfRating[1] * 100).toStringAsFixed(2)}%',
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            top: kDefaultPaddingValue),
+                                        width: 80.w,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Text('1 sao'),
+                                            Container(
+                                              width: 54.w,
+                                              child: GFProgressBar(
+                                                animation: true,
+                                                percentage:
+                                                    _listRateOfRating[0] > 1
+                                                        ? 1
+                                                        : _listRateOfRating[0],
+                                                lineHeight: 16,
+                                                alignment: MainAxisAlignment
+                                                    .spaceBetween,
+                                                backgroundColor:
+                                                    Colors.grey.shade400,
+                                                progressBarColor:
+                                                    GFColors.WARNING,
+                                              ),
+                                            ),
+                                            Text(
+                                              '${(_listRateOfRating[0] * 100).toStringAsFixed(2)}%',
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],

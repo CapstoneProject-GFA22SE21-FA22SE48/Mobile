@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/dropdown/gf_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -20,7 +22,7 @@ import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/location_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
@@ -40,28 +42,7 @@ class FeedbacksScreen extends StatefulWidget {
 
 class _FeedbackClassState extends State<FeedbacksScreen> {
   final imagePicker = ImagePicker();
-  final List<DropdownMenuItem<String>> _listDropdown =
-      <DropdownMenuItem<String>>[
-    const DropdownMenuItem<String>(
-      value: "noSignHere",
-      child: Text.rich(
-        TextSpan(children: [
-          TextSpan(
-              text: "Tôi không thấy biển báo ở đây") //nhưng bản đồ hiển thị
-        ]),
-      ),
-    ),
-    const DropdownMenuItem<String>(
-      value: "hasSignHere",
-      child: Text("Biển báo ở đây nhưng bản đồ không hiển thị",
-          overflow: TextOverflow.ellipsis),
-    ),
-    const DropdownMenuItem<String>(
-      value: "wrongSign",
-      child: Text("Biển báo không giống như trên bản đồ",
-          overflow: TextOverflow.ellipsis),
-    ),
-  ];
+  List<DropdownMenuItem<String>> _listDropdown = [];
   dynamic reason;
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
@@ -98,7 +79,8 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
     });
   }
 
-  Future uploadImage() async {
+  Future uploadImage(BuildContext context) async {
+    context.loaderOverlay.show();
     GlobalController gc = Get.put(GlobalController());
     final ext = pickedFile!.name.split('.').last;
     final path =
@@ -116,10 +98,14 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
       mapsController.location.getLocation().then((location) {
         GPSSignService()
             .AddGpsSign(
-          widget.sign!.signId,
-          location.latitude!,
-          location.longitude!,
-        )
+                widget.sign != null ? widget.sign!.signId : null,
+                widget.sign != null
+                    ? widget.sign!.latitude
+                    : location.latitude!,
+                widget.sign != null
+                    ? widget.sign!.longitude
+                    : location.longitude!,
+                reason == 'noSignHere' ? true : false)
             .then((newSign) {
           FeedbackService()
               .createGpsSignsModificationRequest(
@@ -129,20 +115,23 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
             newSign,
           )
               .then((value) {
+            context.loaderOverlay.hide();
             if (value != null) {
-              DialogUtil.showDCDialog(
-                context,
-                DialogUtil.successText("Phản hồi thành công"),
-                "Cảm ơn về phản hồi của bạn!\nChúng tôi sẽ kiểm tra và chỉnh sửa sớm nhất có thể.",
-                [TemplatedButtons.okWithscreen(context, ContainerScreen())],
-              );
+              DialogUtil.showAwesomeDialog(
+                  context,
+                  DialogType.success,
+                  "Phản hồi thành công",
+                  "Cảm ơn về phản hồi của bạn!\nChúng tôi sẽ kiểm tra và chỉnh sửa sớm nhất có thể.",
+                  () => Get.to(() => const ContainerScreen()),
+                  null);
             } else {
-              DialogUtil.showDCDialog(
-                context,
-                DialogUtil.failedText("Phản hồi thất bại"),
-                "Một sự cố không mong muốn đã xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
-                [TemplatedButtons.okWithscreen(context, ContainerScreen())],
-              );
+              DialogUtil.showAwesomeDialog(
+                  context,
+                  DialogType.error,
+                  "Phản hồi thất bại",
+                  "Một sự cố không mong muốn đã xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
+                  () {},
+                  null);
             }
           });
         });
@@ -153,6 +142,32 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.sign != null) {
+      _listDropdown = <DropdownMenuItem<String>>[
+        const DropdownMenuItem<String>(
+          value: "noSignHere",
+          child: Text.rich(
+            TextSpan(children: [
+              TextSpan(
+                  text: "Tôi không thấy biển báo ở đây") //nhưng bản đồ hiển thị
+            ]),
+          ),
+        ),
+        const DropdownMenuItem<String>(
+          value: "wrongSign",
+          child: Text("Biển báo không giống như trên bản đồ",
+              overflow: TextOverflow.ellipsis),
+        ),
+      ];
+    } else {
+      _listDropdown = <DropdownMenuItem<String>>[
+        const DropdownMenuItem<String>(
+          value: "hasSignHere",
+          child: Text("Biển báo ở đây nhưng bản đồ không hiển thị",
+              overflow: TextOverflow.ellipsis),
+        ),
+      ];
+    }
   }
 
   @override
@@ -167,7 +182,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
       body: KeyboardVisibilityBuilder(
         builder: (context, isKeyboardVisible) {
           return SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             child: Container(
               height: 90.h,
               width: 100.w,
@@ -241,36 +256,34 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                     margin:
                         const EdgeInsets.only(top: kDefaultPaddingValue / 2),
                     child: pickedFile != null
-                        ? Expanded(
-                            child: Container(
-                              height: 15.h,
-                              width: 80.w,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.grey,
-                                  style: BorderStyle.solid,
-                                  width: 3,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                  kDefaultPaddingValue / 2,
-                                ),
+                        ? Container(
+                            height: 15.h,
+                            width: 80.w,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.grey,
+                                style: BorderStyle.solid,
+                                width: 3,
                               ),
-                              child: Center(
-                                child: pickedFile != null
-                                    ? Image.file(
-                                        File(pickedFile!.path!),
-                                        fit: BoxFit.contain,
-                                      )
-                                    : const Text(
-                                        "Xem trước tại đây",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.black54,
-                                        ),
+                              borderRadius: BorderRadius.circular(
+                                kDefaultPaddingValue / 2,
+                              ),
+                            ),
+                            child: Center(
+                              child: pickedFile != null
+                                  ? Image.file(
+                                      File(pickedFile!.path!),
+                                      fit: BoxFit.contain,
+                                    )
+                                  : const Text(
+                                      "Xem trước tại đây",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.black54,
                                       ),
-                              ),
+                                    ),
                             ),
                           )
                         : Container(
@@ -293,7 +306,9 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                     height: kDefaultPaddingValue,
                   ),
                   ElevatedButton(
-                    onPressed: pickedFile != null ? uploadImage : () => {},
+                    onPressed: pickedFile != null
+                        ? () => uploadImage(context)
+                        : () => {},
                     child: Padding(
                       padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),
                       child: const Text('Gửi phản hồi'),

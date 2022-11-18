@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io' as io;
 import 'package:camera/camera.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vision/flutter_vision.dart';
 import 'package:get/get.dart';
@@ -18,51 +15,51 @@ class AnalysisController extends GetxController {
   late FlutterVision vision;
 
   late bool _isLoaded = false;
-  bool get isLoaded => this._isLoaded;
+  bool get isLoaded => _isLoaded;
 
   late bool _isDetecting;
-  bool get isDetecting => this._isDetecting;
+  bool get isDetecting => _isDetecting;
 
   late List<Map<String, dynamic>> _modelResults;
-  List<Map<String, dynamic>> get modelResults => this._modelResults;
+  List<Map<String, dynamic>> get modelResults => _modelResults;
 
   late CameraImage _cameraImage;
-  CameraImage get cameraImage => this._cameraImage;
+  CameraImage get cameraImage => _cameraImage;
 
   late CameraController _cameraController;
-  CameraController get cameraController => this._cameraController;
+  CameraController get cameraController => _cameraController;
 
   late List<dynamic>? _recognitionsList;
-  List<dynamic>? get recognitionsList => this._recognitionsList;
+  List<dynamic>? get recognitionsList => _recognitionsList;
 
   late Timer? _timer;
-  Timer? get timer => this._timer;
+  Timer? get timer => _timer;
 
-  late String? _detected = "[]";
-  String? get detected => this._detected;
+  late final String _detected = "[]";
+  String? get detected => _detected;
 
-  late List<int>? _detectedSigns = [];
-  List<int>? get detectedSigns => this._detectedSigns;
+  late final List<int> _detectedSigns = [];
+  List<int>? get detectedSigns => _detectedSigns;
 
   late List<List<dynamic>> _boxes = [];
-  List<List<dynamic>> get boxes => this._boxes;
+  List<List<dynamic>> get boxes => _boxes;
 
-  late YamlMap? _mapData = null;
-  YamlMap? get mapData => this._mapData;
+  late YamlMap? _mapData;
+  YamlMap? get mapData => _mapData;
 
   late bool? _found = false;
-  bool? get found => this._found;
+  bool? get found => _found;
 
   //Feedback Sign starts here
   late String? _imagePath = "";
-  String? get imagePath => this._imagePath;
+  String? get imagePath => _imagePath;
 
   //Feedback Sign starts here
   late String _aiurl = "";
-  String get aiurl => this._aiurl;
+  String get aiurl => _aiurl;
 
-  late XFile? _image = null;
-  XFile? get image => this._image;
+  late XFile? _image;
+  XFile? get image => _image;
 
   @override
   onInit() async {
@@ -74,7 +71,7 @@ class AnalysisController extends GetxController {
   }
 
   takeSignContentFeebackImage() async {
-    _cameraController.setFlashMode(FlashMode.auto);
+    _cameraController.setFlashMode(FlashMode.off);
     final xFile = await _cameraController.takePicture();
     _image = xFile;
     final path = xFile.path;
@@ -114,7 +111,6 @@ class AnalysisController extends GetxController {
   }
 
   Future<void> loadYoloModel() async {
-    print('loading');
     final responseHandler = await vision.loadYoloModel(
         labels: 'assets/ml/best-fp16.txt',
         modelPath: 'assets/ml/exp33.tflite',
@@ -132,9 +128,9 @@ class AnalysisController extends GetxController {
       final path = xFile.path;
       // _imagePath = path;
       io.File file = io.File(xFile.path);
-      print(file.lengthSync());
+      // print(file.lengthSync());
       final res = await upload(file, cont: _isDetecting, url: _aiurl);
-      print(res);
+      // print(res);
       if (res != "[]") {
         _imagePath = path;
       }
@@ -149,12 +145,12 @@ class AnalysisController extends GetxController {
 
   void startTimer() {
     // _boxes.clear();
-    _timer = Timer.periodic(Duration(milliseconds: 100), (Timer t) async {
+    _timer = Timer.periodic(const Duration(milliseconds: 100), (Timer t) async {
       _timer!.cancel();
       if (!_isDetecting) {
         t.cancel();
       }
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       final stopwatch = Stopwatch()..start();
       var res = await takePicAndDetect();
       print('executed in ${stopwatch.elapsed}');
@@ -200,12 +196,12 @@ class AnalysisController extends GetxController {
     _imagePath = "";
     _found = false;
     if (!_cameraController.value.isInitialized) {
-      print('controller not initialized');
+      // print('controller not initialized');
       return;
     }
     _isDetecting = true;
-    var frame = 0;
-    var fps = 1;
+    // var frame = 0;
+    // var fps = 1;
     startTimer();
     // await _cameraController.startImageStream((image) async {
     //   if (!_isDetecting) {
@@ -228,7 +224,7 @@ class AnalysisController extends GetxController {
 
   Future<void> stopImageStream() async {
     if (!_cameraController.value.isInitialized) {
-      print('controller not initialized');
+      // print('controller not initialized');
       return;
     }
     // _timer!.cancel();
@@ -240,8 +236,8 @@ class AnalysisController extends GetxController {
   }
 
   Future<void> yoloOnFrame(CameraImage cameraImage) async {
-    print(cameraImage.height);
-    print(cameraImage.width);
+    // print(cameraImage.height);
+    // print(cameraImage.width);
 
     _boxes = [];
     var stopwatch = Stopwatch()..start();
@@ -252,9 +248,9 @@ class AnalysisController extends GetxController {
         iouThreshold: 0.9,
         confThreshold: 0.50);
     print('executed in ${stopwatch.elapsed}');
-    print(result.stackTrace);
+    // print(result.stackTrace);
     if (result.data != null) {
-      print(result.data);
+      // print(result.data);
       _modelResults = result.data as List<Map<String, dynamic>>;
       if (_modelResults.isNotEmpty) {
         _modelResults.forEach((element) {

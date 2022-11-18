@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image/image.dart' as Im;
@@ -7,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/avatar/gf_avatar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
@@ -14,7 +16,7 @@ import 'package:vnrdn_tai/models/UserInfo.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
 import 'package:vnrdn_tai/services/UserService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/firebase_options.dart';
 import 'package:vnrdn_tai/utils/form_validator.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
@@ -115,6 +117,7 @@ class _ProfileState extends State<ProfileScreen> {
   }
 
   void handleUpdateProfile() async {
+    context.loaderOverlay.show();
     String imageUrl = ac.avatar.value;
     // if (imageUrl.contains('doNotPick')) {
     //   imageUrl = ac.avatar.value;
@@ -125,41 +128,42 @@ class _ProfileState extends State<ProfileScreen> {
           .updateProfile(
               imageUrl, emailController.text, displayNameController.text)
           .then((value) {
+        context.loaderOverlay.hide();
         if (value.isNotEmpty) {
           if (value.toLowerCase().contains('thay đổi')) {
             // deleteOldImage();
-            // info changed
-            DialogUtil.showDCDialog(
+            // info changed\
+            DialogUtil.showAwesomeDialog(
                 context,
-                DialogUtil.successText("Thành công"),
-                'Thông tin của bạn đã được thay đổi thành công!', [
-              TemplatedButtons.okWithscreen(context, const SettingsScreen())
-            ]);
+                DialogType.success,
+                "Thành công",
+                "Thông tin của bạn đã được thay đổi thành công!",
+                () => Get.off(() => const SettingsScreen()),
+                null);
           } else {
-            DialogUtil.showDCDialog(context, DialogUtil.failedText("Thất bại"),
-                value, [TemplatedButtons.ok(context)]);
+            DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
+                value.isNotEmpty ? value : 'Một sự cố đã xảy ra.', () {}, null);
           }
         } else {
           // Something went wrong
-          DialogUtil.showDCDialog(
+          DialogUtil.showAwesomeDialog(
               context,
-              const Text(
-                "Thất bại",
-                style: TextStyle(
-                  color: kDangerButtonColor,
-                ),
-              ),
+              DialogType.error,
+              "Thất bại",
               value.isNotEmpty ? value : 'Thông tin người dùng không đúng.',
-              [TemplatedButtons.ok(context)]);
+              () {},
+              null);
         }
       });
     } else {
       // Something went wrong
-      // ignore: use_build_context_synchronously
-      DialogUtil.showDCDialog(context, DialogUtil.failedText("Thất bại"),
-          'Có sự cố đã xảy ra.\nVui lòng thử lại sau.',
-          // ignore: use_build_context_synchronously
-          [TemplatedButtons.ok(context)]);
+      DialogUtil.showAwesomeDialog(
+          context,
+          DialogType.error,
+          "Thất bại",
+          "Một sự cố không mong muốn đã xảy ra.\nVui lòng thử lại sau.",
+          () {},
+          null);
     }
   }
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -12,7 +13,7 @@ import 'package:vnrdn_tai/screens/auth/verify_screen.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/form_validator.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 import '../login_screen.dart';
@@ -59,11 +60,13 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   void noEmailConfirm() {
-    DialogUtil.showTextDialog(
+    DialogUtil.showAwesomeDialog(
         context,
+        DialogType.info,
         "Không có Email",
         "Nếu không có email bạn sẽ không thể sử dụng quên mật khẩu.\nBạn có muốn tiếp tục?",
-        [yes(context), TemplatedButtons.no(context)]);
+        () {},
+        null);
   }
 
   Future<bool> sendEmail() async {
@@ -102,33 +105,28 @@ class _SignUpFormState extends State<SignUpForm> {
       ScaffoldMessenger.of(context).clearSnackBars();
       if (value.length > 1) {
         if (value.contains("lỗi") || value.contains('đã')) {
-          DialogUtil.showDCDialog(
-              context,
-              DialogUtil.failedText("Đăng ký thất bại"),
-              value,
-              [TemplatedButtons.ok(context)]);
+          DialogUtil.showAwesomeDialog(context, DialogType.error,
+              "Đăng ký thất bại", value.isNotEmpty ? value : "", () {}, null);
         } else {
           afterRegistered(value);
         }
       } else {
-        // need fix content
-        DialogUtil.showDCDialog(
-            context,
-            DialogUtil.failedText("Đăng ký thất bại"),
-            value,
-            [TemplatedButtons.ok(context)]);
+        DialogUtil.showAwesomeDialog(context, DialogType.error,
+            "Đăng ký thất bại", value.isNotEmpty ? value : "", () {}, null);
       }
     }));
   }
 
-  // do after logged in
   void afterRegistered(String user) {
-    DialogUtil.showDCDialog(
+    DialogUtil.showAwesomeDialog(
         context,
-        DialogUtil.successText("Thành công"),
-        "Đăng ký thành công!\nĐăng nhập ngay để trải nghiệm những tính năng thú vị nào!!!",
-        [TemplatedButtons.okWithscreen(context, const LoginScreen())]);
+        DialogType.success,
+        "Đăng ký thành công",
+        "Đăng nhập ngay để trải nghiệm những tính năng thú vị nào!!!",
+        () => Get.off(() => const LoginScreen()),
+        () {});
 
+    // // send mail
     // if (emailController.text.isEmpty) {
     //   ScaffoldMessenger.of(context).showSnackBar(
     //     SnackBar(
@@ -140,7 +138,6 @@ class _SignUpFormState extends State<SignUpForm> {
     //       ),
     //     ),
     //   );
-
     //   Get.to(const LoginScreen());
     // } else {
     //   AuthController ac = Get.put(AuthController());
@@ -177,141 +174,145 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
-    return KeyboardVisibilityBuilder(
-      builder: (context, isKeyboardVisible) {
-        return Form(
-          key: registerFormKey,
-          child: Column(
-            children: [
-              TextFormField(
-                validator: (value) {
-                  return FormValidator.validUsername(value);
-                },
-                controller: usernameController,
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.next,
-                cursorColor: kPrimaryButtonColor,
-                onSaved: (username) {},
-                decoration: const InputDecoration(
-                  labelText: "Tên đăng nhập",
-                  hintText: "Tên đăng nhập *",
-                  prefixIcon: Padding(
-                    padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-                    child: Icon(Icons.person),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: kDefaultPaddingValue / 2),
-                child: TextFormField(
+    return Padding(
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: KeyboardVisibilityBuilder(
+        builder: (context, isKeyboardVisible) {
+          return Form(
+            key: registerFormKey,
+            child: Column(
+              children: [
+                TextFormField(
                   validator: (value) {
-                    return FormValidator.validPassword(value);
+                    return FormValidator.validUsername(value);
                   },
-                  controller: passwordController,
+                  controller: usernameController,
+                  keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
-                  obscureText: true,
                   cursorColor: kPrimaryButtonColor,
+                  onSaved: (username) {},
                   decoration: const InputDecoration(
-                    labelText: "Mật khẩu",
-                    hintText: "Mật khẩu *",
+                    labelText: "Tên đăng nhập",
+                    hintText: "Tên đăng nhập *",
                     prefixIcon: Padding(
                       padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-                      child: Icon(Icons.lock),
+                      child: Icon(Icons.person),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: kDefaultPaddingValue / 2),
-                child: TextFormField(
-                  validator: (value) {
-                    return FormValidator.validPasswordConfirm(
-                        value, passwordController.text);
-                  },
-                  controller: passwordConfirmController,
-                  textInputAction: TextInputAction.next,
-                  obscureText: true,
-                  cursorColor: kPrimaryButtonColor,
-                  decoration: const InputDecoration(
-                    labelText: "Xác nhận mật khẩu",
-                    hintText: "Xác nhận mật khẩu *",
-                    prefixIcon: Padding(
-                      padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-                      child: Icon(Icons.lock),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: kDefaultPaddingValue / 2),
+                  child: TextFormField(
+                    validator: (value) {
+                      return FormValidator.validPassword(value);
+                    },
+                    controller: passwordController,
+                    textInputAction: TextInputAction.next,
+                    obscureText: true,
+                    cursorColor: kPrimaryButtonColor,
+                    decoration: const InputDecoration(
+                      labelText: "Mật khẩu",
+                      hintText: "Mật khẩu *",
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.all(kDefaultPaddingValue / 2),
+                        child: Icon(Icons.lock),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: kDefaultPaddingValue / 2),
-                child: TextFormField(
-                  validator: (value) {
-                    return FormValidator.validEmail(value);
-                  },
-                  controller: emailController,
-                  textInputAction: TextInputAction.done,
-                  cursorColor: kPrimaryButtonColor,
-                  decoration: const InputDecoration(
-                    labelText: "Email",
-                    hintText: "Email",
-                    prefixIcon: Padding(
-                      padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-                      child: Icon(Icons.mail),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: kDefaultPaddingValue / 2),
+                  child: TextFormField(
+                    validator: (value) {
+                      return FormValidator.validPasswordConfirm(
+                          value, passwordController.text);
+                    },
+                    controller: passwordConfirmController,
+                    textInputAction: TextInputAction.next,
+                    obscureText: true,
+                    cursorColor: kPrimaryButtonColor,
+                    decoration: const InputDecoration(
+                      labelText: "Xác nhận mật khẩu",
+                      hintText: "Xác nhận mật khẩu *",
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.all(kDefaultPaddingValue / 2),
+                        child: Icon(Icons.lock),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: kDefaultPaddingValue),
-              Hero(
-                tag: "login_btn",
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (registerFormKey.currentState!.validate()) {
-                      if (emailController.text.isNotEmpty) {
-                        handleRegister(context);
-                      } else {
-                        noEmailConfirm();
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: kDefaultPaddingValue / 2),
+                  child: TextFormField(
+                    validator: (value) {
+                      return FormValidator.validEmail(value);
+                    },
+                    controller: emailController,
+                    textInputAction: TextInputAction.done,
+                    cursorColor: kPrimaryButtonColor,
+                    decoration: const InputDecoration(
+                      labelText: "Email",
+                      hintText: "Email",
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.all(kDefaultPaddingValue / 2),
+                        child: Icon(Icons.mail),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: kDefaultPaddingValue),
+                Hero(
+                  tag: "login_btn",
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (registerFormKey.currentState!.validate()) {
+                        if (emailController.text.isNotEmpty) {
+                          handleRegister(context);
+                        } else {
+                          noEmailConfirm();
+                        }
                       }
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: kDefaultPaddingValue),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Đăng ký".toUpperCase(),
-                        ),
-                      ],
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: kDefaultPaddingValue),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Đăng ký".toUpperCase(),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: kDefaultPaddingValue * 2),
-              AlreadyHaveAnAccountCheck(
-                login: false,
-                press: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const LoginScreen();
-                      },
-                    ),
-                  );
-                },
-              ),
-              SizedBox(
-                height: isKeyboardVisible ? 160 : 40,
-              ),
-            ],
-          ),
-        );
-      },
+                const SizedBox(height: kDefaultPaddingValue * 2),
+                AlreadyHaveAnAccountCheck(
+                  login: false,
+                  press: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const LoginScreen();
+                        },
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: isKeyboardVisible ? 160 : 40,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

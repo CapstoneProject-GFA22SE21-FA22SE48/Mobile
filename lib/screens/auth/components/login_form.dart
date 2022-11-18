@@ -1,20 +1,14 @@
 import 'dart:async';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
-import 'package:jwt_decode/jwt_decode.dart';
-import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/models/UserInfo.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:vnrdn_tai/screens/auth/components/change_forgot_password.dart';
 import 'package:vnrdn_tai/screens/auth/components/or_divider.dart';
 import 'package:vnrdn_tai/screens/auth/components/verify_mail_screen.dart';
-import 'package:vnrdn_tai/screens/auth/forgot_password_screen.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';
 
@@ -22,7 +16,7 @@ import 'package:vnrdn_tai/screens/auth/components/already_have_an_account_acheck
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/form_validator.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 import '../signup_screen.dart';
 
@@ -64,9 +58,8 @@ class _LoginFormState extends State<LoginForm> {
         ScaffoldMessenger.of(context).clearSnackBars();
         afterLoggedIn(context, token);
       } else {
-        // ignore: use_build_context_synchronously
-        DialogUtil.showTextDialog(context, "Đăng nhập thất bại",
-            "Sai tên đăng nhập hoặc mật khẩu.", [TemplatedButtons.ok(context)]);
+        DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
+            "Sai tên đăng nhập hoặc mật khẩu.", () {}, null);
       }
     }));
   }
@@ -92,11 +85,13 @@ class _LoginFormState extends State<LoginForm> {
     IOUtils.setUserInfoController(token)
         ? Get.to(() => const ContainerScreen())
         // ignore: use_build_context_synchronously
-        : DialogUtil.showDCDialog(context, DialogUtil.failedText("Thất bại"),
-            "Một lỗi không mong muốn đã xảy ra.\nMời bạn đăng nhập lại", [
-            // ignore: use_build_context_synchronously
-            TemplatedButtons.ok(context),
-          ]);
+        : DialogUtil.showAwesomeDialog(
+            context,
+            DialogType.error,
+            "Thất bại",
+            "Một lỗi không mong muốn đã xảy ra.\nMời bạn đăng nhập lại.",
+            () {},
+            null);
   }
 
   @override

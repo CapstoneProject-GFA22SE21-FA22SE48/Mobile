@@ -1,25 +1,21 @@
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:path/path.dart';
 import 'package:sizer/sizer.dart';
-import 'package:uuid/uuid.dart';
 import 'package:vnrdn_tai/controllers/analysis_controller.dart';
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import 'package:vnrdn_tai/models/dtos/SignFeedbackDTO.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/shared/snippets.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class SignContentFeedbackScreen extends StatelessWidget {
@@ -42,21 +38,23 @@ class SignContentFeedbackScreen extends StatelessWidget {
       if (res == true) {
         ac.clearFeedbackImage();
         // ignore: use_build_context_synchronously
-        DialogUtil.showDCDialog(context, DialogUtil.successText("Thành công"),
-            'Cảm ơn vì đã gửi phản hồi!\nChúng tôi thành thật xin lỗi vì một số bất tiện này!',
-            // ignore: use_build_context_synchronously
-            [TemplatedButtons.okWithscreen(context, const ContainerScreen())]);
-        // Get.to(() => const ContainerScreen());
-        // Get.snackbar('Cảm ơn',
-        //     'Cảm ơn vì đã gửi phản hồi! Chúng tôi thành thật xin lỗi vì bất tiện này!',
-        //     colorText: Colors.green, isDismissible: true);
+        DialogUtil.showAwesomeDialog(
+            context,
+            DialogType.success,
+            "Phản hồi thành công",
+            "Cảm ơn về phản hồi của bạn!\nChúng tôi sẽ kiểm tra và chỉnh sửa sớm nhất có thể.",
+            () => Get.to(() => const ContainerScreen()),
+            null);
         context.loaderOverlay.hide();
       } else {
         // ignore: use_build_context_synchronously
-        DialogUtil.showDCDialog(context, DialogUtil.failedText("Thất bại"),
-            "Gửi đánh giá thất bại bởi một lỗi không xác định. Vui lòng thử lại sau.",
-            // ignore: use_build_context_synchronously
-            [TemplatedButtons.ok(context)]);
+        DialogUtil.showAwesomeDialog(
+            context,
+            DialogType.error,
+            "Phản hồi thất bại",
+            "Một sự cố không mong muốn đã xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
+            () {},
+            null);
         context.loaderOverlay.hide();
       }
     });
@@ -64,6 +62,7 @@ class SignContentFeedbackScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AuthController auc = Get.put(AuthController());
     AnalysisController ac = Get.put(AnalysisController());
     return GetBuilder<AnalysisController>(
         init: ac,
@@ -95,156 +94,157 @@ class SignContentFeedbackScreen extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
+                      SizedBox(
+                        width: 100.w,
+                        height: 80.h,
+                        child: controller.imagePath == ""
+                            ? CameraPreview(controller.cameraController)
+                            : Image.file(
+                                File(controller.imagePath!),
+                                fit: BoxFit.fill,
+                                height: double.infinity,
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                              ),
+                      )
+                    ],
+                  ),
+                  Positioned(
+                    left: 3.w,
+                    top: 1.h,
+                    child: Opacity(
+                      opacity: 0.3,
+                      child: Container(
+                        width: 42.w,
+                        height: 28.h,
+                        padding: EdgeInsets.all(kDefaultPaddingValue),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.circular(kDefaultPaddingValue)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: kDefaultPaddingValue),
-                                  child: Text('Người dùng: ',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4
-                                          ?.copyWith(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: FONTSIZES.textLarge)),
-                                ),
-                                Text('Người dùng tự do',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline4
-                                        ?.copyWith(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: FONTSIZES.textLarge)),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(
+                                //       top: kDefaultPaddingValue),
+                                //   child: Text('Người dùng: ',
+                                //       style: Theme.of(context)
+                                //           .textTheme
+                                //           .headline4
+                                //           ?.copyWith(
+                                //               color: Colors.black,
+                                //               fontWeight: FontWeight.normal,
+                                //               fontSize: FONTSIZES.textPrimary)),
+                                // ),
+                                // Text(auc.displayName.value,
+                                //     style: Theme.of(context)
+                                //         .textTheme
+                                //         .headline5
+                                //         ?.copyWith(
+                                //             color: Colors.black,
+                                //             fontWeight: FontWeight.normal,
+                                //             fontSize: FONTSIZES.textPrimary)),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: kDefaultPaddingValue),
                                   child: Text('Sự cố xảy ra lúc:',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline4
+                                          .headline5
                                           ?.copyWith(
                                               color: Colors.black,
                                               fontWeight: FontWeight.normal,
-                                              fontSize: FONTSIZES.textLarge)),
+                                              fontSize: FONTSIZES.textPrimary)),
                                 ),
                                 Text(
-                                    '${DateFormat('hh:mm dd/MM/yyyy').format(DateTime.now())}',
+                                    DateFormat('hh:mm dd/MM/yyyy')
+                                        .format(DateTime.now()),
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline4
+                                        .headline5
                                         ?.copyWith(
                                             color: Colors.black,
                                             fontWeight: FontWeight.normal,
-                                            fontSize: FONTSIZES.textLarge)),
+                                            fontSize: FONTSIZES.textPrimary)),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: kDefaultPaddingValue),
                                   child: Text('Chi tiết báo cáo:',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline4
+                                          .headline5
                                           ?.copyWith(
                                               color: Colors.black,
                                               fontWeight: FontWeight.normal,
-                                              fontSize: FONTSIZES.textLarge)),
+                                              fontSize: FONTSIZES.textPrimary)),
                                 ),
                                 Text('Không nhận diện\n được biển báo',
                                     maxLines: 2,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline4
+                                        .headline5
                                         ?.copyWith(
                                             color: Colors.black,
                                             fontWeight: FontWeight.normal,
-                                            fontSize: FONTSIZES.textLarge)),
+                                            fontSize: FONTSIZES.textPrimary)),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: kDefaultPaddingValue),
                                   child: Text('Loại báo cáo:',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline4
+                                          .headline5
                                           ?.copyWith(
                                               color: Colors.black,
                                               fontWeight: FontWeight.normal,
-                                              fontSize: FONTSIZES.textLarge)),
+                                              fontSize: FONTSIZES.textPrimary)),
                                 ),
                                 Text('Lỗi ứng dụng',
                                     maxLines: 2,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline4
+                                        .headline5
                                         ?.copyWith(
                                             color: Colors.black,
                                             fontWeight: FontWeight.normal,
-                                            fontSize: FONTSIZES.textLarge)),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: kDefaultPaddingValue * 2),
-                                  child: Text('',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4
-                                          ?.copyWith(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: FONTSIZES.textLarge)),
-                                ),
+                                            fontSize: FONTSIZES.textPrimary)),
                               ],
                             ),
-                          ),
-                          Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: kDefaultPaddingValue,
-                                    right: kDefaultPaddingValue / 2),
-                                child: SizedBox(
-                                  width: 50.w,
-                                  height: 60.h,
-                                  child: controller.imagePath == ""
-                                      ? CameraPreview(
-                                          controller.cameraController)
-                                      : Image.file(
-                                          File(controller.imagePath!),
-                                          fit: BoxFit.fill,
-                                          height: double.infinity,
-                                          width: double.infinity,
-                                          alignment: Alignment.center,
-                                        ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(kDefaultPaddingValue * 2),
-                        child: Text(
-                            'Xin vui lòng lưu lại hình ảnh làm bằng chứng trước khi gửi phản hồi!',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4
-                                ?.copyWith(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: FONTSIZES.textLarge)),
-                      )
-                    ],
+                    ),
                   ),
                   controller.imagePath == ""
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(
+                                  kDefaultPaddingValue * 2),
+                              child: Text(
+                                  'Xin vui lòng lưu lại hình ảnh làm bằng chứng trước khi gửi phản hồi!',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6
+                                      ?.copyWith(
+                                          color: Colors.white60,
+                                          fontWeight: FontWeight.normal)),
+                            ),
+                            SizedBox(height: 12.h),
+                          ],
+                        )
+                      : Container(),
+                  controller.imagePath == ""
                       ? Positioned(
-                          left: 65.w,
-                          top: 50.h,
+                          left: 38.w,
+                          top: 79.h,
                           child: Padding(
                             padding: const EdgeInsets.only(
                                 top: kDefaultPaddingValue, left: 18),

@@ -41,7 +41,7 @@ class TemplatedButtons {
       style: TemplatedButtons().confirmStyle,
       onPressed: () {
         Navigator.pop(context, 'ĐỒNG Ý');
-        Get.to(screen);
+        Get.offAll(screen);
       },
       child: const Text(
         "ĐỒNG Ý",
@@ -92,7 +92,7 @@ class TemplatedButtons {
       style: TemplatedButtons().confirmStyle,
       onPressed: () {
         Navigator.pop(context, 'CÓ');
-        Get.to(screen);
+        Get.offAll(screen);
       },
       child: const Text(
         "CÓ",

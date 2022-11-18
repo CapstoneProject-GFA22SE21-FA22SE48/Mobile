@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
@@ -18,7 +21,8 @@ import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
-import 'package:vnrdn_tai/utils/dialogUtil.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
+import 'package:vnrdn_tai/utils/image_util.dart';
 import 'package:vnrdn_tai/utils/location_util.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
@@ -48,16 +52,20 @@ class _MinimapState extends State<MinimapScreen> {
     _markers.clear();
 
     for (var s in list) {
-      List<String> sParts = s.imageUrl!.split('sign-collection');
+      // List<String> sParts = s.imageUrl!.split('sign-collection');
       String sName = s.imageUrl!.split("%2F")[2].split(".png")[0];
-      String ext = s.imageUrl!.split('.').last;
-      String folderScale = mc.zoom > 17 ? 'x05' : 'x025';
-      String scale = mc.zoom > 17 ? '0_50x' : '0_25x';
-      String newUrl =
-          '${sParts.first}sign-collection%2F$folderScale%2F$sName-standard-scale-$scale.$ext';
-      print(newUrl);
-      var request = await http.get(Uri.parse(newUrl));
-      var bytes = request.bodyBytes;
+      // String ext = s.imageUrl!.split('.').last;
+      // String folderScale = mc.zoom.value > 20 ? 'x05' : 'x025';
+      // String scale = mc.zoom.value > 20 ? '0_50x' : '0_25x';
+      // String newUrl =
+      //     '${sParts.first}sign-collection%2F$folderScale%2F$sName-standard-scale-$scale.$ext';
+
+      // var request = await http.get(Uri.parse(newUrl));
+      // var bytes = request.bodyBytes;
+      print("------------------------");
+      var testImagePath =
+          ImageUtil.getLocalImagePathFromUrl(s.imageUrl!, mc.zoom.value);
+      var bytes = (await rootBundle.load(testImagePath!)).buffer.asUint8List();
       Uint8List dataBytes = bytes;
 
       if (mounted) {
@@ -69,14 +77,9 @@ class _MinimapState extends State<MinimapScreen> {
       _markers.add(
         Marker(
           onTap: () {
-            // setState(() {
-            //   mc.updateZoom(18.0);
-            // });
             _infoWindowcontroller.addInfoWindow!(
               GestureDetector(
-                onTap: (() {
-                  // print(s.signId);
-                }),
+                onTap: () {},
                 child: Container(
                     padding: const EdgeInsets.symmetric(
                       vertical: kDefaultPaddingValue / 2,
@@ -109,19 +112,6 @@ class _MinimapState extends State<MinimapScreen> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            // IconButton(
-                            //   onPressed: (() {
-                            //     // Get.to(FeedbacksScreen(
-                            //     //   type: '',
-                            //     //   sign: s,
-                            //     // ));
-                            //   }),
-                            //   padding: EdgeInsets.all(0),
-                            //   icon: const Icon(
-                            //     Icons.info_outline_rounded,
-                            //     color: Colors.blueAccent,
-                            //   ),
-                            // ),
                           ],
                         ),
                         Padding(
@@ -133,20 +123,20 @@ class _MinimapState extends State<MinimapScreen> {
                               ac.role.value == 2
                                   ? GestureDetector(
                                       onTap: gc.userId.value.isNotEmpty
-                                          ? () => Get.to(FeedbacksScreen(
-                                                type: '',
-                                                sign: s,
+                                          ? () => Get.to(() => LoaderOverlay(
+                                                child: FeedbacksScreen(
+                                                  type: '',
+                                                  sign: s,
+                                                ),
                                               ))
-                                          : () => DialogUtil.showTextDialog(
-                                                context,
-                                                "Cảnh báo",
-                                                "Bạn cần đăng nhập để có thể sử dụng tính năng này.\nĐến trang đăng nhập?",
-                                                [
-                                                  TemplatedButtons.yes(context,
-                                                      const LoginScreen()),
-                                                  TemplatedButtons.no(context),
-                                                ],
-                                              ),
+                                          : () => DialogUtil.showAwesomeDialog(
+                                              context,
+                                              DialogType.warning,
+                                              "Cảnh báo",
+                                              "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
+                                              () => Get.to(
+                                                  () => const LoginScreen()),
+                                              () {}),
                                       child: const Text(
                                         "Thông tin chưa đúng?",
                                         style: TextStyle(
@@ -263,7 +253,7 @@ class _MinimapState extends State<MinimapScreen> {
                   trafficEnabled: true,
                   // zoomGesturesEnabled: false,
                   // zoomControlsEnabled: false,
-                  minMaxZoomPreference: const MinMaxZoomPreference(10, 25),
+                  minMaxZoomPreference: const MinMaxZoomPreference(15, 22),
                   initialCameraPosition: CameraPosition(
                     target: LatLng(
                       currentLocation!.latitude!,
@@ -283,11 +273,9 @@ class _MinimapState extends State<MinimapScreen> {
                         .getZoomLevel()
                         .then((value) {
                       if (value != mc.zoom.value) {
-                        if ((mc.zoom.value > 17 && value <= 17) ||
-                            (mc.zoom.value <= 17 && value > 17)) {
-                          getSignsList(currentLocation!);
-                        }
+                        setCustomMarkerIcon(gpsSigns);
                         mc.updateZoom(value);
+                        print(value);
                       }
                     });
                   },

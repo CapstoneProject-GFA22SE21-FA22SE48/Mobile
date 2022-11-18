@@ -171,7 +171,7 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                           ),
                           SizedBox(
                             width: 100.w,
-                            height: isKeyboardVisible ? 48.h : 79.h,
+                            height: isKeyboardVisible ? 40.h : 79.h,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: kDefaultPaddingValue,

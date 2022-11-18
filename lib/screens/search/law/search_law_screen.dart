@@ -158,7 +158,7 @@ class _SearchLawScreenState extends State<SearchLawScreen>
                             ),
                             SizedBox(
                               width: 100.w,
-                              height: isKeyboardVisible ? 42.h : 64.h,
+                              height: isKeyboardVisible ? 35.8.h : 64.h,
                               child: GridView.count(
                                 physics: const BouncingScrollPhysics(),
                                 clipBehavior: Clip.hardEdge,
