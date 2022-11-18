@@ -127,7 +127,7 @@ class _SearchSignScreenState extends State<SearchSignScreen>
                           ),
                           SizedBox(
                             width: 100.w,
-                            height: isKeyboardVisible ? 46.h : 66.h,
+                            height: isKeyboardVisible ? 36.8.h : 65.h,
                             child: SearchSignListScreen(
                               searchSignDTOList: snapshot
                                   .data![sc.signCategoryNo.value].searchSignDTOs

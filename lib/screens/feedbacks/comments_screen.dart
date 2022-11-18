@@ -45,8 +45,8 @@ class _CommentsState extends State<CommentsScreen> {
       });
       average /= list.length;
     }
-    // return (average * 10).round() / 10;
-    average = average.roundToDouble();
+    return (average * 10).round() / 10;
+    // average = average.roundToDouble();
   }
 
   getRateOfRating(List<Comment> list) {
@@ -115,7 +115,10 @@ class _CommentsState extends State<CommentsScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting ||
                       snapshot.data == null) {
-                    return loadingScreen();
+                    return Padding(
+                      padding: EdgeInsets.only(top: 40.h),
+                      child: loadingScreen(),
+                    );
                   } else {
                     if (snapshot.hasError) {
                       Future.delayed(
@@ -219,7 +222,7 @@ class _CommentsState extends State<CommentsScreen> {
                                           children: [
                                             GFRating(
                                               onChanged: (value) {},
-                                              value: 4.5,
+                                              value: average,
                                               allowHalfRating: true,
                                               filledIcon: const Icon(
                                                 Icons.star_rounded,
@@ -236,10 +239,98 @@ class _CommentsState extends State<CommentsScreen> {
                                                 size: GFSize.MEDIUM,
                                                 color: GFColors.WARNING,
                                               ),
-                                              itemCount: 5,
+                                              itemCount:
+                                                  (average * 10) % 10 >= 5
+                                                      ? average.round() - 1
+                                                      : average.round(),
                                               borderColor: GFColors.WARNING,
                                               color: GFColors.WARNING,
                                             ),
+                                            average % 10 < 1
+                                                ? Icon(
+                                                    average % 10 < 1 &&
+                                                            average % 10 > 0
+                                                        ? ((average * 10) %
+                                                                    10 >=
+                                                                5
+                                                            ? Icons
+                                                                .star_half_rounded
+                                                            : Icons
+                                                                .star_border_rounded)
+                                                        : Icons
+                                                            .star_border_rounded,
+                                                    size: GFSize.MEDIUM,
+                                                    color: GFColors.WARNING,
+                                                  )
+                                                : Container(),
+                                            average % 10 < 2
+                                                ? Icon(
+                                                    average % 10 < 2 &&
+                                                            average % 10 > 1
+                                                        ? ((average * 10) %
+                                                                    10 >=
+                                                                5
+                                                            ? Icons
+                                                                .star_half_rounded
+                                                            : Icons
+                                                                .star_border_rounded)
+                                                        : Icons
+                                                            .star_border_rounded,
+                                                    size: GFSize.MEDIUM,
+                                                    color: GFColors.WARNING,
+                                                  )
+                                                : Container(),
+                                            average % 10 < 3
+                                                ? Icon(
+                                                    average % 10 < 3 &&
+                                                            average % 10 > 2
+                                                        ? ((average * 10) %
+                                                                    10 >=
+                                                                5
+                                                            ? Icons
+                                                                .star_half_rounded
+                                                            : Icons
+                                                                .star_border_rounded)
+                                                        : Icons
+                                                            .star_border_rounded,
+                                                    size: GFSize.MEDIUM,
+                                                    color: GFColors.WARNING,
+                                                  )
+                                                : Container(),
+                                            average % 10 < 4
+                                                ? Icon(
+                                                    average % 10 < 4 &&
+                                                            average % 10 > 3
+                                                        ? ((average * 10) %
+                                                                    10 >=
+                                                                5
+                                                            ? Icons
+                                                                .star_half_rounded
+                                                            : Icons
+                                                                .star_border_rounded)
+                                                        : Icons
+                                                            .star_border_rounded,
+                                                    size: GFSize.MEDIUM,
+                                                    color: GFColors.WARNING,
+                                                  )
+                                                : Container(),
+                                            average % 10 < 5
+                                                ? Icon(
+                                                    average % 10 < 5 &&
+                                                            average % 10 > 4
+                                                        ? ((average * 10) %
+                                                                    10 >=
+                                                                5
+                                                            ? Icons
+                                                                .star_half_rounded
+                                                            : Icons
+                                                                .star_border_rounded)
+                                                        : Icons
+                                                            .star_border_rounded,
+                                                    size: GFSize.MEDIUM,
+                                                    color: GFColors.WARNING,
+                                                  )
+                                                : Container(),
                                             SizedBox(width: 5.w),
                                             Text(
                                               '$average trên 5',
@@ -268,7 +359,7 @@ class _CommentsState extends State<CommentsScreen> {
                                         width: 80.w,
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceAround,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
@@ -276,6 +367,7 @@ class _CommentsState extends State<CommentsScreen> {
                                             Container(
                                               width: 54.w,
                                               child: GFProgressBar(
+                                                animation: true,
                                                 percentage:
                                                     _listRateOfRating[4] > 1
                                                         ? 1
@@ -290,7 +382,9 @@ class _CommentsState extends State<CommentsScreen> {
                                               ),
                                             ),
                                             Text(
-                                                '${_listRateOfRating[4] * 100}%'),
+                                              '${(_listRateOfRating[4] * 100).toStringAsFixed(2)}%',
+                                              textAlign: TextAlign.left,
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -300,7 +394,7 @@ class _CommentsState extends State<CommentsScreen> {
                                         width: 80.w,
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceAround,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
@@ -308,6 +402,7 @@ class _CommentsState extends State<CommentsScreen> {
                                             Container(
                                               width: 54.w,
                                               child: GFProgressBar(
+                                                animation: true,
                                                 percentage:
                                                     _listRateOfRating[3] > 1
                                                         ? 1
@@ -322,7 +417,9 @@ class _CommentsState extends State<CommentsScreen> {
                                               ),
                                             ),
                                             Text(
-                                                '${_listRateOfRating[3] * 100}%'),
+                                              '${(_listRateOfRating[3] * 100).toStringAsFixed(2)}%',
+                                              textAlign: TextAlign.left,
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -332,7 +429,7 @@ class _CommentsState extends State<CommentsScreen> {
                                         width: 80.w,
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceAround,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
@@ -340,6 +437,7 @@ class _CommentsState extends State<CommentsScreen> {
                                             Container(
                                               width: 54.w,
                                               child: GFProgressBar(
+                                                animation: true,
                                                 percentage:
                                                     _listRateOfRating[2] > 1
                                                         ? 1
@@ -354,7 +452,9 @@ class _CommentsState extends State<CommentsScreen> {
                                               ),
                                             ),
                                             Text(
-                                                '${_listRateOfRating[2] * 100}%'),
+                                              '${(_listRateOfRating[2] * 100).toStringAsFixed(2)}%',
+                                              textAlign: TextAlign.left,
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -364,7 +464,7 @@ class _CommentsState extends State<CommentsScreen> {
                                         width: 80.w,
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceAround,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
@@ -372,6 +472,7 @@ class _CommentsState extends State<CommentsScreen> {
                                             Container(
                                               width: 54.w,
                                               child: GFProgressBar(
+                                                animation: true,
                                                 percentage:
                                                     _listRateOfRating[1] > 1
                                                         ? 1
@@ -386,7 +487,9 @@ class _CommentsState extends State<CommentsScreen> {
                                               ),
                                             ),
                                             Text(
-                                                '${_listRateOfRating[1] * 100}%'),
+                                              '${(_listRateOfRating[1] * 100).toStringAsFixed(2)}%',
+                                              textAlign: TextAlign.left,
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -396,7 +499,7 @@ class _CommentsState extends State<CommentsScreen> {
                                         width: 80.w,
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceAround,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
@@ -404,6 +507,7 @@ class _CommentsState extends State<CommentsScreen> {
                                             Container(
                                               width: 54.w,
                                               child: GFProgressBar(
+                                                animation: true,
                                                 percentage:
                                                     _listRateOfRating[0] > 1
                                                         ? 1
@@ -418,7 +522,9 @@ class _CommentsState extends State<CommentsScreen> {
                                               ),
                                             ),
                                             Text(
-                                                '${_listRateOfRating[0] * 100}%'),
+                                              '${(_listRateOfRating[0] * 100).toStringAsFixed(2)}%',
+                                              textAlign: TextAlign.left,
+                                            ),
                                           ],
                                         ),
                                       ),
