@@ -285,7 +285,7 @@ class AnalysisController extends GetxController {
 
   @override
   void dispose() async {
-    await vision.closeYoloModel();
+    // await vision.closeYoloModel();
     _cameraController.stopImageStream();
     _cameraController.dispose();
     super.dispose();
