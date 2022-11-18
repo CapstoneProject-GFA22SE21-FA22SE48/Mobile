@@ -78,9 +78,9 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(
+                        Container(
                           width: 100.w,
-                          height: isKeyboardVisible ? 37.h : 62.h,
+                          height: isKeyboardVisible ? 32.5.h : 61.h,
                           child: ListView.separated(
                             scrollDirection: Axis.vertical,
                             physics: const BouncingScrollPhysics(),

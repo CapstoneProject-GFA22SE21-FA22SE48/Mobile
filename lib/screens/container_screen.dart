@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/cart_controller.dart';
@@ -24,12 +23,10 @@ import 'package:vnrdn_tai/screens/scribe/list_rom/list_rom_screen.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_screen.dart';
 import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
-import 'package:vnrdn_tai/screens/signs/signs_screen.dart';
 import 'package:vnrdn_tai/screens/welcome/welcome_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
-import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class ContainerScreen extends GetView<GlobalController> {
   const ContainerScreen({super.key});
@@ -77,9 +74,10 @@ class ContainerScreen extends GetView<GlobalController> {
         return IconButton(
           onPressed: () {
             Get.to(
-              () => FeedbacksScreen(
+              () => LoaderOverlay(
+                  child: FeedbacksScreen(
                 type: '',
-              ),
+              )),
             );
           },
           icon: const Icon(
@@ -173,17 +171,34 @@ class ContainerScreen extends GetView<GlobalController> {
                   children: [
                     DrawerHeader(
                       decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 128, 179, 255),
+                        color: Color.fromARGB(255, 157, 196, 255),
                       ),
-                      child: Column(children: [
-                        GFAvatar(
-                          radius: 10.w,
-                          backgroundImage: NetworkImage(
-                              ac.avatar.value.isNotEmpty
-                                  ? ac.avatar.value
-                                  : defaultAvatarUrl),
-                        ),
-                      ]),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            GFAvatar(
+                              radius: 10.w,
+                              backgroundImage: NetworkImage(
+                                  ac.avatar.value.isNotEmpty
+                                      ? ac.avatar.value
+                                      : defaultAvatarUrl),
+                            ),
+                            controller.userId.value.isNotEmpty
+                                ? Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: kDefaultPaddingValue / 2),
+                                    child: Text(
+                                      getWelcomeName(ac),
+                                      style: TextStyle(
+                                        fontSize: FONTSIZES.textLarge,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.blueAccent.shade700,
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                          ]),
                     ),
 
                     ListTile(
@@ -267,29 +282,29 @@ class ContainerScreen extends GetView<GlobalController> {
                           )
                         : const SizedBox(),
 
-                    controller.userId.value.isNotEmpty
-                        ? ListTile(
-                            leading: const Icon(Icons.account_circle, size: 36),
-                            title: Obx(() => Text(
-                                  'Xin chào, ${getWelcomeName(ac)}.',
-                                  style: const TextStyle(
-                                      fontSize: FONTSIZES.textMediumLarge),
-                                )),
-                            // enabled: false,
-                            iconColor: kPrimaryTextColor,
-                            textColor: kPrimaryTextColor,
-                            onTap: () {
-                              // Update the state of the app
-                              // ...
-                              Navigator.pop(context); // close the drawer
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                // clearUserInfo();
-                                return const SettingsScreen();
-                              }));
-                            },
-                          )
-                        : Container(),
+                    // controller.userId.value.isNotEmpty
+                    //     ? ListTile(
+                    //         leading: const Icon(Icons.account_circle, size: 36),
+                    //         title: Obx(() => Text(
+                    //               'Xin chào, ${getWelcomeName(ac)}.',
+                    //               style: const TextStyle(
+                    //                   fontSize: FONTSIZES.textMediumLarge),
+                    //             )),
+                    //         // enabled: false,
+                    //         iconColor: kPrimaryTextColor,
+                    //         textColor: kPrimaryTextColor,
+                    //         onTap: () {
+                    //           // Update the state of the app
+                    //           // ...
+                    //           Navigator.pop(context); // close the drawer
+                    //           Navigator.push(context,
+                    //               MaterialPageRoute(builder: (context) {
+                    //             return const LoaderOverlay(
+                    //                 child: SettingsScreen());
+                    //           }));
+                    //         },
+                    //       )
+                    //     : Container(),
                     const Divider(color: Colors.white),
                     controller.username.isNotEmpty
                         ? ListTile(
@@ -373,54 +388,7 @@ class ContainerScreen extends GetView<GlobalController> {
       ),
       body: Center(child: Obx(() => getScreen(controller.tab.value))),
       bottomNavigationBar: Obx(
-        () =>
-            // CurvedNavigationBar(
-            //   backgroundColor: kLightBlueBackground,
-            //   color: Theme.of(context).primaryColor,
-            //   index: controller.tab.value.index,
-            //   items: <Widget>[
-            //     Icon(
-            //       controller.tab.value.index == 0
-            //           ? Icons.menu_book_rounded
-            //           : Icons.menu_book_outlined,
-            //       size: 30,
-            //       color: controller.tab.value.index == 0
-            //           ? Color(0xFF3485FF)
-            //           : Colors.black54,
-            //     ),
-            //     Icon(
-            //       controller.tab.value.index == 1
-            //           ? Icons.motorcycle_rounded
-            //           : Icons.motorcycle_outlined,
-            //       size: 30,
-            //       color: controller.tab.value.index == 1
-            //           ? Color(0xFF3485FF)
-            //           : Colors.black54,
-            //     ),
-            //     Icon(
-            //       controller.tab.value.index == 2
-            //           ? Icons.remove_circle_rounded
-            //           : Icons.remove_circle_outline,
-            //       size: 30,
-            //       color: controller.tab.value.index == 2
-            //           ? Color(0xFF3485FF)
-            //           : Colors.black54,
-            //     ),
-            //     Icon(
-            //       controller.tab.value.index == 3
-            //           ? Icons.map_rounded
-            //           : Icons.map_outlined,
-            //       size: 30,
-            //       color: controller.tab.value.index == 3
-            //           ? Color(0xFF3485FF)
-            //           : Colors.black54,
-            //     ),
-            //   ],
-            //   onTap: (index) {
-            //     controller.updateTab(index);
-            //   },
-            // ),
-            Container(
+        () => Container(
           height: 10.h,
           width: 100.w,
           decoration: const BoxDecoration(
@@ -430,11 +398,6 @@ class ContainerScreen extends GetView<GlobalController> {
               color: Color(0xFFC0C0C0),
               width: 0.25,
             )),
-            // borderRadius: BorderRadius.only(
-            //     topRight: Radius.circular(30), topLeft: Radius.circular(30)),
-            // boxShadow: [
-            //   BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 10),
-            // ],
           ),
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,

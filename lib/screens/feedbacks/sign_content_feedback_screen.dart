@@ -94,156 +94,157 @@ class SignContentFeedbackScreen extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
+                      SizedBox(
+                        width: 100.w,
+                        height: 80.h,
+                        child: controller.imagePath == ""
+                            ? CameraPreview(controller.cameraController)
+                            : Image.file(
+                                File(controller.imagePath!),
+                                fit: BoxFit.fill,
+                                height: double.infinity,
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                              ),
+                      )
+                    ],
+                  ),
+                  Positioned(
+                    left: 3.w,
+                    top: 1.h,
+                    child: Opacity(
+                      opacity: 0.3,
+                      child: Container(
+                        width: 42.w,
+                        height: 28.h,
+                        padding: EdgeInsets.all(kDefaultPaddingValue),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.circular(kDefaultPaddingValue)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: kDefaultPaddingValue),
-                                  child: Text('Người dùng: ',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4
-                                          ?.copyWith(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: FONTSIZES.textLarge)),
-                                ),
-                                Text(auc.displayName.value,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline4
-                                        ?.copyWith(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: FONTSIZES.textLarge)),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(
+                                //       top: kDefaultPaddingValue),
+                                //   child: Text('Người dùng: ',
+                                //       style: Theme.of(context)
+                                //           .textTheme
+                                //           .headline4
+                                //           ?.copyWith(
+                                //               color: Colors.black,
+                                //               fontWeight: FontWeight.normal,
+                                //               fontSize: FONTSIZES.textPrimary)),
+                                // ),
+                                // Text(auc.displayName.value,
+                                //     style: Theme.of(context)
+                                //         .textTheme
+                                //         .headline5
+                                //         ?.copyWith(
+                                //             color: Colors.black,
+                                //             fontWeight: FontWeight.normal,
+                                //             fontSize: FONTSIZES.textPrimary)),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: kDefaultPaddingValue),
                                   child: Text('Sự cố xảy ra lúc:',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline4
+                                          .headline5
                                           ?.copyWith(
                                               color: Colors.black,
                                               fontWeight: FontWeight.normal,
-                                              fontSize: FONTSIZES.textLarge)),
+                                              fontSize: FONTSIZES.textPrimary)),
                                 ),
                                 Text(
-                                    '${DateFormat('hh:mm dd/MM/yyyy').format(DateTime.now())}',
+                                    DateFormat('hh:mm dd/MM/yyyy')
+                                        .format(DateTime.now()),
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline4
+                                        .headline5
                                         ?.copyWith(
                                             color: Colors.black,
                                             fontWeight: FontWeight.normal,
-                                            fontSize: FONTSIZES.textLarge)),
+                                            fontSize: FONTSIZES.textPrimary)),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: kDefaultPaddingValue),
                                   child: Text('Chi tiết báo cáo:',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline4
+                                          .headline5
                                           ?.copyWith(
                                               color: Colors.black,
                                               fontWeight: FontWeight.normal,
-                                              fontSize: FONTSIZES.textLarge)),
+                                              fontSize: FONTSIZES.textPrimary)),
                                 ),
                                 Text('Không nhận diện\n được biển báo',
                                     maxLines: 2,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline4
+                                        .headline5
                                         ?.copyWith(
                                             color: Colors.black,
                                             fontWeight: FontWeight.normal,
-                                            fontSize: FONTSIZES.textLarge)),
+                                            fontSize: FONTSIZES.textPrimary)),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: kDefaultPaddingValue),
                                   child: Text('Loại báo cáo:',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline4
+                                          .headline5
                                           ?.copyWith(
                                               color: Colors.black,
                                               fontWeight: FontWeight.normal,
-                                              fontSize: FONTSIZES.textLarge)),
+                                              fontSize: FONTSIZES.textPrimary)),
                                 ),
                                 Text('Lỗi ứng dụng',
                                     maxLines: 2,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline4
+                                        .headline5
                                         ?.copyWith(
                                             color: Colors.black,
                                             fontWeight: FontWeight.normal,
-                                            fontSize: FONTSIZES.textLarge)),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: kDefaultPaddingValue * 2),
-                                  child: Text('',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4
-                                          ?.copyWith(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: FONTSIZES.textLarge)),
-                                ),
+                                            fontSize: FONTSIZES.textPrimary)),
                               ],
                             ),
-                          ),
-                          Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: kDefaultPaddingValue,
-                                    right: kDefaultPaddingValue / 2),
-                                child: SizedBox(
-                                  width: 50.w,
-                                  height: 60.h,
-                                  child: controller.imagePath == ""
-                                      ? CameraPreview(
-                                          controller.cameraController)
-                                      : Image.file(
-                                          File(controller.imagePath!),
-                                          fit: BoxFit.fill,
-                                          height: double.infinity,
-                                          width: double.infinity,
-                                          alignment: Alignment.center,
-                                        ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(kDefaultPaddingValue * 2),
-                        child: Text(
-                            'Xin vui lòng lưu lại hình ảnh làm bằng chứng trước khi gửi phản hồi!',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4
-                                ?.copyWith(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: FONTSIZES.textLarge)),
-                      )
-                    ],
+                    ),
                   ),
                   controller.imagePath == ""
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(
+                                  kDefaultPaddingValue * 2),
+                              child: Text(
+                                  'Xin vui lòng lưu lại hình ảnh làm bằng chứng trước khi gửi phản hồi!',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6
+                                      ?.copyWith(
+                                          color: Colors.white60,
+                                          fontWeight: FontWeight.normal)),
+                            ),
+                            SizedBox(height: 12.h),
+                          ],
+                        )
+                      : Container(),
+                  controller.imagePath == ""
                       ? Positioned(
-                          left: 65.w,
-                          top: 50.h,
+                          left: 38.w,
+                          top: 79.h,
                           child: Padding(
                             padding: const EdgeInsets.only(
                                 top: kDefaultPaddingValue, left: 18),

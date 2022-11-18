@@ -2,13 +2,17 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/dropdown/gf_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -50,6 +54,7 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
   dynamic adminId;
   dynamic status;
 
+  late List<Widget> _listDropdownSigns = [];
   late List<DropdownMenuItem> _listDropdownAdmin = [];
 
   final List<DropdownMenuItem<int>> _listDropdown = <DropdownMenuItem<int>>[
@@ -118,19 +123,71 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
               widget.romId, status, url.split('&token').first, adminId)
           .then((value) {
         if (value != null) {
+          createNotification(value).then((sent) {
+            if (sent) {
+              DialogUtil.showAwesomeDialog(
+                  context,
+                  DialogType.success,
+                  "Thành công",
+                  "Xác nhận thành công!\nQuay về danh sách phản hồi",
+                  () => Get.off(() => ListRomScreen()),
+                  () {});
+            } else {
+              DialogUtil.showAwesomeDialog(
+                  context,
+                  DialogType.error,
+                  "Xác nhận thất bại",
+                  "Một sự cố đã xảy ra.\nVui lòng kiểm tra lại",
+                  () {},
+                  null);
+            }
+          });
+        } else {
           DialogUtil.showAwesomeDialog(
               context,
-              DialogType.success,
-              "Thành công",
-              "Xác nhận thành công!\nQuay về danh sách phản hồi",
-              () => Get.off(() => ListRomScreen()),
-              () {});
-        } else {
-          DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
-              "Xác nhận thất bại.\n Vui lòng kiểm tra lại", () {}, null);
+              DialogType.error,
+              "Xác nhận thất bại",
+              "Một sự cố đã xảy ra.\nVui lòng thử lại sau",
+              () {},
+              null);
         }
       });
     });
+  }
+
+  Future<bool> createNotification(SignModificationRequest rom) async {
+    GlobalController gc = Get.put(GlobalController());
+    DatabaseReference ref = FirebaseDatabase.instance.ref('notifications');
+
+    String action = '';
+    // name action
+    switch (rom.operationType) {
+      case 0:
+        action = 'đề xuất thêm mới';
+        break;
+      case 1:
+        action = 'đề xuất chỉnh sửa';
+        break;
+      default:
+        action = 'đề xuất loại bỏ';
+    }
+
+    await ref.push().set({
+      "senderId": rom.scribeId,
+      "senderUsername": gc.username.value,
+      "receiverId": rom.adminId,
+      "receiverUsername": _listDropdownAdmin
+          .firstWhere((e) => e.value == rom.adminId)
+          .child
+          .toStringShort(),
+      "subjectType": "GPSSign",
+      "subjectId": rom.modifyingGpssignId,
+      "relatedDescription": "GPS của biển số...",
+      "action": action,
+      "createdDate": DateTime.now().toLocal().toString(),
+      "isRead": false
+    });
+    return true;
   }
 
   @override
@@ -220,6 +277,19 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
                     isExpanded: true,
                   ),
                 ),
+                widget.operationType == 0
+                    ? Column(
+                        children: [
+                          const SizedBox(height: kDefaultPaddingValue / 2),
+                          DropdownSearch(
+                            mode: Mode.DIALOG,
+                            showSearchBox: true,
+                            showSelectedItems: true,
+                            items: _listDropdownSigns,
+                          ),
+                        ],
+                      )
+                    : Container(),
                 const SizedBox(height: kDefaultPaddingValue),
                 Row(
                   children: [
@@ -291,7 +361,7 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
                   height: kDefaultPaddingValue,
                 ),
                 ElevatedButton(
-                  onPressed: pickedFile != null ? uploadImage : () {},
+                  onPressed: pickedFile != null ? uploadImage : null,
                   child: Padding(
                     padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),
                     child: const Text('Gửi Xác nhận'),

@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/avatar/gf_avatar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
@@ -116,6 +117,7 @@ class _ProfileState extends State<ProfileScreen> {
   }
 
   void handleUpdateProfile() async {
+    context.loaderOverlay.show();
     String imageUrl = ac.avatar.value;
     // if (imageUrl.contains('doNotPick')) {
     //   imageUrl = ac.avatar.value;
@@ -126,6 +128,7 @@ class _ProfileState extends State<ProfileScreen> {
           .updateProfile(
               imageUrl, emailController.text, displayNameController.text)
           .then((value) {
+        context.loaderOverlay.hide();
         if (value.isNotEmpty) {
           if (value.toLowerCase().contains('thay đổi')) {
             // deleteOldImage();
@@ -135,8 +138,8 @@ class _ProfileState extends State<ProfileScreen> {
                 DialogType.success,
                 "Thành công",
                 "Thông tin của bạn đã được thay đổi thành công!",
-                () => Get.off(() => SettingsScreen()),
-                () {});
+                () => Get.off(() => const SettingsScreen()),
+                null);
           } else {
             DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
                 value.isNotEmpty ? value : 'Một sự cố đã xảy ra.', () {}, null);

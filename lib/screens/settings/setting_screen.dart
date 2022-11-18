@@ -29,9 +29,8 @@ class _SwitchClassState extends State<SettingsScreen> {
   GlobalController gc = Get.put(GlobalController());
 
   launchURL(String url) async {
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
-    } else {
+    if (!await launchUrl(Uri.parse(url),
+        mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $url';
     }
   }
@@ -72,7 +71,7 @@ class _SwitchClassState extends State<SettingsScreen> {
         title: const Text('Cài đặt'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.offAll(ContainerScreen()),
+          onPressed: () => Get.off(() => const ContainerScreen()),
         ),
       ),
       body: SizedBox(
@@ -207,7 +206,11 @@ class _SwitchClassState extends State<SettingsScreen> {
                         ),
                         title: GestureDetector(
                           onTap: () {
-                            Get.to(ChangePasswordScreen());
+                            Get.to(
+                              () => LoaderOverlay(
+                                child: ChangePasswordScreen(),
+                              ),
+                            );
                           },
                           child: Row(
                             children: const [

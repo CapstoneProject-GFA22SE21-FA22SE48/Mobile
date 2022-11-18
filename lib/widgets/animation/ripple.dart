@@ -27,7 +27,7 @@ class RippleAnimation extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _RippleAnimationState createState() => _RippleAnimationState();
+  State<RippleAnimation> createState() => _RippleAnimationState();
 }
 
 class _RippleAnimationState extends State<RippleAnimation>
@@ -55,7 +55,7 @@ class _RippleAnimationState extends State<RippleAnimation>
     return CustomPaint(
       foregroundPainter: CirclePainter(
         _controller,
-        color: widget.color ?? Colors.black,
+        color: widget.color,
         minRadius: 25,
         wavesCount: widget.ripplesCount,
       ),
@@ -80,15 +80,12 @@ class CirclePainter extends CustomPainter {
   }) : super(repaint: _animation);
   final Color color;
   final double minRadius;
+  // ignore: prefer_typing_uninitialized_variables
   final wavesCount;
   final Animation<double> _animation;
-  final _paint = Paint()
-    ..color = Colors.white
-    ..strokeWidth = 2
-    ..style = PaintingStyle.stroke;
   @override
   void paint(Canvas canvas, Size size) {
-    final Rect rect = Rect.fromLTRB(0.0, 0.0, 100, 100);
+    const Rect rect = Rect.fromLTRB(0.0, 0.0, 100, 100);
     for (int wave = 0; wave <= wavesCount; wave++) {
       circle(canvas, rect, minRadius, wave, _animation.value, wavesCount);
     }
@@ -97,15 +94,15 @@ class CirclePainter extends CustomPainter {
   // animating the opacity according to min radius and waves count.
   void circle(Canvas canvas, Rect rect, double minRadius, int wave,
       double value, int length) {
-    Color _color;
+    Color initColor;
     double r;
     if (wave != 0) {
       double opacity = (1 - ((wave - 1) / length) - value).clamp(0.0, 1.0);
-      _color = color.withOpacity(opacity);
+      initColor = color.withOpacity(opacity);
 
       r = minRadius * (1 + ((wave * value))) * value;
       // print("value >> r >> $r min radius >> $minRadius value>> $value");
-      final Paint paint = Paint()..color = _color;
+      final Paint paint = Paint()..color = initColor;
       paint
         ..strokeWidth = 2
         ..style = PaintingStyle.stroke;

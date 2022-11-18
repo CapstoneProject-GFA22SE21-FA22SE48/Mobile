@@ -9,6 +9,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/dropdown/gf_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -41,28 +42,7 @@ class FeedbacksScreen extends StatefulWidget {
 
 class _FeedbackClassState extends State<FeedbacksScreen> {
   final imagePicker = ImagePicker();
-  final List<DropdownMenuItem<String>> _listDropdown =
-      <DropdownMenuItem<String>>[
-    const DropdownMenuItem<String>(
-      value: "noSignHere",
-      child: Text.rich(
-        TextSpan(children: [
-          TextSpan(
-              text: "Tôi không thấy biển báo ở đây") //nhưng bản đồ hiển thị
-        ]),
-      ),
-    ),
-    const DropdownMenuItem<String>(
-      value: "hasSignHere",
-      child: Text("Biển báo ở đây nhưng bản đồ không hiển thị",
-          overflow: TextOverflow.ellipsis),
-    ),
-    const DropdownMenuItem<String>(
-      value: "wrongSign",
-      child: Text("Biển báo không giống như trên bản đồ",
-          overflow: TextOverflow.ellipsis),
-    ),
-  ];
+  List<DropdownMenuItem<String>> _listDropdown = [];
   dynamic reason;
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
@@ -99,7 +79,8 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
     });
   }
 
-  Future uploadImage() async {
+  Future uploadImage(BuildContext context) async {
+    context.loaderOverlay.show();
     GlobalController gc = Get.put(GlobalController());
     final ext = pickedFile!.name.split('.').last;
     final path =
@@ -134,6 +115,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
             newSign,
           )
               .then((value) {
+            context.loaderOverlay.hide();
             if (value != null) {
               DialogUtil.showAwesomeDialog(
                   context,
@@ -160,6 +142,32 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.sign != null) {
+      _listDropdown = <DropdownMenuItem<String>>[
+        const DropdownMenuItem<String>(
+          value: "noSignHere",
+          child: Text.rich(
+            TextSpan(children: [
+              TextSpan(
+                  text: "Tôi không thấy biển báo ở đây") //nhưng bản đồ hiển thị
+            ]),
+          ),
+        ),
+        const DropdownMenuItem<String>(
+          value: "wrongSign",
+          child: Text("Biển báo không giống như trên bản đồ",
+              overflow: TextOverflow.ellipsis),
+        ),
+      ];
+    } else {
+      _listDropdown = <DropdownMenuItem<String>>[
+        const DropdownMenuItem<String>(
+          value: "hasSignHere",
+          child: Text("Biển báo ở đây nhưng bản đồ không hiển thị",
+              overflow: TextOverflow.ellipsis),
+        ),
+      ];
+    }
   }
 
   @override
@@ -174,7 +182,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
       body: KeyboardVisibilityBuilder(
         builder: (context, isKeyboardVisible) {
           return SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             child: Container(
               height: 90.h,
               width: 100.w,
@@ -298,7 +306,9 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                     height: kDefaultPaddingValue,
                   ),
                   ElevatedButton(
-                    onPressed: pickedFile != null ? uploadImage : () => {},
+                    onPressed: pickedFile != null
+                        ? () => uploadImage(context)
+                        : () => {},
                     child: Padding(
                       padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),
                       child: const Text('Gửi phản hồi'),

@@ -4,18 +4,11 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
-import 'package:jwt_decode/jwt_decode.dart';
-import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/models/UserInfo.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:vnrdn_tai/screens/auth/components/change_forgot_password.dart';
 import 'package:vnrdn_tai/screens/auth/components/or_divider.dart';
 import 'package:vnrdn_tai/screens/auth/components/verify_mail_screen.dart';
-import 'package:vnrdn_tai/screens/auth/forgot_password_screen.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';
 
