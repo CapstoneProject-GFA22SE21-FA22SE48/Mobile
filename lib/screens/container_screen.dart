@@ -20,6 +20,7 @@ import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/category_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
 import 'package:vnrdn_tai/screens/scribe/list_rom/list_rom_screen.dart';
+import 'package:vnrdn_tai/screens/search/cart/cart_page.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_screen.dart';
 import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
@@ -61,6 +62,17 @@ class ContainerScreen extends GetView<GlobalController> {
 
   getActionButton(v) {
     switch (v) {
+      case TABS.SEARCH:
+        return IconButton(
+          onPressed: () {
+            Get.to(AnalysisScreen());
+          },
+          icon: IconButton(
+              icon: const Icon(Icons.receipt),
+              onPressed: () {
+                Get.to(() => const CartPage(), preventDuplicates: false);
+              }),
+        );
       case TABS.ANALYSIS:
         return IconButton(
           onPressed: () {

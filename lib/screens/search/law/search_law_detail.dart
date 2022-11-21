@@ -44,7 +44,7 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
             IconButton(
                 icon: const Icon(Icons.receipt),
                 onPressed: () {
-                  Get.to(() => CartPage(), preventDuplicates: false);
+                  Get.to(() => const CartPage(), preventDuplicates: false);
                 }),
           ],
         ),

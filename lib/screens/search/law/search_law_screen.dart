@@ -10,6 +10,7 @@ import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/models/Keyword.dart';
+import 'package:vnrdn_tai/screens/search/cart/cart_page.dart';
 import 'package:vnrdn_tai/screens/search/components/search_bar.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_list.dart';
 import 'package:vnrdn_tai/services/KeywordService.dart';
