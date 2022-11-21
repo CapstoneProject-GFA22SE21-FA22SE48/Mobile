@@ -252,9 +252,44 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                                 null &&
                                                             !cc.laws.contains(widget
                                                                 .searchLawDto)) {
-                                                          print(cc.laws.length);
                                                           cc.laws.add(widget
                                                               .searchLawDto!);
+                                                          if (!Get
+                                                              .isSnackbarOpen) {
+                                                            Get.snackbar(
+                                                                'Thành công',
+                                                                'Đã thêm vào biên bản',
+                                                                colorText:
+                                                                    Colors
+                                                                        .green,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .white,
+                                                                duration:
+                                                                    Duration(
+                                                                        seconds:
+                                                                            2),
+                                                                isDismissible:
+                                                                    true);
+                                                          }
+                                                        } else {
+                                                          if (!Get
+                                                              .isSnackbarOpen) {
+                                                            Get.snackbar(
+                                                                'Cảnh báo',
+                                                                'Điều này đã có trong biên bản',
+                                                                colorText: Colors
+                                                                    .redAccent,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .white,
+                                                                duration:
+                                                                    Duration(
+                                                                        seconds:
+                                                                            2),
+                                                                isDismissible:
+                                                                    true);
+                                                          }
                                                         }
                                                       },
                                                       label: const Text(
