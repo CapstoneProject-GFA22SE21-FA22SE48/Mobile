@@ -19,7 +19,7 @@ class SearchListItem extends StatelessWidget {
   const SearchListItem({super.key, this.searchLawDto, this.searchSignDTO});
   final SearchLawDTO? searchLawDto;
   final SearchSignDTO? searchSignDTO;
-
+ //owo
   sliceFoundQuery(String s) {
     SearchController sc = Get.find<SearchController>();
     var query = TiengViet.parse(sc.query.value);
