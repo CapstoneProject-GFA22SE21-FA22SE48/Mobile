@@ -339,7 +339,7 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
                     isExpanded: true,
                   ),
                 ),
-                widget.operationType == 0
+                widget.operationType != 2
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
