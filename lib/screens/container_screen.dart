@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -19,6 +20,7 @@ import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
 import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/category_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
+import 'package:vnrdn_tai/screens/scribe/create-gpssign/create_gpssign_screen.dart';
 import 'package:vnrdn_tai/screens/scribe/list_rom/list_rom_screen.dart';
 import 'package:vnrdn_tai/screens/search/cart/cart_page.dart';
 import 'package:vnrdn_tai/screens/search/law/search_law_screen.dart';
@@ -83,19 +85,35 @@ class ContainerScreen extends GetView<GlobalController> {
           ),
         );
       case TABS.MINIMAP:
-        return IconButton(
-          onPressed: () {
-            Get.to(
-              () => LoaderOverlay(
-                  child: FeedbacksScreen(
-                type: '',
-              )),
-            );
-          },
-          icon: const Icon(
-            Icons.flag_rounded,
-          ),
-        );
+        AuthController ac = Get.put(AuthController());
+        if (controller.userId.isNotEmpty) {
+          return ac.role.value == 2
+              ? IconButton(
+                  onPressed: () {
+                    Get.to(
+                      () => LoaderOverlay(
+                          child: FeedbacksScreen(
+                        type: '',
+                      )),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.flag_rounded,
+                  ),
+                )
+              : IconButton(
+                  onPressed: () {
+                    Get.to(
+                      () => const LoaderOverlay(child: CreateGpssignScreen()),
+                    );
+                  },
+                  icon: const Icon(
+                    FontAwesomeIcons.circlePlus,
+                  ),
+                );
+        } else {
+          return Container();
+        }
       default:
         return Container();
     }

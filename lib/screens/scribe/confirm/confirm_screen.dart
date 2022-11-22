@@ -1,8 +1,8 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -11,25 +11,20 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/dropdown/gf_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:uuid/uuid.dart';
-import 'package:vnrdn_tai/controllers/auth_controller.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:sizer/sizer.dart';
-import 'package:vnrdn_tai/controllers/maps_controller.dart';
-import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
-import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
+import 'package:vnrdn_tai/models/dtos/searchSignDTO.dart';
+import 'package:vnrdn_tai/models/dtos/signCategoryDTO.dart';
 import 'package:vnrdn_tai/screens/scribe/list_rom/list_rom_screen.dart';
-import 'package:vnrdn_tai/services/FeedbackService.dart';
-import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/services/SignModificationRequestService.dart';
+import 'package:vnrdn_tai/services/SignService.dart';
 import 'package:vnrdn_tai/services/UserService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
-import 'package:vnrdn_tai/utils/location_util.dart';
-import 'package:vnrdn_tai/widgets/templated_buttons.dart';
+import 'package:vnrdn_tai/utils/image_util.dart';
 
 class ConfirmEvidenceScreen extends StatefulWidget {
   ConfirmEvidenceScreen({
@@ -49,13 +44,17 @@ class ConfirmEvidenceScreen extends StatefulWidget {
 
 class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
   final imagePicker = ImagePicker();
+  final searchSignController = TextEditingController();
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
   dynamic adminId;
+  dynamic selectedSign;
   dynamic status;
 
-  late List<Widget> _listDropdownSigns = [];
+  late List<DropdownMenuItem> _listDropdownSigns = [];
   late List<DropdownMenuItem> _listDropdownAdmin = [];
+  late Future<List<SignCategoryDTO>> signCategories =
+      SignService().GetSignCategoriesDTOList();
 
   final List<DropdownMenuItem<int>> _listDropdown = <DropdownMenuItem<int>>[
     const DropdownMenuItem<int>(
@@ -71,6 +70,66 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
       ),
     ),
   ];
+
+  void setSignDropdownList(List<SignCategoryDTO> categories) {
+    for (var category in categories) {
+      for (var sign in category.searchSignDTOs) {
+        _listDropdownSigns.add(
+          DropdownMenuItem(
+            value: sign.name,
+            child: Row(children: [
+              // Image.asset(
+              //   ImageUtil.getLocalImagePathFromUrl(sign.imageUrl!, 0.0)!,
+              //   scale: 1,
+              //   errorBuilder: (context, error, stackTrace) {
+              //     return Image.asset('assets/images/alt_img.png');
+              //   },
+              // ),
+              CachedNetworkImage(
+                imageUrl: sign.imageUrl as String,
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 10.w,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                ),
+                placeholder: (context, url) => Container(
+                  alignment: Alignment.center,
+                  child:
+                      const CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
+                ), //show progress  while loading image
+                errorWidget: (context, url, error) =>
+                    Image.asset("assets/images/alt_image.png"),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: kDefaultPaddingValue),
+                child: Text(sign.name.split(" \"").first),
+              )
+            ]),
+          ),
+        );
+      }
+    }
+    setState(() {});
+  }
+
+  Color getColorByCategory(String name) {
+    name = name.toLowerCase();
+    if (name.contains('cấm')) {
+      return kDangerButtonColor;
+    } else if (name.contains('cảnh báo')) {
+      return kWarningButtonColor;
+    } else if (name.contains('chỉ dẫn')) {
+      return kPrimaryButtonColor;
+    } else if (name.contains('hiệu lệnh')) {
+      return kBlueAccentBackground;
+    } else {
+      return kDisabledButtonColor;
+    }
+  }
 
   String getTitle(String type) {
     switch (type) {
@@ -119,8 +178,8 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
 
     await snapshot.ref.getDownloadURL().then((url) {
       SignModificationRequestService()
-          .confirmEvidence(
-              widget.romId, status, url.split('&token').first, adminId)
+          .confirmEvidence(widget.romId, status, url.split('&token').first,
+              adminId, selectedSign)
           .then((value) {
         if (value != null) {
           createNotification(value).then((sent) {
@@ -192,8 +251,9 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
 
   @override
   void initState() {
+    context.loaderOverlay.show();
+    signCategories.then((list) => setSignDropdownList(list));
     UserService().getAdmins().then((list) {
-      print(list);
       if (list.isNotEmpty) {
         list.forEach((element) {
           _listDropdownAdmin.add(DropdownMenuItem<String>(
@@ -202,7 +262,9 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
           ));
         });
       }
-      setState(() {});
+      setState(() {
+        context.loaderOverlay.hide();
+      });
     });
     super.initState();
   }
@@ -279,14 +341,109 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
                 ),
                 widget.operationType == 0
                     ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: kDefaultPaddingValue / 2),
-                          DropdownSearch(
-                            mode: Mode.DIALOG,
-                            showSearchBox: true,
-                            showSelectedItems: true,
-                            items: _listDropdownSigns,
+                          const SizedBox(height: kDefaultPaddingValue),
+                          const Text(
+                            'Biển báo:',
+                            style: TextStyle(
+                              fontSize: FONTSIZES.textPrimary,
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
+                          const SizedBox(height: kDefaultPaddingValue / 2),
+                          DropdownButtonHideUnderline(
+                            child: DropdownButton2(
+                              isExpanded: true,
+                              buttonOverlayColor:
+                                  MaterialStateProperty.all(Colors.white),
+                              buttonPadding: const EdgeInsets.symmetric(
+                                  horizontal: kDefaultPaddingValue / 2),
+                              buttonDecoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5),
+                                border:
+                                    Border.all(color: Colors.grey, width: 1),
+                              ),
+                              hint: const Text(
+                                'Chọn biển báo',
+                                style: TextStyle(
+                                  fontSize: FONTSIZES.textPrimary,
+                                  color: kDisabledTextColor,
+                                ),
+                              ),
+
+                              items: _listDropdownSigns.isNotEmpty
+                                  ? _listDropdownSigns.toList()
+                                  : [
+                                      DropdownMenuItem(
+                                          alignment: Alignment.centerLeft,
+                                          child: Transform.scale(
+                                            scale: 0.6,
+                                            child: loadingScreen(),
+                                          ))
+                                    ],
+                              value: selectedSign,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedSign = value as String;
+                                });
+                              },
+                              scrollbarAlwaysShow: true,
+                              scrollbarRadius:
+                                  const Radius.circular(kDefaultPaddingValue),
+                              buttonHeight: selectedSign == null ? 5.h : 8.h,
+                              buttonWidth: 100.w,
+                              itemHeight: 8.h,
+                              buttonElevation: 10,
+                              dropdownElevation: 2,
+                              dropdownMaxHeight: 50.h,
+                              dropdownDecoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      bottomRight:
+                                          Radius.circular(kDefaultPaddingValue),
+                                      bottomLeft: Radius.circular(
+                                          kDefaultPaddingValue))),
+
+                              searchController: searchSignController,
+                              searchInnerWidget: Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 8,
+                                  bottom: 4,
+                                  right: 8,
+                                  left: 8,
+                                ),
+                                child: TextFormField(
+                                  controller: searchSignController,
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: kDefaultPaddingValue / 2,
+                                      vertical: kDefaultPaddingValue,
+                                    ),
+                                    hintText: 'Tìm biển báo...',
+                                    hintStyle: const TextStyle(fontSize: 18),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          kDefaultPaddingValue / 2),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              searchMatchFn: (item, searchValue) {
+                                return (item.value
+                                    .toString()
+                                    .contains(searchValue));
+                              },
+                              //This to clear the search value when you close the menu
+                              onMenuStateChange: (isOpen) {
+                                if (!isOpen) {
+                                  searchSignController.clear();
+                                }
+                              },
+                            ),
+                          )
                         ],
                       )
                     : Container(),
@@ -314,36 +471,34 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
                   ],
                 ),
                 Container(
-                  height: 50.h,
+                  height: pickedFile != null ? 50.h : 30.h,
                   width: 100.w,
                   margin: const EdgeInsets.only(top: kDefaultPaddingValue / 2),
                   child: pickedFile != null
-                      ? Expanded(
-                          child: Container(
-                            height: 15.h,
-                            width: 80.w,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                color: Colors.grey,
-                                style: BorderStyle.solid,
-                                width: 3,
-                              ),
-                              borderRadius: BorderRadius.circular(
-                                kDefaultPaddingValue / 2,
-                              ),
+                      ? Container(
+                          height: 15.h,
+                          width: 80.w,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Colors.grey,
+                              style: BorderStyle.solid,
+                              width: 3,
                             ),
-                            child: Center(
-                              child: Image.file(
-                                File(pickedFile!.path!),
-                                fit: BoxFit.contain,
-                              ),
+                            borderRadius: BorderRadius.circular(
+                              kDefaultPaddingValue / 2,
+                            ),
+                          ),
+                          child: Center(
+                            child: Image.file(
+                              File(pickedFile!.path!),
+                              fit: BoxFit.contain,
                             ),
                           ),
                         )
                       : Container(
                           height: 10.h,
-                          width: 100.h,
+                          width: 100.w,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(
@@ -361,7 +516,12 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
                   height: kDefaultPaddingValue,
                 ),
                 ElevatedButton(
-                  onPressed: pickedFile != null ? uploadImage : null,
+                  onPressed: pickedFile != null &&
+                          adminId != null &&
+                          selectedSign != null &&
+                          status != null
+                      ? uploadImage
+                      : null,
                   child: Padding(
                     padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),
                     child: const Text('Gửi Xác nhận'),

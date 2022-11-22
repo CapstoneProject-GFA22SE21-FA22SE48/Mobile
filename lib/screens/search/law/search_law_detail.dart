@@ -417,10 +417,29 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                                             child: SizedBox(
                                                                                 width: 70.w,
                                                                                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                                  Text(maxLines: 2, overflow: TextOverflow.ellipsis, widget.searchLawDto!.referenceParagraph![index].description, style: Theme.of(context).textTheme.headline4?.copyWith(color: Colors.black, fontSize: FONTSIZES.textMedium)),
+                                                                                  Text(
+                                                                                    maxLines: 2,
+                                                                                    overflow: TextOverflow.ellipsis,
+                                                                                    widget.searchLawDto!.referenceParagraph![index].description,
+                                                                                    style: Theme.of(context).textTheme.headline4?.copyWith(
+                                                                                          color: Colors.black,
+                                                                                          fontSize: FONTSIZES.textMedium,
+                                                                                        ),
+                                                                                  ),
                                                                                   Padding(
                                                                                     padding: const EdgeInsets.only(top: kDefaultPaddingValue / 2),
-                                                                                    child: (widget.searchLawDto!.referenceParagraph![index].minPenalty != "0" && widget.searchLawDto!.referenceParagraph![index].maxPenalty != "0") ? Text('Phạt tiền từ ${min2}đến ${max2}nghìn đồng', style: const TextStyle(color: Colors.red, fontSize: FONTSIZES.textSmall)) : const Text('Phạt cảnh cáo', style: TextStyle(color: Colors.red)),
+                                                                                    child: widget.searchLawDto!.referenceParagraph![index].minPenalty != "0" && widget.searchLawDto!.referenceParagraph![index].maxPenalty != "0"
+                                                                                        ? Text(
+                                                                                            'Phạt tiền từ ${min2}đến ${max2}nghìn đồng',
+                                                                                            style: const TextStyle(
+                                                                                              color: Colors.red,
+                                                                                              fontSize: FONTSIZES.textSmall,
+                                                                                            ),
+                                                                                          )
+                                                                                        : const Text(
+                                                                                            'Phạt cảnh cáo',
+                                                                                            style: TextStyle(color: Colors.red),
+                                                                                          ),
                                                                                   ),
                                                                                   const Padding(
                                                                                     padding: EdgeInsets.only(top: kDefaultPaddingValue / 2),

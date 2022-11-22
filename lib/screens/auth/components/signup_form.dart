@@ -28,12 +28,16 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
+  GlobalController gc = Get.put(GlobalController());
   final registerFormKey = GlobalKey<FormState>();
 
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
   final emailController = TextEditingController();
+
+  bool newObSecure = true;
+  bool confirmObSecure = true;
 
   @override
   void dispose() {
@@ -42,6 +46,8 @@ class _SignUpFormState extends State<SignUpForm> {
     passwordController.dispose();
     passwordConfirmController.dispose();
     emailController.dispose();
+    gc.updateNewObSecure(true);
+    gc.updateConfirmObSecure(true);
     super.dispose();
   }
 
@@ -65,8 +71,8 @@ class _SignUpFormState extends State<SignUpForm> {
         DialogType.info,
         "Không có Email",
         "Nếu không có email bạn sẽ không thể sử dụng quên mật khẩu.\nBạn có muốn tiếp tục?",
-        () {},
-        null);
+        () => handleRegister(context),
+        () {});
   }
 
   Future<bool> sendEmail() async {
@@ -210,14 +216,25 @@ class _SignUpFormState extends State<SignUpForm> {
                     },
                     controller: passwordController,
                     textInputAction: TextInputAction.next,
-                    obscureText: true,
+                    obscureText: gc.newObSecure.value,
                     cursorColor: kPrimaryButtonColor,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: "Mật khẩu",
                       hintText: "Mật khẩu *",
-                      prefixIcon: Padding(
+                      prefixIcon: const Padding(
                         padding: EdgeInsets.all(kDefaultPaddingValue / 2),
                         child: Icon(Icons.lock),
+                      ),
+                      suffixIcon: GestureDetector(
+                        onTap: () => setState(
+                          () {
+                            newObSecure = !newObSecure;
+                            gc.updateOldObSecure(newObSecure);
+                          },
+                        ),
+                        child: Icon(newObSecure
+                            ? Icons.visibility_off_rounded
+                            : Icons.visibility_rounded),
                       ),
                     ),
                   ),
@@ -232,14 +249,25 @@ class _SignUpFormState extends State<SignUpForm> {
                     },
                     controller: passwordConfirmController,
                     textInputAction: TextInputAction.next,
-                    obscureText: true,
+                    obscureText: gc.confirmObSecure.value,
                     cursorColor: kPrimaryButtonColor,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: "Xác nhận mật khẩu",
                       hintText: "Xác nhận mật khẩu *",
-                      prefixIcon: Padding(
+                      prefixIcon: const Padding(
                         padding: EdgeInsets.all(kDefaultPaddingValue / 2),
                         child: Icon(Icons.lock),
+                      ),
+                      suffixIcon: GestureDetector(
+                        onTap: () => setState(
+                          () {
+                            confirmObSecure = !confirmObSecure;
+                            gc.updateOldObSecure(confirmObSecure);
+                          },
+                        ),
+                        child: Icon(confirmObSecure
+                            ? Icons.visibility_off_rounded
+                            : Icons.visibility_rounded),
                       ),
                     ),
                   ),

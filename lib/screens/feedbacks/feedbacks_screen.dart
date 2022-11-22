@@ -288,7 +288,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                           )
                         : Container(
                             height: 10.h,
-                            width: 100.h,
+                            width: 100.w,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               border: Border.all(
@@ -306,9 +306,8 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                     height: kDefaultPaddingValue,
                   ),
                   ElevatedButton(
-                    onPressed: pickedFile != null
-                        ? () => uploadImage(context)
-                        : () => {},
+                    onPressed:
+                        pickedFile != null ? () => uploadImage(context) : null,
                     child: Padding(
                       padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),
                       child: const Text('Gửi phản hồi'),

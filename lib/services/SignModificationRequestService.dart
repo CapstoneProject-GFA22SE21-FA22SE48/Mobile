@@ -38,7 +38,6 @@ class SignModificationRequestService {
       if (res.statusCode == 200) {
         log(res.body);
         return parseSignModificationRequestList(res.body);
-
       } else {
         log(res.body);
         return [];
@@ -49,10 +48,12 @@ class SignModificationRequestService {
   }
 
   // put an update of Confirmation with image as evidence
-  Future<SignModificationRequest?> confirmEvidence(
-      String gpsSignRomId, int status, String imageUrl, String adminId) async {
+  Future<SignModificationRequest?> confirmEvidence(String gpsSignRomId,
+      int status, String imageUrl, String adminId, String? signId) async {
     try {
-      // chưa có ở BE
+      if (signId != null) {
+        imageUrl = '$imageUrl%2F%$signId';
+      }
       final res = await http
           .put(
             // need add /$status
