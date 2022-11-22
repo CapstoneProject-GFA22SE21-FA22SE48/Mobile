@@ -2,20 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sizer/sizer.dart';
 import 'package:styled_text/styled_text.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
-import 'package:vnrdn_tai/models/TestCategory.dart';
-import 'package:vnrdn_tai/models/dtos/TestCategoryDTO.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
-import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
-import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
-import 'package:vnrdn_tai/screens/mock-test/test_set_screen.dart';
 import 'package:vnrdn_tai/screens/scribe/confirm/confirm_screen.dart';
 import 'package:vnrdn_tai/services/SignModificationRequestService.dart';
-import 'package:vnrdn_tai/services/TestCategoryService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 
@@ -71,7 +66,7 @@ class _ListRomScreenState extends State<ListRomScreen> {
             Get.offAll(const ContainerScreen());
           },
         ),
-        title: Text("Quản lý yêu cầu"),
+        title: const Text("Quản lý yêu cầu"),
         elevation: 0,
         actions: [
           IconButton(
@@ -127,7 +122,7 @@ class _ListRomScreenState extends State<ListRomScreen> {
                         children: [
                           const SizedBox(height: kDefaultPaddingValue * 2),
                           Container(
-                            height: 82.h,
+                            height: 80.h,
                             padding: const EdgeInsets.symmetric(
                               vertical: 0,
                             ),
@@ -141,17 +136,22 @@ class _ListRomScreenState extends State<ListRomScreen> {
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () {
-                                    Get.to(ConfirmEvidenceScreen(
-                                      romId: snapshot.data![index].id!,
-                                      imageUrl: snapshot.data![index].imageUrl,
-                                      operationType:
-                                          snapshot.data![index].operationType,
-                                    ));
+                                    Get.to(
+                                      () => LoaderOverlay(
+                                        child: ConfirmEvidenceScreen(
+                                          romId: snapshot.data![index].id!,
+                                          imageUrl:
+                                              snapshot.data![index].imageUrl,
+                                          operationType: snapshot
+                                              .data![index].operationType,
+                                        ),
+                                      ),
+                                    );
                                   },
                                   child: Container(
                                     width: 100.w,
                                     height: 36.h,
-                                    margin: EdgeInsets.symmetric(
+                                    margin: const EdgeInsets.symmetric(
                                       horizontal: kDefaultPaddingValue,
                                     ),
                                     padding: kDefaultPadding / 2,

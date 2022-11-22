@@ -38,7 +38,6 @@ class SignModificationRequestService {
       if (res.statusCode == 200) {
         log(res.body);
         return parseSignModificationRequestList(res.body);
-
       } else {
         log(res.body);
         return [];
@@ -49,10 +48,12 @@ class SignModificationRequestService {
   }
 
   // put an update of Confirmation with image as evidence
-  Future<SignModificationRequest?> confirmEvidence(
-      String gpsSignRomId, int status, String imageUrl, String adminId) async {
+  Future<SignModificationRequest?> confirmEvidence(String gpsSignRomId,
+      int status, String imageUrl, String adminId, String? signId) async {
     try {
-      // chưa có ở BE
+      if (signId != null) {
+        imageUrl = '$imageUrl%2F%$signId';
+      }
       final res = await http
           .put(
             // need add /$status
@@ -67,6 +68,47 @@ class SignModificationRequestService {
       if (res.statusCode == 200) {
         log(res.body);
         return parseSignModificationRequest(res.body);
+      } else {
+        log(res.body);
+        return null;
+      }
+    } on TimeoutException {
+      throw Exception('Không tải được dữ liệu.');
+    }
+  }
+
+  // create Feedback of GPSSigns
+  Future<SignModificationRequest?> createScribeRequestGpsSign(
+      String imageUrl, String adminId, GPSSign? newGpsSign) async {
+    GlobalController gc = Get.put(GlobalController());
+    SignModificationRequest request;
+    try {
+      request = SignModificationRequest(
+          newGpsSign!.signId,
+          null,
+          null,
+          newGpsSign.id,
+          null,
+          null,
+          gc.userId.value,
+          adminId,
+          0,
+          imageUrl,
+          2,
+          null,
+          DateTime.now().toLocal().toString(),
+          false);
+      final res = await http
+          .post(Uri.parse("${url}SignModificationRequests/AddGps"),
+              headers: <String, String>{
+                "Content-Type": "application/json; charset=UTF-8"
+              },
+              body: jsonEncode(request))
+          .timeout(const Duration(seconds: TIME_OUT));
+      if (res.statusCode == 201) {
+        log(res.body);
+        return SignModificationRequestService.parseSignModificationRequest(
+            res.body);
       } else {
         log(res.body);
         return null;
