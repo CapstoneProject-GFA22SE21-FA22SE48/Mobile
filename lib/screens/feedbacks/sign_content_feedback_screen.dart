@@ -52,7 +52,7 @@ class SignContentFeedbackScreen extends StatelessWidget {
             context,
             DialogType.error,
             "Phản hồi thất bại",
-            "Một sự cố không mong muốn đã xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
+            "Có lỗi xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
             () {},
             null);
         context.loaderOverlay.hide();

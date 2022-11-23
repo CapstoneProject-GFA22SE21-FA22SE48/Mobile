@@ -230,7 +230,6 @@ class ContainerScreen extends GetView<GlobalController> {
                                 : Container(),
                           ]),
                     ),
-
                     ListTile(
                       leading: const Icon(Icons.settings),
                       title: const Text(
@@ -240,8 +239,8 @@ class ContainerScreen extends GetView<GlobalController> {
                           color: Colors.black54,
                           fontWeight: FontWeight.bold,
                         ),
-                      ), // Settings
-                      // selected: controller.sideBar.value == 1,
+                      ),
+                      // Settings
                       selectedColor: Colors.white,
                       selectedTileColor: Colors.blueAccent,
                       onTap: () {
@@ -252,10 +251,6 @@ class ContainerScreen extends GetView<GlobalController> {
                         Get.to(const SettingsScreen());
                       },
                     ),
-                    // const Divider(
-                    //   thickness: 1,
-                    //   color: Colors.blueAccent,
-                    // ),
                     ListTile(
                       iconColor: kWarningButtonColor,
                       textColor: kWarningButtonColor,
@@ -311,30 +306,6 @@ class ContainerScreen extends GetView<GlobalController> {
                             },
                           )
                         : const SizedBox(),
-
-                    // controller.userId.value.isNotEmpty
-                    //     ? ListTile(
-                    //         leading: const Icon(Icons.account_circle, size: 36),
-                    //         title: Obx(() => Text(
-                    //               'Xin chào, ${getWelcomeName(ac)}.',
-                    //               style: const TextStyle(
-                    //                   fontSize: FONTSIZES.textMediumLarge),
-                    //             )),
-                    //         // enabled: false,
-                    //         iconColor: kPrimaryTextColor,
-                    //         textColor: kPrimaryTextColor,
-                    //         onTap: () {
-                    //           // Update the state of the app
-                    //           // ...
-                    //           Navigator.pop(context); // close the drawer
-                    //           Navigator.push(context,
-                    //               MaterialPageRoute(builder: (context) {
-                    //             return const LoaderOverlay(
-                    //                 child: SettingsScreen());
-                    //           }));
-                    //         },
-                    //       )
-                    //     : Container(),
                     const Divider(color: Colors.white),
                     controller.username.isNotEmpty
                         ? ListTile(

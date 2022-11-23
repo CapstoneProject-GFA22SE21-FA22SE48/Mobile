@@ -85,13 +85,8 @@ class _LoginFormState extends State<LoginForm> {
     IOUtils.setUserInfoController(token)
         ? Get.to(() => const ContainerScreen())
         // ignore: use_build_context_synchronously
-        : DialogUtil.showAwesomeDialog(
-            context,
-            DialogType.error,
-            "Thất bại",
-            "Một lỗi không mong muốn đã xảy ra.\nMời bạn đăng nhập lại.",
-            () {},
-            null);
+        : DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
+            "Có lỗi đã xảy ra.\nMời bạn đăng nhập lại.", () {}, null);
   }
 
   @override
