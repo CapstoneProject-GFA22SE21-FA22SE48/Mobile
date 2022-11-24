@@ -63,13 +63,13 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          title:
-              Text("Tra cứu \"${sc.vehicleCategory.value.capitalizeFirst}\""),
+          centerTitle: true,
+          title: Text("${sc.vehicleCategory.value.capitalizeFirst}"),
           actions: [
             IconButton(
                 icon: const Icon(Icons.receipt),
                 onPressed: () {
-                  Get.to(() => CartPage(), preventDuplicates: false);
+                  Get.to(() => const CartPage(), preventDuplicates: false);
                 }),
           ],
         ),

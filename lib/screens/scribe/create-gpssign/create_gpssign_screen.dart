@@ -14,62 +14,38 @@ import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:sizer/sizer.dart';
+import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
-import 'package:vnrdn_tai/models/dtos/searchSignDTO.dart';
 import 'package:vnrdn_tai/models/dtos/signCategoryDTO.dart';
+import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/scribe/list_rom/list_rom_screen.dart';
+import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/services/SignModificationRequestService.dart';
 import 'package:vnrdn_tai/services/SignService.dart';
 import 'package:vnrdn_tai/services/UserService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
-import 'package:vnrdn_tai/utils/image_util.dart';
 
-class ConfirmEvidenceScreen extends StatefulWidget {
-  ConfirmEvidenceScreen({
-    super.key,
-    required this.romId,
-    required this.imageUrl,
-    required this.operationType,
-  });
-
-  String romId;
-  String imageUrl;
-  int operationType;
+class CreateGpssignScreen extends StatefulWidget {
+  CreateGpssignScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _ConfirmEvidenceState();
+  State<StatefulWidget> createState() => _CreateGpssignState();
 }
 
-class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
+class _CreateGpssignState extends State<CreateGpssignScreen> {
   final imagePicker = ImagePicker();
   final searchSignController = TextEditingController();
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
   dynamic adminId;
   dynamic selectedSign;
-  dynamic status;
 
   late List<DropdownMenuItem> _listDropdownSigns = [];
   late List<DropdownMenuItem> _listDropdownAdmin = [];
   late Future<List<SignCategoryDTO>> signCategories =
       SignService().GetSignCategoriesDTOList();
-
-  final List<DropdownMenuItem<int>> _listDropdown = <DropdownMenuItem<int>>[
-    const DropdownMenuItem<int>(
-      value: 2,
-      child: Text(
-        "Đã xử lý",
-      ),
-    ),
-    const DropdownMenuItem<int>(
-      value: 4,
-      child: Text(
-        "Đã từ chối",
-      ),
-    ),
-  ];
 
   void setSignDropdownList(List<SignCategoryDTO> categories) {
     for (var category in categories) {
@@ -131,17 +107,6 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
     }
   }
 
-  String getTitle(String type) {
-    switch (type) {
-      case "gpsSign":
-        return "Vị trí biển báo";
-      case "sign":
-        return "Thông tin biển báo";
-      default:
-        return "Luật";
-    }
-  }
-
   Future selectImage() async {
     final result = await FilePicker.platform.pickFiles();
     if (result == null) return;
@@ -163,7 +128,8 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
     });
   }
 
-  Future uploadImage() async {
+  Future uploadImage(BuildContext context) async {
+    context.loaderOverlay.show();
     GlobalController gc = Get.put(GlobalController());
     // final oldFile = widget.imageUrl.split('user-feedbacks/sign-position/').last;
     final ext = pickedFile!.name.split('.').last;
@@ -177,38 +143,64 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
     final snapshot = await uploadTask!.whenComplete(() {});
 
     await snapshot.ref.getDownloadURL().then((url) {
-      SignModificationRequestService()
-          .confirmEvidence(widget.romId, status, url.split('&token').first,
-              adminId, selectedSign)
-          .then((value) {
-        if (value != null) {
-          createNotification(value).then((sent) {
-            if (sent) {
-              DialogUtil.showAwesomeDialog(
-                  context,
-                  DialogType.success,
-                  "Thành công",
-                  "Xác nhận thành công!\nQuay về danh sách phản hồi",
-                  () => Get.off(() => ListRomScreen()),
-                  () {});
-            } else {
-              DialogUtil.showAwesomeDialog(
-                  context,
-                  DialogType.error,
-                  "Xác nhận thất bại",
-                  "Có lỗi xảy ra.\nVui lòng kiểm tra lại",
-                  () {},
-                  null);
-            }
+      SignService().GetSignByName(selectedSign).then((sign) {
+        if (sign != null) {
+          MapsController mapsController = Get.put(MapsController());
+          mapsController.location.getLocation().then((location) {
+            GPSSignService()
+                .AddGpsSign(
+                    sign.id, location.latitude!, location.longitude!, false)
+                .then((newSign) {
+              if (newSign != null) {
+                SignModificationRequestService()
+                    .createScribeRequestGpsSign(
+                  url.split('&token').first,
+                  adminId,
+                  newSign,
+                )
+                    .then((request) {
+                  context.loaderOverlay.hide();
+                  if (request != null) {
+                    createNotification(request).then((sent) {
+                      if (sent) {
+                        DialogUtil.showAwesomeDialog(
+                            context,
+                            DialogType.success,
+                            "Tạo thành công",
+                            "Bạn đã tạo thành công $selectedSign",
+                            () => Get.off(() => const ContainerScreen()),
+                            () {});
+                      } else {
+                        DialogUtil.showAwesomeDialog(
+                            context,
+                            DialogType.error,
+                            "Tạo thất bại",
+                            "Có lỗi xảy ra.\nVui lòng kiểm tra lại",
+                            () {},
+                            null);
+                      }
+                    });
+                  } else {
+                    DialogUtil.showAwesomeDialog(
+                        context,
+                        DialogType.error,
+                        "Tạo thất bại",
+                        "Có lỗi xảy ra.\nVui lòng thử lại sau",
+                        () {},
+                        null);
+                  }
+                });
+              } else {
+                DialogUtil.showAwesomeDialog(
+                    context,
+                    DialogType.error,
+                    "Tạo thất bại",
+                    "Có lỗi xảy ra.\nVui lòng thử lại sau",
+                    () {},
+                    null);
+              }
+            });
           });
-        } else {
-          DialogUtil.showAwesomeDialog(
-              context,
-              DialogType.error,
-              "Xác nhận thất bại",
-              "Có lỗi xảy ra.\nVui lòng thử lại sau",
-              () {},
-              null);
         }
       });
     });
@@ -218,18 +210,7 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
     GlobalController gc = Get.put(GlobalController());
     DatabaseReference ref = FirebaseDatabase.instance.ref('notifications');
 
-    String action = '';
-    // name action
-    switch (rom.operationType) {
-      case 0:
-        action = 'đề xuất thêm mới';
-        break;
-      case 1:
-        action = 'đề xuất chỉnh sửa';
-        break;
-      default:
-        action = 'đề xuất loại bỏ';
-    }
+    String action = 'đề xuất thêm mới';
 
     await ref.push().set({
       "senderId": rom.scribeId,
@@ -276,7 +257,7 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
-        title: const Text('Xác nhận phản hồi'),
+        title: const Text('Tạo biển báo tại đây'),
       ),
       body: KeyboardVisibilityBuilder(
         builder: (context, isKeyboardVisible) {
@@ -313,140 +294,109 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
                   ),
                 ),
                 const SizedBox(height: kDefaultPaddingValue),
-                const Text(
-                  'Trạng thái:',
-                  style: TextStyle(
-                    fontSize: FONTSIZES.textPrimary,
-                    color: Colors.blueAccent,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: kDefaultPaddingValue / 2),
-                DropdownButtonHideUnderline(
-                  child: GFDropdown(
-                    hint: const Text('Chọn trạng thái xử lý'),
-                    padding: const EdgeInsets.all(kDefaultPaddingValue / 2),
-                    borderRadius: BorderRadius.circular(5),
-                    border: const BorderSide(color: Colors.grey, width: 1),
-                    dropdownButtonColor: Colors.white,
-                    value: status,
-                    onChanged: (newValue) {
-                      setState(() {
-                        status = newValue ?? 3;
-                      });
-                    },
-                    items: _listDropdown,
-                    isExpanded: true,
-                  ),
-                ),
-                widget.operationType != 2
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: kDefaultPaddingValue),
-                          const Text(
-                            'Biển báo:',
-                            style: TextStyle(
-                              fontSize: FONTSIZES.textPrimary,
-                              color: Colors.blueAccent,
-                              fontWeight: FontWeight.bold,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Biển báo:',
+                      style: TextStyle(
+                        fontSize: FONTSIZES.textPrimary,
+                        color: Colors.blueAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: kDefaultPaddingValue / 2),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButton2(
+                        isExpanded: true,
+                        buttonOverlayColor:
+                            MaterialStateProperty.all(Colors.white),
+                        buttonPadding: const EdgeInsets.symmetric(
+                            horizontal: kDefaultPaddingValue / 2),
+                        buttonDecoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(color: Colors.grey, width: 1),
+                        ),
+                        hint: const Text(
+                          'Chọn biển báo',
+                          style: TextStyle(
+                            fontSize: FONTSIZES.textPrimary,
+                            color: kDisabledTextColor,
+                          ),
+                        ),
+
+                        items: _listDropdownSigns.isNotEmpty
+                            ? _listDropdownSigns.toList()
+                            : [
+                                DropdownMenuItem(
+                                  alignment: Alignment.centerLeft,
+                                  child: Transform.scale(
+                                    scale: 0.6,
+                                    child: loadingScreen(),
+                                  ),
+                                )
+                              ],
+                        value: selectedSign,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedSign = value as String;
+                          });
+                        },
+                        scrollbarAlwaysShow: true,
+                        scrollbarRadius:
+                            const Radius.circular(kDefaultPaddingValue),
+                        buttonHeight: selectedSign == null ? 5.h : 8.h,
+                        buttonWidth: 100.w,
+                        itemHeight: 8.h,
+                        buttonElevation: 10,
+                        dropdownElevation: 2,
+                        dropdownMaxHeight: 50.h,
+                        dropdownDecoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                bottomRight:
+                                    Radius.circular(kDefaultPaddingValue),
+                                bottomLeft:
+                                    Radius.circular(kDefaultPaddingValue))),
+
+                        searchController: searchSignController,
+                        searchInnerWidget: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                            bottom: 4,
+                            right: 8,
+                            left: 8,
+                          ),
+                          child: TextFormField(
+                            controller: searchSignController,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: kDefaultPaddingValue / 2,
+                                vertical: kDefaultPaddingValue,
+                              ),
+                              hintText: 'Tìm biển báo...',
+                              hintStyle: const TextStyle(fontSize: 18),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(
+                                    kDefaultPaddingValue / 2),
+                              ),
                             ),
                           ),
-                          const SizedBox(height: kDefaultPaddingValue / 2),
-                          DropdownButtonHideUnderline(
-                            child: DropdownButton2(
-                              isExpanded: true,
-                              buttonOverlayColor:
-                                  MaterialStateProperty.all(Colors.white),
-                              buttonPadding: const EdgeInsets.symmetric(
-                                  horizontal: kDefaultPaddingValue / 2),
-                              buttonDecoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(5),
-                                border:
-                                    Border.all(color: Colors.grey, width: 1),
-                              ),
-                              hint: const Text(
-                                'Chọn biển báo',
-                                style: TextStyle(
-                                  fontSize: FONTSIZES.textPrimary,
-                                  color: kDisabledTextColor,
-                                ),
-                              ),
-
-                              items: _listDropdownSigns.isNotEmpty
-                                  ? _listDropdownSigns.toList()
-                                  : [
-                                      DropdownMenuItem(
-                                          alignment: Alignment.centerLeft,
-                                          child: Transform.scale(
-                                            scale: 0.6,
-                                            child: loadingScreen(),
-                                          ))
-                                    ],
-                              value: selectedSign,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedSign = value as String;
-                                });
-                              },
-                              scrollbarAlwaysShow: true,
-                              scrollbarRadius:
-                                  const Radius.circular(kDefaultPaddingValue),
-                              buttonHeight: selectedSign == null ? 5.h : 8.h,
-                              buttonWidth: 100.w,
-                              itemHeight: 8.h,
-                              buttonElevation: 10,
-                              dropdownElevation: 2,
-                              dropdownMaxHeight: 50.h,
-                              dropdownDecoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      bottomRight:
-                                          Radius.circular(kDefaultPaddingValue),
-                                      bottomLeft: Radius.circular(
-                                          kDefaultPaddingValue))),
-
-                              searchController: searchSignController,
-                              searchInnerWidget: Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 8,
-                                  bottom: 4,
-                                  right: 8,
-                                  left: 8,
-                                ),
-                                child: TextFormField(
-                                  controller: searchSignController,
-                                  decoration: InputDecoration(
-                                    isDense: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: kDefaultPaddingValue / 2,
-                                      vertical: kDefaultPaddingValue,
-                                    ),
-                                    hintText: 'Tìm biển báo...',
-                                    hintStyle: const TextStyle(fontSize: 18),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          kDefaultPaddingValue / 2),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              searchMatchFn: (item, searchValue) {
-                                return (item.value
-                                    .toString()
-                                    .contains(searchValue));
-                              },
-                              //This to clear the search value when you close the menu
-                              onMenuStateChange: (isOpen) {
-                                if (!isOpen) {
-                                  searchSignController.clear();
-                                }
-                              },
-                            ),
-                          )
-                        ],
-                      )
-                    : Container(),
+                        ),
+                        searchMatchFn: (item, searchValue) {
+                          return (item.value.toString().contains(searchValue));
+                        },
+                        //This to clear the search value when you close the menu
+                        onMenuStateChange: (isOpen) {
+                          if (!isOpen) {
+                            searchSignController.clear();
+                          }
+                        },
+                      ),
+                    )
+                  ],
+                ),
                 const SizedBox(height: kDefaultPaddingValue),
                 Row(
                   children: [
@@ -518,9 +468,8 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
                 ElevatedButton(
                   onPressed: pickedFile != null &&
                           adminId != null &&
-                          selectedSign != null &&
-                          status != null
-                      ? uploadImage
+                          selectedSign != null
+                      ? () => uploadImage(context)
                       : null,
                   child: Padding(
                     padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),

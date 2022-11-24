@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -5,35 +6,16 @@ import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/screens/mock-test/score_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 
 class ProgressBar extends StatelessWidget {
   const ProgressBar({
     Key? key,
   }) : super(key: key);
 
-  Future<void> confirmSubmission() async {
-    Get.dialog(
-      AlertDialog(
-        title: const Text(
-          'Nộp bài',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        content: const Text(
-          'Bạn có chắc là bạn muốn nộp bài?\n(Lưu ý: bài thi trống sẽ không được lưu)',
-          textAlign: TextAlign.center,
-        ),
-        actions: [
-          TextButton(
-            child: const Text("Xác nhận"),
-            onPressed: () => Get.to(ScoreScreen()),
-          ),
-          TextButton(
-            child: const Text("Không"),
-            onPressed: () => Get.back(),
-          ),
-        ],
-      ),
-    );
+  Future<void> confirmSubmission(BuildContext context) async {
+    DialogUtil.showAwesomeDialog(context, DialogType.error, "Nộp bài",
+        "Bạn có chắc là bạn muốn nộp bài?", () => Get.to(ScoreScreen()), () {});
   }
 
   @override
@@ -102,7 +84,7 @@ class ProgressBar extends StatelessWidget {
                     ButtonTheme(
                       child: ElevatedButton(
                         onPressed: () {
-                          confirmSubmission();
+                          confirmSubmission(context);
                         },
                         style: ElevatedButton.styleFrom(
                             textStyle: const TextStyle(

@@ -25,13 +25,10 @@ class _CommentCardState extends State<CommentCard> {
   GlobalController gc = Get.put(GlobalController());
 
   getName() {
-    if (ac.displayName.value.isEmpty) {
-      if (gc.username.value.isEmpty) {
-        return ac.email.value;
-      }
-      return gc.username.value;
+    if (widget.comment.displayName.isEmpty) {
+      return 'A User';
     }
-    return ac.displayName.value;
+    return widget.comment.displayName;
   }
 
   @override
@@ -60,14 +57,14 @@ class _CommentCardState extends State<CommentCard> {
                   children: [
                     GFAvatar(
                       radius: 5.w,
-                      backgroundImage: ac.avatar.value.isNotEmpty
-                          ? NetworkImage(ac.avatar.value)
+                      backgroundImage: widget.comment.avatar.isNotEmpty
+                          ? NetworkImage(widget.comment.avatar)
                           : const NetworkImage(defaultAvatarUrl),
                     ),
                     SizedBox(width: 3.w),
                     Text(
                       getName(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.blueAccent,
                         fontWeight: FontWeight.bold,
                         fontSize: FONTSIZES.textMediumLarge,

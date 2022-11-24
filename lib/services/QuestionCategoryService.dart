@@ -18,9 +18,8 @@ class QuestionCategoryService {
       String testCategoryId) async {
     try {
       final res = await http
-          .get(Uri.parse(url +
-              "QuestionCategories/GetQuestionCategoriesByTestCategoryId/" +
-              testCategoryId))
+          .get(Uri.parse(
+              "${url}QuestionCategories/GetQuestionCategoriesByTestCategoryId/$testCategoryId"))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,

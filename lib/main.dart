@@ -5,9 +5,11 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/shared/bindings.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/utils/io_utils.dart';
 
 import 'shared/themes.dart';
 
@@ -31,9 +33,20 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  getAllData(BuildContext context) async {
+    GlobalController gc = Get.put(GlobalController());
+    if (gc.userId.isEmpty) {
+      var token = await IOUtils.getFromStorage('token');
+      if (token.isNotEmpty) {
+        IOUtils.setUserInfoController(token);
+      }
+    }
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    getAllData(context);
     return Sizer(builder: (context, orientation, deviceType) {
       return GetMaterialApp(
         title: 'VNRDnTAI',

@@ -141,8 +141,15 @@ class _ProfileState extends State<ProfileScreen> {
                 () => Get.off(() => const SettingsScreen()),
                 null);
           } else {
-            DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
-                value.isNotEmpty ? value : 'Một sự cố đã xảy ra.', () {}, null);
+            DialogUtil.showAwesomeDialog(
+                context,
+                DialogType.error,
+                "Thất bại",
+                value.isNotEmpty
+                    ? value
+                    : 'Có lỗi xảy ra.\nVui lòng thử lại sau.',
+                () {},
+                null);
           }
         } else {
           // Something went wrong
@@ -157,13 +164,8 @@ class _ProfileState extends State<ProfileScreen> {
       });
     } else {
       // Something went wrong
-      DialogUtil.showAwesomeDialog(
-          context,
-          DialogType.error,
-          "Thất bại",
-          "Một sự cố không mong muốn đã xảy ra.\nVui lòng thử lại sau.",
-          () {},
-          null);
+      DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
+          "Có lỗi xảy ra.\nVui lòng thử lại sau.", () {}, null);
     }
   }
 

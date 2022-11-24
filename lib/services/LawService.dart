@@ -42,12 +42,8 @@ class LawSerivce {
               "${url}Paragraphs/GetSearchParagraphDTOAsync?paragraphId=$paragraphId"))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
-        // If the server did return a 200 OK response,
-        // then parse the JSON.
         return parseSearchLawDTO(res.body);
       } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
         throw Exception('Không tải được dữ liệu.');
       }
     } on TimeoutException {
@@ -61,16 +57,12 @@ class LawSerivce {
       String keywordId, String vehicleCategory) async {
     try {
       final res = await http
-          .get(Uri.parse(url +
-              "Sections/GetSearchListByKeywordId?keywordId=$keywordId&&vehicleCategory=$vehicleCategory"))
+          .get(Uri.parse(
+              "${url}Sections/GetSearchListByKeywordId?keywordId=$keywordId&&vehicleCategory=$vehicleCategory"))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
-        // If the server did return a 200 OK response,
-        // then parse the JSON.
         return parseListSearchLawDTO(res.body);
       } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
         throw Exception('Không tải được dữ liệu.');
       }
     } on TimeoutException {
@@ -83,18 +75,13 @@ class LawSerivce {
   Future<List<SearchLawDTO>> GetSearchListByQuery(
       String query, String vehicleCategory) async {
     try {
-      final res = await http
-          .get(Uri.parse(url +
-              "Sections/GetSearchListByQuery?query=$query&vehicleCategory=$vehicleCategory"))
+      final res = await http.get(Uri.parse(
+              "${url}Sections/GetSearchListByQuery?query=$query&vehicleCategory=$vehicleCategory"))
           // .timeout(const Duration(seconds: TIME_OUT))
           ;
       if (res.statusCode == 200) {
-        // If the server did return a 200 OK response,
-        // then parse the JSON.
         return parseListSearchLawDTO(res.body);
       } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
         throw Exception('Không tải được dữ liệu.');
       }
     } on TimeoutException {
