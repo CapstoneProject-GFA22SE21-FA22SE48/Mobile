@@ -33,7 +33,6 @@ class _SearchSignDetailScreen extends State<SearchSignDetailScreen> {
     var min = "";
     var max = "";
     SearchController sc = Get.put(SearchController());
-    print(widget.searchSignDto?.searchLawDTOs);
 
     return Scaffold(
       appBar: AppBar(

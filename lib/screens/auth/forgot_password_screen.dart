@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:get/get.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/screens/auth/components/change_forgot_password.dart';
@@ -49,7 +50,8 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
           DialogType.success,
           "Thành công",
           "Xác nhận thành công.",
-          () => Get.off(() => const ChangeForgotPasswordScreen()),
+          () => Get.off(
+              () => const LoaderOverlay(child: ChangeForgotPasswordScreen())),
           () {});
     } else {
       DialogUtil.showAwesomeDialog(

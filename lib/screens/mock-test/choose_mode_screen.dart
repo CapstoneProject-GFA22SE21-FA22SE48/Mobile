@@ -104,7 +104,32 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                           horizontal: kDefaultPaddingValue,
                         ),
                         children: [
-                          const SizedBox(height: kDefaultPaddingValue * 2),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                IconButton(
+                                    onPressed: () {
+                                      QuestionController qc =
+                                          Get.put(QuestionController());
+                                      qc.updateTestCategoryId('');
+                                      qc.updateTestCategoryName('');
+                                      qc.updateTestCategoryCount(0);
+                                    },
+                                    padding: const EdgeInsets.only(left: 0.0),
+                                    icon: const Icon(
+                                      Icons.arrow_back,
+                                      color: Colors.blueAccent,
+                                      size: FONTSIZES.textLarger,
+                                    )),
+                                Text(
+                                  'Bằng loại ${qc.testCategoryName.value}',
+                                  style: const TextStyle(
+                                      color: Colors.blueAccent,
+                                      fontSize: FONTSIZES.textLarge,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ]),
+                          // const SizedBox(height: kDefaultPaddingValue * 2),
 
                           // Vào học
                           GestureDetector(
