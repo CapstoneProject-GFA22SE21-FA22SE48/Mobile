@@ -217,7 +217,7 @@ class SearchListItem extends StatelessWidget {
     } else {
       return WillPopScope(
           onWillPop: () async {
-            Get.to(() => ContainerScreen());
+            Get.to(() => const ContainerScreen());
             return await true;
           },
           child: Container());

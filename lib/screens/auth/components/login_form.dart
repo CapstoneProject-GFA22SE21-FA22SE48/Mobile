@@ -82,6 +82,7 @@ class _LoginFormState extends State<LoginForm> {
   // do after logged in
   void afterLoggedIn(BuildContext context, String token) async {
     await IOUtils.saveToStorage('token', token);
+
     IOUtils.setUserInfoController(token)
         ? Get.to(() => const ContainerScreen())
         // ignore: use_build_context_synchronously

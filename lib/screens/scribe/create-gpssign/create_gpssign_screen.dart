@@ -184,12 +184,20 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
                     DialogUtil.showAwesomeDialog(
                         context,
                         DialogType.error,
-                        "Xác nhận thất bại",
+                        "Tạo thất bại",
                         "Có lỗi xảy ra.\nVui lòng thử lại sau",
                         () {},
                         null);
                   }
                 });
+              } else {
+                DialogUtil.showAwesomeDialog(
+                    context,
+                    DialogType.error,
+                    "Tạo thất bại",
+                    "Có lỗi xảy ra.\nVui lòng thử lại sau",
+                    () {},
+                    null);
               }
             });
           });
