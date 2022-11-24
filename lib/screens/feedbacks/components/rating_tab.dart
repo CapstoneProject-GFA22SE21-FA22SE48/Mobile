@@ -40,7 +40,7 @@ class _RatingTabState extends State<RatingTab> {
             context,
             DialogType.error,
             "Đánh giá thất bại",
-            "Một sự cố không mong muốn đã xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
+            "Có lỗi xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
             () {},
             null);
       }

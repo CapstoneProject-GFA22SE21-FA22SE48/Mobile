@@ -6,10 +6,8 @@ import 'package:vnrdn_tai/models/GPSSign.dart';
 class MapsController extends GetxController {
   static MapsController instance = Get.find();
   Location location = Location();
-  late List<GPSSign> _listSigns;
+  var listSigns = [].obs;
   final zoom = 18.0.obs;
-
-  List<GPSSign> get listSigns => _listSigns;
 
   @override
   Future<void> onInit() async {
@@ -21,6 +19,10 @@ class MapsController extends GetxController {
   dispose() {
     updateZoom(18.0);
     super.dispose();
+  }
+
+  updateGpsSigns(value) {
+    listSigns(value);
   }
 
   updateZoom(value) {

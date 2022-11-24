@@ -38,9 +38,8 @@ class QuestionSerivce {
     try {
       log(categoryId);
       final res = await http
-          .get(Uri.parse(url +
-              "Questions/GetRandomTestSetByCategoryId?categoryId=" +
-              categoryId))
+          .get(Uri.parse(
+              "${url}Questions/GetRandomTestSetByCategoryId?categoryId=$categoryId"))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
@@ -60,6 +59,7 @@ class QuestionSerivce {
       String categoryId, String questionCategoryId, int separator) async {
     try {
       final res = await http
+          // ignore: prefer_interpolation_to_compose_strings
           .get(Uri.parse(url +
               "Questions/GetStudySetByCategoryAndSeparator?categoryId=" +
               categoryId +
@@ -69,13 +69,9 @@ class QuestionSerivce {
               separator.toString()))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
-        // If the server did return a 200 OK response,
-        // then parse the JSON.
         log(res.body);
         return parseQuestions(res.body);
       } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
         throw Exception('Không tải được dữ liệu.');
       }
     } on TimeoutException {

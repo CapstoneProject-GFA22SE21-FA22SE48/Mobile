@@ -52,12 +52,12 @@ class _ForgotPasswordState extends State<VerifyMailScreen> {
 
   void sendEmail() async {
     EmailAuth emailAuth = EmailAuth(sessionName: "forgot_password_session");
-    emailAuth.config({
-      "server":
-          "https://vnrdntai-default-rtdb.asia-southeast1.firebasedatabase.app/",
-      "serverKey":
-          "AAAAMXHGdIY:APA91bEI8dkyaYPFl0jOdLtz2lC-JHpwXEGN01I2J_nNahkZwTovBhO_pWWTmN8QgCR_9T4dQid8UmVVBINmVcqkjN6MBZQgW7CdrSklu_clOQG-o8StDJSFqIIwXB96N4RVJdUoopLw"
-    });
+    // emailAuth.config({
+    //   "server":
+    //       "https://vnrdntai-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    //   "serverKey":
+    //       "AAAAMXHGdIY:APA91bEI8dkyaYPFl0jOdLtz2lC-JHpwXEGN01I2J_nNahkZwTovBhO_pWWTmN8QgCR_9T4dQid8UmVVBINmVcqkjN6MBZQgW7CdrSklu_clOQG-o8StDJSFqIIwXB96N4RVJdUoopLw"
+    // });
 
     AuthService().getUserByEmail(emailController.text).then((user) async {
       if (user.isNotEmpty && !user.contains('notfound')) {
@@ -80,7 +80,7 @@ class _ForgotPasswordState extends State<VerifyMailScreen> {
             } else {
               DialogUtil.showAwesomeDialog(
                   context,
-                  DialogType.success,
+                  DialogType.error,
                   "Thất bại",
                   "Rất tiếc! Email xác nhận không thể gửi tới địa chỉ này.",
                   () {},
@@ -92,7 +92,7 @@ class _ForgotPasswordState extends State<VerifyMailScreen> {
         ScaffoldMessenger.of(context).clearSnackBars();
         DialogUtil.showAwesomeDialog(
             context,
-            DialogType.success,
+            DialogType.error,
             "Thất bại",
             "Email không tồn tại trong hệ thống!\n Vui lòng kiểm tra lại thông tin.",
             () {},

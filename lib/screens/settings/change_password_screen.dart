@@ -50,7 +50,7 @@ class _ChangePasswordState extends State<ChangePasswordScreen> {
               "Thất bại",
               value.isNotEmpty
                   ? value
-                  : "Một sự cố không mong muốn đã xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
+                  : "Có lỗi xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
               () {},
               null);
         } else {

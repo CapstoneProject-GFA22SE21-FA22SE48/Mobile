@@ -196,7 +196,7 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
                   context,
                   DialogType.error,
                   "Xác nhận thất bại",
-                  "Một sự cố đã xảy ra.\nVui lòng kiểm tra lại",
+                  "Có lỗi xảy ra.\nVui lòng kiểm tra lại",
                   () {},
                   null);
             }
@@ -206,7 +206,7 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
               context,
               DialogType.error,
               "Xác nhận thất bại",
-              "Một sự cố đã xảy ra.\nVui lòng thử lại sau",
+              "Có lỗi xảy ra.\nVui lòng thử lại sau",
               () {},
               null);
         }

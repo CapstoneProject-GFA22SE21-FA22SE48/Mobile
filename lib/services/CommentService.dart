@@ -57,8 +57,8 @@ class CommentService {
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
-              body:
-                  jsonEncode(CommentSendDTO(gc.userId.value, content, rating)))
+              body: jsonEncode(
+                  CommentSendDTO(gc.userId.value, content.trim(), rating)))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
         log(res.body);

@@ -33,7 +33,8 @@ class AuthService {
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
-              body: jsonEncode(UserInfo(username, password, "", "", "", 2)))
+              body: jsonEncode(
+                  UserInfo(username.trim(), password, "", "", "", 2)))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         return parseToken(res.body);
@@ -53,7 +54,7 @@ class AuthService {
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
-              body: jsonEncode(UserInfo("", "", "gmail", "", "", 2)))
+              body: jsonEncode(UserInfo("", "", gmail, "", "", 2)))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         return parseToken(res.body);
@@ -73,8 +74,8 @@ class AuthService {
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
-              body: jsonEncode(
-                  UserInfo(username, password, email, avatar, displayName, 2)))
+              body: jsonEncode(UserInfo(username.trim(), password,
+                  email!.trim(), avatar, displayName!.trim(), 2)))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
         log(res.body);
@@ -90,12 +91,13 @@ class AuthService {
 
   Future<String> getUserByEmail(String email) async {
     try {
+      log(jsonEncode(email));
       final res = await http
           .post(Uri.parse("${url}Users/GetUserByEmail"),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
-              body: jsonEncode(email))
+              body: jsonEncode(email.trim()))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         return res.body;
