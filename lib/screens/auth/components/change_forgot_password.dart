@@ -10,6 +10,7 @@ import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/form_validator.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 class ChangeForgotPasswordScreen extends StatefulWidget {
   const ChangeForgotPasswordScreen({super.key});
@@ -37,7 +38,9 @@ class _ChangePasswordState extends State<ChangeForgotPasswordScreen> {
   }
 
   void handleChangeForgotPassword(String newPassword) {
+    context.loaderOverlay.show();
     AuthService().forgotPassword(newPassword).then((value) {
+      context.loaderOverlay.hide();
       if (value.isNotEmpty) {
         if (value.toLowerCase().contains('thất bại')) {
           DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
