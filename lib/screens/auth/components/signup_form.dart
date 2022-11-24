@@ -70,7 +70,7 @@ class _SignUpFormState extends State<SignUpForm> {
         context,
         DialogType.info,
         "Không có Email",
-        "Nếu không có email bạn sẽ không thể sử dụng quên mật khẩu.\nBạn có muốn tiếp tục?",
+        "Nếu không có email bạn sẽ không thể khôi phục mật khẩu.\nBạn có muốn tiếp tục?",
         () => handleRegister(context),
         () {});
   }
