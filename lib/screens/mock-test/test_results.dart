@@ -3,16 +3,9 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/controllers/question_controller.dart';
-import 'package:vnrdn_tai/models/TestCategory.dart';
 import 'package:vnrdn_tai/models/TestResult.dart';
-import 'package:vnrdn_tai/screens/container_screen.dart';
-import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
-import 'package:vnrdn_tai/screens/mock-test/test_set_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/test_result_detail.dart';
-import 'package:vnrdn_tai/services/TestCategoryService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/shared/snippets.dart';
 
 class TestResultScreen extends StatelessWidget {
   const TestResultScreen({super.key, required this.testResults});
@@ -63,7 +56,7 @@ class TestResultScreen extends StatelessWidget {
                                       child: Row(
                                         children: [
                                           Text(
-                                            "Bài thi lúc ${DateFormat('hh:mm dd/MM/yyyy').format(DateTime.parse(testResults[index].createdDate).add(const Duration(hours: 7)))}",
+                                            "Bài thi lúc ${DateFormat('hh:mm dd/MM/yyyy').format(DateTime.parse(testResults[index].createdDate).add(Duration(hours: DateTime.now().timeZoneOffset.inHours)))}",
                                             style: const TextStyle(
                                                 color: Colors.black54,
                                                 fontSize: 20),
