@@ -57,6 +57,7 @@ class ScoreScreen extends StatelessWidget {
           DateTime.now().toString(),
           trds);
 
+      qc.clearAnsweredAttempts();
       TestResultSerivce().saveTestResult(tr);
     }
   }

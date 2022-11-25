@@ -113,6 +113,12 @@ class QuestionController extends GetxController
     update();
   }
 
+  void clearAnsweredAttempts(){
+    _answeredAttempt = [];
+    _answeredQuestions = [];
+    // update();
+  }
+
   void nextQuestion() {
     _isAnswered = false;
     _pageController.nextPage(
