@@ -61,10 +61,15 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                     if (widget.futureSearchLawDto != null) {
                       widget.searchLawDto = snapshot.data;
                     }
-                    min = numberFormat
-                        .format(double.parse(widget.searchLawDto!.minPenalty));
-                    max = numberFormat
-                        .format(double.parse(widget.searchLawDto!.maxPenalty));
+                    if (widget.searchLawDto!.minPenalty == "0" &&
+                        widget.searchLawDto!.maxPenalty == "0") {
+                      min = max = "0";
+                    } else {
+                      min = numberFormat.format(
+                          double.parse(widget.searchLawDto!.minPenalty));
+                      max = numberFormat.format(
+                          double.parse(widget.searchLawDto!.maxPenalty));
+                    }
                     return Center(
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -171,8 +176,10 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                             4.0),
                                                   )),
                                                   TextSpan(
-                                                      text:
-                                                          "Phạt tiền từ ${min}đến ${max}nghìn đồng",
+                                                      text: min != "0" &&
+                                                              max != "0"
+                                                          ? "Phạt tiền từ ${min}đến ${max}nghìn đồng"
+                                                          : "Phạt cảnh cáo",
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .headline3

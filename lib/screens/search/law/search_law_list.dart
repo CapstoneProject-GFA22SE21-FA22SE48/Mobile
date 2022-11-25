@@ -37,6 +37,16 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
     final String response = await rootBundle.loadString('assets/dict.json');
     final data = await json.decode(response);
     var query = TiengViet.parse(sc.query.value);
+
+    for (final name in data.keys) {
+      final value = data[name];
+      if(sc.query.value == value){
+        return "";
+      }
+      if (query == name) {
+        return value;
+      }
+    }
     for (final name in data.keys) {
       final value = data[name];
       if (query.contains(name)) {
@@ -106,9 +116,8 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                           Padding(
                             padding: const EdgeInsets.only(
                                 left: kDefaultPaddingValue),
-                            child: Obx(
-                              () => Text(
-                                  'Có ${snapshot.data!.length} kết quả được tìm thấy liên quan đến ${sc.vehicleCategory.value}',
+                            child:Text(
+                                  'Có ${snapshot.data!.length} kết quả được tìm thấy',
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline4
@@ -116,7 +125,6 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                                           color: Colors.black54,
                                           fontWeight: FontWeight.bold,
                                           fontSize: FONTSIZES.textPrimary)),
-                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
@@ -130,7 +138,7 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                                       children: [
                                         TextSpan(
                                           text:
-                                              'Không tìm thấy kết quả mình cần? Thử tìm theo ',
+                                              'Có phải bạn muốn tìm: ',
                                           style: Theme.of(context)
                                               .textTheme
                                               .headline4
