@@ -60,7 +60,7 @@ class _QuizScreenState extends State<QuizScreen> {
             child: const Text("Xác nhận"),
             onPressed: () {
               qc.stopTimer();
-              Get.to(() => ChooseModeScreen());
+              Get.to(() => const ContainerScreen());
             },
           ),
           TextButton(
