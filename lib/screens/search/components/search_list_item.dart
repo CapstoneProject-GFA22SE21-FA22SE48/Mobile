@@ -29,15 +29,12 @@ class SearchListItem extends StatelessWidget {
 
     var words = _s.toLowerCase().split(" ");
     Map<int, int> starts = {};
-    var wordsInQuery = [];
+    var cont = 0;
+
     words.forEach((element) {
-      wordsInQuery.add(element);
+      cont += element.length;
       if (query.toLowerCase().split(" ").contains(element)) {
-        var index = _s.indexOf(element);
-        if (wordsInQuery.contains(element)) {
-          index = _s.indexOf(
-              element, index * wordsInQuery.where((e) => e == element).length);
-        }
+        var index = _s.indexOf(element, cont - 1);
         starts[index] = query
             .toLowerCase()
             .split(" ")
