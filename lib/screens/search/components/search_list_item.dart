@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,23 +21,68 @@ class SearchListItem extends StatelessWidget {
   const SearchListItem({super.key, this.searchLawDto, this.searchSignDTO});
   final SearchLawDTO? searchLawDto;
   final SearchSignDTO? searchSignDTO;
- //owo
+  //owo
   sliceFoundQuery(String s) {
     SearchController sc = Get.find<SearchController>();
     var query = TiengViet.parse(sc.query.value);
     var _s = TiengViet.parse(s);
-    var start = _s.toLowerCase().indexOf(query.toLowerCase());
-    if (start > -1) {
-      var end = start + query.length;
-      var res =
-          "${s.substring(0, start)}<bold>${s.substring(start, end)}</bold>${s.substring(end, s.length)}";
-      if (start > 65) {
-        res =
-            "...${res.substring(start - 45, s.length - end > 30 ? end + 25 : end)}...";
+
+    var words = _s.toLowerCase().split(" ");
+    Map<int, int> starts = {};
+    var wordsInQuery = [];
+    words.forEach((element) {
+      wordsInQuery.add(element);
+      if (query.toLowerCase().split(" ").contains(element)) {
+        var index = _s.indexOf(element);
+        if (wordsInQuery.contains(element)) {
+          index = _s.indexOf(
+              element, index * wordsInQuery.where((e) => e == element).length);
+        }
+        starts[index] = query
+            .toLowerCase()
+            .split(" ")
+            .firstWhere((e) => e.contains(element))
+            .length;
+        // starts.add({name: _s.indexOf(element)});
       }
-      return res;
+    });
+
+    if (starts.isNotEmpty) {
+      starts.forEach((k, v) {
+        s = boldString(s, k, k + v);
+      });
+      _s = s;
+      var firstBoldWordInString = starts.keys.toList()[0];
+      if (_s.length > 100 && firstBoldWordInString > 45) {
+        _s =
+            "...${s.substring(firstBoldWordInString - 35, (firstBoldWordInString + query.length) + s.length - (firstBoldWordInString + query.length))}...";
+      }
     }
-    return s;
+
+    // var start = _s.toLowerCase().indexOf(query.toLowerCase());
+    // if (start > -1) {
+    //   var end = start + query.length;
+    //   var res =
+    //       "${s.substring(0, start)}<bold>${s.substring(start, end)}</bold>${s.substring(end, s.length)}";
+    //   if (start > 65) {
+    //     res =
+    //         "...${res.substring(start - 45, s.length - end > 30 ? end + 25 : end)}...";
+    //   }
+    //   return res;
+    // }
+    return _s;
+  }
+
+  boldString(String s, int startIndex, int endIndex) {
+    if (s.contains("bold")) {
+      var r = (s.split("bold").length - 1) / 2;
+      startIndex += (13 * r).round();
+      endIndex += (13 * r).round();
+      print(s);
+    }
+    var res =
+        "${s.substring(0, startIndex)}<bold>${s.substring(startIndex, endIndex)}</bold>${s.substring(endIndex, s.length)}";
+    return res;
   }
 
   @override
