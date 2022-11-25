@@ -58,16 +58,14 @@ class _SearchSignListScreenState extends State<SearchSignListScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: kDefaultPaddingValue),
-                          child: Obx(
-                            () => SizedBox(
-                              height: 4.h,
-                              child: Text(
-                                  'Có ${widget.searchSignDTOList!.length} kết quả tìm được liên quan đến ${sc.signCategory.value}',
-                                  style: const TextStyle(
-                                      color: Colors.black54,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: FONTSIZES.textMedium)),
-                            ),
+                          child: SizedBox(
+                            height: 4.h,
+                            child: Text(
+                                'Có ${widget.searchSignDTOList!.length} kết quả được tìm thấy',
+                                style: const TextStyle(
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: FONTSIZES.textMedium)),
                           ),
                         ),
                         Container(
