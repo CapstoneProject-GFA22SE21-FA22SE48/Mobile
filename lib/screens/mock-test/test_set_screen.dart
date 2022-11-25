@@ -200,31 +200,31 @@ class _TestSetScreenState extends State<TestSetScreen> {
                                     ],
                                   ),
                                 ),
-                                Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: kDefaultPaddingValue / 4),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.file_download_done_rounded,
-                                          color: Colors.white,
-                                        ),
-                                        const SizedBox(
-                                          width: kDefaultPaddingValue / 4,
-                                        ),
-                                        Text(
-                                          "Hoàn tất ${0} câu",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6
-                                              ?.copyWith(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize:
-                                                      FONTSIZES.textPrimary),
-                                        ),
-                                      ],
-                                    )),
+                                // Padding(
+                                //     padding: const EdgeInsets.only(
+                                //         top: kDefaultPaddingValue / 4),
+                                //     child: Row(
+                                //       children: [
+                                //         Icon(
+                                //           Icons.file_download_done_rounded,
+                                //           color: Colors.white,
+                                //         ),
+                                //         const SizedBox(
+                                //           width: kDefaultPaddingValue / 4,
+                                //         ),
+                                //         Text(
+                                //           "Hoàn tất ${0} câu",
+                                //           style: Theme.of(context)
+                                //               .textTheme
+                                //               .headline6
+                                //               ?.copyWith(
+                                //                   color: Colors.white,
+                                //                   fontWeight: FontWeight.w400,
+                                //                   fontSize:
+                                //                       FONTSIZES.textPrimary),
+                                //         ),
+                                //       ],
+                                //     )),
                                 // Padding(
                                 //   padding: const EdgeInsets.only(
                                 //       top: kDefaultPaddingValue),
