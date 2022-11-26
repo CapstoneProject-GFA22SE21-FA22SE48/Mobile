@@ -167,7 +167,6 @@ class _BodyState extends State<Body> {
                         const SizedBox(width: kDefaultPaddingValue),
                         IconButton(
                           onPressed: () {
-                            print("n");
                             pageController.jumpTo(100.w * questionNo);
                           },
                           icon: const FaIcon(

@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -22,40 +23,48 @@ class SearchListItem extends StatelessWidget {
   final SearchLawDTO? searchLawDto;
   final SearchSignDTO? searchSignDTO;
   //owo
+  // print(searchLawDto);
   sliceFoundQuery(String s) {
+    // print(s);
     SearchController sc = Get.find<SearchController>();
     var query = TiengViet.parse(sc.query.value);
+    if (query.isEmpty) return s;
     var _s = TiengViet.parse(s);
 
-    var words = _s.toLowerCase().split(" ");
+    // var words = _s.toLowerCase().split(" ");
+    var words = _s.toLowerCase().split(RegExp("[ ,\"\”\“\;()]"));
+
     Map<int, int> starts = {};
     var cont = 0;
-
-    words.forEach((element) {
-      cont += element.length;
-      if (query.toLowerCase().split(" ").contains(element)) {
-        var index = _s.indexOf(element, cont - 1);
+    words.forEach((word) {
+      if (word.length == 0) {
+        cont++;
+      }
+      cont += word.length;
+      if (query.toLowerCase().split(" ").contains(word)) {
+        var index = _s.indexOf(word, cont - 1);
         starts[index] = query
             .toLowerCase()
             .split(" ")
-            .firstWhere((e) => e.contains(element))
+            .firstWhere((e) => e.contains(word))
             .length;
-        // starts.add({name: _s.indexOf(element)});
+        // starts.add({name: _s.indexOf(word)});
       }
     });
 
     if (starts.isNotEmpty) {
+      starts = Map.fromEntries(
+          starts.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key)));
       starts.forEach((k, v) {
         s = boldString(s, k, k + v);
       });
-      _s = s;
+      // _s = s;
       var firstBoldWordInString = starts.keys.toList()[0];
-      if (_s.length > 100 && firstBoldWordInString > 45) {
-        _s =
-            "...${s.substring(firstBoldWordInString - 35, (firstBoldWordInString + query.length) + s.length - (firstBoldWordInString + query.length))}...";
+      if (_s.length > 100 && firstBoldWordInString > 100) {
+        s = "...${s.substring(firstBoldWordInString - 35, (firstBoldWordInString + query.length) + s.length - (firstBoldWordInString + query.length))}...";
       }
     }
-
+    _s = s;
     // var start = _s.toLowerCase().indexOf(query.toLowerCase());
     // if (start > -1) {
     //   var end = start + query.length;
@@ -67,15 +76,17 @@ class SearchListItem extends StatelessWidget {
     //   }
     //   return res;
     // }
+    _s = _s.replaceAll(
+        "sử <bold>dụ</bold>ng ô (dù)", "sử dụng ô (<bold>dù</bold>)");
     return _s;
   }
 
   boldString(String s, int startIndex, int endIndex) {
+    if (startIndex == -1) return s;
     if (s.contains("bold")) {
       var r = (s.split("bold").length - 1) / 2;
       startIndex += (13 * r).round();
       endIndex += (13 * r).round();
-      print(s);
     }
     var res =
         "${s.substring(0, startIndex)}<bold>${s.substring(startIndex, endIndex)}</bold>${s.substring(endIndex, s.length)}";

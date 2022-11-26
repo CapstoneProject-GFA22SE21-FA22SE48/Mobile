@@ -227,7 +227,7 @@ class _SearchSignDetailScreen extends State<SearchSignDetailScreen> {
                                                 const BouncingScrollPhysics(),
                                             shrinkWrap: true,
                                             separatorBuilder:
-                                                (context, index) => SizedBox(
+                                                (context, index) => const SizedBox(
                                                     height:
                                                         kDefaultPaddingValue),
                                             itemBuilder: ((context, index) {
