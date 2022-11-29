@@ -229,7 +229,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         onTap: () => setState(
                           () {
                             newObSecure = !newObSecure;
-                            gc.updateOldObSecure(newObSecure);
+                            gc.updateNewObSecure(newObSecure);
                           },
                         ),
                         child: Icon(newObSecure
@@ -262,7 +262,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         onTap: () => setState(
                           () {
                             confirmObSecure = !confirmObSecure;
-                            gc.updateOldObSecure(confirmObSecure);
+                            gc.updateConfirmObSecure(confirmObSecure);
                           },
                         ),
                         child: Icon(confirmObSecure

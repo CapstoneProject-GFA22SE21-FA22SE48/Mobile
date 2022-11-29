@@ -46,7 +46,6 @@ class _CommentsState extends State<CommentsScreen> {
       average /= list.length;
     }
     return (average * 10).round() / 10;
-    // average = average.roundToDouble();
   }
 
   getRateOfRating(List<Comment> list) {
@@ -84,7 +83,8 @@ class _CommentsState extends State<CommentsScreen> {
     }
   }
 
-  callback(newIsSent) {
+  callbackSubmitRating(newIsSent) {
+    context.loaderOverlay.hide();
     setState(() {
       isSentComment = newIsSent;
     });
@@ -333,7 +333,7 @@ class _CommentsState extends State<CommentsScreen> {
                                                 : Container(),
                                             SizedBox(width: 5.w),
                                             Text(
-                                              '$average trên 5',
+                                              '${average.toStringAsFixed(1)} trên 5',
                                               style: const TextStyle(
                                                 color: Colors.black54,
                                               ),
@@ -345,7 +345,7 @@ class _CommentsState extends State<CommentsScreen> {
                                         padding: const EdgeInsets.only(
                                             top: kDefaultPaddingValue / 2),
                                         child: Text(
-                                          '${snapshot.data!.length} người dùng đã đánh giá',
+                                          'Đã có ${snapshot.data!.length} đánh giá',
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                             color: Colors.blueAccent,
@@ -579,7 +579,10 @@ class _CommentsState extends State<CommentsScreen> {
                         return Padding(
                           padding: EdgeInsets.only(
                               bottom: MediaQuery.of(context).viewInsets.bottom),
-                          child: RatingTab(callback: callback),
+                          child: LoaderOverlay(
+                              child: RatingTab(
+                                  parentContext: context,
+                                  callback: callbackSubmitRating)),
                         );
                       }),
                     );

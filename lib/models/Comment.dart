@@ -1,8 +1,8 @@
 class Comment {
   final String? id;
   final String userId;
-  final String avatar;
-  final String displayName;
+  final String? avatar;
+  final String? displayName;
   final String content;
   final int rating;
   final String createdDate;

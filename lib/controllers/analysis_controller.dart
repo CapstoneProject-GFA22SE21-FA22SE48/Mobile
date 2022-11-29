@@ -122,7 +122,7 @@ class AnalysisController extends GetxController {
   }
 
   Future<String> takePicAndDetect() async {
-    _cameraController.setFlashMode(FlashMode.auto);
+    _cameraController.setFlashMode(FlashMode.off);
     try {
       final xFile = await _cameraController.takePicture();
       final path = xFile.path;

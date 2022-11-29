@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image/image.dart' as Im;
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/avatar/gf_avatar.dart';
@@ -12,14 +11,12 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:vnrdn_tai/models/UserInfo.dart';
 import 'package:vnrdn_tai/screens/settings/setting_screen.dart';
 import 'package:vnrdn_tai/services/UserService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/firebase_options.dart';
 import 'package:vnrdn_tai/utils/form_validator.dart';
-import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -119,10 +116,6 @@ class _ProfileState extends State<ProfileScreen> {
   void handleUpdateProfile() async {
     context.loaderOverlay.show();
     String imageUrl = ac.avatar.value;
-    // if (imageUrl.contains('doNotPick')) {
-    //   imageUrl = ac.avatar.value;
-    //   print(imageUrl);
-    // }
     if (imageUrl.isNotEmpty) {
       await UserService()
           .updateProfile(
@@ -131,8 +124,6 @@ class _ProfileState extends State<ProfileScreen> {
         context.loaderOverlay.hide();
         if (value.isNotEmpty) {
           if (value.toLowerCase().contains('thay đổi')) {
-            // deleteOldImage();
-            // info changed\
             DialogUtil.showAwesomeDialog(
                 context,
                 DialogType.success,
@@ -152,7 +143,6 @@ class _ProfileState extends State<ProfileScreen> {
                 null);
           }
         } else {
-          // Something went wrong
           DialogUtil.showAwesomeDialog(
               context,
               DialogType.error,
@@ -163,7 +153,7 @@ class _ProfileState extends State<ProfileScreen> {
         }
       });
     } else {
-      // Something went wrong
+      context.loaderOverlay.hide();
       DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
           "Có lỗi xảy ra.\nVui lòng thử lại sau.", () {}, null);
     }

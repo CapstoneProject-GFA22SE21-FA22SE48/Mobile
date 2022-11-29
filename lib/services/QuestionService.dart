@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
 class QuestionSerivce {
+  AuthController ac = Get.put(AuthController());
+
   List<Question> parseQuestions(String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed.map<Question>((json) => Question.fromJson(json)).toList();
@@ -13,9 +17,9 @@ class QuestionSerivce {
 
   Future<List<Question>> GetQuestionList() async {
     try {
-      final res = await http
-          .get(Uri.parse("${url}Questions"))
-          .timeout(const Duration(seconds: TIME_OUT));
+      final res = await http.get(Uri.parse("${url}Questions"), headers: {
+        'Authorization': 'Bearer ${ac.token.value}',
+      }).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
@@ -37,10 +41,12 @@ class QuestionSerivce {
       String categoryId) async {
     try {
       log(categoryId);
-      final res = await http
-          .get(Uri.parse(
-              "${url}Questions/GetRandomTestSetByCategoryId?categoryId=$categoryId"))
-          .timeout(const Duration(seconds: TIME_OUT));
+      final res = await http.get(
+          Uri.parse(
+              "${url}Questions/GetRandomTestSetByCategoryId?categoryId=$categoryId"),
+          headers: {
+            'Authorization': 'Bearer ${ac.token.value}',
+          }).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
@@ -58,16 +64,19 @@ class QuestionSerivce {
   Future<List<Question>> GetStudySetByCategoryAndSeparator(
       String categoryId, String questionCategoryId, int separator) async {
     try {
-      final res = await http
-          // ignore: prefer_interpolation_to_compose_strings
-          .get(Uri.parse(url +
-              "Questions/GetStudySetByCategoryAndSeparator?categoryId=" +
-              categoryId +
-              "&questionCategoryId=" +
-              questionCategoryId +
-              "&separator=" +
-              separator.toString()))
-          .timeout(const Duration(seconds: TIME_OUT));
+      final res = await http.get(
+        // ignore: prefer_interpolation_to_compose_strings
+        Uri.parse(url +
+            "Questions/GetStudySetByCategoryAndSeparator?categoryId=" +
+            categoryId +
+            "&questionCategoryId=" +
+            questionCategoryId +
+            "&separator=" +
+            separator.toString()),
+        headers: {
+          'Authorization': 'Bearer ${ac.token.value}',
+        },
+      ).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         log(res.body);
         return parseQuestions(res.body);

@@ -3,6 +3,7 @@ import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/screens/auth/components/change_forgot_password.dart';
@@ -52,13 +53,6 @@ class _ForgotPasswordState extends State<VerifyMailScreen> {
 
   void sendEmail() async {
     EmailAuth emailAuth = EmailAuth(sessionName: "forgot_password_session");
-    // emailAuth.config({
-    //   "server":
-    //       "https://vnrdntai-default-rtdb.asia-southeast1.firebasedatabase.app/",
-    //   "serverKey":
-    //       "AAAAMXHGdIY:APA91bEI8dkyaYPFl0jOdLtz2lC-JHpwXEGN01I2J_nNahkZwTovBhO_pWWTmN8QgCR_9T4dQid8UmVVBINmVcqkjN6MBZQgW7CdrSklu_clOQG-o8StDJSFqIIwXB96N4RVJdUoopLw"
-    // });
-
     AuthService().getUserByEmail(emailController.text).then((user) async {
       if (user.isNotEmpty && !user.contains('notfound')) {
         AuthController ac = Get.put(AuthController());
@@ -68,7 +62,8 @@ class _ForgotPasswordState extends State<VerifyMailScreen> {
             .sendOtp(recipientMail: emailController.text, otpLength: 6)
             .then(
           (res) {
-            ScaffoldMessenger.of(context).clearSnackBars();
+            // ScaffoldMessenger.of(context).clearSnackBars();
+            context.loaderOverlay.hide();
             if (res) {
               DialogUtil.showAwesomeDialog(
                   context,
@@ -89,7 +84,8 @@ class _ForgotPasswordState extends State<VerifyMailScreen> {
           },
         );
       } else {
-        ScaffoldMessenger.of(context).clearSnackBars();
+        context.loaderOverlay.hide();
+        // ScaffoldMessenger.of(context).clearSnackBars();
         DialogUtil.showAwesomeDialog(
             context,
             DialogType.error,
@@ -118,7 +114,7 @@ class _ForgotPasswordState extends State<VerifyMailScreen> {
         ],
       ),
       body: KeyboardVisibilityBuilder(
-        builder: (context, isKeyboardVisible) {
+        builder: (kContext, isKeyboardVisible) {
           return Form(
             key: forgotFormKey,
             child: Column(
@@ -162,25 +158,17 @@ class _ForgotPasswordState extends State<VerifyMailScreen> {
                   child: Hero(
                     tag: "verify_btn",
                     child: ElevatedButton(
-                      onPressed: () => {
-                        if (emailController.text.isNotEmpty)
-                          {
-                            if (forgotFormKey.currentState!.validate())
-                              {
-                                FocusManager.instance.primaryFocus?.unfocus(),
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Row(
-                                      children: const [
-                                        Text('Đang xử lí'),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                sendEmail()
+                      onPressed: emailController.text.isNotEmpty
+                          ? () => {
+                                if (forgotFormKey.currentState!.validate())
+                                  {
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus(),
+                                    context.loaderOverlay.show(),
+                                    sendEmail()
+                                  }
                               }
-                          }
-                      },
+                          : null,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: kDefaultPaddingValue),

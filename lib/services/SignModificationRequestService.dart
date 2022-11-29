@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import '../shared/constants.dart';
 
 class SignModificationRequestService {
+  AuthController ac = Get.put(AuthController());
   static List<SignModificationRequest> parseSignModificationRequestList(
       String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
@@ -28,13 +30,13 @@ class SignModificationRequestService {
   Future<List<SignModificationRequest>> getClaimedRequests() async {
     GlobalController gc = Get.put(GlobalController());
     try {
-      final res = await http
-          .get(
-            Uri.parse(
-              "${url}SignModificationRequests/Scribes/${gc.userId.value}/2",
-            ),
-          )
-          .timeout(const Duration(seconds: TIME_OUT));
+      final res = await http.get(
+          Uri.parse(
+            "${url}SignModificationRequests/Scribes/${gc.userId.value}/2",
+          ),
+          headers: {
+            'Authorization': 'Bearer ${ac.token.value}',
+          }).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         log(res.body);
         return parseSignModificationRequestList(res.body);
@@ -56,11 +58,11 @@ class SignModificationRequestService {
       }
       final res = await http
           .put(
-            // need add /$status
             Uri.parse(
                 "${url}SignModificationRequests/GPSSigns/$gpsSignRomId/$status/$adminId"),
             headers: <String, String>{
-              "Content-Type": "application/json; charset=UTF-8"
+              "Content-Type": "application/json; charset=UTF-8",
+              'Authorization': 'Bearer ${ac.token.value}',
             },
             body: jsonEncode(imageUrl),
           )
@@ -94,14 +96,15 @@ class SignModificationRequestService {
           adminId,
           0,
           imageUrl,
-          2,
+          3,
           null,
           DateTime.now().toLocal().toString(),
           false);
       final res = await http
           .post(Uri.parse("${url}SignModificationRequests/AddGps"),
               headers: <String, String>{
-                "Content-Type": "application/json; charset=UTF-8"
+                "Content-Type": "application/json; charset=UTF-8",
+                'Authorization': 'Bearer ${ac.token.value}',
               },
               body: jsonEncode(request))
           .timeout(const Duration(seconds: TIME_OUT));

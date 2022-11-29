@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,7 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/shared/bindings.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/utils/firebase_options.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
 
 import 'shared/themes.dart';
@@ -26,7 +28,9 @@ void main() {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
-  Firebase.initializeApp();
+  Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -39,9 +43,13 @@ class MyApp extends StatelessWidget {
       var token = await IOUtils.getFromStorage('token');
       if (token.isNotEmpty) {
         IOUtils.setUserInfoController(token);
+      } else {
+        IOUtils.clearUserInfoController();
       }
     }
   }
+
+  getPermission() async {}
 
   // This widget is the root of your application.
   @override

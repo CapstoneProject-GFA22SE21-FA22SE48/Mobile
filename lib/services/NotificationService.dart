@@ -51,9 +51,9 @@ class NotificationService {
     final bigPicture = await DownloadUtil.downloadAndSaveFile(imageUrl, "sign");
 
     AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails('channel id', 'channel name',
+        AndroidNotificationDetails('vnrdntai', 'vnrdntai_sign_gps',
             groupKey: 'com.example.flutter_push_notifications',
-            channelDescription: 'channel description',
+            channelDescription: 'vnrdntai sign gps notification',
             importance: Importance.max,
             priority: Priority.max,
             playSound: true,
@@ -65,12 +65,14 @@ class NotificationService {
             ),
             color: const Color(0xff2196f3),
             timeoutAfter: 3000,
+            autoCancel: false,
             indeterminate: true,
+            fullScreenIntent: true,
             groupAlertBehavior: GroupAlertBehavior.all,
             icon: "mipmap/ic_launcher");
 
     IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails(
-        threadIdentifier: "thread1",
+        threadIdentifier: "thread_vnrdntai",
         attachments: <IOSNotificationAttachment>[
           IOSNotificationAttachment(bigPicture)
         ]);

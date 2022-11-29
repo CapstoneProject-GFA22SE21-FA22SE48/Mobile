@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/colors/gf_color.dart';
@@ -11,6 +10,7 @@ import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/Comment.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
+import 'package:vnrdn_tai/utils/date_time_utils.dart';
 
 class CommentCard extends StatefulWidget {
   const CommentCard({super.key, required this.comment});
@@ -25,17 +25,21 @@ class _CommentCardState extends State<CommentCard> {
   GlobalController gc = Get.put(GlobalController());
 
   getName() {
-    if (widget.comment.displayName.isEmpty) {
+    if (widget.comment.displayName != null) {
+      return widget.comment.displayName;
+    } else {
       return 'A User';
     }
-    return widget.comment.displayName;
   }
 
   @override
   Widget build(BuildContext context) {
-    String time = DateFormat('hh:mm dd/MM/yyyy')
-        .format(DateTime.parse(widget.comment.createdDate));
-
+    String time = 'lúc ';
+    DateTimeUtil.isRelative(DateTime.parse(widget.comment.createdDate))
+        ? time =
+            DateTimeUtil.getSince(DateTime.parse(widget.comment.createdDate))
+        : time += DateFormat('hh:mm:ss dd/MM/yyyy')
+            .format(DateTime.parse(widget.comment.createdDate));
     return Container(
         margin:
             const EdgeInsets.symmetric(horizontal: kDefaultPaddingValue / 4),
@@ -57,8 +61,8 @@ class _CommentCardState extends State<CommentCard> {
                   children: [
                     GFAvatar(
                       radius: 5.w,
-                      backgroundImage: widget.comment.avatar.isNotEmpty
-                          ? NetworkImage(widget.comment.avatar)
+                      backgroundImage: widget.comment.avatar != null
+                          ? NetworkImage(widget.comment.avatar!)
                           : const NetworkImage(defaultAvatarUrl),
                     ),
                     SizedBox(width: 3.w),
@@ -118,7 +122,7 @@ class _CommentCardState extends State<CommentCard> {
                     //     "${gc.username.value.isNotEmpty ? gc.username.value : ac.email.value}"),
                     const Spacer(),
                     Text(
-                      'Đã bình luận lúc $time',
+                      'Bình luận $time',
                       style: const TextStyle(
                         fontStyle: FontStyle.italic,
                       ),

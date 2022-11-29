@@ -55,6 +55,7 @@ dependencies:
   loader_overlay:
   flutter:
     sdk: flutter
+  device_info_plus:
   shared_preferences: "^2.0.15"
 
   cupertino_icons: ^1.0.2
@@ -62,6 +63,7 @@ dependencies:
   firebase_auth: ^4.1.0
   firebase_storage: ^11.0.3
   firebase_database: ^10.0.4
+  google_sign_in:
 
   getwidget: ^2.0.4
 
@@ -88,7 +90,7 @@ dependencies:
   rxdart: ^0.27.5
   flutter_native_timezone: ^2.0.0
   # endregion
-  flutter_background:
+  flutter_background_service:
 
 flutter_native_splash:
   color: "#ffffff"

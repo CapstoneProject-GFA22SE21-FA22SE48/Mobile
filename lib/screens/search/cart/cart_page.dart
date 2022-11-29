@@ -253,7 +253,12 @@ class CartPage extends StatelessWidget {
                                                             .center,
                                                     children: [
                                                       Text(
-                                                          "Phạt tiền từ $min đến $max",
+                                                          int.parse(min) == 0 &&
+                                                                  int.parse(
+                                                                          max) ==
+                                                                      0
+                                                              ? "Phạt cảnh cáo"
+                                                              : "Phạt tiền từ $min đến $max",
                                                           style:
                                                               const TextStyle(
                                                                   color: Colors

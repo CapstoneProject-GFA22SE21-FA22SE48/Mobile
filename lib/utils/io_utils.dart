@@ -77,6 +77,8 @@ class IOUtils {
     GlobalController gc = Get.put(GlobalController());
     AuthController ac = Get.put(AuthController());
 
+    ac.updateToken(token);
+
     Jwt.parseJwt(token).forEach((key, value) {
       // IOUtils.saveToStorage(key, value.toString());
       switch (key) {
@@ -119,6 +121,7 @@ class IOUtils {
 
     gc.updateUserId('');
     gc.updateUsername('');
+    ac.updateToken('');
     ac.updateEmail('');
     ac.updateRole(2);
     ac.updateStatus(5);

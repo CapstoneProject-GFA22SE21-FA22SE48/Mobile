@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
@@ -45,6 +46,7 @@ class FeedbackService {
       GPSSign? oldGpsSign,
       GPSSign? newGpsSign) async {
     GlobalController gc = Get.put(GlobalController());
+    AuthController ac = Get.put(AuthController());
     GPSSignFeedbackDTO request;
     try {
       switch (requestType) {
@@ -62,8 +64,9 @@ class FeedbackService {
       }
       final res = await http
           .post(Uri.parse("${url}SignModificationRequests"),
-              headers: <String, String>{
-                "Content-Type": "application/json; charset=UTF-8"
+              headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization': 'Bearer ${ac.token.value}',
               },
               body: jsonEncode(request))
           .timeout(const Duration(seconds: TIME_OUT));
@@ -82,10 +85,12 @@ class FeedbackService {
 
   Future<bool?> createSignsModificationRequest(SignFeedbackDTO rom) async {
     try {
+      AuthController ac = Get.put(AuthController());
       final res = await http
           .post(Uri.parse("${url}SignModificationRequests"),
               headers: <String, String>{
-                "Content-Type": "application/json; charset=UTF-8"
+                "Content-Type": "application/json; charset=UTF-8",
+                'Authorization': 'Bearer ${ac.token.value}',
               },
               body: jsonEncode(rom))
           .timeout(const Duration(seconds: TIME_OUT));
