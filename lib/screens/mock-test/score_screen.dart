@@ -56,8 +56,6 @@ class ScoreScreen extends StatelessWidget {
           qc.answeredQuestions[0].testCategoryId,
           DateTime.now().toString(),
           trds);
-
-      qc.clearAnsweredAttempts();
       TestResultSerivce().saveTestResult(tr);
     }
   }
@@ -68,6 +66,8 @@ class ScoreScreen extends StatelessWidget {
     submitScore(_qnController);
     return WillPopScope(
       onWillPop: () async {
+        _qnController.stopTimer();
+        Get.offAll(() => ContainerScreen());
         return await true;
       },
       child: Scaffold(
@@ -145,7 +145,7 @@ class ScoreScreen extends StatelessWidget {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blueAccent,
                               alignment: Alignment.center,
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   vertical: kDefaultPaddingValue,
                                   horizontal: kDefaultPaddingValue),
                               shape: RoundedRectangleBorder(

@@ -98,6 +98,7 @@ class AnalysisScreen extends StatelessWidget {
               backgroundColor: Colors.transparent,
               leading: IconButton(
                 onPressed: (() {
+                  ac.stopImageStream();
                   Get.offAll(() => const ContainerScreen());
                 }),
                 icon: const Icon(

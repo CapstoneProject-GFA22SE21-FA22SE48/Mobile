@@ -36,6 +36,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
   void initState() {
     super.initState();
     IOUtils.getFromStorage('token');
+    qc.clearAnsweredAttempts();
   }
 
   @override
