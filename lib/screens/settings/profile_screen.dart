@@ -83,7 +83,7 @@ class _ProfileState extends State<ProfileScreen> {
         url = url.split('&token').first;
         ac.updateAvatar(url);
         setState(() {
-          print(url);
+          // print(url);
         });
         return url;
       });
