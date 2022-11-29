@@ -7,6 +7,7 @@ import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/components/rating/gf_rating.dart';
 import 'package:getwidget/size/gf_size.dart';
 import 'package:getwidget/types/gf_button_type.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/services/CommentService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -15,9 +16,10 @@ import 'package:vnrdn_tai/utils/form_validator.dart';
 import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class RatingTab extends StatefulWidget {
-  RatingTab({super.key, required this.callback});
+  RatingTab({super.key, required this.callback, required this.parentContext});
 
   Function(bool) callback;
+  BuildContext parentContext;
 
   @override
   State<RatingTab> createState() => _RatingTabState();
@@ -29,6 +31,8 @@ class _RatingTabState extends State<RatingTab> {
   double rate = 5.0;
 
   handleSendRating(BuildContext context) {
+    FocusManager.instance.primaryFocus?.unfocus();
+    widget.parentContext.loaderOverlay.show();
     CommentService()
         .createComment(contentController.text, rate.toInt())
         .then((value) {
@@ -36,11 +40,12 @@ class _RatingTabState extends State<RatingTab> {
         widget.callback(true);
         Navigator.pop(context);
       } else {
+        widget.parentContext.loaderOverlay.hide();
         DialogUtil.showAwesomeDialog(
             context,
             DialogType.error,
             "Đánh giá thất bại",
-            "Có lỗi xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
+            "Có lỗi xảy ra.\nVui lòng thử lại sau.",
             () {},
             null);
       }
@@ -57,7 +62,7 @@ class _RatingTabState extends State<RatingTab> {
     return Container(
       height: 40.h,
       alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(horizontal: kDefaultPaddingValue),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddingValue),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[

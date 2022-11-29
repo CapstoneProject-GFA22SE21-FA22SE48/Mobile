@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/shared/responsive.dart';
@@ -57,7 +58,7 @@ class _MobileLoginState extends State<MobileLoginScreen> {
             Spacer(),
             Expanded(
               flex: 8,
-              child: LoginForm(),
+              child: LoaderOverlay(child: LoginForm()),
             ),
             Spacer(),
           ],

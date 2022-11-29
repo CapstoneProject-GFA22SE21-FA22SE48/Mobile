@@ -40,7 +40,7 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
 
     for (final name in data.keys) {
       final value = data[name];
-      if(sc.query.value == value){
+      if (sc.query.value == value) {
         return "";
       }
       if (query == name) {
@@ -116,19 +116,20 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                           Padding(
                             padding: const EdgeInsets.only(
                                 left: kDefaultPaddingValue),
-                            child:Text(
-                                  'Có ${snapshot.data!.length} kết quả được tìm thấy',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline4
-                                      ?.copyWith(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: FONTSIZES.textPrimary)),
+                            child: Text(
+                                'Có ${snapshot.data!.length} kết quả được tìm thấy',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4
+                                    ?.copyWith(
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: FONTSIZES.textPrimary)),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(
-                                left: kDefaultPaddingValue),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: kDefaultPaddingValue,
+                                vertical: kDefaultPaddingValue / 2),
                             child: FutureBuilder<dynamic>(
                                 future: findMatch(sc),
                                 builder: (context, snapshot) {
@@ -137,8 +138,7 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                                         text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text:
-                                              'Có phải bạn muốn tìm: ',
+                                          text: 'Có phải bạn muốn tìm: ',
                                           style: Theme.of(context)
                                               .textTheme
                                               .headline4
@@ -179,7 +179,7 @@ class _SearchLawListScreenState extends State<SearchLawListScreen> {
                           ),
                           SizedBox(
                             width: 100.w,
-                            height: isKeyboardVisible ? 40.h : 79.h,
+                            height: isKeyboardVisible ? 38.5.h : 77.h,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: kDefaultPaddingValue,

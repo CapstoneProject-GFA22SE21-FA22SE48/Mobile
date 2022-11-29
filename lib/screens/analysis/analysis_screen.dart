@@ -11,16 +11,12 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/feedbacks/sign_content_feedback_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/screens/search/sign/search_sign_screen.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
-import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/widgets/animation/ripple.dart';
-import 'package:vnrdn_tai/widgets/templated_buttons.dart';
-import 'dart:math' as math;
 
 class AnalysisScreen extends StatelessWidget {
   AnalysisScreen({super.key});
@@ -157,7 +153,13 @@ class AnalysisScreen extends StatelessWidget {
                             child: Column(
                               children: [
                                 SizedBox(
-                                  height: 10.h,
+                                  height: 12.h,
+                                ),
+                                FutureBuilder(
+                                  key: UniqueKey(),
+                                  initialData: _timer,
+                                  builder: (context, snapshot) =>
+                                      stillNotFound(context),
                                 ),
                                 Center(
                                   child: Padding(
@@ -204,12 +206,6 @@ class AnalysisScreen extends StatelessWidget {
                                                     size: 32)),
                                           ),
                                   ),
-                                ),
-                                FutureBuilder(
-                                  key: UniqueKey(),
-                                  initialData: _timer,
-                                  builder: (context, snapshot) =>
-                                      stillNotFound(context),
                                 ),
                               ],
                             ),

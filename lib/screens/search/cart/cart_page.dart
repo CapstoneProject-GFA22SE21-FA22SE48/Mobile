@@ -43,6 +43,7 @@ class CartPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: const Text("Chi tiết biên bản"),
+          elevation: 0,
         ),
         body: Obx(() {
           var af = approximateFine(cc);
@@ -51,16 +52,30 @@ class CartPage extends StatelessWidget {
           var max = "";
           var data = cc.laws;
           return SafeArea(
-            child: Padding(
+            child: Container(
+              margin: const EdgeInsets.all(kDefaultPaddingValue),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 2,
+                  )
+                ],
+                borderRadius: BorderRadius.circular(
+                  kDefaultPaddingValue,
+                ),
+              ),
               padding: const EdgeInsets.only(top: kDefaultPaddingValue),
               child: Column(
                 children: [
-                  Text('Biên bản xử phạt vi phạm giao thông',
+                  Text('Biên bản xử phạt\nvi phạm giao thông',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.headline4?.copyWith(
-                          color: Colors.black,
+                          color: Colors.blueAccent,
                           fontWeight: FontWeight.bold,
                           fontSize: FONTSIZES.textHuge)),
+                  SizedBox(height: 3.h),
                   Padding(
                     padding: const EdgeInsets.all(kDefaultPaddingValue),
                     child: Row(
@@ -71,7 +86,7 @@ class CartPage extends StatelessWidget {
                                 .textTheme
                                 .headline4
                                 ?.copyWith(
-                                    color: Colors.black,
+                                    color: const Color(0xFF444444),
                                     fontWeight: FontWeight.normal,
                                     fontSize: FONTSIZES.textLarge)),
                         Text(
@@ -95,73 +110,71 @@ class CartPage extends StatelessWidget {
                         top: kDefaultPaddingValue,
                         right: kDefaultPaddingValue,
                         left: kDefaultPaddingValue),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Tổng tiền phạt dự kiến: ',
                             style: Theme.of(context)
                                 .textTheme
                                 .headline4
                                 ?.copyWith(
-                                    color: Colors.black,
+                                    color: const Color(0xFF444444),
                                     fontWeight: FontWeight.normal,
                                     fontSize: FONTSIZES.textLarge)),
+                        SizedBox(height: 1.h),
+                        Text(
+                            "(chưa bao gồm các tình tiết tăng nặng hoặc giảm nhẹ)"
+                                .replaceAll("số", ""),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4
+                                ?.copyWith(
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.normal,
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: FONTSIZES.textMedium)),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 1.h),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: kDefaultPaddingValue,
+                        right: kDefaultPaddingValue,
+                        top: kDefaultPaddingValue),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
                         Text("${numberFormat.format(cc.fine.value)}VND",
                             style: Theme.of(context)
                                 .textTheme
                                 .headline4
                                 ?.copyWith(
-                                    color: Colors.black,
+                                    color: Colors.blueAccent,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: FONTSIZES.textHuge)),
+                        SizedBox(height: 1.h),
+                        Text(
+                            "(${cc.fineToWord.value} đồng)"
+                                .replaceAll("số", ""),
+                            textAlign: TextAlign.end,
+                            maxLines: 3,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4
+                                ?.copyWith(
+                                    color: Colors.blueAccent,
                                     fontWeight: FontWeight.normal,
-                                    fontSize: FONTSIZES.textLarge)),
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: FONTSIZES.textMedium)),
                       ],
                     ),
                   ),
+                  SizedBox(height: 3.h),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: kDefaultPaddingValue,
-                        right: kDefaultPaddingValue,
-                        top: kDefaultPaddingValue / 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: Text(
-                              "(chưa bao gồm các tình tiết tăng nặng hoặc giảm nhẹ)"
-                                  .replaceAll("số", ""),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4
-                                  ?.copyWith(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.normal,
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: FONTSIZES.textMedium)),
-                        ),
-                        Flexible(
-                          child: Text(
-                              "(${cc.fineToWord.value} đồng)"
-                                  .replaceAll("số", ""),
-                              textAlign: TextAlign.end,
-                              maxLines: 3,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4
-                                  ?.copyWith(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.normal,
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: FONTSIZES.textMedium)),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: kDefaultPaddingValue,
-                        left: kDefaultPaddingValue,
-                        right: kDefaultPaddingValue,
-                        bottom: kDefaultPaddingValue / 5),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: kDefaultPaddingValue,
+                        vertical: kDefaultPaddingValue / 4),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -170,24 +183,27 @@ class CartPage extends StatelessWidget {
                                 .textTheme
                                 .headline4
                                 ?.copyWith(
-                                    color: Colors.black,
+                                    color: const Color(0xFF444444),
                                     fontWeight: FontWeight.normal,
                                     fontSize: FONTSIZES.textLarge)),
-                        Text(''),
+                        const Text(''),
                       ],
                     ),
                   ),
                   data.isEmpty
-                      ? Text('Chưa có dữ liệu',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline4
-                              ?.copyWith(
-                                  color: Colors.black,
-                                  fontStyle: FontStyle.italic,
-                                  fontSize: FONTSIZES.textLarge))
-                      : SizedBox(
-                          height: 50.h,
+                      ? Padding(
+                          padding: const EdgeInsets.only(
+                              top: kDefaultPaddingValue * 2),
+                          child: Text('Chưa có dữ liệu',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4
+                                  ?.copyWith(
+                                      color: Colors.black54,
+                                      fontStyle: FontStyle.italic,
+                                      fontSize: FONTSIZES.textLarge)),
+                        )
+                      : Expanded(
                           child: ListView.separated(
                             itemCount: data.length,
                             scrollDirection: Axis.vertical,
@@ -253,7 +269,10 @@ class CartPage extends StatelessWidget {
                                                             .center,
                                                     children: [
                                                       Text(
-                                                          "Phạt tiền từ $min đến $max",
+                                                          min == '0' &&
+                                                                  max == '0'
+                                                              ? "Phạt cảnh cáo"
+                                                              : "Từ $min đến $max đồng",
                                                           style:
                                                               const TextStyle(
                                                                   color: Colors

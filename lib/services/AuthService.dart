@@ -29,7 +29,7 @@ class AuthService {
   Future<String> loginWithUsername(String username, String password) async {
     try {
       final res = await http
-          .post(Uri.parse("${url}Users/AppLogin"),
+          .post(Uri.parse("${url}Users/MobileLogin"),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
@@ -50,15 +50,17 @@ class AuthService {
   Future<String> loginWithGmail(String gmail) async {
     try {
       final res = await http
-          .post(Uri.parse("${url}Users/AppLogin"),
+          .post(Uri.parse("${url}Users/MobileLogin"),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
               body: jsonEncode(UserInfo("", "", gmail, "", "", 2)))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
+        log(res.body);
         return parseToken(res.body);
       } else {
+        log(res.body);
         return '';
       }
     } on TimeoutException {
@@ -115,14 +117,16 @@ class AuthService {
   Future<String> changePassword(String oldP, String newP) async {
     try {
       GlobalController gc = Get.put(GlobalController());
-
+      AuthController ac = Get.put(AuthController());
       if (gc.userId.value != '') {
-        final res = await http
-            .put(
-              Uri.parse(
-                  "${url}Users/${gc.userId.value}/ChangePassword?oldPassword=$oldP&newPassword=$newP"),
-            )
-            .timeout(const Duration(seconds: TIME_OUT));
+        final res = await http.put(
+          Uri.parse(
+              "${url}Users/${gc.userId.value}/ChangePassword?oldPassword=$oldP&newPassword=$newP"),
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ${ac.token.value}',
+          },
+        ).timeout(const Duration(seconds: TIME_OUT));
         if (res.statusCode == 200) {
           return "Mật khẩu đã được thay đổi";
         } else if (res.statusCode == 403) {

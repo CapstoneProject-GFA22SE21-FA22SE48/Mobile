@@ -42,8 +42,6 @@ class _MinimapState extends State<MinimapScreen> {
   final Completer<GoogleMapController> gmapController = Completer();
   final CustomInfoWindowController _infoWindowcontroller =
       CustomInfoWindowController();
-  // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  //     FlutterLocalNotificationsPlugin();
   late final NotificationService notificationService;
   MapsController mc = Get.put(MapsController());
 
@@ -163,7 +161,8 @@ class _MinimapState extends State<MinimapScreen> {
   }
 
   Future getCurrentLocation() async {
-    if (await Permission.location.request().isGranted) {
+    bool isGranted = await Permission.location.request().isGranted;
+    if (isGranted) {
       mc.location.getLocation().then((location) {
         currentLocation = location;
         getSignsList(location);
@@ -185,9 +184,6 @@ class _MinimapState extends State<MinimapScreen> {
         distanceToFetch = LocationUtil.distanceInM(
             LatLng(lastFetchLocation!.latitude!, lastFetchLocation!.longitude!),
             LatLng(newLoc.latitude!, newLoc.longitude!));
-        print("distance: $distance");
-        print('cur: $currentLocation');
-        print('newLoc: $newLoc');
         currentLocation = newLoc;
 
         if (distanceToFetch > 500) {
@@ -213,7 +209,6 @@ class _MinimapState extends State<MinimapScreen> {
         var distance = LocationUtil.distanceInM(
             LatLng(userLocation.latitude!, userLocation.longitude!),
             LatLng(sign.latitude, sign.longitude));
-        print('=== $distance ===');
         if (distance <= 10) {
           await notificationService.showLocalNotification(
               id: 0,
@@ -276,59 +271,58 @@ class _MinimapState extends State<MinimapScreen> {
       onWillPop: () async {
         return await true;
       },
-      child: Scaffold(
-        body: currentLocation == null
-            ? loadingScreen()
-            : Stack(
-                children: [
-                  GoogleMap(
-                    mapType: MapType.normal,
-                    rotateGesturesEnabled: true,
-                    compassEnabled: true,
-                    myLocationButtonEnabled: true,
-                    myLocationEnabled: true,
-                    trafficEnabled: true,
-                    // zoomGesturesEnabled: false,
-                    // zoomControlsEnabled: false,
-                    minMaxZoomPreference: const MinMaxZoomPreference(15, 22),
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(
-                        currentLocation!.latitude!,
-                        currentLocation!.longitude!,
-                      ),
-                      zoom: mc.zoom.value,
+      child: currentLocation == null
+          ? loadingScreen()
+          : Stack(
+              alignment: AlignmentDirectional.bottomCenter,
+              children: [
+                GoogleMap(
+                  mapType: MapType.normal,
+                  rotateGesturesEnabled: true,
+                  compassEnabled: true,
+                  myLocationButtonEnabled: true,
+                  myLocationEnabled: true,
+                  trafficEnabled: true,
+                  // zoomGesturesEnabled: false,
+                  // zoomControlsEnabled: false,
+                  minMaxZoomPreference: const MinMaxZoomPreference(15, 22),
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(
+                      currentLocation!.latitude!,
+                      currentLocation!.longitude!,
                     ),
-                    markers: _markers.toSet(),
-                    onTap: (position) {
-                      _infoWindowcontroller.hideInfoWindow!();
-                    },
-                    onCameraMove: (position) {
-                      _infoWindowcontroller.onCameraMove!();
-                      // gmapController.future.then((controller) =>
-                      //     controller.animateCamera(CameraUpdate.zoomTo(18.0)));
-                      _infoWindowcontroller.googleMapController!
-                          .getZoomLevel()
-                          .then((value) {
-                        if (value != mc.zoom.value) {
-                          setCustomMarkerIcon(gpsSigns);
-                          mc.updateZoom(value);
-                        }
-                      });
-                    },
-                    onMapCreated: (controller) {
-                      gmapController.complete(controller);
-                      _infoWindowcontroller.googleMapController = controller;
-                    },
+                    zoom: mc.zoom.value,
                   ),
-                  CustomInfoWindow(
-                    controller: _infoWindowcontroller,
-                    height: 12.h,
-                    width: 48.w,
-                    offset: 9.h,
-                  )
-                ],
-              ),
-      ),
+                  markers: _markers.toSet(),
+                  onTap: (position) {
+                    _infoWindowcontroller.hideInfoWindow!();
+                  },
+                  onCameraMove: (position) {
+                    _infoWindowcontroller.onCameraMove!();
+                    // gmapController.future.then((controller) =>
+                    //     controller.animateCamera(CameraUpdate.zoomTo(18.0)));
+                    _infoWindowcontroller.googleMapController!
+                        .getZoomLevel()
+                        .then((value) {
+                      if (value != mc.zoom.value) {
+                        setCustomMarkerIcon(gpsSigns);
+                        mc.updateZoom(value);
+                      }
+                    });
+                  },
+                  onMapCreated: (controller) {
+                    gmapController.complete(controller);
+                    _infoWindowcontroller.googleMapController = controller;
+                  },
+                ),
+                CustomInfoWindow(
+                  controller: _infoWindowcontroller,
+                  height: 12.h,
+                  width: 48.w,
+                  offset: 9.h,
+                )
+              ],
+            ),
     );
   }
 }

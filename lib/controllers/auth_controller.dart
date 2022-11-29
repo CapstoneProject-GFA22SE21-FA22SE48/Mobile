@@ -7,6 +7,7 @@ import 'package:vnrdn_tai/models/UserInfo.dart';
 class AuthController extends GetxController {
   static AuthController instance = Get.find();
   late Rx<UserInfo?> _user;
+  final token = ''.obs;
   final email = ''.obs;
   final status = 0.obs;
   final avatar = ''.obs;
@@ -25,6 +26,10 @@ class AuthController extends GetxController {
   dispose() {
     instance.dispose();
     super.dispose();
+  }
+
+  updateToken(value) {
+    token(value);
   }
 
   updateEmail(value) {

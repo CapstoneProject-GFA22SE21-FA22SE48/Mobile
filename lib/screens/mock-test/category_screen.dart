@@ -3,12 +3,7 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
-import 'package:vnrdn_tai/models/TestCategory.dart';
 import 'package:vnrdn_tai/models/dtos/TestCategoryDTO.dart';
-import 'package:vnrdn_tai/screens/container_screen.dart';
-import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
-import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
-import 'package:vnrdn_tai/screens/mock-test/test_set_screen.dart';
 import 'package:vnrdn_tai/services/TestCategoryService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
@@ -63,22 +58,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
     ]
   ];
 
-  // getQuestioNo(String categoryName) {
-  //   int res = 0;
-  //   switch (categoryName) {
-  //     case 'A1':
-  //       res = 200;
-  //       break;
-  //     case 'A2':
-  //       res = 452;
-  //       break;
-  //     case 'B1, B2':
-  //       res = 600;
-  //       break;
-  //   }
-  //   return res;
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -109,18 +88,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
             } else {
               return Stack(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: kDefaultPaddingValue,
-                      vertical: kDefaultPaddingValue,
-                    ),
-                    child: Text(
-                      'Chọn hạng GPLX',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                          color: Colors.pinkAccent.shade200,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
                   SafeArea(
                       child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -276,7 +243,21 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         ],
                       ),
                     ),
-                  ))
+                  )),
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: kDefaultPaddingValue * 2,
+                        vertical: kDefaultPaddingValue,
+                      ),
+                      child: Text(
+                        'Chọn hạng GPLX',
+                        style: Theme.of(context).textTheme.headline5?.copyWith(
+                            color: Colors.pinkAccent.shade200,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
                 ],
               );
             }

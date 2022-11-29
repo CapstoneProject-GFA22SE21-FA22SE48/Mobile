@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/dtos/GPSSignManipulateDTO.dart';
 import '../shared/constants.dart';
@@ -46,11 +47,13 @@ class GPSSignService {
   Future<GPSSign?> AddGpsSign(
       String? signId, double latitude, double longitude, bool isDeleted) async {
     try {
+      AuthController ac = Get.put(AuthController());
       final res = await http
           .post(
             Uri.parse("${url}Gpssigns/AddGpsSignDTO"),
             headers: <String, String>{
-              "Content-Type": "application/json; charset=UTF-8"
+              "Content-Type": "application/json; charset=UTF-8",
+              'Authorization': 'Bearer ${ac.token.value}',
             },
             body: jsonEncode(
               GPSSignManipulateDTO(signId, latitude, longitude, isDeleted),

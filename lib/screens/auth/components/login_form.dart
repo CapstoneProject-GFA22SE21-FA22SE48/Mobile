@@ -4,6 +4,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
@@ -13,6 +14,7 @@ import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';
 
 import 'package:vnrdn_tai/screens/auth/components/already_have_an_account_acheck.dart';
+import 'package:vnrdn_tai/services/FirebaseAuthService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/form_validator.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
@@ -50,12 +52,14 @@ class _LoginFormState extends State<LoginForm> {
 
   // handle login
   void handleLogin(BuildContext context) async {
+    context.loaderOverlay.show();
     FocusManager.instance.primaryFocus?.unfocus();
     await AuthService()
         .loginWithUsername(usernameController.text, passwordController.text)
         .then(((token) {
+      context.loaderOverlay.hide();
       if (token.length > 1) {
-        ScaffoldMessenger.of(context).clearSnackBars();
+        // ScaffoldMessenger.of(context).clearSnackBars();
         afterLoggedIn(context, token);
       } else {
         DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
@@ -66,23 +70,33 @@ class _LoginFormState extends State<LoginForm> {
 
   void handleGLogin(BuildContext context) async {
     FocusManager.instance.primaryFocus?.unfocus();
-    DialogUtil.showTextDialog(context, "Thông báo",
-        "Chức năng hiện không khả dụng!", [TemplatedButtons.ok(context)]);
-    // await AuthService().loginWithGmail(gmail).then(((token) => {
-    //       if (token.length > 1)
-    //         {afterLoggedIn(context, token)}
-    //       else
-    //         {
-    //           DialogUtil.showTextDialog(context, "Đăng nhập thất bại",
-    //               "Sai tên đăng nhập hoặc mật khẩu.", null)
-    //         }
-    //     }));
+    context.loaderOverlay.show();
+    // DialogUtil.showTextDialog(context, "Thông báo",
+    //     "Chức năng hiện không khả dụng!", [TemplatedButtons.ok(context)]);
+    await FirebaseAuthService().signInWithGoogle().then((value) {
+      AuthService()
+          .loginWithGmail(FirebaseAuthService().user.email!)
+          .then(((token) {
+        if (token.length > 1) {
+          afterLoggedIn(context, token);
+        } else {
+          context.loaderOverlay.hide();
+          DialogUtil.showAwesomeDialog(
+              context,
+              DialogType.error,
+              "Đăng nhập thất bại",
+              "Có lỗi xảy ra!\nVui lòng thử lại sau",
+              () {},
+              null);
+        }
+      }));
+    });
   }
 
   // do after logged in
   void afterLoggedIn(BuildContext context, String token) async {
     await IOUtils.saveToStorage('token', token);
-
+    context.loaderOverlay.hide();
     IOUtils.setUserInfoController(token)
         ? Get.to(() => const ContainerScreen())
         // ignore: use_build_context_synchronously
@@ -93,7 +107,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 1), () {
       setState(() {
         guessContinue = 'Tiếp tục với tư cách khách';
       });
@@ -102,8 +116,6 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    oldObSecure = gc.oldObSecure.value;
-
     return KeyboardVisibilityBuilder(
       builder: (context, isKeyboardVisible) {
         return Form(
@@ -160,7 +172,9 @@ class _LoginFormState extends State<LoginForm> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   GestureDetector(
-                    onTap: () => {Get.to(const VerifyMailScreen())},
+                    onTap: () => {
+                      Get.to(const LoaderOverlay(child: VerifyMailScreen()))
+                    },
                     child: const Text(
                       "Quên mật khẩu?",
                       style: TextStyle(
@@ -177,16 +191,16 @@ class _LoginFormState extends State<LoginForm> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (loginFormKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Row(
-                            children: const [
-                              // CircularProgressIndicator()
-                              Text('Đang xử lí'),
-                            ],
-                          ),
-                        ),
-                      );
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   SnackBar(
+                      //     content: Row(
+                      //       children: const [
+                      //         // CircularProgressIndicator()
+                      //         Text('Đang xử lí'),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // );
                       isKeyboardVisible = false;
                       handleLogin(context);
                     }
@@ -256,6 +270,9 @@ class _LoginFormState extends State<LoginForm> {
                     ? GestureDetector(
                         onTap: () {
                           FocusManager.instance.primaryFocus?.unfocus();
+                          gc.updateTab(0);
+                          IOUtils.clearUserInfoController();
+                          IOUtils.removeAllData();
                           Get.to(() => const ContainerScreen());
                         },
                         child: Text(

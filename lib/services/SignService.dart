@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/models/Sign.dart';
 import 'package:vnrdn_tai/models/dtos/signCategoryDTO.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
 class SignService {
+  AuthController ac = Get.put(AuthController());
   List<SignCategoryDTO> parseSignCategoryDTOList(String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed
@@ -22,9 +25,11 @@ class SignService {
 
   Future<List<SignCategoryDTO>> GetSignCategoriesDTOList() async {
     try {
-      final res = await http
-          .get(Uri.parse("${url}SignCategories/GetSignCategoriesDTOList"))
-          .timeout(const Duration(seconds: TIME_OUT));
+      final res = await http.get(
+          Uri.parse("${url}SignCategories/GetSignCategoriesDTOList"),
+          headers: {
+            'Authorization': 'Bearer ${ac.token.value}',
+          }).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         log(res.body);
         return parseSignCategoryDTOList(res.body);
@@ -40,9 +45,11 @@ class SignService {
 
   Future<Sign?> GetSignByName(String signName) async {
     try {
-      final res = await http
-          .get(Uri.parse("${url}Signs/GetSignByName?signName=$signName"))
-          .timeout(const Duration(seconds: TIME_OUT));
+      final res = await http.get(
+          Uri.parse("${url}Signs/GetSignByName?signName=$signName"),
+          headers: {
+            'Authorization': 'Bearer ${ac.token.value}',
+          }).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         log(res.body);
         return parseSign(res.body);

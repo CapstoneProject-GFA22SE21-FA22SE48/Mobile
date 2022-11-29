@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/models/TestCategory.dart';
 import 'package:vnrdn_tai/models/dtos/TestCategoryDTO.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 
 class TestCategoryService {
+  AuthController ac = Get.put(AuthController());
   List<TestCategory> parseQuestions(String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed
@@ -23,9 +26,10 @@ class TestCategoryService {
 
   Future<List<TestCategoryDTO>> GetTestCategories() async {
     try {
-      final res = await http
-          .get(Uri.parse(url + "TestCategories/Count"))
-          .timeout(const Duration(seconds: TIME_OUT));
+      final res =
+          await http.get(Uri.parse("${url}TestCategories/Count"), headers: {
+        'Authorization': 'Bearer ${ac.token.value}',
+      }).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
@@ -43,9 +47,10 @@ class TestCategoryService {
 
   Future<List<TestCategoryDTO>> GetQuestionsCount() async {
     try {
-      final res = await http
-          .get(Uri.parse("${url}TestCategories/Count"))
-          .timeout(const Duration(seconds: TIME_OUT));
+      final res =
+          await http.get(Uri.parse("${url}TestCategories/Count"), headers: {
+        'Authorization': 'Bearer ${ac.token.value}',
+      }).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.

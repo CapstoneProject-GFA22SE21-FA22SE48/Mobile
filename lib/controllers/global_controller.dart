@@ -80,8 +80,9 @@ class GlobalController extends GetxController
     sideBar(value);
   }
 
-  updatePushNotiMode(value) {
+  updatePushNotiMode(value) async {
     pushNotiMode(value);
+    // await Permission.notification. 
   }
 
   updateOldObSecure(value) {

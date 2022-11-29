@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/dtos/CommentSendDTO.dart';
 
@@ -30,10 +31,14 @@ class CommentService {
 
   Future<List<Comment>> getComments() async {
     GlobalController gc = Get.put(GlobalController());
+    AuthController ac = Get.put(AuthController());
     try {
-      final res = await http
-          .get(Uri.parse("${url}Comments/All"))
-          .timeout(const Duration(seconds: TIME_OUT));
+      final res = await http.get(
+        Uri.parse("${url}Comments/All"),
+        headers: {
+          'Authorization': 'Bearer ${ac.token.value}',
+        },
+      ).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
         log(res.body);
         List<Comment> list = parseComments(res.body);
@@ -50,12 +55,14 @@ class CommentService {
 
   Future<String> createComment(String content, int rating) async {
     GlobalController gc = Get.put(GlobalController());
+    AuthController ac = Get.put(AuthController());
     try {
       log(gc.userId.value);
       final res = await http
           .post(Uri.parse("${url}Comments/${gc.userId.value}"),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization': 'Bearer ${ac.token.value}',
               },
               body: jsonEncode(
                   CommentSendDTO(gc.userId.value, content.trim(), rating)))
