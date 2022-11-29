@@ -25,7 +25,6 @@ Future<File> compressFile(File file) async {
     // quality: 50,
   ))!;
 
-
   print(file.lengthSync());
   print(result.lengthSync());
 
@@ -73,17 +72,6 @@ upload(File imageFile, {bool cont = true, String url = ai_url}) async {
 numberEngToVietWord(String input) {
   var res = input;
   res = res
-      .replaceAll("zero", "không")
-      .replaceAll("one", "một")
-      .replaceAll("two", "hai")
-      .replaceAll("three", "ba")
-      .replaceAll("four", "bốn")
-      .replaceAll("five", "năm")
-      .replaceAll("six", "sáu")
-      .replaceAll("seven", "bảy")
-      .replaceAll("eight", "tám")
-      .replaceAll("nine", "chín")
-      .replaceAll("ten", "mười")
       .replaceAll("eleven", "mười một")
       .replaceAll("twelve", "mười hai")
       .replaceAll("thirteen", "mười ba")
@@ -101,6 +89,17 @@ numberEngToVietWord(String input) {
       .replaceAll("seventy", "bảy mươi")
       .replaceAll("eighty", "tám mươi")
       .replaceAll("ninety", "chín mươi")
+      .replaceAll("zero", "không")
+      .replaceAll("one", "một")
+      .replaceAll("two", "hai")
+      .replaceAll("three", "ba")
+      .replaceAll("four", "bốn")
+      .replaceAll("five", "năm")
+      .replaceAll("six", "sáu")
+      .replaceAll("seven", "bảy")
+      .replaceAll("eight", "tám")
+      .replaceAll("nine", "chín")
+      .replaceAll("ten", "mười")
       .replaceAll("hundred", "trăm")
       .replaceAll("thousand", "nghìn")
       .replaceAll("million", "triệu")

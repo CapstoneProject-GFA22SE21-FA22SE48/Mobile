@@ -392,7 +392,7 @@ class ContainerScreen extends GetView<GlobalController> {
               )),
             ),
             child: BottomNavigationBar(
-              type: BottomNavigationBarType.shifting,
+              type: BottomNavigationBarType.fixed,
               backgroundColor: Colors.white,
               unselectedItemColor: Colors.black54,
               showUnselectedLabels: true,

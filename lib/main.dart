@@ -49,7 +49,16 @@ class MyApp extends StatelessWidget {
     }
   }
 
-  getPermission() async {}
+  getPermission() async {
+    GlobalController gc = Get.put(GlobalController());
+    await Permission.notification.request().then((value) {
+      if (value.isGranted) {
+        gc.updatePushNotiMode(true);
+      } else {
+        gc.updatePushNotiMode(false);
+      }
+    });
+  }
 
   // This widget is the root of your application.
   @override

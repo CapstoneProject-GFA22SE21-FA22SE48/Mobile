@@ -96,44 +96,41 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                     onlyWrongTestResultDetail);
                 return Stack(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(kDefaultPaddingValue),
-                      child: Text(
-                        'Bằng loại ${qc.testCategoryName.value}',
-                        style: const TextStyle(
-                            color: Colors.blueAccent,
-                            fontSize: FONTSIZES.textLarge,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
                     SafeArea(
                       child: ListView(
                         physics: const BouncingScrollPhysics(),
                         padding: const EdgeInsets.symmetric(
-                          vertical: kDefaultPaddingValue * 2,
+                          vertical: kDefaultPaddingValue / 2,
                           horizontal: kDefaultPaddingValue,
                         ),
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    QuestionController qc =
-                                        Get.put(QuestionController());
-                                    qc.updateTestCategoryId('');
-                                    qc.updateTestCategoryName('');
-                                    qc.updateTestCategoryCount(0);
-                                  },
-                                  padding: const EdgeInsets.only(left: 0.0),
-                                  icon: const Icon(
-                                    Icons.arrow_back,
-                                    color: Colors.blueAccent,
-                                    size: FONTSIZES.textLarger,
-                                  )),
-                            ],
-                          ),
-                          // const SizedBox(height: kDefaultPaddingValue * 2),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.start,
+                          //   children: [
+                          //     IconButton(
+                          //         onPressed: () {
+                          //           QuestionController qc =
+                          //               Get.put(QuestionController());
+                          //           qc.updateTestCategoryId('');
+                          //           qc.updateTestCategoryName('');
+                          //           qc.updateTestCategoryCount(0);
+                          //         },
+                          //         padding: const EdgeInsets.only(left: 0.0),
+                          //         icon: const Icon(
+                          //           Icons.arrow_back,
+                          //           color: Colors.blueAccent,
+                          //           size: FONTSIZES.textHuge,
+                          //         )),
+                          //     Text(
+                          //       'Bằng loại ${qc.testCategoryName.value}',
+                          //       style: const TextStyle(
+                          //           color: Colors.blueAccent,
+                          //           fontSize: FONTSIZES.textLarger,
+                          //           fontWeight: FontWeight.bold),
+                          //     ),
+                          //   ],
+                          // ),
+                          const SizedBox(height: kDefaultPaddingValue * 4),
 
                           // Vào học
                           GestureDetector(
@@ -454,36 +451,40 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                         ],
                       ),
                     ),
-                    Container(
-                      decoration: const BoxDecoration(color: Colors.white70),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: kDefaultPaddingValue / 4,
-                              horizontal: kDefaultPaddingValue / 2,
+                    SafeArea(
+                      child: Container(
+                        padding: const EdgeInsets.only(
+                            top: kDefaultPaddingValue / 4),
+                        decoration: const BoxDecoration(color: Colors.white10),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: kDefaultPaddingValue / 4,
+                                horizontal: kDefaultPaddingValue / 2,
+                              ),
+                              child: IconButton(
+                                icon: const Icon(Icons.arrow_back),
+                                // color: kPrimaryButtonColor,
+                                color: Colors.pinkAccent.shade200,
+                                iconSize: FONTSIZES.textHuge,
+                                onPressed: () {
+                                  qc.testCategoryId.value = '';
+                                  qc.testCategoryName.value = '';
+                                  gc.updateTab(1);
+                                  Get.to(const ContainerScreen());
+                                },
+                              ),
                             ),
-                            child: IconButton(
-                              icon: const Icon(Icons.arrow_back),
-                              // color: kPrimaryButtonColor,
-                              color: Colors.pinkAccent.shade200,
-                              iconSize: FONTSIZES.textHuge,
-                              onPressed: () {
-                                qc.testCategoryId.value = '';
-                                qc.testCategoryName.value = '';
-                                gc.updateTab(1);
-                                Get.to(const ContainerScreen());
-                              },
-                            ),
-                          ),
-                          Text("Hạng ${qc.testCategoryName.value}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  ?.copyWith(
-                                      color: Colors.pinkAccent.shade200,
-                                      fontWeight: FontWeight.bold)),
-                        ],
+                            Text("Hạng ${qc.testCategoryName.value}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(
+                                        color: Colors.pinkAccent.shade200,
+                                        fontWeight: FontWeight.bold)),
+                          ],
+                        ),
                       ),
                     ),
                   ],
