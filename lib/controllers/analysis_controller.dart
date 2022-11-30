@@ -35,6 +35,9 @@ class AnalysisController extends GetxController {
   late Timer? _timer;
   Timer? get timer => _timer;
 
+  late Timer? _timerScan;
+  Timer? get timerScan => _timerScan;
+
   late final String _detected = "[]";
   String? get detected => _detected;
 
@@ -61,6 +64,9 @@ class AnalysisController extends GetxController {
   late XFile? _image;
   XFile? get image => _image;
 
+  late int _remainTime = 30;
+  int get remainTime => _remainTime;
+
   @override
   onInit() async {
     var data = await rootBundle.loadString('assets/ml/custom.yaml');
@@ -68,6 +74,23 @@ class AnalysisController extends GetxController {
     _mapData = d['names'];
     initCamera();
     super.onInit();
+  }
+
+  void startScanTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timerScan = Timer.periodic(
+      oneSec,
+      (Timer timerSc) {
+        if (_remainTime == 0) {
+          stopImageStream();
+          timerSc.cancel();
+          update();
+        } else {
+          _remainTime--;
+          update();
+        }
+      },
+    );
   }
 
   takeSignContentFeebackImage() async {
@@ -150,6 +173,7 @@ class AnalysisController extends GetxController {
       if (!_isDetecting) {
         t.cancel();
       }
+
       await Future.delayed(const Duration(milliseconds: 100));
       final stopwatch = Stopwatch()..start();
       var res = await takePicAndDetect();
@@ -183,6 +207,7 @@ class AnalysisController extends GetxController {
       // stopImageStream();
 
       if (b.isNotEmpty) {
+        _remainTime = 30;
         // stopImageStream();
       }
       update();
@@ -195,6 +220,7 @@ class AnalysisController extends GetxController {
   Future<void> startImageStream() async {
     _imagePath = "";
     _found = false;
+    _remainTime = 30;
     if (!_cameraController.value.isInitialized) {
       // print('controller not initialized');
       return;
@@ -203,6 +229,7 @@ class AnalysisController extends GetxController {
     // var frame = 0;
     // var fps = 1;
     startTimer();
+    startScanTimer();
     // await _cameraController.startImageStream((image) async {
     //   if (!_isDetecting) {
     //     return;
