@@ -93,6 +93,7 @@ LatLng schoolLocation = // FPT daigaku
 // const url = "https://10.0.2.2:5001/api/";
 const url = "https://vnrdntaiapi.azurewebsites.net/api/";
 
+
 // const ai_url = "http://10.0.2.2:5000/";
 const ai_url = "https://vnrdntai-ai.azurewebsites.net/";
 // const ai_url = "https://cac3-14-169-2-3.ap.ngrok.io";

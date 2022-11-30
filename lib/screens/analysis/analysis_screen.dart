@@ -43,10 +43,12 @@ class AnalysisScreen extends StatelessWidget {
     // double xmax = coords[3];
     // double ymax = coords[4];
     // var name = coords[0];
-
+    if (xmax - xmin < 5.w || ymax - ymin < 5.h) {
+      return Container();
+    }
     return Positioned(
         left: xmin + width / 2,
-        top: ymin,
+        top: ymin - width / 20,
         //left: xmin + (xmin * ratioW) / 2,
         //top: ymin + (ymin * ratioH) / 3.5,
         child: InkWell(
@@ -67,19 +69,20 @@ class AnalysisScreen extends StatelessWidget {
                 border: Border.all(
                   width: 5,
                   color: Colors.primaries[(int.tryParse(name[0])! +
-                          int.tryParse(name[1])! +
-                          int.tryParse(name[2])!) ??
-                      Random().nextInt(Colors.primaries.length)],
+                      int.tryParse(name[1])! +
+                      int.tryParse(name[2])!)],
                 ),
               ),
-              child: Text(
-                'Biển $name',
-                style: TextStyle(
-                    backgroundColor: Colors.yellow[100],
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 10),
-              ),
+              child: (xmax - xmin < 10.w || ymax - ymin < 10.h)
+                  ? Container()
+                  : Text(
+                      'Biển $name',
+                      style: TextStyle(
+                          backgroundColor: Colors.yellow[100],
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10),
+                    ),
             )));
   }
 
@@ -227,13 +230,24 @@ class AnalysisScreen extends StatelessWidget {
                   ? Padding(
                       padding:
                           const EdgeInsets.only(top: kDefaultPaddingValue * 2),
-                      child: Text('Đang tìm kiếm biển báo...',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline5
-                              ?.copyWith(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
+                      child: controller.remainTime <= 15
+                          ? Text(
+                              'Hệ thống sẽ tự ngắt sau ${controller.remainTime} giây nữa...',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  ?.copyWith(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ))
+                          : Text('Đang tìm kiếm biển báo...',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  ?.copyWith(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold)),
                     )
                   : controller.boxes.isNotEmpty
                       ? ListView(
@@ -252,7 +266,7 @@ class AnalysisScreen extends StatelessWidget {
                                 ac.stopImageStream();
                                 sc.updateQuery(name);
                                 sc.updateIsFromAnalysis(true);
-                                Get.offAll(() => ContainerScreen());
+                                Get.offAll(() => const ContainerScreen());
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(
@@ -264,21 +278,19 @@ class AnalysisScreen extends StatelessWidget {
                                     // height: 10.h,
                                     decoration: BoxDecoration(
                                         border: Border.all(
-                                            color: Colors.primaries[(int
-                                                        .tryParse(name[0])! +
+                                            color: Colors.primaries[
+                                                (int.tryParse(name[0])! +
                                                     int.tryParse(name[1])! +
-                                                    int.tryParse(name[2])!) ??
-                                                Random().nextInt(
-                                                    Colors.primaries.length)],
+                                                    int.tryParse(name[2])!)],
                                             width: 5)),
                                     child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
                                           Image.asset(
-                                              'assets/gps/x025/${name}.png'),
+                                              'assets/gps/x025/$name.png'),
                                           Text(
-                                            ' Biển ${name}',
+                                            ' Biển $name',
                                             textAlign: TextAlign.center,
                                             style: Theme.of(context)
                                                 .textTheme
