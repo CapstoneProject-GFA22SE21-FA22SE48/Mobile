@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,7 @@ import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
 import 'package:vnrdn_tai/services/QuestionCategoryService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
+import 'package:vnrdn_tai/utils/dialog_util.dart';
 
 class TestSetScreen extends StatefulWidget {
   TestSetScreen(
@@ -431,8 +433,15 @@ class _TestSetScreenState extends State<TestSetScreen> {
                                       top: kDefaultPaddingValue),
                                   child: GestureDetector(
                                     onTap: () async {
-                                      await deletePastStudyResult(
-                                          snapshot.data![index].id);
+                                      DialogUtil.showAwesomeDialog(
+                                          context,
+                                          DialogType.warning,
+                                          "Cảnh báo",
+                                          "Bạn cần có chắc là muốn xóa dữ liệu không?",
+                                          () async {
+                                        await deletePastStudyResult(
+                                            snapshot.data![index].id);
+                                      }, () {});
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
