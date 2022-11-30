@@ -13,5 +13,23 @@ class Answer {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'questionId': questionId,
+      'description': description,
+      'isCorrect': isCorrect,
+    };
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'questionId': questionId,
+      'description': description,
+      'isCorrect': isCorrect,
+    };
+  }
+
   Answer(this.id, this.questionId, this.description, this.isCorrect);
 }

@@ -42,7 +42,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
   @override
   Widget build(BuildContext context) {
     GlobalController gc = Get.find<GlobalController>();
-    QuestionController qc = Get.put(QuestionController());
+    QuestionController qc = Get.find<QuestionController>();
     gc.updateTestMode(TEST_TYPE.STUDY);
     testResults = TestResultSerivce().GetTestResultList(
         gc.userId.value.isNotEmpty ? gc.userId.value : emptyUserId,

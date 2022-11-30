@@ -25,6 +25,30 @@ class Question {
     );
   }
 
-  Question(this.id, this.testCategoryId, this.questionCategoryId,
-      this.content, this.imageUrl, this.status, this.answers);
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'testCategoryId': testCategoryId,
+      'questionCategoryId': questionCategoryId,
+      'content': content,
+      'imageUrl': imageUrl,
+      'status': status,
+      'answers': answers
+    };
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'testCategoryId': testCategoryId,
+      'questionCategoryId': questionCategoryId,
+      'content': content,
+      'imageUrl': imageUrl,
+      'status': status,
+      'answers': answers
+    };
+  }
+
+  Question(this.id, this.testCategoryId, this.questionCategoryId, this.content,
+      this.imageUrl, this.status, this.answers);
 }

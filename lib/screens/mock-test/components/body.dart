@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:localstore/localstore.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Question.dart';
+import 'package:vnrdn_tai/models/QuestionCategory.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/components/progress_bar.dart';
 import 'package:vnrdn_tai/screens/mock-test/test_set_screen.dart';
@@ -37,6 +41,21 @@ class _BodyState extends State<Body> {
     });
   }
 
+  Future saveStudyResultLocal(QuestionController qc) async {
+    final db = Localstore.instance;
+    final id = db.collection('_answeredAttempt').doc('_answeredAttempt').id;
+    final id2 = db.collection('_answeredQuestions').doc('_answeredQuestions').id;
+    await db
+        .collection('_answeredAttempt')
+        .doc(id)
+        .set({'_answeredAttempt': jsonEncode(qc.answeredAttempts)});
+    await db
+        .collection('_answeredQuestions')
+        .doc(id2)
+        .set({'_answeredQuestions': jsonEncode(qc.answeredQuestions)});
+    qc.clearAnsweredAttempts();
+  }
+
   @override
   Widget build(BuildContext context) {
     QuestionController qnController = Get.put(QuestionController());
@@ -44,6 +63,10 @@ class _BodyState extends State<Body> {
     return WillPopScope(
       onWillPop: () async {
         if (gc.test_mode.value == TEST_TYPE.STUDY) {
+          Get.offAll(() => TestSetScreen(
+                categoryName: qnController.testCategoryName.value,
+                categoryId: qnController.testCategoryId.value,
+              ));
           return await true;
         } else {
           return await false;
@@ -69,12 +92,13 @@ class _BodyState extends State<Body> {
                     children: [
                       gc.test_mode == TEST_TYPE.STUDY
                           ? IconButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 // qnController.stopTimer();
                                 // Get.offAll(() => ContainerScreen());
                                 if (qnController
                                     .testCategoryId.value.isNotEmpty) {
-                                  Get.to(() => TestSetScreen(
+                                  await saveStudyResultLocal(qnController);
+                                  Get.offAll(() => TestSetScreen(
                                         categoryName:
                                             qnController.testCategoryName.value,
                                         categoryId:

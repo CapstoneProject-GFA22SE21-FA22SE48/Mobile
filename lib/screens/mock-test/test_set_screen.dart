@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:localstore/localstore.dart';
 import 'package:sizer/sizer.dart';
+import 'package:vnrdn_tai/controllers/question_controller.dart';
+import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/models/QuestionCategory.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/mock-test/quiz_screen.dart';
@@ -27,53 +32,53 @@ class _TestSetScreenState extends State<TestSetScreen> {
   List<List<Color>> gradientList = <List<Color>>[
     [
       // 0
-      Color(0xFF8855CC),
-      Color(0xFFBAA7FF),
+      const Color(0xFF8855CC),
+      const Color(0xFFBAA7FF),
     ],
     [
       // 1
-      Color(0xFF1034D4),
-      Color(0xFF91D2F0),
+      const Color(0xFF1034D4),
+      const Color(0xFF91D2F0),
     ],
     [
       // 2
-      Color(0xFF00B953),
-      Color(0xFF91F096),
+      const Color(0xFF00B953),
+      const Color(0xFF91F096),
     ],
     [
       // 3
-      Color(0xFFFF3B3B),
-      Color(0xFFFF9F9F),
+      const Color(0xFFFF3B3B),
+      const Color(0xFFFF9F9F),
     ],
     [
       // 4
-      Color.fromARGB(255, 211, 164, 35),
-      Color(0xFFF091DB),
+      const Color.fromARGB(255, 211, 164, 35),
+      const Color(0xFFF091DB),
     ],
     [
       // 5
-      Color(0xFF1086D4),
-      Color(0xFFBFF091),
+      const Color(0xFF1086D4),
+      const Color(0xFFBFF091),
     ],
     [
       // 6
-      Color.fromARGB(255, 16, 52, 212),
-      Color.fromARGB(255, 145, 210, 240),
+      const Color.fromARGB(255, 16, 52, 212),
+      const Color.fromARGB(255, 145, 210, 240),
     ],
     [
       // 7
-      Color.fromARGB(255, 16, 52, 212),
-      Color.fromARGB(255, 145, 210, 240),
+      const Color.fromARGB(255, 16, 52, 212),
+      const Color.fromARGB(255, 145, 210, 240),
     ],
     [
       // 8
-      Color.fromARGB(255, 16, 52, 212),
-      Color.fromARGB(255, 145, 210, 240),
+      const Color.fromARGB(255, 16, 52, 212),
+      const Color.fromARGB(255, 145, 210, 240),
     ],
     [
       // 9
-      Color.fromARGB(255, 16, 52, 212),
-      Color.fromARGB(255, 145, 210, 240),
+      const Color.fromARGB(255, 16, 52, 212),
+      const Color.fromARGB(255, 145, 210, 240),
     ],
   ];
 
@@ -82,6 +87,85 @@ class _TestSetScreenState extends State<TestSetScreen> {
     super.initState();
     _questionCategory = QuestionCategoryService()
         .GetQuestionCategoriesByTestCategory(widget.categoryId);
+  }
+
+  Future<int> getCompletedQuestionsStudyMode(String questionCategoryId) async {
+    QuestionController qc = Get.put(QuestionController());
+    var res = 0;
+    final db = Localstore.instance;
+    final id = db.collection('_answeredAttempt').doc('_answeredAttempt').id;
+    final data = await db.collection('_answeredAttempt').doc(id).get();
+    if (data != null) {
+      List<dynamic> _answeredAttempt =
+          jsonDecode(data?.entries.toList()[data.entries.length - 1].value);
+      _answeredAttempt.forEach((element) {
+        if (element['question']['questionCategoryId'] == questionCategoryId) {
+          res++;
+        }
+      });
+    }
+    await getPastStudyResult(qc);
+    return res;
+  }
+
+  Future getPastStudyResult(QuestionController qc) async {
+    final db = Localstore.instance;
+    final id = db.collection('_answeredAttempt').doc('_answeredAttempt').id;
+    final id2 =
+        db.collection('_answeredQuestions').doc('_answeredQuestions').id;
+    final data = await db.collection('_answeredAttempt').doc(id).get();
+    final data2 = await db.collection('_answeredQuestions').doc(id2).get();
+    if (data != null) {
+      List<dynamic> _answeredAttempt =
+          jsonDecode(data?.entries.toList()[data.entries.length - 1].value);
+      qc.updateAnsweredAttempts(_answeredAttempt);
+    }
+    if (data2 != null) {
+      List<Question> _answeredQuestions =
+          (jsonDecode(data2?.entries.toList()[data2.entries.length - 1].value)
+                  as List)
+              .map((e) => Question.fromJson(e))
+              .toList();
+      qc.updateAnsweredQuestion(_answeredQuestions);
+    }
+  }
+
+  Future deletePastStudyResult(String questionCategoryId) async {
+    final db = Localstore.instance;
+    final id = db.collection('_answeredAttempt').doc('_answeredAttempt').id;
+    final id2 =
+        db.collection('_answeredQuestions').doc('_answeredQuestions').id;
+    final data = await db.collection('_answeredAttempt').doc(id).get();
+    final data2 = await db.collection('_answeredQuestions').doc(id2).get();
+    if (data != null) {
+      List<dynamic> _answeredAttempt =
+          jsonDecode(data?.entries.toList()[data.entries.length - 1].value);
+      print(_answeredAttempt.length);
+      _answeredAttempt = _answeredAttempt
+          .where((element) =>
+              element['question']['questionCategoryId'] != questionCategoryId)
+          .toList();
+      print(_answeredAttempt.length);
+      await db
+          .collection('_answeredAttempt')
+          .doc(id)
+          .set({'_answeredAttempt': jsonEncode(_answeredAttempt)});
+    }
+    if (data2 != null) {
+      List<Question> _answeredQuestions =
+          (jsonDecode(data2?.entries.toList()[data2.entries.length - 1].value)
+                  as List)
+              .map((e) => Question.fromJson(e))
+              .toList();
+      _answeredQuestions = _answeredQuestions
+          .where((element) => element.questionCategoryId != questionCategoryId)
+          .toList();
+      await db
+          .collection('_answeredQuestions')
+          .doc(id2)
+          .set({'_answeredQuestions': jsonEncode(_answeredQuestions)});
+    }
+    setState(() {});
   }
 
   @override
@@ -125,8 +209,11 @@ class _TestSetScreenState extends State<TestSetScreen> {
                 shrinkWrap: true,
                 separatorBuilder: (context, index) => const SizedBox(height: 0),
                 itemBuilder: (context, index) {
+                  if (snapshot.data![index].noOfQuestion == 0) {
+                    return Container();
+                  }
                   return Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: kDefaultPaddingValue,
                       vertical: kDefaultPaddingValue,
                     ),
@@ -139,7 +226,7 @@ class _TestSetScreenState extends State<TestSetScreen> {
                       //       ));
                       // },
                       child: Container(
-                        height: 20.h,
+                        height: 30.h,
                         padding: const EdgeInsets.symmetric(
                           horizontal: kDefaultPaddingValue,
                         ),
@@ -156,8 +243,8 @@ class _TestSetScreenState extends State<TestSetScreen> {
                           ],
                           gradient: LinearGradient(
                               colors: gradientList[index],
-                              begin: FractionalOffset(0.0, 0.0),
-                              end: FractionalOffset(1.0, 0.0),
+                              begin: const FractionalOffset(0.0, 0.0),
+                              end: const FractionalOffset(1.0, 0.0),
                               stops: [0.0, 1.0],
                               tileMode: TileMode.clamp),
                         ),
@@ -180,7 +267,7 @@ class _TestSetScreenState extends State<TestSetScreen> {
                                       top: kDefaultPaddingValue),
                                   child: Row(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.all_inbox_rounded,
                                         color: Colors.white,
                                       ),
@@ -200,31 +287,39 @@ class _TestSetScreenState extends State<TestSetScreen> {
                                     ],
                                   ),
                                 ),
-                                // Padding(
-                                //     padding: const EdgeInsets.only(
-                                //         top: kDefaultPaddingValue / 4),
-                                //     child: Row(
-                                //       children: [
-                                //         Icon(
-                                //           Icons.file_download_done_rounded,
-                                //           color: Colors.white,
-                                //         ),
-                                //         const SizedBox(
-                                //           width: kDefaultPaddingValue / 4,
-                                //         ),
-                                //         Text(
-                                //           "Hoàn tất ${0} câu",
-                                //           style: Theme.of(context)
-                                //               .textTheme
-                                //               .headline6
-                                //               ?.copyWith(
-                                //                   color: Colors.white,
-                                //                   fontWeight: FontWeight.w400,
-                                //                   fontSize:
-                                //                       FONTSIZES.textPrimary),
-                                //         ),
-                                //       ],
-                                //     )),
+                                Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: kDefaultPaddingValue / 4),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.file_download_done_rounded,
+                                          color: Colors.white,
+                                        ),
+                                        const SizedBox(
+                                          width: kDefaultPaddingValue / 4,
+                                        ),
+                                        FutureBuilder<int>(
+                                            key: UniqueKey(),
+                                            future:
+                                                getCompletedQuestionsStudyMode(
+                                                    snapshot.data![index].id),
+                                            builder: (context, snapshot2) {
+                                              return Text(
+                                                "Hoàn tất ${snapshot2.data} câu",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline6
+                                                    ?.copyWith(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize: FONTSIZES
+                                                            .textPrimary),
+                                              );
+                                            })
+                                      ],
+                                    )),
                                 // Padding(
                                 //   padding: const EdgeInsets.only(
                                 //       top: kDefaultPaddingValue),
@@ -322,6 +417,39 @@ class _TestSetScreenState extends State<TestSetScreen> {
                                       alignment: Alignment.center,
                                       child: const Text(
                                         "Bắt đầu",
+                                        style: TextStyle(
+                                          color: Colors.redAccent,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: FONTSIZES.textPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: kDefaultPaddingValue),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      await deletePastStudyResult(
+                                          snapshot.data![index].id);
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: kDefaultPaddingValue / 2,
+                                        horizontal: kDefaultPaddingValue,
+                                      ),
+                                      decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(
+                                            kDefaultPaddingValue,
+                                          ),
+                                        ),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        "Xóa dữ liệu",
                                         style: TextStyle(
                                           color: Colors.redAccent,
                                           fontWeight: FontWeight.bold,
