@@ -90,8 +90,8 @@ const String maps_key = "AIzaSyBlneunCaPQj1GRpM0EzkMGTClr23RxHwk";
 LatLng schoolLocation = // FPT daigaku
     const LatLng(10.841809162754405, 106.8097469445683);
 
-const url = "https://10.0.2.2:5001/api/";
-// const url = "https://vnrdntaiapi.azurewebsites.net/api/";
+// const url = "https://10.0.2.2:5001/api/";
+const url = "https://vnrdntaiapi.azurewebsites.net/api/";
 
 
 // const ai_url = "http://10.0.2.2:5000/";
