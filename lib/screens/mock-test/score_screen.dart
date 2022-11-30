@@ -27,8 +27,8 @@ class ScoreScreen extends StatelessWidget {
         TestResultDetail trd = TestResultDetail(
           Uuid().v4(),
           trId,
-          element['question'].id,
-          element['selectedAns'].id,
+          element['question']['id'],
+          element['selectedAns']['id'],
           element['isCorrect'],
         );
         trds.add(trd);

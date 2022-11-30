@@ -26,19 +26,22 @@ class Option extends StatelessWidget {
         init: QuestionController(),
         builder: (controller) {
           Color getTheRightColour() {
-            if (controller.answeredQuestions.contains(question)) {
+            if (controller.answeredQuestions
+                    .firstWhereOrNull((element) => element.id == question.id) !=
+                null) {
               var attemp = controller.answeredAttempts.firstWhereOrNull(
-                  (element) => element['question'] == question);
+                  (element) => (element['question']['id'] == question.id));
+              if (attemp == null) return Colors.black54;
               if (attemp['isAnswered']) {
                 if (gc.test_mode == TEST_TYPE.STUDY) {
-                  if (text == attemp['correctAns'].description) {
+                  if (text == attemp['correctAns']['description']) {
                     return Colors.blueAccent;
-                  } else if (text == attemp['selectedAns'].description &&
+                  } else if (text == attemp['selectedAns']['description'] &&
                       attemp['selectedAns'] != attemp['correctAns']) {
                     return Colors.red;
                   }
                 } else {
-                  if (text == attemp['selectedAns'].description) {
+                  if (text == attemp['selectedAns']['description']) {
                     return Colors.blueAccent;
                   }
                 }

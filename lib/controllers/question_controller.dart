@@ -89,16 +89,16 @@ class QuestionController extends GetxController
 
       _answeredQuestions.add(question);
       _answeredAttempt.add({
-        'question': question,
+        'question': question.toMap(),
         'isAnswered': true,
-        'correctAns': _correctAns,
-        'selectedAns': _selectedAns,
+        'correctAns': _correctAns.toMap(),
+        'selectedAns': _selectedAns.toMap(),
         'isCorrect': _correctAns == _selectedAns
       });
     } else if (gc.test_mode.value == TEST_TYPE.TEST) {
       dynamic q = _answeredAttempt
-          .firstWhere((element) => element['question'] == question);
-      q!['selectedAns'] = question.answers[selectedIndex];
+          .firstWhere((element) => element['question']['id'] == question.id);
+      q!['selectedAns'] = question.answers[selectedIndex].toMap();
       q!['isCorrect'] =
           question.answers.firstWhere((element) => element.isCorrect == true) ==
               question.answers[selectedIndex];
@@ -113,9 +113,10 @@ class QuestionController extends GetxController
     update();
   }
 
-  void clearAnsweredAttempts(){
+  void clearAnsweredAttempts() {
     _answeredAttempt = [];
     _answeredQuestions = [];
+    _numberOfCorrectAns = 0;
     // update();
   }
 
@@ -141,5 +142,15 @@ class QuestionController extends GetxController
 
   updateQuestions(value) {
     questions(value);
+  }
+
+  updateAnsweredAttempts(value) {
+    _answeredAttempt = value;
+    update();
+  }
+
+  updateAnsweredQuestion(value) {
+    _answeredQuestions = value;
+    update();
   }
 }
