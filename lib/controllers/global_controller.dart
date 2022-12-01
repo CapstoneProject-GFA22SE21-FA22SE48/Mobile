@@ -43,7 +43,7 @@ class GlobalController extends GetxController
     });
 
     // init user
-    log('initializing...');
+
     //
     super.onInit();
   }
@@ -51,7 +51,7 @@ class GlobalController extends GetxController
   @override
   dispose() {
     // ---
-    log('data: $tab');
+
     // ---
     super.dispose();
   }
@@ -82,7 +82,7 @@ class GlobalController extends GetxController
 
   updatePushNotiMode(value) async {
     pushNotiMode(value);
-    // await Permission.notification. 
+    // await Permission.notification.
   }
 
   updateOldObSecure(value) {
@@ -111,18 +111,17 @@ class GlobalController extends GetxController
       case 3:
         value = TABS.MINIMAP;
         break;
-      case 4:
-        value = TABS.WELCOME;
-        break;
-      case 5:
-        value = TABS.LOGIN;
-        break;
-      case 6:
-        value = TABS.SIGNUP;
-        break;
+      // case 4:
+      //   value = TABS.WELCOME;
+      //   break;
+      // case 5:
+      //   value = TABS.LOGIN;
+      //   break;
+      // case 6:
+      //   value = TABS.SIGNUP;
+      //   break;
     }
     tab(value);
-    // log(tab.value.name);
     update();
   }
 

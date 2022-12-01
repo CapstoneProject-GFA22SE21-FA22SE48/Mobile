@@ -38,10 +38,8 @@ class UserService {
           'Authorization': 'Bearer ${ac.token.value}',
         }).timeout(const Duration(seconds: TIME_OUT));
         if (res.statusCode == 200) {
-          log(res.body);
           return parseAdmins(res.body);
         } else if (res.statusCode == 500) {
-          log(res.body);
           return [];
         }
       }
@@ -68,13 +66,11 @@ class UserService {
             )
             .timeout(const Duration(seconds: TIME_OUT));
         if (res.statusCode == 200) {
-          log(res.body);
           String token = AuthService().parseToken(res.body);
           IOUtils.setUserInfoController(token);
           IOUtils.saveToStorage('token', token);
           return "Thông tin đã được thay đổi";
         } else if (res.statusCode == 500) {
-          log(res.body);
           return res.body;
         }
       }
@@ -97,7 +93,6 @@ class UserService {
         if (res.statusCode == 200) {
           return "Ngưng hoạt động thành công.";
         } else if (res.statusCode == 400) {
-          log(res.body);
           return res.body;
         }
       }

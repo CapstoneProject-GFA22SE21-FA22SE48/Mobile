@@ -167,9 +167,9 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
                             context,
                             DialogType.success,
                             "Tạo thành công",
-                            "Bạn đã tạo thành công $selectedSign",
+                            "Yêu cầu tạo biển $selectedSign thành công",
                             () => Get.off(() => const ContainerScreen()),
-                            () {});
+                            null);
                       } else {
                         DialogUtil.showAwesomeDialog(
                             context,

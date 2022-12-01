@@ -24,7 +24,6 @@ class GPSSignService {
   // distance can be modified
   Future<List<GPSSign>> GetNearbySigns(
       double latitude, double longitude, double distance) async {
-    log('$latitude, $longitude, $distance');
     try {
       final res = await http
           .get(
@@ -33,10 +32,8 @@ class GPSSignService {
           )
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
-        log(res.body);
         return parseGPSSigns(res.body);
       } else {
-        log(res.body);
         return [];
       }
     } on TimeoutException {
@@ -61,10 +58,8 @@ class GPSSignService {
           )
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
-        log(res.body);
         return parseGPSSign(res.body);
       } else {
-        log(res.body);
         return null;
       }
     } on TimeoutException {

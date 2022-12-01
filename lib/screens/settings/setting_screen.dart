@@ -133,36 +133,36 @@ class _SwitchClassState extends State<SettingsScreen> {
                   ]),
                 ),
               ),
-              // helps
+              // profile
               gc.userId.value.isNotEmpty
-                  ? Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: kDefaultPaddingValue / 2,
-                          horizontal: kDefaultPaddingValue),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey.shade200),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromARGB(197, 189, 189, 189),
-                            offset: Offset(0, 2),
-                            blurRadius: 2,
-                          )
-                        ],
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 20.0),
-                        leading: const Icon(
-                          Icons.account_box_rounded,
-                          color: kSuccessButtonColor,
+                  ? GestureDetector(
+                      onTap: () {
+                        Get.to(const LoaderOverlay(child: ProfileScreen()));
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: kDefaultPaddingValue / 2,
+                            horizontal: kDefaultPaddingValue),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey.shade200),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromARGB(197, 189, 189, 189),
+                              offset: Offset(0, 2),
+                              blurRadius: 2,
+                            )
+                          ],
                         ),
-                        title: GestureDetector(
-                          onTap: () {
-                            Get.to(const LoaderOverlay(child: ProfileScreen()));
-                          },
-                          child: Row(
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 20.0),
+                          leading: const Icon(
+                            Icons.account_box_rounded,
+                            color: kSuccessButtonColor,
+                          ),
+                          title: Row(
                             children: const [
                               Text(
                                 'Cập nhật thông tin',
@@ -180,39 +180,39 @@ class _SwitchClassState extends State<SettingsScreen> {
                   : Container(),
               // change password
               gc.userId.value.isNotEmpty
-                  ? Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: kDefaultPaddingValue / 2,
-                          horizontal: kDefaultPaddingValue),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey.shade200),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromARGB(197, 189, 189, 189),
-                            offset: Offset(0, 2),
-                            blurRadius: 2,
-                          )
-                        ],
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 20.0),
-                        tileColor: Colors.white,
-                        leading: const Icon(
-                          Icons.password_rounded,
-                          color: kWarningButtonColor,
+                  ? GestureDetector(
+                      onTap: () {
+                        Get.to(
+                          () => LoaderOverlay(
+                            child: ChangePasswordScreen(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: kDefaultPaddingValue / 2,
+                            horizontal: kDefaultPaddingValue),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey.shade200),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromARGB(197, 189, 189, 189),
+                              offset: Offset(0, 2),
+                              blurRadius: 2,
+                            )
+                          ],
                         ),
-                        title: GestureDetector(
-                          onTap: () {
-                            Get.to(
-                              () => LoaderOverlay(
-                                child: ChangePasswordScreen(),
-                              ),
-                            );
-                          },
-                          child: Row(
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 20.0),
+                          tileColor: Colors.white,
+                          leading: const Icon(
+                            Icons.password_rounded,
+                            color: kWarningButtonColor,
+                          ),
+                          title: Row(
                             children: const [
                               Text(
                                 'Đổi mật khẩu',
@@ -230,33 +230,33 @@ class _SwitchClassState extends State<SettingsScreen> {
                     )
                   : Container(),
               // helps
-              Container(
-                margin: const EdgeInsets.symmetric(
-                    vertical: kDefaultPaddingValue / 2,
-                    horizontal: kDefaultPaddingValue),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey.shade200),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromARGB(197, 189, 189, 189),
-                      offset: Offset(0, 2),
-                      blurRadius: 2,
-                    )
-                  ],
-                ),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 20.0),
-                  leading: const Icon(Icons.help_outline),
-                  title: GestureDetector(
-                    onTap: () {
-                      launchURL('https://fb.com/profile.php?id=100086524863274'
-                          // 'https://fb.com/messages/t/102757259281351'
-                          );
-                    },
-                    child: Row(
+              GestureDetector(
+                onTap: () {
+                  launchURL('https://fb.com/profile.php?id=100086524863274'
+                      // 'https://fb.com/messages/t/102757259281351'
+                      );
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(
+                      vertical: kDefaultPaddingValue / 2,
+                      horizontal: kDefaultPaddingValue),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey.shade200),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromARGB(197, 189, 189, 189),
+                        offset: Offset(0, 2),
+                        blurRadius: 2,
+                      )
+                    ],
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 20.0),
+                    leading: const Icon(Icons.help_outline),
+                    title: Row(
                       children: const [
                         Text(
                           'Liên hệ với chúng tôi',
@@ -273,33 +273,33 @@ class _SwitchClassState extends State<SettingsScreen> {
               ),
               // deactivate
               gc.userId.value.isNotEmpty
-                  ? Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: kDefaultPaddingValue / 2,
-                          horizontal: kDefaultPaddingValue),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey.shade200),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromARGB(197, 189, 189, 189),
-                            offset: Offset(0, 2),
-                            blurRadius: 2,
-                          )
-                        ],
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 20.0),
-                        tileColor: Colors.white,
-                        leading: const FaIcon(
-                          FontAwesomeIcons.hand,
-                          color: kDangerButtonColor,
+                  ? GestureDetector(
+                      onTap: selfDeactivate,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: kDefaultPaddingValue / 2,
+                            horizontal: kDefaultPaddingValue),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey.shade200),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromARGB(197, 189, 189, 189),
+                              offset: Offset(0, 2),
+                              blurRadius: 2,
+                            )
+                          ],
                         ),
-                        title: GestureDetector(
-                          onTap: selfDeactivate,
-                          child: Row(
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 20.0),
+                          tileColor: Colors.white,
+                          leading: const FaIcon(
+                            FontAwesomeIcons.hand,
+                            color: kDangerButtonColor,
+                          ),
+                          title: Row(
                             children: const [
                               Text(
                                 'Ngưng hoạt động',

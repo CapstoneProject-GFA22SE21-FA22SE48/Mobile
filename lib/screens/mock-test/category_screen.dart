@@ -9,7 +9,7 @@ import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 
 class CategoryScreen extends StatefulWidget {
-  CategoryScreen({super.key});
+  const CategoryScreen({super.key});
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();

@@ -33,7 +33,7 @@ class TestCategoryService {
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
-        log(res.body);
+
         return parseDTO(res.body);
       } else {
         // If the server did not return a 200 OK response,
@@ -54,7 +54,7 @@ class TestCategoryService {
       if (res.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
-        log(res.body);
+
         return parseDTO(res.body);
       } else {
         // If the server did not return a 200 OK response,

@@ -58,7 +58,7 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
 
   final List<DropdownMenuItem<int>> _listDropdown = <DropdownMenuItem<int>>[
     const DropdownMenuItem<int>(
-      value: 2,
+      value: 3,
       child: Text(
         "Đã xử lý",
       ),

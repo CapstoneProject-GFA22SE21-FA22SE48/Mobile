@@ -31,7 +31,6 @@ class SignService {
             'Authorization': 'Bearer ${ac.token.value}',
           }).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
-        log(res.body);
         return parseSignCategoryDTOList(res.body);
       } else {
         throw Exception('Không tải được dữ liệu.');
@@ -51,7 +50,6 @@ class SignService {
             'Authorization': 'Bearer ${ac.token.value}',
           }).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
-        log(res.body);
         return parseSign(res.body);
       } else {
         return null;

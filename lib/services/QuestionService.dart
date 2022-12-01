@@ -40,7 +40,6 @@ class QuestionSerivce {
   Future<List<Question>> GetRandomTestSetBytestCategoryId(
       String categoryId) async {
     try {
-      log(categoryId);
       final res = await http.get(
           Uri.parse(
               "${url}Questions/GetRandomTestSetByCategoryId?categoryId=$categoryId"),
@@ -78,7 +77,6 @@ class QuestionSerivce {
         },
       ).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
-        log(res.body);
         return parseQuestions(res.body);
       } else {
         throw Exception('Không tải được dữ liệu.');

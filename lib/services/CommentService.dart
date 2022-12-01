@@ -40,12 +40,10 @@ class CommentService {
         },
       ).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
-        log(res.body);
         List<Comment> list = parseComments(res.body);
         list.sort(((a, b) => b.createdDate.compareTo(a.createdDate)));
         return list;
       } else {
-        log(res.body);
         return [];
       }
     } on TimeoutException {
@@ -57,7 +55,6 @@ class CommentService {
     GlobalController gc = Get.put(GlobalController());
     AuthController ac = Get.put(AuthController());
     try {
-      log(gc.userId.value);
       final res = await http
           .post(Uri.parse("${url}Comments/${gc.userId.value}"),
               headers: <String, String>{
@@ -68,10 +65,8 @@ class CommentService {
                   CommentSendDTO(gc.userId.value, content.trim(), rating)))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
-        log(res.body);
         return res.body;
       } else {
-        log(res.body);
         return '';
       }
     } on TimeoutException {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:localstore/localstore.dart';
@@ -54,29 +55,34 @@ class _QuizScreenState extends State<QuizScreen> {
     if (gc.test_mode.value == TEST_TYPE.STUDY) {
       return true;
     }
-    Get.dialog(
-      AlertDialog(
-        title: const Text('Nếu thoát, kết quả sẽ không được lưu'),
-        content: const Text('Bạn có chắc là bạn muốn thoát không?'),
-        actions: [
-          TextButton(
-            child: const Text("Xác nhận"),
-            onPressed: () {
-              qc.stopTimer();
-              Get.to(() => const ContainerScreen());
-            },
-          ),
-          TextButton(
-            child: const Text("Không"),
-            onPressed: () => Get.back(),
-          ),
-        ],
-      ),
-    );
+    DialogUtil.showAwesomeDialog(
+        context,
+        DialogType.info,
+        "Kết quả sẽ không được lưu",
+        "Bạn có chắc là bạn muốn thoát không?",
+        () => Get.to(ScoreScreen()),
+        () {});
+    // Get.dialog(
+    //   AlertDialog(
+    //     title: const Text('Nếu thoát, kết quả sẽ không được lưu'),
+    //     content: const Text('Bạn có chắc là bạn muốn thoát không?'),
+    //     actions: [
+    //       TextButton(
+    //         child: const Text("Xác nhận"),
+    //         onPressed: () {
+    //           qc.stopTimer();
+    //           Get.to(() => const ContainerScreen());
+    //         },
+    //       ),
+    //       TextButton(
+    //         child: const Text("Không"),
+    //         onPressed: () => Get.back(),
+    //       ),
+    //     ],
+    //   ),
+    // );
     return false;
   }
-
-  
 
   @override
   Widget build(BuildContext context) {

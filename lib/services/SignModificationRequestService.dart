@@ -38,10 +38,8 @@ class SignModificationRequestService {
             'Authorization': 'Bearer ${ac.token.value}',
           }).timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
-        log(res.body);
         return parseSignModificationRequestList(res.body);
       } else {
-        log(res.body);
         return [];
       }
     } on TimeoutException {
@@ -68,10 +66,8 @@ class SignModificationRequestService {
           )
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
-        log(res.body);
         return parseSignModificationRequest(res.body);
       } else {
-        log(res.body);
         return null;
       }
     } on TimeoutException {
@@ -96,7 +92,7 @@ class SignModificationRequestService {
           adminId,
           0,
           imageUrl,
-          2,
+          3,
           null,
           DateTime.now().toLocal().toString(),
           false);
@@ -109,11 +105,9 @@ class SignModificationRequestService {
               body: jsonEncode(request))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
-        log(res.body);
         return SignModificationRequestService.parseSignModificationRequest(
             res.body);
       } else {
-        log(res.body);
         return null;
       }
     } on TimeoutException {

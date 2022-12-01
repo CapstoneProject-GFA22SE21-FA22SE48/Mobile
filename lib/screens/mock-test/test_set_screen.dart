@@ -8,6 +8,7 @@ import 'package:getwidget/getwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localstore/localstore.dart';
 import 'package:sizer/sizer.dart';
+import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/question_controller.dart';
 import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/models/QuestionCategory.dart';
@@ -29,6 +30,7 @@ class TestSetScreen extends StatefulWidget {
 }
 
 class _TestSetScreenState extends State<TestSetScreen> {
+  GlobalController gc = Get.find<GlobalController>();
   late Future<List<QuestionCategory>> _questionCategory;
 
   List<List<Color>> gradientList = <List<Color>>[
