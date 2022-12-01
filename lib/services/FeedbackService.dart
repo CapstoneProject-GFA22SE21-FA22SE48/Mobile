@@ -31,7 +31,6 @@ class FeedbackService {
         return SignModificationRequestService.parseSignModificationRequestList(
             res.body);
       } else {
-        log(res.body);
         return [];
       }
     } on TimeoutException {
@@ -71,11 +70,9 @@ class FeedbackService {
               body: jsonEncode(request))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
-        log(res.body);
         return SignModificationRequestService.parseSignModificationRequest(
             res.body);
       } else {
-        log(res.body);
         return null;
       }
     } on TimeoutException {
@@ -95,10 +92,8 @@ class FeedbackService {
               body: jsonEncode(rom))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
-        log(res.body);
         return true;
       } else {
-        log(res.body);
         return null;
       }
     } on TimeoutException {

@@ -39,7 +39,6 @@ class AuthService {
       if (res.statusCode == 200) {
         return parseToken(res.body);
       } else {
-        log(res.body);
         return '';
       }
     } on TimeoutException {
@@ -57,10 +56,8 @@ class AuthService {
               body: jsonEncode(UserInfo("", "", gmail, "", "", 2)))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
-        log(res.body);
         return parseToken(res.body);
       } else {
-        log(res.body);
         return '';
       }
     } on TimeoutException {
@@ -80,10 +77,8 @@ class AuthService {
                   email!.trim(), avatar, displayName!.trim(), 2)))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 201) {
-        log(res.body);
         return res.body;
       } else {
-        log(res.body);
         return res.body;
       }
     } on TimeoutException {
@@ -93,7 +88,6 @@ class AuthService {
 
   Future<String> getUserByEmail(String email) async {
     try {
-      log(jsonEncode(email));
       final res = await http
           .post(Uri.parse("${url}Users/GetUserByEmail"),
               headers: <String, String>{
@@ -104,7 +98,6 @@ class AuthService {
       if (res.statusCode == 200) {
         return res.body;
       } else if (res.statusCode == 404) {
-        log(res.body);
         return 'notfound';
       } else {
         return '';
@@ -130,7 +123,6 @@ class AuthService {
         if (res.statusCode == 200) {
           return "Mật khẩu đã được thay đổi";
         } else if (res.statusCode == 403) {
-          log(res.body);
           return res.body;
         }
       }
@@ -143,7 +135,6 @@ class AuthService {
   Future<String> forgotPassword(String newP) async {
     try {
       AuthController ac = Get.put(AuthController());
-      log(ac.email.value);
 
       if (ac.email.value != '') {
         final res = await http
@@ -158,7 +149,6 @@ class AuthService {
         if (res.statusCode == 200) {
           return "Mật khẩu đã được thay đổi";
         } else if (res.statusCode == 403) {
-          log(res.body);
           return res.body;
         }
       }

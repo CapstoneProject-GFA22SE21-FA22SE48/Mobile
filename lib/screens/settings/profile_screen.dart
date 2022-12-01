@@ -26,6 +26,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileState extends State<ProfileScreen> {
+  final profileFormKey = GlobalKey<FormState>();
   final displayNameController = TextEditingController();
   final emailController = TextEditingController();
   String lastImageUrl = '';
@@ -195,103 +196,89 @@ class _ProfileState extends State<ProfileScreen> {
           onPressed: handleCancel,
         ),
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        child: Column(children: [
-          const SizedBox(
-            height: 20.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(kDefaultPaddingValue),
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    captureImage();
-                  },
-                  child: GFAvatar(
-                    radius: 30.w,
-                    backgroundImage: ac.avatar.value.isNotEmpty
-                        ? NetworkImage(ac.avatar.value)
-                        : const NetworkImage(defaultAvatarUrl),
-                  ),
-                ),
-                TextFormField(
-                  validator: (value) => FormValidator.validPassword(value),
-                  controller: displayNameController,
-                  keyboardType: TextInputType.text,
-                  textInputAction: TextInputAction.next,
-                  cursorColor: kPrimaryButtonColor,
-                  decoration: InputDecoration(
-                    labelText: "Tên hiển thị",
-                    hintText: ac.displayName.value,
-                    prefixIcon: const Padding(
-                      padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-                      child: Icon(Icons.ac_unit_rounded),
+      body: Form(
+        key: profileFormKey,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          child: Column(children: [
+            const SizedBox(
+              height: 20.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(kDefaultPaddingValue),
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      captureImage();
+                    },
+                    child: GFAvatar(
+                      radius: 30.w,
+                      backgroundImage: ac.avatar.value.isNotEmpty
+                          ? NetworkImage(ac.avatar.value)
+                          : const NetworkImage(defaultAvatarUrl),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: kDefaultPaddingValue),
-                  child: TextFormField(
+                  TextFormField(
                     validator: (value) => FormValidator.validPassword(value),
-                    controller: emailController,
-                    textInputAction: TextInputAction.done,
+                    controller: displayNameController,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
                     cursorColor: kPrimaryButtonColor,
                     decoration: InputDecoration(
-                      labelText: "Email",
-                      hintText: ac.email.value,
+                      labelText: "Tên hiển thị",
+                      hintText: ac.displayName.value,
                       prefixIcon: const Padding(
                         padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-                        child: Icon(Icons.mail_outline_rounded),
+                        child: Icon(Icons.ac_unit_rounded),
                       ),
                     ),
                   ),
-                ),
-                // Padding(
-                //   padding:
-                //       const EdgeInsets.symmetric(vertical: kDefaultPaddingValue),
-                //   child: TextFormField(
-                //     validator: (value) => FormValidator.validPasswordConfirm(
-                //         emailController.text, value),
-                //     controller: newPasswordConfirmController,
-                //     textInputAction: TextInputAction.done,
-                //     cursorColor: kPrimaryButtonColor,
-                //     decoration: InputDecoration(
-                //       labelText: "Tên đăng nhập",
-                //       hintText: gc.username.value,
-                //       prefixIcon: const Padding(
-                //         padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-                //         child: Icon(Icons.lock),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                const SizedBox(height: kDefaultPaddingValue),
-                Hero(
-                  tag: "update_btn",
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (avatarsPath.isNotEmpty) handleUpdateProfile();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: kDefaultPaddingValue),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Cập nhật ngay".toUpperCase()),
-                        ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: kDefaultPaddingValue),
+                    child: TextFormField(
+                      validator: (value) => FormValidator.validPassword(value),
+                      controller: emailController,
+                      textInputAction: TextInputAction.done,
+                      cursorColor: kPrimaryButtonColor,
+                      decoration: InputDecoration(
+                        labelText: "Email",
+                        hintText: ac.email.value,
+                        prefixIcon: const Padding(
+                          padding: EdgeInsets.all(kDefaultPaddingValue / 2),
+                          child: Icon(Icons.mail_outline_rounded),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: kDefaultPaddingValue),
+                  Hero(
+                    tag: "update_btn",
+                    child: ElevatedButton(
+                      onPressed: profileFormKey.currentState!.validate()
+                          ? () {
+                              handleUpdateProfile();
+                            }
+                          : null,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: kDefaultPaddingValue),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Cập nhật ngay".toUpperCase()),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ]),
+          ]),
+        ),
       ),
     );
   }

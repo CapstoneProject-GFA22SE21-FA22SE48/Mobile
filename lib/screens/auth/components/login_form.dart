@@ -5,21 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/auth/components/or_divider.dart';
 import 'package:vnrdn_tai/screens/auth/components/verify_mail_screen.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';
-
 import 'package:vnrdn_tai/screens/auth/components/already_have_an_account_acheck.dart';
 import 'package:vnrdn_tai/services/FirebaseAuthService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/form_validator.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
-import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 import '../signup_screen.dart';
 
 class LoginForm extends StatefulWidget {
@@ -36,7 +33,7 @@ class _LoginFormState extends State<LoginForm> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  late String guessContinue = '';
+  late String guessContinue = 'Tiếp tục với tư cách khách';
 
   GlobalController gc = Get.put(GlobalController());
   bool oldObSecure = true;
@@ -71,8 +68,6 @@ class _LoginFormState extends State<LoginForm> {
   void handleGLogin(BuildContext context) async {
     FocusManager.instance.primaryFocus?.unfocus();
     context.loaderOverlay.show();
-    // DialogUtil.showTextDialog(context, "Thông báo",
-    //     "Chức năng hiện không khả dụng!", [TemplatedButtons.ok(context)]);
     await FirebaseAuthService().signInWithGoogle().then((value) {
       AuthService()
           .loginWithGmail(FirebaseAuthService().user.email!)
@@ -107,11 +102,11 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 1), () {
-      setState(() {
-        guessContinue = 'Tiếp tục với tư cách khách';
-      });
-    });
+    // Timer(const Duration(seconds: 1), () {
+    //   setState(() {
+    //     guessContinue = 'Tiếp tục với tư cách khách';
+    //   });
+    // });
   }
 
   @override

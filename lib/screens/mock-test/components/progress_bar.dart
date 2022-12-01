@@ -15,7 +15,7 @@ class ProgressBar extends StatelessWidget {
 
   Future<void> confirmSubmission(BuildContext context) async {
     DialogUtil.showAwesomeDialog(context, DialogType.info, "Nộp bài",
-        "Bạn có chắc là bạn muốn nộp bài?", () => Get.to(ScoreScreen()), () {});
+        "Bạn có chắc là muốn nộp bài?", () => Get.to(ScoreScreen()), () {});
   }
 
   Future<void> submit(BuildContext context) async {
