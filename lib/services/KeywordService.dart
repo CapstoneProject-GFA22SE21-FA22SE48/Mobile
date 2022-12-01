@@ -17,7 +17,6 @@ class KeywordSerivce {
           .get(Uri.parse("${url}Keywords"))
           .timeout(const Duration(seconds: TIME_OUT));
       if (res.statusCode == 200) {
-        log(res.body);
         return parseKeywords(res.body);
       } else {
         throw Exception('Không tải được dữ liệu.');

@@ -122,7 +122,7 @@ class GlobalController extends GetxController
         break;
     }
     tab(value);
-    log(tab.value.name);
+    // log(tab.value.name);
     update();
   }
 

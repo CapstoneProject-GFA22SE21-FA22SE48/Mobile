@@ -143,7 +143,7 @@ class ContainerScreen extends GetView<GlobalController> {
 
     return WillPopScope(
       onWillPop: () async {
-        return await true;
+        return await false;
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -379,82 +379,68 @@ class ContainerScreen extends GetView<GlobalController> {
           ),
         ),
         body: Center(child: Obx(() => getScreen(controller.tab.value))),
-        bottomNavigationBar: Obx(
-          () => Container(
-            height: 10.h,
-            width: 100.w,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                  top: BorderSide(
-                color: Color(0xFFC0C0C0),
-                width: 0.25,
-              )),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.shifting,
+          backgroundColor: Colors.red,
+          unselectedItemColor: Colors.black54,
+          showUnselectedLabels: true,
+          elevation: 0,
+          currentIndex: controller.tab.value.index,
+          selectedItemColor: Colors.blueAccent,
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+          iconSize: FONTSIZES.textHuge,
+          unselectedFontSize: FONTSIZES.textMedium,
+          selectedFontSize: FONTSIZES.textPrimary,
+          onTap: (value) {
+            controller.updateTab(value);
+          },
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.menu_book_outlined),
+              label: 'Luật',
+              tooltip: 'Tra cứu Luật giao thông đường bộ',
+              activeIcon: Icon(
+                Icons.menu_book_rounded,
+                size: FONTSIZES.textVeryHuge + 2,
+              ),
             ),
-            child: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: Colors.white,
-              unselectedItemColor: Colors.black54,
-              showUnselectedLabels: true,
-              elevation: 0,
-              currentIndex: controller.tab.value.index,
-              selectedItemColor: Colors.blueAccent,
-              selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-              iconSize: FONTSIZES.textHuge,
-              unselectedFontSize: FONTSIZES.textMedium,
-              selectedFontSize: FONTSIZES.textPrimary,
-              onTap: (value) {
-                controller.updateTab(value);
-              },
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.menu_book_outlined),
-                  label: 'Luật',
-                  tooltip: 'Tra cứu Luật giao thông đường bộ',
-                  activeIcon: Icon(
-                    Icons.menu_book_rounded,
-                    size: FONTSIZES.textVeryHuge + 2,
-                  ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.motorcycle_outlined),
+              label: 'GPLX',
+              tooltip: 'Ôn và Thi thử Sát hạch giấy phép lái xe',
+              activeIcon: Padding(
+                padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
+                child: Icon(
+                  Icons.motorcycle_rounded,
+                  size: FONTSIZES.textVeryHuge + 2,
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.motorcycle_outlined),
-                  label: 'GPLX',
-                  tooltip: 'Ôn và Thi thử Sát hạch giấy phép lái xe',
-                  activeIcon: Padding(
-                    padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
-                    child: Icon(
-                      Icons.motorcycle_rounded,
-                      size: FONTSIZES.textVeryHuge + 2,
-                    ),
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.remove_circle_outline),
-                  label: 'Biển báo',
-                  tooltip: 'Tra cứu biển báo hiệu đường bộ',
-                  activeIcon: Padding(
-                    padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 4),
-                    child: Icon(
-                      Icons.remove_circle_rounded,
-                      size: FONTSIZES.textVeryHuge + 2,
-                    ),
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.map_outlined),
-                  label: 'Bản đồ',
-                  tooltip: 'Xem Bản đồ thời gian thực',
-                  activeIcon: Padding(
-                    padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
-                    child: Icon(
-                      Icons.map_rounded,
-                      size: FONTSIZES.textVeryHuge + 2,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.remove_circle_outline),
+              label: 'Biển báo',
+              tooltip: 'Tra cứu biển báo hiệu đường bộ',
+              activeIcon: Padding(
+                padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 4),
+                child: Icon(
+                  Icons.remove_circle_rounded,
+                  size: FONTSIZES.textVeryHuge + 2,
+                ),
+              ),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.map_outlined),
+              label: 'Bản đồ',
+              tooltip: 'Xem Bản đồ thời gian thực',
+              activeIcon: Padding(
+                padding: EdgeInsets.only(bottom: kDefaultPaddingValue / 8),
+                child: Icon(
+                  Icons.map_rounded,
+                  size: FONTSIZES.textVeryHuge + 2,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
