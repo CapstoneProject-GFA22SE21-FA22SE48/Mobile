@@ -96,7 +96,7 @@ class SignModificationRequestService {
           adminId,
           0,
           imageUrl,
-          3,
+          2,
           null,
           DateTime.now().toLocal().toString(),
           false);

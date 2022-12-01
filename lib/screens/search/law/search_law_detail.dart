@@ -84,8 +84,22 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      SizedBox(
+                                      Container(
                                         width: 100.w,
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: kDefaultPaddingValue),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              blurRadius: 2,
+                                            )
+                                          ],
+                                          borderRadius: BorderRadius.circular(
+                                            kDefaultPaddingValue,
+                                          ),
+                                        ),
                                         height: widget
                                                     .searchLawDto!
                                                     .referenceParagraph!
@@ -99,12 +113,13 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                           child: SingleChildScrollView(
                                             physics:
                                                 const BouncingScrollPhysics(),
-                                            child: Container(
+                                            child: SizedBox(
                                               height: 100.h,
-                                              color: Colors.grey.shade300,
                                               child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
+                                                padding: const EdgeInsets
+                                                        .symmetric(
+                                                    vertical:
+                                                        kDefaultPaddingValue),
                                                 child: Text.rich(
                                                     TextSpan(children: [
                                                   TextSpan(
@@ -123,10 +138,9 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                                   .textLarge)),
                                                   WidgetSpan(
                                                       child: Container(
-                                                    color: Colors.grey.shade300,
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
+                                                    padding: const EdgeInsets
+                                                            .all(
+                                                        kDefaultPaddingValue),
                                                   )),
                                                   TextSpan(
                                                       text:
@@ -135,19 +149,18 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                           .textTheme
                                                           .headline4
                                                           ?.copyWith(
-                                                              color:
-                                                                  Colors.black,
+                                                              color: Colors
+                                                                  .black87,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .normal,
                                                               fontSize: FONTSIZES
-                                                                  .textMedium)),
+                                                                  .textPrimary)),
                                                   WidgetSpan(
                                                       child: Container(
-                                                    color: Colors.grey.shade300,
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
+                                                    padding: const EdgeInsets
+                                                            .all(
+                                                        kDefaultPaddingValue),
                                                   )),
                                                   WidgetSpan(
                                                       child: ExpandableText(
@@ -170,7 +183,6 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                   )),
                                                   WidgetSpan(
                                                       child: Container(
-                                                    color: Colors.grey.shade300,
                                                     padding:
                                                         const EdgeInsets.all(
                                                             4.0),
@@ -178,7 +190,7 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                   TextSpan(
                                                       text: min != "0" &&
                                                               max != "0"
-                                                          ? "Phạt tiền từ ${min}đến ${max}nghìn đồng"
+                                                          ? "Phạt tiền từ $minđến $max đồng"
                                                           : "Phạt cảnh cáo",
                                                       style: Theme.of(context)
                                                           .textTheme
@@ -192,7 +204,6 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                                   .textMediumLarge)),
                                                   WidgetSpan(
                                                       child: Container(
-                                                    color: Colors.grey.shade300,
                                                     padding:
                                                         const EdgeInsets.all(
                                                             4.0),
@@ -219,7 +230,6 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                                   .textMediumLarge)),
                                                   WidgetSpan(
                                                       child: Container(
-                                                    color: Colors.grey.shade300,
                                                     padding:
                                                         const EdgeInsets.all(
                                                             5.0),
@@ -240,10 +250,10 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                                   .textMedium)),
                                                   WidgetSpan(
                                                       child: Container(
-                                                    color: Colors.grey.shade300,
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            5.0),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical:
+                                                            kDefaultPaddingValue),
                                                   )),
                                                   WidgetSpan(
                                                       child: Center(
@@ -273,7 +283,7 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                                     Colors
                                                                         .white,
                                                                 duration:
-                                                                    Duration(
+                                                                    const Duration(
                                                                         seconds:
                                                                             2),
                                                                 isDismissible:
@@ -291,7 +301,7 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                                                     Colors
                                                                         .white,
                                                                 duration:
-                                                                    Duration(
+                                                                    const Duration(
                                                                         seconds:
                                                                             2),
                                                                 isDismissible:

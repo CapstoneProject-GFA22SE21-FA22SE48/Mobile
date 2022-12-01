@@ -198,6 +198,7 @@ flutter:
     - assets/images/auth/login_bottom.png
     - assets/images/auth/signup_top.png
     - assets/images/auth/google.png
+    - assets/images/auth/password.png
     # quiz
     - assets/images/quiz/car.png
     - assets/images/quiz/motorcycle.png
