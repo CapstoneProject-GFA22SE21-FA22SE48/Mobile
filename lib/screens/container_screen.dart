@@ -143,7 +143,7 @@ class ContainerScreen extends GetView<GlobalController> {
 
     return WillPopScope(
       onWillPop: () async {
-        return await true;
+        return await false;
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,

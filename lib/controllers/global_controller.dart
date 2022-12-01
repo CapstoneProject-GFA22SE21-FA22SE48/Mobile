@@ -122,7 +122,6 @@ class GlobalController extends GetxController
       //   break;
     }
     tab(value);
-
     update();
   }
 
