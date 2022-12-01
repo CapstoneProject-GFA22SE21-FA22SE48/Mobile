@@ -18,6 +18,10 @@ class ProgressBar extends StatelessWidget {
         "Bạn có chắc là bạn muốn nộp bài?", () => Get.to(ScoreScreen()), () {});
   }
 
+  Future<void> submit(BuildContext context) async {
+    Get.to(ScoreScreen());
+  }
+
   @override
   Widget build(BuildContext context) {
     QuestionController qc = Get.find<QuestionController>();
@@ -25,6 +29,11 @@ class ProgressBar extends StatelessWidget {
         init: qc,
         builder: (controller) {
           controller.runTimer();
+          if (controller.animation.value == 1.0) {
+            Future.delayed(Duration.zero, () async {
+              submit(context);
+            });
+          }
           return WillPopScope(
             onWillPop: () async {
               return await true;
