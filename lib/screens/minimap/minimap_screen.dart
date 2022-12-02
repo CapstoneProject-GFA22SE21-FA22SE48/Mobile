@@ -112,7 +112,7 @@ class _MinimapState extends State<MinimapScreen> {
                               ac.role.value == 2
                                   ? GestureDetector(
                                       onTap: gc.userId.value.isNotEmpty
-                                          ? () => Get.to(() => LoaderOverlay(
+                                          ? () => Get.off(() => LoaderOverlay(
                                                 child: FeedbacksScreen(
                                                   type: '',
                                                   sign: s,
@@ -268,58 +268,53 @@ class _MinimapState extends State<MinimapScreen> {
       },
       child: currentLocation == null
           ? loadingScreen()
-          : Scaffold(
-              extendBodyBehindAppBar: false,
-              body: Stack(
-                alignment: AlignmentDirectional.bottomCenter,
-                children: [
-                  GoogleMap(
-                    mapType: MapType.normal,
-                    rotateGesturesEnabled: true,
-                    compassEnabled: true,
-                    myLocationButtonEnabled: true,
-                    myLocationEnabled: true,
-                    trafficEnabled: true,
-                    // zoomGesturesEnabled: false,
-                    // zoomControlsEnabled: false,
-                    minMaxZoomPreference: const MinMaxZoomPreference(15, 22),
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(
-                        currentLocation!.latitude!,
-                        currentLocation!.longitude!,
-                      ),
-                      zoom: mc.zoom.value,
+          : Stack(
+              alignment: AlignmentDirectional.bottomCenter,
+              children: [
+                GoogleMap(
+                  mapType: MapType.normal,
+                  rotateGesturesEnabled: true,
+                  compassEnabled: true,
+                  myLocationButtonEnabled: true,
+                  myLocationEnabled: true,
+                  trafficEnabled: true,
+                  minMaxZoomPreference: const MinMaxZoomPreference(15, 22),
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(
+                      currentLocation!.latitude!,
+                      currentLocation!.longitude!,
                     ),
-                    markers: _markers.toSet(),
-                    onTap: (position) {
-                      _infoWindowcontroller.hideInfoWindow!();
-                    },
-                    onCameraMove: (position) {
-                      _infoWindowcontroller.onCameraMove!();
-                      // gmapController.future.then((controller) =>
-                      //     controller.animateCamera(CameraUpdate.zoomTo(18.0)));
-                      _infoWindowcontroller.googleMapController!
-                          .getZoomLevel()
-                          .then((value) {
-                        if (value != mc.zoom.value) {
-                          setCustomMarkerIcon(gpsSigns);
-                          mc.updateZoom(value);
-                        }
-                      });
-                    },
-                    onMapCreated: (controller) {
-                      gmapController.complete(controller);
-                      _infoWindowcontroller.googleMapController = controller;
-                    },
+                    zoom: mc.zoom.value,
                   ),
-                  CustomInfoWindow(
-                    controller: _infoWindowcontroller,
-                    height: 12.h,
-                    width: 48.w,
-                    offset: 9.h,
-                  )
-                ],
-              ),
+                  markers: _markers.toSet(),
+                  onTap: (position) {
+                    _infoWindowcontroller.hideInfoWindow!();
+                  },
+                  onCameraMove: (position) {
+                    _infoWindowcontroller.onCameraMove!();
+                    // gmapController.future.then((controller) =>
+                    //     controller.animateCamera(CameraUpdate.zoomTo(18.0)));
+                    _infoWindowcontroller.googleMapController!
+                        .getZoomLevel()
+                        .then((value) {
+                      if (value != mc.zoom.value) {
+                        setCustomMarkerIcon(gpsSigns);
+                        mc.updateZoom(value);
+                      }
+                    });
+                  },
+                  onMapCreated: (controller) {
+                    gmapController.complete(controller);
+                    _infoWindowcontroller.googleMapController = controller;
+                  },
+                ),
+                CustomInfoWindow(
+                  controller: _infoWindowcontroller,
+                  height: 12.h,
+                  width: 48.w,
+                  offset: 9.h,
+                )
+              ],
             ),
     );
   }

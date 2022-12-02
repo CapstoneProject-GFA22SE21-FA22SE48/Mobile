@@ -49,7 +49,7 @@ class ContainerScreen extends GetView<GlobalController> {
       if (qc.testCategoryId.value.isNotEmpty) {
         return const ChooseModeScreen();
       }
-      return CategoryScreen();
+      return const CategoryScreen();
     }
     if (v == TABS.ANALYSIS) {
       // return AnalysisScreen();
@@ -240,36 +240,38 @@ class ContainerScreen extends GetView<GlobalController> {
                             Get.to(const SettingsScreen());
                           },
                         ),
-                        ListTile(
-                          iconColor: kWarningButtonColor,
-                          textColor: kWarningButtonColor,
-                          leading: const Icon(Icons.star_rounded),
-                          title: const Text(
-                            'Đánh giá',
-                            style: TextStyle(
-                              fontSize: FONTSIZES.textPrimary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ), // Feedbacks
-                          // selected: controller.sideBar.value == 2,
-                          selectedColor: Colors.white,
-                          selectedTileColor: Colors.blueAccent,
-                          onTap: () {
-                            if (controller.userId.isNotEmpty) {
-                              Navigator.pop(context); // close the drawer
-                              controller.updateSideBar(2);
-                              Get.to(const CommentsScreen());
-                            } else {
-                              DialogUtil.showAwesomeDialog(
-                                  context,
-                                  DialogType.warning,
-                                  "Cảnh báo",
-                                  "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
-                                  () => Get.to(() => const LoginScreen()),
-                                  () {});
-                            }
-                          },
-                        ),
+                        ac.role.value == 2
+                            ? ListTile(
+                                iconColor: kWarningButtonColor,
+                                textColor: kWarningButtonColor,
+                                leading: const Icon(Icons.star_rounded),
+                                title: const Text(
+                                  'Đánh giá',
+                                  style: TextStyle(
+                                    fontSize: FONTSIZES.textPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ), // Feedbacks
+                                // selected: controller.sideBar.value == 2,
+                                selectedColor: Colors.white,
+                                selectedTileColor: Colors.blueAccent,
+                                onTap: () {
+                                  if (controller.userId.isNotEmpty) {
+                                    Navigator.pop(context); // close the drawer
+                                    controller.updateSideBar(2);
+                                    Get.to(const CommentsScreen());
+                                  } else {
+                                    DialogUtil.showAwesomeDialog(
+                                        context,
+                                        DialogType.warning,
+                                        "Cảnh báo",
+                                        "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
+                                        () => Get.to(() => const LoginScreen()),
+                                        () {});
+                                  }
+                                },
+                              )
+                            : Container(),
                         ac.role.value == 1 ||
                                 controller.username.value.contains('scribe')
                             ? ListTile(
@@ -379,20 +381,7 @@ class ContainerScreen extends GetView<GlobalController> {
           ),
         ),
         body: Center(child: Obx(() => getScreen(controller.tab.value))),
-        bottomNavigationBar:
-            // Container(
-            //   height: 10.h,
-            //   width: 100.w,
-            //   decoration: const BoxDecoration(
-            //     color: Colors.white,
-            //     border: Border(
-            //         top: BorderSide(
-            //       color: Color(0xFFC0C0C0),
-            //       width: 0.25,
-            //     )),
-            //   ),
-            //   child:
-            Obx(
+        bottomNavigationBar: Obx(
           () => BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,
@@ -457,7 +446,6 @@ class ContainerScreen extends GetView<GlobalController> {
             ],
           ),
         ),
-        // ),
       ),
     );
   }

@@ -44,7 +44,8 @@ class _BodyState extends State<Body> {
   Future saveStudyResultLocal(QuestionController qc) async {
     final db = Localstore.instance;
     final id = db.collection('_answeredAttempt').doc('_answeredAttempt').id;
-    final id2 = db.collection('_answeredQuestions').doc('_answeredQuestions').id;
+    final id2 =
+        db.collection('_answeredQuestions').doc('_answeredQuestions').id;
     await db
         .collection('_answeredAttempt')
         .doc(id)
@@ -63,7 +64,7 @@ class _BodyState extends State<Body> {
     return WillPopScope(
       onWillPop: () async {
         if (gc.test_mode.value == TEST_TYPE.STUDY) {
-          Get.offAll(() => TestSetScreen(
+          Get.to(() => TestSetScreen(
                 categoryName: qnController.testCategoryName.value,
                 categoryId: qnController.testCategoryId.value,
               ));

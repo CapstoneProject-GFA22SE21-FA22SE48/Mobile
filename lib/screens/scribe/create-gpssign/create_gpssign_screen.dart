@@ -16,6 +16,8 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
+import 'package:vnrdn_tai/models/UserInfo.dart';
+import 'package:vnrdn_tai/models/dtos/AdminDTO.dart';
 import 'package:vnrdn_tai/models/dtos/signCategoryDTO.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/scribe/list_rom/list_rom_screen.dart';
@@ -39,6 +41,7 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
   final searchSignController = TextEditingController();
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
+  late List<AdminDTO> listAdmin = [];
   dynamic adminId;
   dynamic selectedSign;
 
@@ -62,7 +65,7 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
               //   },
               // ),
               CachedNetworkImage(
-                imageUrl: sign.imageUrl as String,
+                imageUrl: sign.imageUrl!.split('&token').first,
                 imageBuilder: (context, imageProvider) => Container(
                   width: 10.w,
                   decoration: BoxDecoration(
@@ -152,6 +155,7 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
                     sign.id, location.latitude!, location.longitude!, false)
                 .then((newSign) {
               if (newSign != null) {
+                print(newSign);
                 SignModificationRequestService()
                     .createScribeRequestGpsSign(
                   url.split('&token').first,
@@ -159,16 +163,16 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
                   newSign,
                 )
                     .then((request) {
-                  context.loaderOverlay.hide();
                   if (request != null) {
                     createNotification(request).then((sent) {
+                      context.loaderOverlay.hide();
                       if (sent) {
                         DialogUtil.showAwesomeDialog(
                             context,
                             DialogType.success,
                             "Tạo thành công",
                             "Yêu cầu tạo biển $selectedSign thành công",
-                            () => Get.off(() => const ContainerScreen()),
+                            () => Get.to(() => const ContainerScreen()),
                             null);
                       } else {
                         DialogUtil.showAwesomeDialog(
@@ -181,6 +185,7 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
                       }
                     });
                   } else {
+                    context.loaderOverlay.hide();
                     DialogUtil.showAwesomeDialog(
                         context,
                         DialogType.error,
@@ -212,19 +217,19 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
 
     String action = 'đề xuất thêm mới';
 
+    print(rom.modifyingGpssignId);
+
     await ref.push().set({
-      "senderId": rom.scribeId,
+      "senderId": gc.userId.value,
       "senderUsername": gc.username.value,
       "receiverId": rom.adminId,
-      "receiverUsername": _listDropdownAdmin
-          .firstWhere((e) => e.value == rom.adminId)
-          .child
-          .toStringShort(),
+      "subjectId": rom.modifyingGpssignId ?? 'string',
+      "receiverUsername":
+          _listDropdownAdmin.firstWhere((e) => e.value == rom.adminId).value,
+      "createdDate": rom.createdDate,
       "subjectType": "GPSSign",
-      "subjectId": rom.modifyingGpssignId,
       "relatedDescription": "GPS của biển số...",
       "action": action,
-      "createdDate": DateTime.now().toLocal().toString(),
       "isRead": false
     });
     return true;
@@ -236,6 +241,7 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
     signCategories.then((list) => setSignDropdownList(list));
     UserService().getAdmins().then((list) {
       if (list.isNotEmpty) {
+        listAdmin = list;
         list.forEach((element) {
           _listDropdownAdmin.add(DropdownMenuItem<String>(
             value: element.id,
@@ -339,9 +345,12 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
                               ],
                         value: selectedSign,
                         onChanged: (value) {
-                          setState(() {
-                            selectedSign = value as String;
-                          });
+                          if (mounted) {
+                            print(value);
+                            setState(() {
+                              selectedSign = value as String;
+                            });
+                          }
                         },
                         scrollbarAlwaysShow: true,
                         scrollbarRadius:

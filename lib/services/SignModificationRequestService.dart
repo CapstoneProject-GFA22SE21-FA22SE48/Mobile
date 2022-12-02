@@ -104,7 +104,9 @@ class SignModificationRequestService {
               },
               body: jsonEncode(request))
           .timeout(const Duration(seconds: TIME_OUT));
+      print(res.statusCode);
       if (res.statusCode == 201) {
+        print(res.body);
         return SignModificationRequestService.parseSignModificationRequest(
             res.body);
       } else {
