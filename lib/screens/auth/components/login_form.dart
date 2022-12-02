@@ -102,17 +102,12 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void initState() {
     super.initState();
-    // Timer(const Duration(seconds: 1), () {
-    //   setState(() {
-    //     guessContinue = 'Tiếp tục với tư cách khách';
-    //   });
-    // });
   }
 
   @override
   Widget build(BuildContext context) {
     return KeyboardVisibilityBuilder(
-      builder: (context, isKeyboardVisible) {
+      builder: (kContext, isKeyboardVisible) {
         return Form(
           key: loginFormKey,
           child: Column(
@@ -221,7 +216,7 @@ class _LoginFormState extends State<LoginForm> {
               Hero(
                 tag: "g_login_btn",
                 child: ElevatedButton(
-                  onPressed: () => handleGLogin(context),
+                  onPressed: () => handleGLogin(kContext),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     alignment: Alignment.center,
@@ -249,7 +244,7 @@ class _LoginFormState extends State<LoginForm> {
               AlreadyHaveAnAccountCheck(
                 press: () {
                   Navigator.push(
-                    context,
+                    kContext,
                     MaterialPageRoute(
                       builder: (context) {
                         return const SignUpScreen();
