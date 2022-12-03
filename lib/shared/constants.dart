@@ -80,6 +80,7 @@ class FONTSIZES {
 }
 
 const TIME_OUT = 60;
+const TIME_OUT_SCAN = 60;
 
 const emptyUserId = "00000000-0000-0000-0000-000000000000"; // jwt fixed
 const defaultAvatarUrl =

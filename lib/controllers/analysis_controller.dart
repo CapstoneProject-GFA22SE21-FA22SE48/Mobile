@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_vision/flutter_vision.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:yaml/yaml.dart';
 
@@ -64,7 +65,7 @@ class AnalysisController extends GetxController {
   late XFile? _image;
   XFile? get image => _image;
 
-  late int _remainTime = 30;
+  late int _remainTime = TIME_OUT_SCAN;
   int get remainTime => _remainTime;
 
   @override
@@ -199,7 +200,9 @@ class AnalysisController extends GetxController {
           }
         }
         for (var element in arrForPreprocess) {
-          b.add(element);
+          if (b.firstWhereOrNull((e) => e[0] == element[0]) == null) {
+            b.add(element);
+          }
         }
       }
       _boxes = b;
@@ -207,7 +210,7 @@ class AnalysisController extends GetxController {
       // stopImageStream();
 
       if (b.isNotEmpty) {
-        _remainTime = 30;
+        _remainTime = TIME_OUT_SCAN;
         // stopImageStream();
       }
       update();
@@ -220,7 +223,7 @@ class AnalysisController extends GetxController {
   Future<void> startImageStream() async {
     _imagePath = "";
     _found = false;
-    _remainTime = 30;
+    _remainTime = TIME_OUT_SCAN;
     if (!_cameraController.value.isInitialized) {
       // print('controller not initialized');
       return;

@@ -23,6 +23,9 @@ class AnalysisScreen extends StatelessWidget {
 
   Widget getBoundingBoxes(List<dynamic> coords, double height, double width) {
     AnalysisController ac = Get.find<AnalysisController>();
+
+    double conf = double.parse(coords[5]);
+
     double xmin = double.parse(coords[1]) * width - width / 2;
     double ymin = double.parse(coords[2]) * height;
     double xmax = double.parse(coords[3]) * width - width / 2;
@@ -39,7 +42,7 @@ class AnalysisScreen extends StatelessWidget {
     // double xmax = coords[3];
     // double ymax = coords[4];
     // var name = coords[0];
-    if (xmax - xmin < 5.w || ymax - ymin < 5.h) {
+    if (xmax - xmin < 5.w || ymax - ymin < 5.h || conf < 0.7) {
       return Container();
     }
     return Positioned(
