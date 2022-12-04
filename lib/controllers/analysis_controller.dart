@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_vision/flutter_vision.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:yaml/yaml.dart';
 
@@ -64,8 +65,16 @@ class AnalysisController extends GetxController {
   late XFile? _image;
   XFile? get image => _image;
 
-  late int _remainTime = 30;
+  late int _remainTime = TIME_OUT_SCAN;
   int get remainTime => _remainTime;
+
+  late double _zoomLevel = 0.0;
+  double get zoomLevel => _zoomLevel;
+
+  late double _maxZoom = 0.0;
+  double get maxZoom => _maxZoom;
+  late double _minZoom = 0.0;
+  double get minZoom => _minZoom;
 
   @override
   onInit() async {
@@ -118,13 +127,16 @@ class AnalysisController extends GetxController {
       List<CameraDescription> cameras = gc.cameras;
       _cameraController = CameraController(cameras[0], ResolutionPreset.max,
           enableAudio: false);
-      _cameraController.initialize().then((_) {
+      _cameraController.initialize().then((_) async {
         // vision = FlutterVision();
         // if (gc.modelLoad.value == false) {
         //   loadYoloModel().then((value) {
         //     gc.updateModelLoad(true);
         //   });
         // }
+        _maxZoom = await _cameraController.getMaxZoomLevel();
+        _minZoom = await _cameraController.getMinZoomLevel();
+        _zoomLevel = _minZoom;
         _isDetecting = false;
         _modelResults = [];
         _isLoaded = true;
@@ -199,7 +211,9 @@ class AnalysisController extends GetxController {
           }
         }
         for (var element in arrForPreprocess) {
-          b.add(element);
+          if (b.firstWhereOrNull((e) => e[0] == element[0]) == null) {
+            b.add(element);
+          }
         }
       }
       _boxes = b;
@@ -207,7 +221,7 @@ class AnalysisController extends GetxController {
       // stopImageStream();
 
       if (b.isNotEmpty) {
-        _remainTime = 30;
+        _remainTime = TIME_OUT_SCAN;
         // stopImageStream();
       }
       update();
@@ -220,7 +234,7 @@ class AnalysisController extends GetxController {
   Future<void> startImageStream() async {
     _imagePath = "";
     _found = false;
-    _remainTime = 30;
+    _remainTime = TIME_OUT_SCAN;
     if (!_cameraController.value.isInitialized) {
       // print('controller not initialized');
       return;
@@ -304,6 +318,17 @@ class AnalysisController extends GetxController {
 
   updateCameraImage(val) {
     _cameraImage = val;
+  }
+
+  updateZoomLevel(value) async {
+    var zl = double.parse(value.toStringAsFixed(1));
+    if (zl > maxZoom) {
+      await _cameraController.setZoomLevel(maxZoom);
+    } else {
+      _zoomLevel = zl;
+      await _cameraController.setZoomLevel(zl);
+    }
+    update();
   }
 
   @override
