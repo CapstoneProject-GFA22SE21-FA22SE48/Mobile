@@ -68,6 +68,14 @@ class AnalysisController extends GetxController {
   late int _remainTime = TIME_OUT_SCAN;
   int get remainTime => _remainTime;
 
+  late double _zoomLevel = 0.0;
+  double get zoomLevel => _zoomLevel;
+
+  late double _maxZoom = 0.0;
+  double get maxZoom => _maxZoom;
+  late double _minZoom = 0.0;
+  double get minZoom => _minZoom;
+
   @override
   onInit() async {
     var data = await rootBundle.loadString('assets/ml/custom.yaml');
@@ -119,13 +127,16 @@ class AnalysisController extends GetxController {
       List<CameraDescription> cameras = gc.cameras;
       _cameraController = CameraController(cameras[0], ResolutionPreset.max,
           enableAudio: false);
-      _cameraController.initialize().then((_) {
+      _cameraController.initialize().then((_) async {
         // vision = FlutterVision();
         // if (gc.modelLoad.value == false) {
         //   loadYoloModel().then((value) {
         //     gc.updateModelLoad(true);
         //   });
         // }
+        _maxZoom = await _cameraController.getMaxZoomLevel();
+        _minZoom = await _cameraController.getMinZoomLevel();
+        _zoomLevel = _minZoom;
         _isDetecting = false;
         _modelResults = [];
         _isLoaded = true;
@@ -307,6 +318,17 @@ class AnalysisController extends GetxController {
 
   updateCameraImage(val) {
     _cameraImage = val;
+  }
+
+  updateZoomLevel(value) async {
+    var zl = double.parse(value.toStringAsFixed(1));
+    if (zl > maxZoom) {
+      await _cameraController.setZoomLevel(maxZoom);
+    } else {
+      _zoomLevel = zl;
+      await _cameraController.setZoomLevel(zl);
+    }
+    update();
   }
 
   @override

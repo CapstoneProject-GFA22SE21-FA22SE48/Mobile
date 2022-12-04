@@ -122,13 +122,14 @@ class AnalysisScreen extends StatelessWidget {
                     children: [
                       // controller.imagePath == ""
                       // ?
+
                       AspectRatio(
                         aspectRatio:
                             controller.cameraController.value.aspectRatio,
                         child: CameraPreview(
                           controller.cameraController,
                         ),
-                      )
+                      ),
                       // : Image.file(
                       //     io.File(controller.imagePath!),
                       //     fit: BoxFit.fill,
@@ -136,7 +137,40 @@ class AnalysisScreen extends StatelessWidget {
                       //     width: double.infinity,
                       //     alignment: Alignment.center,
                       //   )
-                      ,
+                      ac.minZoom == ac.maxZoom
+                          ? Container()
+                          : Positioned(
+                              top: 10.h,
+                              child: SizedBox(
+                                width: 100.w,
+                                child: Row(children: [
+                                  SizedBox(
+                                    width: 80.w,
+                                    child: Slider(
+                                      value: ac.zoomLevel,
+                                      max: ac.maxZoom,
+                                      min: ac.minZoom,
+                                      activeColor: Colors.blueAccent,
+                                      inactiveColor:
+                                          Color.fromARGB(167, 255, 255, 255),
+                                      onChanged: (value) async {
+                                        ac.updateZoomLevel(value);
+                                      },
+                                    ),
+                                  ),
+                                  Text('${ac.zoomLevel}x',
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5
+                                          ?.copyWith(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize:
+                                                  FONTSIZES.textMediumLarge))
+                                ]),
+                              ),
+                            ),
                       controller.boxes == []
                           ? Container()
                           : SizedBox(
