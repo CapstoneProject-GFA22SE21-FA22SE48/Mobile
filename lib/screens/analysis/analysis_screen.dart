@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:vnrdn_tai/controllers/analysis_controller.dart';
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/feedbacks/sign_content_feedback_screen.dart';
+import 'package:vnrdn_tai/screens/scribe/create-gpssign/create_gpssign_screen.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
@@ -19,11 +21,11 @@ import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/widgets/animation/ripple.dart';
 
 class AnalysisScreen extends StatelessWidget {
-  AnalysisScreen({super.key});
+  bool isAddGps;
+  AnalysisScreen({super.key, this.isAddGps = false});
 
   Widget getBoundingBoxes(List<dynamic> coords, double height, double width) {
     AnalysisController ac = Get.find<AnalysisController>();
-
     double conf = double.parse(coords[5]);
 
     double xmin = double.parse(coords[1]) * width - width / 2;
@@ -52,11 +54,16 @@ class AnalysisScreen extends StatelessWidget {
         //top: ymin + (ymin * ratioH) / 3.5,
         child: InkWell(
             onTap: () {
-              SearchController sc = Get.put(SearchController());
               ac.stopImageStream();
-              sc.updateQuery(name);
-              sc.updateIsFromAnalysis(true);
-              Get.offAll(() => ContainerScreen());
+              if (isAddGps) {
+                Get.off(() => CreateGpssignScreen(
+                    imagePath: ac.imagePathScan ?? "", signNumber: name));
+              } else {
+                SearchController sc = Get.put(SearchController());
+                sc.updateQuery(name);
+                sc.updateIsFromAnalysis(true);
+                Get.offAll(() => const ContainerScreen());
+              }
             },
             child: Container(
               alignment: Alignment.bottomLeft,
@@ -101,7 +108,11 @@ class AnalysisScreen extends StatelessWidget {
               leading: IconButton(
                 onPressed: (() {
                   ac.stopImageStream();
-                  Get.offAll(() => const ContainerScreen());
+                  if (isAddGps) {
+                    Get.off(() => CreateGpssignScreen());
+                  } else {
+                    Get.offAll(() => const ContainerScreen());
+                  }
                 }),
                 icon: const Icon(
                   Icons.arrow_back,
@@ -196,12 +207,14 @@ class AnalysisScreen extends StatelessWidget {
                                 SizedBox(
                                   height: 12.h,
                                 ),
-                                FutureBuilder(
-                                  key: UniqueKey(),
-                                  initialData: _timer,
-                                  builder: (context, snapshot) =>
-                                      stillNotFound(context),
-                                ),
+                                !isAddGps
+                                    ? FutureBuilder(
+                                        key: UniqueKey(),
+                                        initialData: _timer,
+                                        builder: (context, snapshot) =>
+                                            stillNotFound(context),
+                                      )
+                                    : Container(),
                                 Center(
                                   child: Padding(
                                     padding: const EdgeInsets.only(
@@ -294,12 +307,18 @@ class AnalysisScreen extends StatelessWidget {
                                 .toString();
                             return InkWell(
                               onTap: () {
-                                SearchController sc =
-                                    Get.put(SearchController());
                                 ac.stopImageStream();
-                                sc.updateQuery(name);
-                                sc.updateIsFromAnalysis(true);
-                                Get.offAll(() => const ContainerScreen());
+                                if (isAddGps) {
+                                  Get.off(() => CreateGpssignScreen(
+                                      imagePath: ac.imagePathScan ?? "",
+                                      signNumber: name));
+                                } else {
+                                  SearchController sc =
+                                      Get.put(SearchController());
+                                  sc.updateQuery(name);
+                                  sc.updateIsFromAnalysis(true);
+                                  Get.offAll(() => const ContainerScreen());
+                                }
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(

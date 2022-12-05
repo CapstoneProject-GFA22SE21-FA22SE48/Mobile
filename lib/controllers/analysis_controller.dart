@@ -15,6 +15,7 @@ class AnalysisController extends GetxController {
 
   late FlutterVision vision;
 
+
   late bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
 
@@ -53,6 +54,9 @@ class AnalysisController extends GetxController {
 
   late bool? _found = false;
   bool? get found => _found;
+
+  late String? _imagePathScan = "";
+  String? get imagePathScan => _imagePathScan;
 
   //Feedback Sign starts here
   late String? _imagePath = "";
@@ -161,13 +165,10 @@ class AnalysisController extends GetxController {
     try {
       final xFile = await _cameraController.takePicture();
       final path = xFile.path;
-      // _imagePath = path;
       io.File file = io.File(xFile.path);
-      // print(file.lengthSync());
       final res = await upload(file, cont: _isDetecting, url: _aiurl);
-      // print(res);
       if (res != "[]") {
-        _imagePath = path;
+        _imagePathScan = path;
       }
       if (res != null) {
         return res != "[]" && !res.contains('Error') ? res : "[]";
@@ -233,6 +234,7 @@ class AnalysisController extends GetxController {
 
   Future<void> startImageStream() async {
     _imagePath = "";
+    _imagePathScan = "";
     _found = false;
     _remainTime = TIME_OUT_SCAN;
     if (!_cameraController.value.isInitialized) {
@@ -319,6 +321,7 @@ class AnalysisController extends GetxController {
   updateCameraImage(val) {
     _cameraImage = val;
   }
+
 
   updateZoomLevel(value) async {
     var zl = double.parse(value.toStringAsFixed(1));
