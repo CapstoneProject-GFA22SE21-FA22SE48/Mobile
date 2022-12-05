@@ -96,8 +96,11 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
         );
       }
     }
-    var foundSign = _listDropdownSignsName
-        .firstWhereOrNull((element) => element.contains(widget.signNumber));
+    var foundSign = null;
+    if (widget.signNumber != "") {
+      foundSign = _listDropdownSignsName
+          .firstWhereOrNull((element) => element.contains(widget.signNumber));
+    }
     setState(() {
       if (foundSign != null) {
         selectedSign = foundSign;
