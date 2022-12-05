@@ -19,6 +19,7 @@ import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import 'package:vnrdn_tai/models/UserInfo.dart';
 import 'package:vnrdn_tai/models/dtos/AdminDTO.dart';
 import 'package:vnrdn_tai/models/dtos/signCategoryDTO.dart';
+import 'package:vnrdn_tai/screens/analysis/analysis_screen.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/scribe/list_rom/list_rom_screen.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
@@ -30,7 +31,9 @@ import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
 
 class CreateGpssignScreen extends StatefulWidget {
-  CreateGpssignScreen({super.key});
+  String imagePath;
+  String signNumber;
+  CreateGpssignScreen({super.key, this.imagePath = "", this.signNumber = ""});
 
   @override
   State<StatefulWidget> createState() => _CreateGpssignState();
@@ -44,7 +47,7 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
   late List<AdminDTO> listAdmin = [];
   dynamic adminId;
   dynamic selectedSign;
-
+  late List<String> _listDropdownSignsName = [];
   late List<DropdownMenuItem> _listDropdownSigns = [];
   late List<DropdownMenuItem> _listDropdownAdmin = [];
   late Future<List<SignCategoryDTO>> signCategories =
@@ -53,6 +56,7 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
   void setSignDropdownList(List<SignCategoryDTO> categories) {
     for (var category in categories) {
       for (var sign in category.searchSignDTOs) {
+        _listDropdownSignsName.add(sign.name);
         _listDropdownSigns.add(
           DropdownMenuItem(
             value: sign.name,
@@ -92,7 +96,16 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
         );
       }
     }
-    setState(() {});
+    var foundSign = null;
+    if (widget.signNumber != "") {
+      foundSign = _listDropdownSignsName
+          .firstWhereOrNull((element) => element.contains(widget.signNumber));
+    }
+    setState(() {
+      if (foundSign != null) {
+        selectedSign = foundSign;
+      }
+    });
   }
 
   Color getColorByCategory(String name) {
@@ -119,15 +132,12 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
     });
   }
 
-  Future captureImage() async {
-    final captured = await imagePicker.getImage(source: ImageSource.camera);
-    if (captured == null) return;
-
+  Future captureImage(String path) async {
+    // final captured = await imagePicker.getImage(source: ImageSource.camera);
+    // if (captured == null) return;
     setState(() {
       pickedFile = PlatformFile(
-          name: captured.path.split('/').last,
-          path: captured.path,
-          size: 1024 * 1024 * 30);
+          name: path.split('/').last, path: path, size: 1024 * 1024 * 30);
     });
   }
 
@@ -155,7 +165,6 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
                     sign.id, location.latitude!, location.longitude!, false)
                 .then((newSign) {
               if (newSign != null) {
-                print(newSign);
                 SignModificationRequestService()
                     .createScribeRequestGpsSign(
                   url.split('&token').first,
@@ -217,8 +226,6 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
 
     String action = 'đề xuất thêm mới';
 
-    print(rom.modifyingGpssignId);
-
     await ref.push().set({
       "senderId": gc.userId.value,
       "senderUsername": gc.username.value,
@@ -248,6 +255,11 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
             child: Text(element.displayName ?? element.username),
           ));
         });
+      }
+
+      //Return from AnalysisScreen
+      if (widget.imagePath != "") {
+        captureImage(widget.imagePath);
       }
       setState(() {
         context.loaderOverlay.hide();
@@ -346,7 +358,6 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
                         value: selectedSign,
                         onChanged: (value) {
                           if (mounted) {
-                            print(value);
                             setState(() {
                               selectedSign = value as String;
                             });
@@ -419,7 +430,8 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
                     ),
                     const Spacer(),
                     ElevatedButton(
-                      onPressed: captureImage,
+                      onPressed: () =>
+                          Get.to(() => AnalysisScreen(isAddGps: true)),
                       child: const Icon(Icons.camera_alt_rounded),
                     ),
                     SizedBox(width: 1.w),
