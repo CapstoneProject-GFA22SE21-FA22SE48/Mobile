@@ -80,6 +80,11 @@ class QuestionController extends GetxController
   }
 
   void checkAns(Question question, int selectedIndex) {
+    if (gc.test_mode.value == TEST_TYPE.STUDY) {
+      _answeredQuestions.remove(question);
+      _answeredAttempt
+          .removeWhere((element) => element['question']['id'] == question.id);
+    }
     if (_answeredQuestions.firstWhereOrNull((element) => element == question) ==
         null) {
       _isAnswered = true;
