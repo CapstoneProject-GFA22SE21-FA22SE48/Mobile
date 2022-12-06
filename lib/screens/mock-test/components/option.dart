@@ -34,12 +34,20 @@ class Option extends StatelessWidget {
               if (attemp == null) return Colors.black54;
               if (attemp['isAnswered']) {
                 if (gc.test_mode == TEST_TYPE.STUDY) {
-                  if (text == attemp['correctAns']['description']) {
+                  // if (text == attemp['correctAns']['description']) {
+                  //   return Colors.blueAccent;
+                  // }
+                  if (text == attemp['selectedAns']['description'] &&
+                      text == attemp['correctAns']['description']) {
                     return Colors.blueAccent;
-                  } else if (text == attemp['selectedAns']['description'] &&
+                  }
+                  if (text == attemp['selectedAns']['description'] &&
                       attemp['selectedAns'] != attemp['correctAns']) {
                     return Colors.red;
                   }
+                  // else {
+                  //   return Colors.blueAccent;
+                  // }
                 } else {
                   if (text == attemp['selectedAns']['description']) {
                     return Colors.blueAccent;
