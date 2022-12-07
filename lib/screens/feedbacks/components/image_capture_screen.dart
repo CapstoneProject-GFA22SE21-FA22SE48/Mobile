@@ -94,7 +94,7 @@ class ImageCaptureScreen extends StatelessWidget {
                                               fontSize: FONTSIZES.textLarge)),
                                 ),
                                 Text(
-                                    '${DateFormat('hh:mm dd/MM/yyyy').format(DateTime.now())}',
+                                    '${DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now())}',
                                     style: Theme.of(context)
                                         .textTheme
                                         .headline4

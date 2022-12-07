@@ -7,11 +7,8 @@ import 'package:vnrdn_tai/models/Question.dart';
 import 'package:vnrdn_tai/models/TestResult.dart';
 import 'package:vnrdn_tai/models/TestResultDetail.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
-import 'package:vnrdn_tai/screens/mock-test/choose_mode_screen.dart';
-import 'package:vnrdn_tai/services/QuestionService.dart';
 import 'package:vnrdn_tai/services/TestResultService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
-import 'package:vnrdn_tai/utils/io_utils.dart';
 
 import 'package:styled_text/styled_text.dart';
 
@@ -19,13 +16,13 @@ class ScoreScreen extends StatelessWidget {
   ScoreScreen({super.key});
 
   submitScore(QuestionController qc) {
-    if (qc.answeredQuestions.length > 0) {
+    if (qc.answeredQuestions.isNotEmpty) {
       List<TestResultDetail> trds = [];
       List<Question> questions = qc.questions;
-      var trId = Uuid().v4();
+      var trId = const Uuid().v4();
       qc.answeredAttempts.forEach((element) {
         TestResultDetail trd = TestResultDetail(
-          Uuid().v4(),
+          const Uuid().v4(),
           trId,
           element['question']['id'],
           element['selectedAns']['id'],
@@ -39,7 +36,7 @@ class ScoreScreen extends StatelessWidget {
                 (element2) => element2.questionId == question.id) ==
             null) {
           TestResultDetail trd = TestResultDetail(
-            Uuid().v4(),
+            const Uuid().v4(),
             trId,
             question.id,
             null,
@@ -63,11 +60,19 @@ class ScoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     QuestionController _qnController = Get.put(QuestionController());
+    int minRequired = _qnController.testCategoryName.value.contains('B1')
+        ? minOfQuestionB1
+        : _qnController.testCategoryName.value.contains('A2')
+            ? minOfQuestionA2
+            : minOfQuestion;
+    int _numOfQuestion = _qnController.testCategoryName.value.contains('B1')
+        ? numberOfQuestionB1
+        : numberOfQuestion;
     submitScore(_qnController);
     return WillPopScope(
       onWillPop: () async {
         _qnController.stopTimer();
-        Get.offAll(() => ContainerScreen());
+        Get.off(() => const ContainerScreen());
         return await true;
       },
       child: Scaffold(
@@ -81,7 +86,7 @@ class ScoreScreen extends StatelessWidget {
           children: [
             Column(
               children: [
-                Spacer(),
+                const Spacer(),
                 Text(
                   'Kết thúc',
                   style: Theme.of(context).textTheme.headline3?.copyWith(
@@ -89,19 +94,19 @@ class ScoreScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                 ),
-                Spacer(),
+                const Spacer(),
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.all(kDefaultPaddingValue),
                     child: Column(
                       children: [
                         Image.asset(
-                          "assets/images/quiz/${_qnController.numberOfCorrectAns >= 20 ? 'exam_pass' : 'exam_fail'}.png",
+                          "assets/images/quiz/${_qnController.numberOfCorrectAns >= minRequired ? 'exam_pass' : 'exam_fail'}.png",
                           scale: 2,
                         ),
                         Padding(
-                          padding:
-                              EdgeInsets.only(top: kDefaultPaddingValue * 2),
+                          padding: const EdgeInsets.only(
+                              top: kDefaultPaddingValue * 2),
                           child: StyledText(
                             tags: {
                               'bold': StyledTextTag(
@@ -109,8 +114,8 @@ class ScoreScreen extends StatelessWidget {
                                       fontWeight: FontWeight.bold)),
                             },
                             text:
-                                'Bạn đã trả lời đúng <bold>${_qnController.numberOfCorrectAns}</bold> trên <bold>${25}</bold> câu',
-                            style: TextStyle(
+                                'Bạn đã trả lời đúng <bold>${_qnController.numberOfCorrectAns}</bold> trên <bold>$_numOfQuestion</bold> câu',
+                            style: const TextStyle(
                               color: Colors.blueAccent,
                               fontSize: FONTSIZES.textLarge,
                             ),
@@ -118,7 +123,7 @@ class ScoreScreen extends StatelessWidget {
                           ),
                         ),
                         const Divider(),
-                        _qnController.numberOfCorrectAns >= 22
+                        _qnController.numberOfCorrectAns >= minOfQuestion
                             ? Text(
                                 "Chúc mừng! Bạn đã hoàn thành xuất sắc bài thi!",
                                 style: Theme.of(context)
@@ -136,11 +141,11 @@ class ScoreScreen extends StatelessWidget {
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                        SizedBox(height: 50),
+                        const SizedBox(height: 50),
                         ElevatedButton(
                             onPressed: () {
                               _qnController.stopTimer();
-                              Get.offAll(() => ContainerScreen());
+                              Get.offAll(() => const ContainerScreen());
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blueAccent,
@@ -161,7 +166,7 @@ class ScoreScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                Spacer(flex: 3)
+                const Spacer(flex: 3)
               ],
             )
           ],

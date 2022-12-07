@@ -15,6 +15,7 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
+import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import 'package:vnrdn_tai/models/UserInfo.dart';
 import 'package:vnrdn_tai/models/dtos/AdminDTO.dart';
@@ -31,9 +32,11 @@ import 'package:vnrdn_tai/shared/snippets.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
 
 class CreateGpssignScreen extends StatefulWidget {
+  dynamic adminId;
   String imagePath;
   String signNumber;
-  CreateGpssignScreen({super.key, this.imagePath = "", this.signNumber = ""});
+  CreateGpssignScreen(
+      {super.key, this.adminId, this.imagePath = "", this.signNumber = ""});
 
   @override
   State<StatefulWidget> createState() => _CreateGpssignState();
@@ -89,14 +92,16 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: kDefaultPaddingValue),
-                child: Text(sign.name.split(" \"").first),
+                child: Text(sign.name.length > 33
+                    ? '${sign.name.substring(0, 33)}...'
+                    : sign.name),
               )
             ]),
           ),
         );
       }
     }
-    var foundSign = null;
+    var foundSign;
     if (widget.signNumber != "") {
       foundSign = _listDropdownSignsName
           .firstWhereOrNull((element) => element.contains(widget.signNumber));
@@ -132,7 +137,19 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
     });
   }
 
-  Future captureImage(String path) async {
+  Future captureImage() async {
+    final captured = await imagePicker.getImage(source: ImageSource.camera);
+    if (captured == null) return;
+
+    setState(() {
+      pickedFile = PlatformFile(
+          name: captured.path.split('/').last,
+          path: captured.path,
+          size: 1024 * 1024 * 30);
+    });
+  }
+
+  Future setImage(String path) async {
     // final captured = await imagePicker.getImage(source: ImageSource.camera);
     // if (captured == null) return;
     setState(() {
@@ -160,51 +177,37 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
         if (sign != null) {
           MapsController mapsController = Get.put(MapsController());
           mapsController.location.getLocation().then((location) {
-            GPSSignService()
-                .AddGpsSign(
-                    sign.id, location.latitude!, location.longitude!, false)
-                .then((newSign) {
-              if (newSign != null) {
-                SignModificationRequestService()
-                    .createScribeRequestGpsSign(
-                  url.split('&token').first,
-                  adminId,
-                  newSign,
-                )
-                    .then((request) {
-                  if (request != null) {
-                    createNotification(request).then((sent) {
-                      context.loaderOverlay.hide();
-                      if (sent) {
-                        DialogUtil.showAwesomeDialog(
-                            context,
-                            DialogType.success,
-                            "Tạo thành công",
-                            "Yêu cầu tạo biển $selectedSign thành công",
-                            () => Get.to(() => const ContainerScreen()),
-                            null);
-                      } else {
-                        DialogUtil.showAwesomeDialog(
-                            context,
-                            DialogType.error,
-                            "Tạo thất bại",
-                            "Có lỗi xảy ra.\nVui lòng kiểm tra lại",
-                            () {},
-                            null);
-                      }
-                    });
+            SignModificationRequestService()
+                .createScribeRequestGpsSign(
+              url.split('&token').first,
+              adminId,
+              GPSSign(sign.id, sign.id, '', '', location.latitude!,
+                  location.longitude!),
+            )
+                .then((request) {
+              if (request != null) {
+                createNotification(request).then((sent) {
+                  context.loaderOverlay.hide();
+                  if (sent) {
+                    DialogUtil.showAwesomeDialog(
+                        context,
+                        DialogType.success,
+                        "Tạo thành công",
+                        "Yêu cầu tạo biển $selectedSign thành công",
+                        () => Get.to(() => const ContainerScreen()),
+                        null);
                   } else {
-                    context.loaderOverlay.hide();
                     DialogUtil.showAwesomeDialog(
                         context,
                         DialogType.error,
                         "Tạo thất bại",
-                        "Có lỗi xảy ra.\nVui lòng thử lại sau",
+                        "Có lỗi xảy ra.\nVui lòng kiểm tra lại",
                         () {},
                         null);
                   }
                 });
               } else {
+                context.loaderOverlay.hide();
                 DialogUtil.showAwesomeDialog(
                     context,
                     DialogType.error,
@@ -225,17 +228,17 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
     DatabaseReference ref = FirebaseDatabase.instance.ref('notifications');
 
     String action = 'đề xuất thêm mới';
-
+    String name = rom.imageUrl.split("%2F").last.split(".").first;
     await ref.push().set({
       "senderId": gc.userId.value,
       "senderUsername": gc.username.value,
       "receiverId": rom.adminId,
-      "subjectId": rom.modifyingGpssignId ?? 'string',
+      "subjectId": rom.modifyingGpssignId ?? '',
       "receiverUsername":
           _listDropdownAdmin.firstWhere((e) => e.value == rom.adminId).value,
       "createdDate": rom.createdDate,
       "subjectType": "GPSSign",
-      "relatedDescription": "GPS của biển số...",
+      "relatedDescription": "GPS của biển số $name...",
       "action": action,
       "isRead": false
     });
@@ -245,6 +248,9 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
   @override
   void initState() {
     context.loaderOverlay.show();
+    if (widget.adminId != null) {
+      adminId = widget.adminId;
+    }
     signCategories.then((list) => setSignDropdownList(list));
     UserService().getAdmins().then((list) {
       if (list.isNotEmpty) {
@@ -259,7 +265,7 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
 
       //Return from AnalysisScreen
       if (widget.imagePath != "") {
-        captureImage(widget.imagePath);
+        setImage(widget.imagePath);
       }
       setState(() {
         context.loaderOverlay.hide();
@@ -430,8 +436,14 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
                     ),
                     const Spacer(),
                     ElevatedButton(
-                      onPressed: () =>
-                          Get.to(() => AnalysisScreen(isAddGps: true)),
+                      onPressed: () => Get.off(() =>
+                          AnalysisScreen(isAddGps: true, adminId: adminId)),
+                      child: const RotatedBox(
+                          quarterTurns: 1, child: Icon(Icons.flip_rounded)),
+                    ),
+                    SizedBox(width: 1.w),
+                    ElevatedButton(
+                      onPressed: captureImage,
                       child: const Icon(Icons.camera_alt_rounded),
                     ),
                     SizedBox(width: 1.w),

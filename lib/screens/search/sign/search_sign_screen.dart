@@ -8,6 +8,7 @@ import 'package:sizer/sizer.dart';
 import 'package:tiengviet/tiengviet.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/search_controller.dart';
+import 'package:vnrdn_tai/models/dtos/searchSignDTO.dart';
 import 'package:vnrdn_tai/models/dtos/signCategoryDTO.dart';
 import 'package:vnrdn_tai/screens/search/components/search_bar.dart';
 import 'package:vnrdn_tai/screens/search/sign/search_sign_list.dart';
@@ -27,16 +28,26 @@ class _SearchSignScreenState extends State<SearchSignScreen>
     with TickerProviderStateMixin {
   GlobalController gc = Get.find<GlobalController>();
   SearchController sc = Get.put(SearchController());
+  List<SignCategoryDTO> listSignCategoryDTO = [];
   late Future<List<SignCategoryDTO>> signCategories =
       SignService().GetSignCategoriesDTOList();
 
   final List<Color> listTabColors = <Color>[
+    Colors.greenAccent.shade700,
     Colors.red,
     Colors.orangeAccent,
     Colors.blue.shade300,
     Colors.blueAccent.shade700,
     Colors.grey.shade800,
   ];
+
+  List<SearchSignDTO> getListAll(List<SignCategoryDTO> categories) {
+    List<SearchSignDTO> list = [];
+    categories.forEach((cate) {
+      list.addAll(cate.searchSignDTOs);
+    });
+    return list;
+  }
 
   @override
   void initState() {
@@ -66,15 +77,20 @@ class _SearchSignScreenState extends State<SearchSignScreen>
                         });
                 throw Exception(snapshot.error);
               } else {
-                _tabController =
-                    TabController(length: snapshot.data!.length, vsync: this);
+                listSignCategoryDTO.add(
+                    SignCategoryDTO('', 'Tất cả', getListAll(snapshot.data!)));
+                snapshot.data!.asMap().forEach((i, e) {
+                  listSignCategoryDTO.add(e);
+                });
+                _tabController = TabController(
+                    length: (listSignCategoryDTO.length), vsync: this);
                 if (sc.isFromAnalysis.value) {
-                  snapshot.data!.asMap().forEach((index, element) {
+                  listSignCategoryDTO.asMap().forEach((index, element) {
                     for (var element2 in element.searchSignDTOs) {
                       if (TiengViet.parse(element2.name.trim().toLowerCase())
                           .contains(sc.query.value.trim().toLowerCase())) {
                         sc.updateSignCategoryNo(index);
-                        sc.updateSignCategory(snapshot.data![index].name);
+                        sc.updateSignCategory(listSignCategoryDTO[index].name);
                         sc.updateIsFromAnalysis(false);
                         _tabController.index = index;
                       }
@@ -90,15 +106,17 @@ class _SearchSignScreenState extends State<SearchSignScreen>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           SizedBox(
-                            width: 100.w,
-                            height: 6.h,
-                            child: TabBar(
+                              width: 100.w,
+                              height: 6.h,
+                              child: TabBar(
                                 controller: _tabController,
                                 isScrollable: true,
                                 onTap: (value) {
                                   sc.updateSignCategoryNo(value);
-                                  sc.updateSignCategory(
-                                      snapshot.data![value].name);
+                                  if (value > 0) {
+                                    sc.updateSignCategory(
+                                        listSignCategoryDTO[value].name);
+                                  }
                                 },
                                 labelColor: listTabColors[_tabController.index],
                                 indicatorColor:
@@ -112,12 +130,14 @@ class _SearchSignScreenState extends State<SearchSignScreen>
                                 unselectedLabelStyle: const TextStyle(
                                     fontWeight: FontWeight.normal,
                                     fontSize: FONTSIZES.textMedium),
-                                tabs: snapshot.data!
-                                    .map((signCategory) => Tab(
-                                          text: signCategory.name,
-                                        ))
-                                    .toList()),
-                          ),
+                                tabs: <Tab>[
+                                  ...listSignCategoryDTO
+                                      .map((signCategory) => Tab(
+                                            text: signCategory.name,
+                                          ))
+                                      .toList(),
+                                ],
+                              )),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               vertical: kDefaultPaddingValue / 2,
@@ -127,15 +147,15 @@ class _SearchSignScreenState extends State<SearchSignScreen>
                           ),
                           SizedBox(
                             width: 100.w,
-                            height: isKeyboardVisible ? 36.8.h : 65.h,
+                            height: isKeyboardVisible ? 36.8.h : 66.5.h,
                             child: SearchSignListScreen(
-                              searchSignDTOList: snapshot
-                                  .data![sc.signCategoryNo.value].searchSignDTOs
+                              searchSignDTOList: listSignCategoryDTO[
+                                      sc.signCategoryNo.value]
+                                  .searchSignDTOs
                                   .where((element) =>
-                                      TiengViet.parse(element.description
-                                              .trim()
-                                              .toLowerCase())
-                                          .contains(TiengViet.parse(sc.query.value
+                                      TiengViet.parse(element.description.trim().toLowerCase())
+                                          .contains(TiengViet.parse(sc
+                                              .query.value
                                               .trim()
                                               .toLowerCase())) ||
                                       TiengViet.parse(

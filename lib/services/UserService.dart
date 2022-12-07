@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
@@ -10,7 +9,6 @@ import 'package:vnrdn_tai/models/dtos/ProfileDTO.dart';
 import 'package:vnrdn_tai/services/AuthService.dart';
 import 'package:vnrdn_tai/utils/io_utils.dart';
 
-import '../models/UserInfo.dart';
 import '../shared/constants.dart';
 
 class UserService {

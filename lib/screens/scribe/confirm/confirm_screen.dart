@@ -78,13 +78,6 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
           DropdownMenuItem(
             value: sign.name,
             child: Row(children: [
-              // Image.asset(
-              //   ImageUtil.getLocalImagePathFromUrl(sign.imageUrl!, 0.0)!,
-              //   scale: 1,
-              //   errorBuilder: (context, error, stackTrace) {
-              //     return Image.asset('assets/images/alt_img.png');
-              //   },
-              // ),
               CachedNetworkImage(
                 imageUrl: sign.imageUrl as String,
                 imageBuilder: (context, imageProvider) => Container(
@@ -106,7 +99,9 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: kDefaultPaddingValue),
-                child: Text(sign.name.split(" \"").first),
+                child: Text(sign.name.length > 33
+                    ? '${sign.name.substring(0, 33)}...'
+                    : sign.name),
               )
             ]),
           ),
@@ -163,7 +158,8 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
     });
   }
 
-  Future uploadImage() async {
+  Future uploadImage(BuildContext context) async {
+    context.loaderOverlay.show();
     GlobalController gc = Get.put(GlobalController());
     // final oldFile = widget.imageUrl.split('user-feedbacks/sign-position/').last;
     final ext = pickedFile!.name.split('.').last;
@@ -183,6 +179,7 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
           .then((value) {
         if (value != null) {
           createNotification(value).then((sent) {
+            context.loaderOverlay.hide();
             if (sent) {
               DialogUtil.showAwesomeDialog(
                   context,
@@ -190,7 +187,7 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
                   "Thành công",
                   "Xác nhận thành công!\nQuay về danh sách phản hồi",
                   () => Get.off(() => ListRomScreen()),
-                  () {});
+                  null);
             } else {
               DialogUtil.showAwesomeDialog(
                   context,
@@ -202,6 +199,7 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
             }
           });
         } else {
+          context.loaderOverlay.hide();
           DialogUtil.showAwesomeDialog(
               context,
               DialogType.error,
@@ -262,9 +260,8 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
           ));
         });
       }
-      setState(() {
-        context.loaderOverlay.hide();
-      });
+      setState(() {});
+      context.loaderOverlay.hide();
     });
     super.initState();
   }
@@ -516,12 +513,14 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
                   height: kDefaultPaddingValue,
                 ),
                 ElevatedButton(
-                  onPressed: pickedFile != null &&
-                          adminId != null &&
-                          selectedSign != null &&
-                          status != null
-                      ? uploadImage
-                      : null,
+                  onPressed:
+                      pickedFile != null && adminId != null && status != null
+                          ? widget.operationType != 2
+                              ? (selectedSign != null
+                                  ? () => uploadImage(context)
+                                  : null)
+                              : () => uploadImage(context)
+                          : null,
                   child: Padding(
                     padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),
                     child: const Text('Gửi Xác nhận'),

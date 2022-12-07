@@ -1,4 +1,6 @@
-class SignModificationRequest {
+import 'package:vnrdn_tai/models/GPSSign.dart';
+
+class CreateSignRequest {
   final String? id; // get
   final String? modifyingSignId;
   final String? modifiedSignId;
@@ -13,24 +15,25 @@ class SignModificationRequest {
   final String? deniedReason; // get
   final String createdDate; // get
   final bool isDeleted; // get
+  final GPSSign modifyingGpssign;
 
-  factory SignModificationRequest.fromJson(Map<String, dynamic> data) {
-    return SignModificationRequest(
-      data['id'],
-      data['modifyingSignId'],
-      data['modifiedSignId'],
-      data['modifyingGpssignId'],
-      data['modifiedGpssignId'],
-      data['userId'],
-      data['scribeId'],
-      data['adminId'],
-      data['operationType'],
-      data['imageUrl'],
-      data['status'],
-      data['deniedReason'],
-      data['createdDate'],
-      data['isDeleted'],
-    );
+  factory CreateSignRequest.fromJson(Map<String, dynamic> data) {
+    return CreateSignRequest(
+        data['id'],
+        data['modifyingSignId'],
+        data['modifiedSignId'],
+        data['modifyingGPSSignId'],
+        data['modifiedGPSSignId'],
+        data['userId'],
+        data['scribeId'],
+        data['adminId'],
+        data['operationType'],
+        data['imageUrl'],
+        data['status'],
+        data['deniedReason'],
+        data['createdDate'],
+        data['isDeleted'],
+        data['modifyingGpssign']);
   }
 
   Map<String, dynamic> toJson() {
@@ -38,8 +41,8 @@ class SignModificationRequest {
       'id': id,
       'modifyingSignId': modifyingSignId,
       'modifiedSignId': modifiedSignId,
-      'modifyingGpssignId': modifyingGpssignId,
-      'modifiedGpssignId': modifiedGpssignId,
+      'modifyingGPSSignId': modifyingGpssignId,
+      'modifiedGPSSignId': modifiedGpssignId,
       'userId': userId,
       'scribeId': scribeId,
       'adminId': adminId,
@@ -48,11 +51,12 @@ class SignModificationRequest {
       'status': status,
       'deniedReason': deniedReason,
       'createdDate': createdDate,
-      'isDeleted': isDeleted
+      'isDeleted': isDeleted,
+      'modifyingGpssign': modifyingGpssign
     };
   }
 
-  SignModificationRequest(
+  CreateSignRequest(
     this.id,
     this.modifyingSignId,
     this.modifiedSignId,
@@ -67,5 +71,6 @@ class SignModificationRequest {
     this.deniedReason,
     this.createdDate,
     this.isDeleted,
+    this.modifyingGpssign,
   );
 }

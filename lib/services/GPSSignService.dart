@@ -17,8 +17,8 @@ class GPSSignService {
 
   GPSSign parseGPSSign(String responseBody) {
     Map<String, dynamic> parsed = json.decode(responseBody);
-    return GPSSign(parsed['id'], parsed['signId'], parsed['imageUrl'],
-        parsed['latitude'], parsed['longitude']);
+    return GPSSign(parsed['id'], parsed['signId'], parsed['signName'],
+        parsed['imageUrl'], parsed['latitude'], parsed['longitude']);
   }
 
   // distance can be modified

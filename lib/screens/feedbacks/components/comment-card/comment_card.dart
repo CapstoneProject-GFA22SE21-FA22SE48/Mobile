@@ -38,7 +38,7 @@ class _CommentCardState extends State<CommentCard> {
     DateTimeUtil.isRelative(DateTime.parse(widget.comment.createdDate))
         ? time =
             DateTimeUtil.getSince(DateTime.parse(widget.comment.createdDate))
-        : time += DateFormat('hh:mm:ss dd/MM/yyyy')
+        : time += DateFormat('HH:mm:ss dd/MM/yyyy')
             .format(DateTime.parse(widget.comment.createdDate));
     return Container(
         margin:

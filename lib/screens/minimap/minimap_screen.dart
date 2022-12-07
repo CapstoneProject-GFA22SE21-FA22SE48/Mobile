@@ -109,32 +109,28 @@ class _MinimapState extends State<MinimapScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              ac.role.value == 2
-                                  ? GestureDetector(
-                                      onTap: gc.userId.value.isNotEmpty
-                                          ? () => Get.off(() => LoaderOverlay(
-                                                child: FeedbacksScreen(
-                                                  type: '',
-                                                  sign: s,
-                                                ),
-                                              ))
-                                          : () => DialogUtil.showAwesomeDialog(
-                                              context,
-                                              DialogType.warning,
-                                              "Cảnh báo",
-                                              "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
-                                              () => Get.to(
-                                                  () => const LoginScreen()),
-                                              () {}),
-                                      child: const Text(
-                                        "Thông tin chưa đúng?",
-                                        style: TextStyle(
-                                            color: Colors.blueAccent,
-                                            decoration:
-                                                TextDecoration.underline),
-                                      ),
-                                    )
-                                  : Container(),
+                              GestureDetector(
+                                onTap: gc.userId.value.isNotEmpty
+                                    ? () => Get.to(() => LoaderOverlay(
+                                          child: FeedbacksScreen(
+                                            type: '',
+                                            sign: s,
+                                          ),
+                                        ))
+                                    : () => DialogUtil.showAwesomeDialog(
+                                        context,
+                                        DialogType.warning,
+                                        "Cảnh báo",
+                                        "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
+                                        () => Get.to(() => const LoginScreen()),
+                                        () {}),
+                                child: const Text(
+                                  "Thông tin chưa đúng?",
+                                  style: TextStyle(
+                                      color: Colors.blueAccent,
+                                      decoration: TextDecoration.underline),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -156,16 +152,11 @@ class _MinimapState extends State<MinimapScreen> {
   }
 
   Future getCurrentLocation() async {
-    bool isGranted = await Permission.location.request().isGranted;
-    if (isGranted) {
-      mc.location.getLocation().then((location) {
-        currentLocation = location;
-        getSignsList(location);
-        return location;
-      });
-    } else {
-      getCurrentLocation();
-    }
+    mc.location.getLocation().then((location) {
+      currentLocation = location;
+      getSignsList(location);
+      return location;
+    });
   }
 
   void onLocationChanged() {
@@ -241,11 +232,17 @@ class _MinimapState extends State<MinimapScreen> {
     listenToNotificationStream();
     notificationService.initializePlatformNotifications();
 
-    super.initState();
-
-    getCurrentLocation().then((value) {
-      onLocationChanged();
+    Permission.location.request().then((value) {
+      if (value.isGranted) {
+        getCurrentLocation().then((value) {
+          onLocationChanged();
+        });
+      } else {
+        gc.updateTab(TABS.SEARCH);
+      }
     });
+
+    super.initState();
   }
 
   void listenToNotificationStream() {
@@ -271,49 +268,51 @@ class _MinimapState extends State<MinimapScreen> {
           : Stack(
               alignment: AlignmentDirectional.bottomCenter,
               children: [
-                GoogleMap(
-                  mapType: MapType.normal,
-                  rotateGesturesEnabled: true,
-                  compassEnabled: true,
-                  myLocationButtonEnabled: true,
-                  myLocationEnabled: true,
-                  trafficEnabled: true,
-                  minMaxZoomPreference: const MinMaxZoomPreference(15, 22),
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(
-                      currentLocation!.latitude!,
-                      currentLocation!.longitude!,
+                SafeArea(
+                  child: GoogleMap(
+                    mapType: MapType.normal,
+                    rotateGesturesEnabled: true,
+                    compassEnabled: true,
+                    myLocationButtonEnabled: true,
+                    myLocationEnabled: true,
+                    trafficEnabled: true,
+                    minMaxZoomPreference: const MinMaxZoomPreference(15, 22),
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(
+                        currentLocation!.latitude!,
+                        currentLocation!.longitude!,
+                      ),
+                      zoom: mc.zoom.value,
                     ),
-                    zoom: mc.zoom.value,
+                    markers: _markers.toSet(),
+                    onTap: (position) {
+                      _infoWindowcontroller.hideInfoWindow!();
+                    },
+                    onCameraMove: (position) {
+                      _infoWindowcontroller.onCameraMove!();
+                      // gmapController.future.then((controller) =>
+                      //     controller.animateCamera(CameraUpdate.zoomTo(18.0)));
+                      _infoWindowcontroller.googleMapController!
+                          .getZoomLevel()
+                          .then((value) {
+                        if (value != mc.zoom.value) {
+                          setCustomMarkerIcon(gpsSigns);
+                          mc.updateZoom(value);
+                        }
+                      });
+                    },
+                    onMapCreated: (controller) {
+                      gmapController.complete(controller);
+                      _infoWindowcontroller.googleMapController = controller;
+                    },
                   ),
-                  markers: _markers.toSet(),
-                  onTap: (position) {
-                    _infoWindowcontroller.hideInfoWindow!();
-                  },
-                  onCameraMove: (position) {
-                    _infoWindowcontroller.onCameraMove!();
-                    // gmapController.future.then((controller) =>
-                    //     controller.animateCamera(CameraUpdate.zoomTo(18.0)));
-                    _infoWindowcontroller.googleMapController!
-                        .getZoomLevel()
-                        .then((value) {
-                      if (value != mc.zoom.value) {
-                        setCustomMarkerIcon(gpsSigns);
-                        mc.updateZoom(value);
-                      }
-                    });
-                  },
-                  onMapCreated: (controller) {
-                    gmapController.complete(controller);
-                    _infoWindowcontroller.googleMapController = controller;
-                  },
                 ),
                 CustomInfoWindow(
                   controller: _infoWindowcontroller,
                   height: 12.h,
                   width: 48.w,
-                  offset: 9.h,
-                )
+                  offset: 1.h,
+                ),
               ],
             ),
     );

@@ -30,6 +30,8 @@ class ProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     QuestionController qc = Get.find<QuestionController>();
+    int _quizTime = qc.testCategoryName.contains('B1') ? quizTimeB1 : quizTime;
+
     return GetBuilder<QuestionController>(
         init: qc,
         builder: (controller) {
@@ -55,42 +57,88 @@ class ProgressBar extends StatelessWidget {
                           border: Border.all(color: Colors.white, width: 3),
                           borderRadius: BorderRadius.circular(50)),
                       child: Stack(
+                        alignment: Alignment.centerLeft,
                         children: [
                           LayoutBuilder(
                             builder: (ctx, constraint) => Container(
+                              // margin: EdgeInsets.only(
+                              //   top: (constraint.maxHeight -
+                              //                   constraint.maxHeight *
+                              //                       controller.animation.value *
+                              //                       (_quizTime / 48)) /
+                              //               2 >
+                              //           0
+                              //       ? (constraint.maxHeight -
+                              //               constraint.maxHeight *
+                              //                   controller.animation.value *
+                              //                   (_quizTime / 48)) /
+                              //           2
+                              //       : 0,
+                              // ),
+                              // margin: const EdgeInsets.symmetric(horizontal: 3),
+                              alignment: Alignment.centerLeft,
                               width: constraint.maxWidth *
                                   controller.animation.value,
+                              height: constraint.maxHeight *
+                                          (controller.animation.value *
+                                                  (_quizTime / 60) -
+                                              controller.animation.value *
+                                                  3.14) <
+                                      constraint.maxHeight
+                                  ? constraint.maxHeight *
+                                      (controller.animation.value *
+                                              (_quizTime / 60) -
+                                          controller.animation.value * 3.14)
+                                  : constraint.maxHeight,
                               decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    begin: Alignment.topRight,
-                                    end: Alignment.bottomLeft,
-                                    colors: [
-                                      Color.fromARGB(255, 255, 61, 2),
-                                      Color.fromARGB(255, 86, 176, 250),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(50)),
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topRight,
+                                  end: Alignment.bottomLeft,
+                                  colors: [
+                                    Color.fromARGB(255, 255, 61, 2),
+                                    Color.fromARGB(255, 86, 176, 250),
+                                    Color.fromARGB(255, 86, 176, 250),
+                                    Color.fromARGB(255, 86, 176, 250),
+                                    Color.fromARGB(255, 86, 176, 250),
+                                    Color.fromARGB(255, 86, 176, 250),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
                             ),
                           ),
                           Positioned.fill(
-                              child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Đã qua ${(controller.animation.value * quizTime).round() < 60 ? '${(controller.animation.value * quizTime).round()} giây' : '${(controller.animation.value * quizTime / 60).round()} phút'}',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      FaIcon(
-                                        FontAwesomeIcons.clock,
-                                        color: Colors.white,
-                                      )
-                                    ],
-                                  )))
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Còn lại ${(_quizTime - controller.animation.value * _quizTime).round() < 60 ? '${(_quizTime - controller.animation.value * _quizTime).round()} giây' : '${((_quizTime - controller.animation.value * _quizTime) / 60).round()} phút'}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const FaIcon(
+                                    FontAwesomeIcons.clock,
+                                    color: Colors.white,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 66.w,
+                            height: 5.h,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Colors.white,
+                                    width: 3,
+                                    strokeAlign: StrokeAlign.outside),
+                                borderRadius: BorderRadius.circular(50)),
+                          ),
                         ],
                       ),
                     ),
@@ -108,7 +156,7 @@ class ProgressBar extends StatelessWidget {
                             alignment: Alignment.center,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10))),
-                        child: Text(
+                        child: const Text(
                           "Nộp bài",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,

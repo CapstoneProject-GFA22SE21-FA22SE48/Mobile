@@ -11,20 +11,14 @@ import 'package:getwidget/components/dropdown/gf_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
-import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
-import 'package:vnrdn_tai/screens/minimap/minimap_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
-import 'package:vnrdn_tai/utils/location_util.dart';
-import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 
 class FeedbacksScreen extends StatefulWidget {
   FeedbacksScreen({

@@ -27,8 +27,12 @@ const double kDefaultPaddingValue = 16;
 const kDefaultPadding = EdgeInsets.all(kDefaultPaddingValue);
 
 const quizTime = 60 * 19; // 25 cau
-const quizTimeA2 = 60 * 20; // 30 cau
-const quizTimeB12 = 60 * 30; // 35 cau
+const quizTimeB1 = 60 * 20; // 35 cau
+const numberOfQuestion = 25;
+const numberOfQuestionB1 = 30;
+const minOfQuestion = 21;
+const minOfQuestionA2 = 23;
+const minOfQuestionB1 = 28;
 
 final ButtonStyle kDefaultButtonStyle = ElevatedButton.styleFrom(
     textStyle: const TextStyle(fontSize: FONTSIZES.textPrimary),
@@ -39,12 +43,14 @@ final ButtonStyle kDefaultButtonStyle = ElevatedButton.styleFrom(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)));
 
 final ButtonStyle kModeChoosingButtonStyle = ElevatedButton.styleFrom(
-    textStyle: const TextStyle(fontSize: FONTSIZES.textLarge),
-    backgroundColor: Colors.blueAccent.shade200,
-    shadowColor: Colors.grey,
-    alignment: Alignment.center,
-    minimumSize: const Size(200, 10),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)));
+  textStyle: const TextStyle(fontSize: FONTSIZES.textLarge),
+  backgroundColor: Colors.blueAccent.shade200,
+  shadowColor: Colors.grey,
+  alignment: Alignment.center,
+  minimumSize: const Size(200, 10),
+  shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(kDefaultPaddingValue)),
+);
 
 class PROGRESS_COLOR {
   static const Color none = Colors.grey;
@@ -54,13 +60,6 @@ class PROGRESS_COLOR {
   static const Color almost = Color(0xFFA6F069);
   static const Color done = Colors.greenAccent;
 }
-// Theme.of(context)
-//                                     .textTheme
-//                                     .headline4
-//                                     ?.copyWith(
-//                                         color: Colors.blueAccent.shade200,
-//                                         fontWeight: FontWeight.bold,
-//                                         fontSize: FONTSIZES.textHuge)
 
 enum TEST_TYPE { STUDY, TEST }
 
@@ -87,13 +86,12 @@ const defaultAvatarUrl =
     "https://firebasestorage.googleapis.com/v0/b/vnrdntai.appspot.com/o/images%2Favatar%2Fdefault_avatar_x05.png?alt=media";
 
 const String google_api_key = "AIzaSyBEre7YKax4irpLfr0I2jrkACu_ZiBL3JU";
-const String maps_key = "AIzaSyBlneunCaPQj1GRpM0EzkMGTClr23RxHwk";
+const String maps_key = "AIzaSyDM1rM5UcyCqdSD_R-4qEm8wd-K9mLCrFA";
 LatLng schoolLocation = // FPT daigaku
     const LatLng(10.841809162754405, 106.8097469445683);
 
 // const url = "https://10.0.2.2:5001/api/";
 const url = "https://vnrdntaiapi.azurewebsites.net/api/";
-
 
 // const ai_url = "http://10.0.2.2:5000/";
 const ai_url = "https://vnrdntai-ai.azurewebsites.net/";
