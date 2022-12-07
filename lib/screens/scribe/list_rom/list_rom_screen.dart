@@ -63,7 +63,7 @@ class _ListRomScreenState extends State<ListRomScreen> {
           icon: const Icon(Icons.arrow_back),
           iconSize: FONTSIZES.textHuge,
           onPressed: () {
-            Get.offAll(const ContainerScreen());
+            Get.off(() => const ContainerScreen());
           },
         ),
         title: const Text("Quản lý yêu cầu"),
@@ -73,7 +73,11 @@ class _ListRomScreenState extends State<ListRomScreen> {
             icon: const Icon(Icons.replay),
             iconSize: FONTSIZES.textHuge,
             onPressed: () {
-              Get.reload(force: true);
+              if (mounted) {
+                setState(() {
+                  roms = SignModificationRequestService().getClaimedRequests();
+                });
+              }
             },
           ),
         ],
@@ -99,157 +103,180 @@ class _ListRomScreenState extends State<ListRomScreen> {
               return SizedBox(
                 width: 100.w,
                 height: 90.h,
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: kDefaultPaddingValue,
-                        vertical: kDefaultPaddingValue,
-                      ),
-                      child: Text(
-                        'Danh sách Yêu cầu cần xử lý',
-                        style: Theme.of(context).textTheme.headline6?.copyWith(
-                            color: Colors.pinkAccent.shade200,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: kDefaultPaddingValue,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                child: snapshot.data!.isEmpty
+                    ? const Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: kDefaultPaddingValue * 4),
+                          child: Text(
+                            'Hiện tại không có yêu cầu nào cần xử lí',
+                            style: TextStyle(
+                                color: Colors.black54,
+                                fontStyle: FontStyle.italic),
+                            textScaleFactor: 1.5,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : Stack(
                         children: [
-                          const SizedBox(height: kDefaultPaddingValue * 2),
-                          Container(
-                            height: 80.h,
+                          Padding(
                             padding: const EdgeInsets.symmetric(
-                              vertical: 0,
+                              horizontal: kDefaultPaddingValue,
+                              vertical: kDefaultPaddingValue,
                             ),
-                            child: ListView.separated(
-                              itemCount: snapshot.data!.length,
-                              scrollDirection: Axis.vertical,
-                              physics: const BouncingScrollPhysics(),
-                              shrinkWrap: true,
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(height: kDefaultPaddingValue),
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Get.to(
-                                      () => LoaderOverlay(
-                                        child: ConfirmEvidenceScreen(
-                                          romId: snapshot.data![index].id!,
-                                          imageUrl:
-                                              snapshot.data![index].imageUrl,
-                                          operationType: snapshot
-                                              .data![index].operationType,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: 100.w,
-                                    height: 36.h,
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: kDefaultPaddingValue,
-                                    ),
-                                    padding: kDefaultPadding / 2,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: const [
-                                        BoxShadow(
-                                            color:
-                                                Color.fromARGB(80, 82, 82, 82),
-                                            spreadRadius: 2,
-                                            blurRadius: 8,
-                                            offset: Offset(0, 8))
-                                      ],
-                                      borderRadius: BorderRadius.circular(
-                                          kDefaultPaddingValue / 2),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          width: 80.w,
-                                          height: 23.h,
-                                          color: Colors.grey,
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                                snapshot.data![index].imageUrl,
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                    Container(
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.contain,
-                                                ),
+                            child: Text(
+                              'Danh sách Yêu cầu cần xử lý',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6
+                                  ?.copyWith(
+                                      color: Colors.pinkAccent.shade200,
+                                      fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: kDefaultPaddingValue,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                    height: kDefaultPaddingValue * 2),
+                                Container(
+                                  height: 80.h,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 0,
+                                  ),
+                                  child: ListView.separated(
+                                    itemCount: snapshot.data!.length,
+                                    scrollDirection: Axis.vertical,
+                                    physics: const BouncingScrollPhysics(),
+                                    shrinkWrap: true,
+                                    separatorBuilder: (context, index) =>
+                                        const SizedBox(
+                                            height: kDefaultPaddingValue),
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Get.to(
+                                            () => LoaderOverlay(
+                                              child: ConfirmEvidenceScreen(
+                                                romId:
+                                                    snapshot.data![index].id!,
+                                                imageUrl: snapshot
+                                                    .data![index].imageUrl,
+                                                operationType: snapshot
+                                                    .data![index].operationType,
                                               ),
                                             ),
-                                            placeholder: (context, url) =>
-                                                Container(
-                                              alignment: Alignment.center,
-                                              child:
-                                                  const CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
-                                            ), //show progress  while loading image
-                                            errorWidget: (context, url,
-                                                    error) =>
-                                                Image.asset(
-                                                    "assets/images/alt_image.png"),
+                                          );
+                                        },
+                                        child: Container(
+                                          width: 100.w,
+                                          height: 36.h,
+                                          margin: const EdgeInsets.symmetric(
+                                            horizontal: kDefaultPaddingValue,
+                                          ),
+                                          padding: kDefaultPadding / 2,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                  color: Color.fromARGB(
+                                                      80, 82, 82, 82),
+                                                  spreadRadius: 2,
+                                                  blurRadius: 8,
+                                                  offset: Offset(0, 8))
+                                            ],
+                                            borderRadius: BorderRadius.circular(
+                                                kDefaultPaddingValue / 2),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                width: 80.w,
+                                                height: 23.h,
+                                                color: Colors.grey,
+                                                child: CachedNetworkImage(
+                                                  imageUrl: snapshot
+                                                      .data![index].imageUrl,
+                                                  imageBuilder: (context,
+                                                          imageProvider) =>
+                                                      Container(
+                                                    decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.contain,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  placeholder: (context, url) =>
+                                                      Container(
+                                                    alignment: Alignment.center,
+                                                    child:
+                                                        const CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
+                                                  ), //show progress  while loading image
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      Image.asset(
+                                                          "assets/images/alt_image.png"),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: kDefaultPaddingValue,
+                                              ),
+                                              StyledText(
+                                                tags: {
+                                                  'bold': StyledTextTag(
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                },
+                                                maxLines: 3,
+                                                overflow: TextOverflow.ellipsis,
+                                                text: getType(snapshot
+                                                    .data![index]
+                                                    .operationType),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline6
+                                                    ?.copyWith(
+                                                      color: Colors.black87,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                              ),
+                                              const SizedBox(
+                                                height: kDefaultPaddingValue,
+                                              ),
+                                              Text(
+                                                'Tạo lúc: ${DateFormat('HH:mm dd/MM/yyyy').format(DateTime.parse(snapshot.data![index].createdDate))}',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge
+                                                    ?.copyWith(
+                                                      color: Colors.black54,
+                                                    ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        const SizedBox(
-                                          height: kDefaultPaddingValue,
-                                        ),
-                                        StyledText(
-                                          tags: {
-                                            'bold': StyledTextTag(
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                          },
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                          text: getType(snapshot
-                                              .data![index].operationType),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6
-                                              ?.copyWith(
-                                                color: Colors.black87,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                        const SizedBox(
-                                          height: kDefaultPaddingValue,
-                                        ),
-                                        Text(
-                                          'Tạo lúc: ${DateFormat('hh:mm dd/MM/yyyy').format(DateTime.parse(snapshot.data![index].createdDate))}',
-                                          overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge
-                                              ?.copyWith(
-                                                color: Colors.black54,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
+                                )
+                              ],
                             ),
                           )
                         ],
                       ),
-                    )
-                  ],
-                ),
               );
             }
           }

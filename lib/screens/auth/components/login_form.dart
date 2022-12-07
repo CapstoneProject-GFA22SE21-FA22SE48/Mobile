@@ -20,10 +20,12 @@ import 'package:vnrdn_tai/utils/dialog_util.dart';
 import '../signup_screen.dart';
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({
+  LoginForm({
     Key? key,
+    required this.parentContext,
   }) : super(key: key);
 
+  BuildContext parentContext;
   @override
   State<LoginForm> createState() => _LoginFormState();
 }
@@ -32,6 +34,7 @@ class _LoginFormState extends State<LoginForm> {
   final loginFormKey = GlobalKey<FormState>();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  final isLoading = false.obs;
 
   late String guessContinue = 'Tiếp tục với tư cách khách';
 
@@ -44,19 +47,23 @@ class _LoginFormState extends State<LoginForm> {
     usernameController.dispose();
     passwordController.dispose();
     gc.updateOldObSecure(true);
+    isLoading(false);
     super.dispose();
   }
 
   // handle login
   void handleLogin(BuildContext context) async {
-    context.loaderOverlay.show();
+    widget.parentContext.loaderOverlay.show();
+    isLoading(true);
+    // context.loaderOverlay.show();
     FocusManager.instance.primaryFocus?.unfocus();
     await AuthService()
         .loginWithUsername(usernameController.text, passwordController.text)
         .then(((token) {
-      context.loaderOverlay.hide();
+      widget.parentContext.loaderOverlay.hide();
+      isLoading(false);
+      // context.loaderOverlay.hide();
       if (token.length > 1) {
-        // ScaffoldMessenger.of(context).clearSnackBars();
         afterLoggedIn(context, token);
       } else {
         DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
@@ -67,7 +74,8 @@ class _LoginFormState extends State<LoginForm> {
 
   void handleGLogin(BuildContext context) async {
     FocusManager.instance.primaryFocus?.unfocus();
-    context.loaderOverlay.show();
+    widget.parentContext.loaderOverlay.show();
+    // context.loaderOverlay.show();
     await FirebaseAuthService().signInWithGoogle().then((value) {
       AuthService()
           .loginWithGmail(FirebaseAuthService().user.email!)
@@ -75,7 +83,9 @@ class _LoginFormState extends State<LoginForm> {
         if (token.length > 1) {
           afterLoggedIn(context, token);
         } else {
-          context.loaderOverlay.hide();
+          widget.parentContext.loaderOverlay.hide();
+          isLoading(false);
+          // context.loaderOverlay.hide();
           DialogUtil.showAwesomeDialog(
               context,
               DialogType.error,
@@ -91,7 +101,9 @@ class _LoginFormState extends State<LoginForm> {
   // do after logged in
   void afterLoggedIn(BuildContext context, String token) async {
     await IOUtils.saveToStorage('token', token);
-    context.loaderOverlay.hide();
+    widget.parentContext.loaderOverlay.hide();
+    isLoading(false);
+    // context.loaderOverlay.hide();
     IOUtils.setUserInfoController(token)
         ? Get.to(() => const ContainerScreen())
         // ignore: use_build_context_synchronously
@@ -179,22 +191,24 @@ class _LoginFormState extends State<LoginForm> {
               Hero(
                 tag: "login_btn",
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (loginFormKey.currentState!.validate()) {
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      //   SnackBar(
-                      //     content: Row(
-                      //       children: const [
-                      //         // CircularProgressIndicator()
-                      //         Text('Đang xử lí'),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // );
-                      isKeyboardVisible = false;
-                      handleLogin(context);
-                    }
-                  },
+                  onPressed: isLoading.isFalse
+                      ? () {
+                          if (loginFormKey.currentState!.validate()) {
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   SnackBar(
+                            //     content: Row(
+                            //       children: const [
+                            //         // CircularProgressIndicator()
+                            //         Text('Đang xử lí'),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // );
+                            isKeyboardVisible = false;
+                            handleLogin(context);
+                          }
+                        }
+                      : () {},
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: kDefaultPaddingValue),
@@ -216,7 +230,8 @@ class _LoginFormState extends State<LoginForm> {
               Hero(
                 tag: "g_login_btn",
                 child: ElevatedButton(
-                  onPressed: () => handleGLogin(kContext),
+                  onPressed:
+                      isLoading.isFalse ? () => handleGLogin(context) : () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     alignment: Alignment.center,

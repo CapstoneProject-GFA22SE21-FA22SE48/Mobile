@@ -56,8 +56,8 @@ class TestResultScreen extends StatelessWidget {
                                       child: Row(
                                         children: [
                                           Text(
-                                            // "Bài thi lúc ${DateFormat('hh:mm dd/MM/yyyy').format(DateTime.parse(testResults[index].createdDate).add(Duration(hours: DateTime.now().timeZoneOffset.inHours)))}",
-                                            "Bài thi lúc ${DateFormat('hh:mm dd/MM/yyyy').format(DateTime.parse(testResults[index].createdDate))}",
+                                            // "Bài thi lúc ${DateFormat('HH:mm dd/MM/yyyy').format(DateTime.parse(testResults[index].createdDate).add(Duration(hours: DateTime.now().timeZoneOffset.inHours)))}",
+                                            "Bài thi lúc ${DateFormat('HH:mm dd/MM/yyyy').format(DateTime.parse(testResults[index].createdDate))}",
                                             style: const TextStyle(
                                                 color: Colors.black54,
                                                 fontSize: 20),

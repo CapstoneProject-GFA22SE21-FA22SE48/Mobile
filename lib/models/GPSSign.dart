@@ -1,6 +1,7 @@
 class GPSSign {
   final String id;
   final String? signId;
+  final String? signName;
   final String? imageUrl;
   final double latitude;
   final double longitude;
@@ -9,6 +10,7 @@ class GPSSign {
     return GPSSign(
       data['id'],
       data['signId'],
+      data['signName'],
       data['imageUrl'],
       data['latitude'],
       data['longitude'],
@@ -19,6 +21,7 @@ class GPSSign {
     return {
       'id': id,
       'signId': signId,
+      'signName': signName,
       'imageUrl': imageUrl,
       'latitude': latitude,
       'longitude': longitude
@@ -28,6 +31,7 @@ class GPSSign {
   GPSSign(
     this.id,
     this.signId,
+    this.signName,
     this.imageUrl,
     this.latitude,
     this.longitude,

@@ -76,35 +76,35 @@ class CartPage extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           fontSize: FONTSIZES.textHuge)),
                   SizedBox(height: 3.h),
-                  Padding(
-                    padding: const EdgeInsets.all(kDefaultPaddingValue),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Tài khoản vi phạm: ',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4
-                                ?.copyWith(
-                                    color: const Color(0xFF444444),
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: FONTSIZES.textLarge)),
-                        Text(
-                            gc.userId.value.isNotEmpty
-                                ? gc.username.value.isNotEmpty
-                                    ? gc.username.value
-                                    : ac.email.value
-                                : "Người dùng tự do",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4
-                                ?.copyWith(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: FONTSIZES.textLarge)),
-                      ],
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(kDefaultPaddingValue),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  //       Text('Tài khoản vi phạm: ',
+                  //           style: Theme.of(context)
+                  //               .textTheme
+                  //               .headline4
+                  //               ?.copyWith(
+                  //                   color: const Color(0xFF444444),
+                  //                   fontWeight: FontWeight.normal,
+                  //                   fontSize: FONTSIZES.textLarge)),
+                  //       Text(
+                  //           gc.userId.value.isNotEmpty
+                  //               ? gc.username.value.isNotEmpty
+                  //                   ? gc.username.value
+                  //                   : ac.email.value
+                  //               : "Người dùng tự do",
+                  //           style: Theme.of(context)
+                  //               .textTheme
+                  //               .headline4
+                  //               ?.copyWith(
+                  //                   color: Colors.black,
+                  //                   fontWeight: FontWeight.normal,
+                  //                   fontSize: FONTSIZES.textLarge)),
+                  //     ],
+                  //   ),
+                  // ),
                   Padding(
                     padding: const EdgeInsets.only(
                         top: kDefaultPaddingValue,

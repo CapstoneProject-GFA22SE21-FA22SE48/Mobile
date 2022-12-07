@@ -162,7 +162,7 @@ class SignContentFeedbackScreen extends StatelessWidget {
                                               fontSize: FONTSIZES.textPrimary)),
                                 ),
                                 Text(
-                                    DateFormat('hh:mm dd/MM/yyyy')
+                                    DateFormat('HH:mm dd/MM/yyyy')
                                         .format(DateTime.now()),
                                     style: Theme.of(context)
                                         .textTheme

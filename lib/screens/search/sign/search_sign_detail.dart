@@ -46,7 +46,7 @@ class _SearchSignDetailScreen extends State<SearchSignDetailScreen> {
           children: [
             SizedBox(
               width: 100.w,
-              height: 90.h,
+              height: 88.h,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -226,8 +226,9 @@ class _SearchSignDetailScreen extends State<SearchSignDetailScreen> {
                                             physics:
                                                 const BouncingScrollPhysics(),
                                             shrinkWrap: true,
-                                            separatorBuilder:
-                                                (context, index) => const SizedBox(
+                                            separatorBuilder: (context,
+                                                    index) =>
+                                                const SizedBox(
                                                     height:
                                                         kDefaultPaddingValue),
                                             itemBuilder: ((context, index) {

@@ -1,13 +1,8 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:get/get.dart';
-// import 'package:flutter_push_notifications/utils/download_util.dart';
 import 'package:rxdart/subjects.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/utils/download_util.dart';
 

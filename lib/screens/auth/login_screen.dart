@@ -17,7 +17,7 @@ class LoginScreen extends StatelessWidget {
     // need call shared pref instead
     GlobalController gc = Get.put(GlobalController());
 
-    String token = IOUtils.getFromStorage("token") as String;
+    // String token = IOUtils.getFromStorage("token") as String;
 
     gc.userId.isNotEmpty ? Get.to(const ContainerScreen()) : () {};
   }
@@ -54,13 +54,13 @@ class _MobileLoginState extends State<MobileLoginScreen> {
       children: <Widget>[
         const LoginScreenTopImage(),
         Row(
-          children: const [
-            Spacer(),
+          children: [
+            const Spacer(),
             Expanded(
               flex: 8,
-              child: LoaderOverlay(child: LoginForm()),
+              child: LoaderOverlay(child: LoginForm(parentContext: context)),
             ),
-            Spacer(),
+            const Spacer(),
           ],
         ),
       ],
@@ -80,10 +80,10 @@ class DesktopLoginScreen extends StatelessWidget {
       Expanded(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             SizedBox(
               width: 450,
-              child: LoginForm(),
+              child: LoaderOverlay(child: LoginForm(parentContext: context)),
             ),
           ],
         ),

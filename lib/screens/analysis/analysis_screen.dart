@@ -22,7 +22,8 @@ import 'package:vnrdn_tai/widgets/animation/ripple.dart';
 
 class AnalysisScreen extends StatelessWidget {
   bool isAddGps;
-  AnalysisScreen({super.key, this.isAddGps = false});
+  dynamic adminId;
+  AnalysisScreen({super.key, this.isAddGps = false, this.adminId});
 
   Widget getBoundingBoxes(List<dynamic> coords, double height, double width) {
     AnalysisController ac = Get.find<AnalysisController>();
@@ -57,7 +58,10 @@ class AnalysisScreen extends StatelessWidget {
               ac.stopImageStream();
               if (isAddGps) {
                 Get.off(() => CreateGpssignScreen(
-                    imagePath: ac.imagePathScan ?? "", signNumber: name));
+                      imagePath: ac.imagePathScan ?? "",
+                      signNumber: name,
+                      adminId: adminId,
+                    ));
               } else {
                 SearchController sc = Get.put(SearchController());
                 sc.updateQuery(name);
@@ -310,6 +314,7 @@ class AnalysisScreen extends StatelessWidget {
                                 ac.stopImageStream();
                                 if (isAddGps) {
                                   Get.off(() => CreateGpssignScreen(
+                                      adminId: adminId,
                                       imagePath: ac.imagePathScan ?? "",
                                       signNumber: name));
                                 } else {

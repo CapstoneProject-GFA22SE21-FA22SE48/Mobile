@@ -198,87 +198,83 @@ class _ProfileState extends State<ProfileScreen> {
       ),
       body: Form(
         key: profileFormKey,
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          scrollDirection: Axis.vertical,
-          child: Column(children: [
-            const SizedBox(
-              height: 20.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(kDefaultPaddingValue),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      captureImage();
-                    },
-                    child: GFAvatar(
-                      radius: 30.w,
-                      backgroundImage: ac.avatar.value.isNotEmpty
-                          ? NetworkImage(ac.avatar.value)
-                          : const NetworkImage(defaultAvatarUrl),
+        child: Column(children: [
+          const SizedBox(
+            height: 20.0,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(kDefaultPaddingValue),
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    captureImage();
+                  },
+                  child: GFAvatar(
+                    radius: 30.w,
+                    backgroundImage: ac.avatar.value.isNotEmpty
+                        ? NetworkImage(ac.avatar.value)
+                        : const NetworkImage(defaultAvatarUrl),
+                  ),
+                ),
+                TextFormField(
+                  validator: (value) => FormValidator.validPassword(value),
+                  controller: displayNameController,
+                  keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.next,
+                  cursorColor: kPrimaryButtonColor,
+                  decoration: InputDecoration(
+                    labelText: "Tên hiển thị",
+                    hintText: ac.displayName.value,
+                    prefixIcon: const Padding(
+                      padding: EdgeInsets.all(kDefaultPaddingValue / 2),
+                      child: Icon(Icons.ac_unit_rounded),
                     ),
                   ),
-                  TextFormField(
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: kDefaultPaddingValue),
+                  child: TextFormField(
                     validator: (value) => FormValidator.validPassword(value),
-                    controller: displayNameController,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
+                    controller: emailController,
+                    textInputAction: TextInputAction.done,
                     cursorColor: kPrimaryButtonColor,
                     decoration: InputDecoration(
-                      labelText: "Tên hiển thị",
-                      hintText: ac.displayName.value,
+                      labelText: "Email",
+                      hintText: ac.email.value,
                       prefixIcon: const Padding(
                         padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-                        child: Icon(Icons.ac_unit_rounded),
+                        child: Icon(Icons.mail_outline_rounded),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: kDefaultPaddingValue),
-                    child: TextFormField(
-                      validator: (value) => FormValidator.validPassword(value),
-                      controller: emailController,
-                      textInputAction: TextInputAction.done,
-                      cursorColor: kPrimaryButtonColor,
-                      decoration: InputDecoration(
-                        labelText: "Email",
-                        hintText: ac.email.value,
-                        prefixIcon: const Padding(
-                          padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-                          child: Icon(Icons.mail_outline_rounded),
-                        ),
+                ),
+                const SizedBox(height: kDefaultPaddingValue),
+                Hero(
+                  tag: "update_btn",
+                  child: ElevatedButton(
+                    onPressed: profileFormKey.currentState!.validate()
+                        ? () {
+                            handleUpdateProfile();
+                          }
+                        : null,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: kDefaultPaddingValue),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Cập nhật ngay".toUpperCase()),
+                        ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: kDefaultPaddingValue),
-                  Hero(
-                    tag: "update_btn",
-                    child: ElevatedButton(
-                      onPressed: profileFormKey.currentState!.validate()
-                          ? () {
-                              handleUpdateProfile();
-                            }
-                          : null,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: kDefaultPaddingValue),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Cập nhật ngay".toUpperCase()),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ]),
-        ),
+          ),
+        ]),
       ),
     );
   }

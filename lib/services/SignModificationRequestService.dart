@@ -7,6 +7,7 @@ import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
+import 'package:vnrdn_tai/models/dtos/CreateSignRequest.dart';
 import '../shared/constants.dart';
 
 class SignModificationRequestService {
@@ -79,9 +80,9 @@ class SignModificationRequestService {
   Future<SignModificationRequest?> createScribeRequestGpsSign(
       String imageUrl, String adminId, GPSSign? newGpsSign) async {
     GlobalController gc = Get.put(GlobalController());
-    SignModificationRequest request;
+    CreateSignRequest request;
     try {
-      request = SignModificationRequest(
+      request = CreateSignRequest(
           newGpsSign!.signId,
           null,
           null,
@@ -95,7 +96,8 @@ class SignModificationRequestService {
           3,
           null,
           DateTime.now().toLocal().toString(),
-          false);
+          false,
+          newGpsSign);
       final res = await http
           .post(Uri.parse("${url}SignModificationRequests/AddGps"),
               headers: <String, String>{

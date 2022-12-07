@@ -62,25 +62,6 @@ class _QuizScreenState extends State<QuizScreen> {
         "Bạn có chắc là bạn muốn thoát không?",
         () => Get.to(ScoreScreen()),
         () {});
-    // Get.dialog(
-    //   AlertDialog(
-    //     title: const Text('Nếu thoát, kết quả sẽ không được lưu'),
-    //     content: const Text('Bạn có chắc là bạn muốn thoát không?'),
-    //     actions: [
-    //       TextButton(
-    //         child: const Text("Xác nhận"),
-    //         onPressed: () {
-    //           qc.stopTimer();
-    //           Get.to(() => const ContainerScreen());
-    //         },
-    //       ),
-    //       TextButton(
-    //         child: const Text("Không"),
-    //         onPressed: () => Get.back(),
-    //       ),
-    //     ],
-    //   ),
-    // );
     return false;
   }
 

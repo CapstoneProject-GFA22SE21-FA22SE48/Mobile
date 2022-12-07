@@ -266,7 +266,10 @@ class ContainerScreen extends GetView<GlobalController> {
                                         DialogType.warning,
                                         "Cảnh báo",
                                         "Bạn cần đăng nhập để tiếp tục.\nĐến trang đăng nhập?",
-                                        () => Get.to(() => const LoginScreen()),
+                                        () => Get.to(
+                                              () => const LoaderOverlay(
+                                                  child: LoginScreen()),
+                                            ),
                                         () {});
                                   }
                                 },

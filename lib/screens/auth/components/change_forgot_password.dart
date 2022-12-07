@@ -9,7 +9,6 @@ import 'package:vnrdn_tai/services/AuthService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
 import 'package:vnrdn_tai/utils/form_validator.dart';
-import 'package:vnrdn_tai/widgets/templated_buttons.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
 class ChangeForgotPasswordScreen extends StatefulWidget {
