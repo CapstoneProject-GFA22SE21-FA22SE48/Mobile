@@ -40,7 +40,7 @@ class _SwitchClassState extends State<SettingsScreen> {
         "Bạn cần phải liên hệ đội ngũ phát triển để có thể kích hoạt lại tài khoản.",
         () {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Row(children: const [Text('Đang xử lí')])),
+        SnackBar(content: Row(children: const [Text('Đang xử lý')])),
       );
       selfDeactivate();
     }, () {});
@@ -56,7 +56,7 @@ class _SwitchClassState extends State<SettingsScreen> {
             context,
             DialogType.success,
             "Thành công",
-            'Tài khoản đã ngưng hoạt động!\nnVui lòng liên hệ đội ngũ phát triển nếu muốn kích hoạt lại.',
+            'Tài khoản đã ngưng hoạt động!\nVui lòng liên hệ đội ngũ phát triển nếu muốn kích hoạt lại.',
             () => Get.to(() => const ContainerScreen()),
             null);
       }

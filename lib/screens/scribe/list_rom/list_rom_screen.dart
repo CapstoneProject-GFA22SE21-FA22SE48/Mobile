@@ -109,7 +109,7 @@ class _ListRomScreenState extends State<ListRomScreen> {
                           padding: EdgeInsets.symmetric(
                               horizontal: kDefaultPaddingValue * 4),
                           child: Text(
-                            'Hiện tại không có yêu cầu nào cần xử lí',
+                            'Hiện tại không có yêu cầu nào cần xử lý',
                             style: TextStyle(
                                 color: Colors.black54,
                                 fontStyle: FontStyle.italic),
