@@ -270,12 +270,11 @@ class _ProfileState extends State<ProfileScreen> {
                     Hero(
                       tag: "update_btn",
                       child: ElevatedButton(
-                        onPressed: profileFormKey.currentState != null &&
-                                profileFormKey.currentState!.validate()
-                            ? () {
-                                handleUpdateProfile();
-                              }
-                            : null,
+                        onPressed: () {
+                          if (profileFormKey.currentState!.validate()) {
+                            handleUpdateProfile();
+                          }
+                        },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: kDefaultPaddingValue),
