@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/avatar/gf_avatar.dart';
@@ -30,6 +31,7 @@ class _ProfileState extends State<ProfileScreen> {
   final displayNameController = TextEditingController();
   final emailController = TextEditingController();
   String lastImageUrl = '';
+  String newImageUrl = '';
 
   GlobalController gc = Get.put(GlobalController());
   AuthController ac = Get.put(AuthController());
@@ -83,9 +85,8 @@ class _ProfileState extends State<ProfileScreen> {
       await snapshot.ref.getDownloadURL().then((url) {
         url = url.split('&token').first;
         ac.updateAvatar(url);
-        setState(() {
-          // print(url);
-        });
+        newImageUrl = url;
+        setState(() {});
         return url;
       });
       return '';
@@ -94,7 +95,7 @@ class _ProfileState extends State<ProfileScreen> {
   }
 
   Future<String> uploadImage() async {
-    if (pickedFile != null) {
+    if (pickedFile != null && newImageUrl.isNotEmpty) {
       GlobalController gc = Get.put(GlobalController());
       final ext = pickedFile!.name.split('.').last;
       final path =
@@ -125,6 +126,7 @@ class _ProfileState extends State<ProfileScreen> {
         context.loaderOverlay.hide();
         if (value.isNotEmpty) {
           if (value.toLowerCase().contains('thay đổi')) {
+            // deleteOldImage();
             DialogUtil.showAwesomeDialog(
                 context,
                 DialogType.success,
@@ -160,8 +162,18 @@ class _ProfileState extends State<ProfileScreen> {
     }
   }
 
-  handleCancel() {
-    Get.offAll(const SettingsScreen());
+  handleCancel() async {
+    if (pickedFile != null) {
+      ac.updateAvatar(lastImageUrl);
+
+      // final storageRef = FirebaseStorage.instance.ref();
+      // lastImageUrl = lastImageUrl.split('images').last;
+      // final desertRef =
+      //     storageRef.child('images${lastImageUrl.split('?').first}');
+      // await desertRef.delete();
+    }
+
+    Get.off(const SettingsScreen());
   }
 
   deleteOldImage() async {
@@ -185,96 +197,103 @@ class _ProfileState extends State<ProfileScreen> {
     displayNameController.text = ac.displayName.value;
     emailController.text = ac.email.value;
 
-    return Scaffold(
-      key: UniqueKey(),
-      backgroundColor: kPrimaryBackgroundColor,
-      appBar: AppBar(
-        title: const Text("Update Profile"),
-        elevation: 1,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: handleCancel,
-        ),
-      ),
-      body: Form(
-        key: profileFormKey,
-        child: Column(children: [
-          const SizedBox(
-            height: 20.0,
+    return WillPopScope(
+      onWillPop: () async {
+        return await true;
+      },
+      child: Scaffold(
+        key: UniqueKey(),
+        backgroundColor: kPrimaryBackgroundColor,
+        appBar: AppBar(
+          title: const Text("Cập nhật thông tin"),
+          elevation: 1,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: handleCancel,
           ),
-          Padding(
-            padding: const EdgeInsets.all(kDefaultPaddingValue),
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    captureImage();
-                  },
-                  child: GFAvatar(
-                    radius: 30.w,
-                    backgroundImage: ac.avatar.value.isNotEmpty
-                        ? NetworkImage(ac.avatar.value)
-                        : const NetworkImage(defaultAvatarUrl),
-                  ),
-                ),
-                TextFormField(
-                  validator: (value) => FormValidator.validPassword(value),
-                  controller: displayNameController,
-                  keyboardType: TextInputType.text,
-                  textInputAction: TextInputAction.next,
-                  cursorColor: kPrimaryButtonColor,
-                  decoration: InputDecoration(
-                    labelText: "Tên hiển thị",
-                    hintText: ac.displayName.value,
-                    prefixIcon: const Padding(
-                      padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-                      child: Icon(Icons.ac_unit_rounded),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: kDefaultPaddingValue),
-                  child: TextFormField(
-                    validator: (value) => FormValidator.validPassword(value),
-                    controller: emailController,
-                    textInputAction: TextInputAction.done,
-                    cursorColor: kPrimaryButtonColor,
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                      hintText: ac.email.value,
-                      prefixIcon: const Padding(
-                        padding: EdgeInsets.all(kDefaultPaddingValue / 2),
-                        child: Icon(Icons.mail_outline_rounded),
+        ),
+        body: KeyboardVisibilityBuilder(
+          builder: (p0, isKeyboardVisible) => Form(
+            key: profileFormKey,
+            child: Column(children: [
+              const SizedBox(
+                height: 20.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(kDefaultPaddingValue),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        captureImage();
+                      },
+                      child: GFAvatar(
+                        radius: isKeyboardVisible ? 15.w : 30.w,
+                        backgroundImage: ac.avatar.value.isNotEmpty
+                            ? NetworkImage(ac.avatar.value)
+                            : const NetworkImage(defaultAvatarUrl),
                       ),
                     ),
-                  ),
-                ),
-                const SizedBox(height: kDefaultPaddingValue),
-                Hero(
-                  tag: "update_btn",
-                  child: ElevatedButton(
-                    onPressed: profileFormKey.currentState!.validate()
-                        ? () {
-                            handleUpdateProfile();
-                          }
-                        : null,
-                    child: Padding(
+                    TextFormField(
+                      controller: displayNameController,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
+                      cursorColor: kPrimaryButtonColor,
+                      decoration: InputDecoration(
+                        labelText: "Tên hiển thị",
+                        hintText: ac.displayName.value,
+                        prefixIcon: const Padding(
+                          padding: EdgeInsets.all(kDefaultPaddingValue / 2),
+                          child: Icon(Icons.ac_unit_rounded),
+                        ),
+                      ),
+                    ),
+                    Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: kDefaultPaddingValue),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Cập nhật ngay".toUpperCase()),
-                        ],
+                      child: TextFormField(
+                        validator: (value) => FormValidator.validEmail(value),
+                        controller: emailController,
+                        textInputAction: TextInputAction.done,
+                        cursorColor: kPrimaryButtonColor,
+                        decoration: InputDecoration(
+                          labelText: "Email",
+                          hintText: ac.email.value,
+                          prefixIcon: const Padding(
+                            padding: EdgeInsets.all(kDefaultPaddingValue / 2),
+                            child: Icon(Icons.mail_outline_rounded),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: kDefaultPaddingValue),
+                    Hero(
+                      tag: "update_btn",
+                      child: ElevatedButton(
+                        onPressed: profileFormKey.currentState != null &&
+                                profileFormKey.currentState!.validate()
+                            ? () {
+                                handleUpdateProfile();
+                              }
+                            : null,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: kDefaultPaddingValue),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Cập nhật ngay".toUpperCase()),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ]),
           ),
-        ]),
+        ),
       ),
     );
   }
