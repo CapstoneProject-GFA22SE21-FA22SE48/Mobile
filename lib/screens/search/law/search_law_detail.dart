@@ -110,7 +110,8 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                         child: SingleChildScrollView(
                                           physics:
                                               const BouncingScrollPhysics(),
-                                          child: SizedBox.expand(
+                                          child: SizedBox(
+                                            height: 100.h,
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
