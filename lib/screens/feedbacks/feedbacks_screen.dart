@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:getwidget/components/dropdown/gf_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
@@ -17,6 +18,7 @@ import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
+import 'package:vnrdn_tai/services/UserService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
 
@@ -37,6 +39,8 @@ class FeedbacksScreen extends StatefulWidget {
 class _FeedbackClassState extends State<FeedbacksScreen> {
   final imagePicker = ImagePicker();
   List<DropdownMenuItem<String>> _listDropdown = [];
+  late List<DropdownMenuItem> _listDropdownAdmin = [];
+  dynamic adminId;
   dynamic reason;
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
@@ -153,6 +157,18 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
               overflow: TextOverflow.ellipsis),
         ),
       ];
+      UserService().getAdmins().then((list) {
+        if (list.isNotEmpty) {
+          list.forEach((element) {
+            _listDropdownAdmin.add(DropdownMenuItem<String>(
+              value: element.id,
+              child: Text(element.displayName ?? element.username),
+            ));
+          });
+        }
+        setState(() {});
+        context.loaderOverlay.hide();
+      });
     } else {
       _listDropdown = <DropdownMenuItem<String>>[
         const DropdownMenuItem<String>(
@@ -166,6 +182,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AuthController ac = Get.find<AuthController>();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -195,6 +212,34 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                       fontSize: FONTSIZES.textHuge,
                     ),
                   ),
+                  ac.role.value == 1 ?
+                  (const Text(
+                    'Gửi yêu cầu tới:',
+                    style: TextStyle(
+                      fontSize: FONTSIZES.textPrimary,
+                      color: Colors.blueAccent,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: kDefaultPaddingValue / 2),
+                  DropdownButtonHideUnderline(
+                    child: GFDropdown(
+                      hint: const Text('Chọn quản trị viên'),
+                      padding: const EdgeInsets.all(kDefaultPaddingValue / 2),
+                      borderRadius: BorderRadius.circular(5),
+                      border: const BorderSide(color: Colors.grey, width: 1),
+                      dropdownButtonColor: Colors.white,
+                      value: adminId,
+                      onChanged: (newValue) {
+                        setState(() {
+                          adminId = newValue ?? 3;
+                        });
+                      },
+                      items: _listDropdownAdmin,
+                      isExpanded: true,
+                    ),
+                  ),
+                  const SizedBox(height: kDefaultPaddingValue),) : Container(),
                   const Text(
                     'Nguyên nhân:',
                     style: TextStyle(
