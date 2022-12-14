@@ -14,7 +14,7 @@
         android:icon="@mipmap/ic_launcher">
         <!-- TODO: Add your Google Maps API key here -->
         <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyDM1rM5UcyCqdSD_R-4qEm8wd-K9mLCrFA"/>
+               android:value="AIzaSyBbz-SI9Kfr203lCvmMBEV3zEu0u9B08T0"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

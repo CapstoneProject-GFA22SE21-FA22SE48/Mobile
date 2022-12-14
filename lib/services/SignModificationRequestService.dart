@@ -8,6 +8,8 @@ import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
 import 'package:vnrdn_tai/models/dtos/CreateSignRequest.dart';
+import 'package:vnrdn_tai/models/dtos/GPSSignManipulateDTO.dart';
+import 'package:vnrdn_tai/models/dtos/ManipulateSignRequest.dart';
 import '../shared/constants.dart';
 
 class SignModificationRequestService {
@@ -76,7 +78,7 @@ class SignModificationRequestService {
     }
   }
 
-  // create Feedback of GPSSigns
+  // scribe request with type create of GPSSigns
   Future<SignModificationRequest?> createScribeRequestGpsSign(
       String imageUrl, String adminId, GPSSign? newGpsSign) async {
     GlobalController gc = Get.put(GlobalController());
@@ -92,6 +94,53 @@ class SignModificationRequestService {
           gc.userId.value,
           adminId,
           0,
+          imageUrl,
+          3,
+          null,
+          DateTime.now().toLocal().toString(),
+          false,
+          newGpsSign);
+      final res = await http
+          .post(Uri.parse("${url}SignModificationRequests/AddGps"),
+              headers: <String, String>{
+                "Content-Type": "application/json; charset=UTF-8",
+                'Authorization': 'Bearer ${ac.token.value}',
+              },
+              body: jsonEncode(request))
+          .timeout(const Duration(seconds: TIME_OUT));
+      print(res.statusCode);
+      if (res.statusCode == 201) {
+        print(res.body);
+        return SignModificationRequestService.parseSignModificationRequest(
+            res.body);
+      } else {
+        return null;
+      }
+    } on TimeoutException {
+      throw Exception('Không tải được dữ liệu.');
+    }
+  }
+
+  // scribe request with type update/delete of GPSSigns
+  Future<SignModificationRequest?> scribeRequestManipulateGpsSign(
+      String imageUrl,
+      String? modifiedGpssignId,
+      String adminId,
+      GPSSignManipulateDTO? newGpsSign,
+      int operationType) async {
+    GlobalController gc = Get.put(GlobalController());
+    ManipulateSignRequest request;
+    try {
+      request = ManipulateSignRequest(
+          newGpsSign!.signId,
+          null,
+          null,
+          newGpsSign.signId,
+          modifiedGpssignId,
+          gc.userId.value,
+          gc.userId.value,
+          adminId,
+          operationType,
           imageUrl,
           3,
           null,

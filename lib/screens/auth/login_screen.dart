@@ -24,21 +24,21 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Background(
+    return Background(
       child: SingleChildScrollView(
         child: Responsive(
-          mobile: MobileLoginScreen(),
-          desktop: DesktopLoginScreen(),
+          mobile: MobileLoginScreen(pContext: context),
+          desktop: const DesktopLoginScreen(),
         ),
       ),
     );
   }
 }
 
+// ignore: must_be_immutable
 class MobileLoginScreen extends StatefulWidget {
-  const MobileLoginScreen({
-    Key? key,
-  }) : super(key: key);
+  BuildContext pContext;
+  MobileLoginScreen({Key? key, required this.pContext}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _MobileLoginState();
@@ -58,7 +58,9 @@ class _MobileLoginState extends State<MobileLoginScreen> {
             const Spacer(),
             Expanded(
               flex: 8,
-              child: LoaderOverlay(child: LoginForm(parentContext: context)),
+              child: LoaderOverlay(
+                child: LoginForm(parentContext: widget.pContext),
+              ),
             ),
             const Spacer(),
           ],

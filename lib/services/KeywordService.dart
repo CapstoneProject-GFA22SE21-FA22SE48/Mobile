@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:vnrdn_tai/models/Keyword.dart';
 import 'package:vnrdn_tai/shared/constants.dart';

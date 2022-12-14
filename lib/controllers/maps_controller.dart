@@ -7,6 +7,7 @@ class MapsController extends GetxController {
   static MapsController instance = Get.find();
   Location location = Location();
   var listSigns = [].obs;
+  var listNotiSigns = [].obs;
   final zoom = 18.0.obs;
 
   @override
@@ -23,6 +24,14 @@ class MapsController extends GetxController {
 
   updateGpsSigns(value) {
     listSigns(value);
+  }
+
+  updateListNotiSigns(value) {
+    listNotiSigns(value);
+  }
+
+  resetListNotiSigns() {
+    listNotiSigns([]);
   }
 
   updateZoom(value) {

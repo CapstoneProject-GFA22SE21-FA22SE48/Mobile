@@ -17,13 +17,10 @@ import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/models/SignModificationRequest.dart';
-import 'package:vnrdn_tai/models/UserInfo.dart';
 import 'package:vnrdn_tai/models/dtos/AdminDTO.dart';
 import 'package:vnrdn_tai/models/dtos/signCategoryDTO.dart';
 import 'package:vnrdn_tai/screens/analysis/analysis_screen.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
-import 'package:vnrdn_tai/screens/scribe/list_rom/list_rom_screen.dart';
-import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/services/SignModificationRequestService.dart';
 import 'package:vnrdn_tai/services/SignService.dart';
 import 'package:vnrdn_tai/services/UserService.dart';
@@ -101,16 +98,18 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
         );
       }
     }
-    var foundSign;
+    String? foundSign;
     if (widget.signNumber != "") {
       foundSign = _listDropdownSignsName
           .firstWhereOrNull((element) => element.contains(widget.signNumber));
     }
-    setState(() {
-      if (foundSign != null) {
-        selectedSign = foundSign;
-      }
-    });
+    if (mounted) {
+      setState(() {
+        if (foundSign != null) {
+          selectedSign = foundSign;
+        }
+      });
+    }
   }
 
   Color getColorByCategory(String name) {
@@ -185,29 +184,18 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
                   location.longitude!),
             )
                 .then((request) {
+              context.loaderOverlay.hide();
               if (request != null) {
-                createNotification(request).then((sent) {
-                  context.loaderOverlay.hide();
-                  if (sent) {
-                    DialogUtil.showAwesomeDialog(
-                        context,
-                        DialogType.success,
-                        "Tạo thành công",
-                        "Yêu cầu tạo biển $selectedSign thành công",
-                        () => Get.to(() => const ContainerScreen()),
-                        null);
-                  } else {
-                    DialogUtil.showAwesomeDialog(
-                        context,
-                        DialogType.error,
-                        "Tạo thất bại",
-                        "Có lỗi xảy ra.\nVui lòng kiểm tra lại",
-                        () {},
-                        null);
-                  }
-                });
+                DialogUtil.showAwesomeDialog(
+                    context,
+                    DialogType.success,
+                    "Tạo thành công",
+                    "Yêu cầu tạo biển $selectedSign thành công",
+                    () => Get.off(() => const ContainerScreen()),
+                    null);
+
+                createNotification(request).then((sent) => print(sent));
               } else {
-                context.loaderOverlay.hide();
                 DialogUtil.showAwesomeDialog(
                     context,
                     DialogType.error,
@@ -267,9 +255,10 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
       if (widget.imagePath != "") {
         setImage(widget.imagePath);
       }
-      setState(() {
+      if (mounted) {
         context.loaderOverlay.hide();
-      });
+        setState(() {});
+      }
     });
     super.initState();
   }
@@ -284,7 +273,7 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
         title: const Text('Tạo biển báo tại đây'),
       ),
       body: KeyboardVisibilityBuilder(
-        builder: (context, isKeyboardVisible) {
+        builder: (kContext, isKeyboardVisible) {
           return SingleChildScrollView(
             padding: kDefaultPadding,
             physics: const BouncingScrollPhysics(),
@@ -309,9 +298,11 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
                     dropdownButtonColor: Colors.white,
                     value: adminId,
                     onChanged: (newValue) {
-                      setState(() {
-                        adminId = newValue ?? 3;
-                      });
+                      if (mounted) {
+                        setState(() {
+                          adminId = newValue;
+                        });
+                      }
                     },
                     items: _listDropdownAdmin,
                     isExpanded: true,

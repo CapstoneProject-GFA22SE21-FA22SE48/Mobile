@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,6 +43,7 @@ class _MinimapState extends State<MinimapScreen> {
 
   late List<GPSSign> gpsSigns = [];
   final List<Marker> _markers = <Marker>[].obs;
+  int count = 0;
 
   LocationData? currentLocation;
   LocationData? lastFetchLocation;
@@ -51,7 +53,12 @@ class _MinimapState extends State<MinimapScreen> {
     _markers.clear();
 
     for (var s in list) {
-      String sName = s.imageUrl!.split("%2F")[2].split(".png")[0];
+      String sFullName = 'Biển ';
+      sFullName += (s.signName != null
+          ? s.signName!.split(" \"").last.split("\"").first
+          : 'không xác định');
+      String sName =
+          sFullName.length > 30 ? sFullName.substring(1, 30) : sFullName;
       var testImagePath =
           ImageUtil.getLocalImagePathFromUrl(s.imageUrl!, mc.zoom.value);
       var bytes = (await rootBundle.load(testImagePath!)).buffer.asUint8List();
@@ -79,7 +86,7 @@ class _MinimapState extends State<MinimapScreen> {
                       borderRadius: BorderRadius.circular(kDefaultPaddingValue),
                       boxShadow: const [
                         BoxShadow(
-                          color: Colors.grey,
+                          color: Color(0xFFE0E0E0),
                           blurRadius: 4,
                           spreadRadius: 2,
                         ),
@@ -89,23 +96,46 @@ class _MinimapState extends State<MinimapScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        Expanded(
+                          child: CachedNetworkImage(
+                            imageUrl: s.imageUrl as String,
+                            imageBuilder: (context, imageProvider) => Container(
+                              width: 25.w,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  //image size fill
+                                  image: imageProvider,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                            placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              child:
+                                  const CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
+                            ), //show progress  while loading image
+                            errorWidget: (context, url, error) =>
+                                Image.asset("assets/images/alt_image.png"),
+                            //show no iamge availalbe image on error laoding
+                          ),
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              'Biển số: $sName',
+                              sName,
                               style: const TextStyle(
                                 color: Colors.black54,
-                                fontSize: FONTSIZES.textLarger,
+                                fontSize: FONTSIZES.textLarge,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(
-                              top: kDefaultPaddingValue / 2),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: kDefaultPaddingValue / 2),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -173,14 +203,23 @@ class _MinimapState extends State<MinimapScreen> {
         currentLocation = newLoc;
 
         if (distanceToFetch > 500) {
+          count = 0;
           lastFetchLocation = newLoc;
           getSignsList(currentLocation!);
+        } else {
+          count++;
         }
+        print(count);
       } else {
+        count++;
         currentLocation = newLoc;
         lastFetchLocation = newLoc;
       }
-      if (distance.round() > 0) {
+      if (count > 5) {
+        count = 0;
+        getSignsList(currentLocation!);
+      }
+      if (distance.round() > 1) {
         getRangeFromUser(newLoc);
       }
       if (mounted) {
@@ -195,7 +234,7 @@ class _MinimapState extends State<MinimapScreen> {
         var distance = LocationUtil.distanceInM(
             LatLng(userLocation.latitude!, userLocation.longitude!),
             LatLng(sign.latitude, sign.longitude));
-        if (distance <= 10) {
+        if (distance.round() <= 5) {
           await notificationService.showLocalNotification(
               id: 0,
               title: "Cảnh báo!!!",
@@ -214,7 +253,7 @@ class _MinimapState extends State<MinimapScreen> {
           .GetNearbySigns(
         curLocation.latitude!,
         curLocation.longitude!,
-        100,
+        1,
       )
           .then((signs) {
         if (signs.isNotEmpty) {
@@ -226,29 +265,39 @@ class _MinimapState extends State<MinimapScreen> {
     }
   }
 
-  @override
-  void initState() {
-    notificationService = NotificationService();
-    listenToNotificationStream();
-    notificationService.initializePlatformNotifications();
+  Future<bool> grantPermissionLocation() async {
+    if (await Permission.location.isGranted) {
+      return true;
+    } else {
+      var pLocation = await Permission.location.request();
 
-    Permission.location.request().then((value) {
-      if (value.isGranted) {
-        getCurrentLocation().then((value) {
-          onLocationChanged();
-        });
+      if (pLocation.isPermanentlyDenied || pLocation.isDenied) {
+        openAppSettings();
+        return false;
       } else {
-        gc.updateTab(TABS.SEARCH);
+        return true;
       }
-    });
-
-    super.initState();
+    }
   }
 
   void listenToNotificationStream() {
     notificationService.behaviorSubject.listen((payload) {
-      gc.updateTab(3);
-      Get.to(() => const ContainerScreen());
+      print('[MINIMAP] listening notifications');
+      // gc.updateTab(3);
+      // Get.to(() => const ContainerScreen());
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    grantPermissionLocation().then((value) {
+      if (value) {
+        notificationService = NotificationService();
+        listenToNotificationStream();
+        notificationService.initializePlatformNotifications();
+        getCurrentLocation().then((value) => onLocationChanged());
+      }
     });
   }
 
@@ -309,9 +358,9 @@ class _MinimapState extends State<MinimapScreen> {
                 ),
                 CustomInfoWindow(
                   controller: _infoWindowcontroller,
-                  height: 12.h,
-                  width: 48.w,
-                  offset: 1.h,
+                  height: 24.h,
+                  width: 70.w,
+                  offset: 0,
                 ),
               ],
             ),

@@ -86,7 +86,8 @@ const defaultAvatarUrl =
     "https://firebasestorage.googleapis.com/v0/b/vnrdntai.appspot.com/o/images%2Favatar%2Fdefault_avatar_x05.png?alt=media";
 
 const String google_api_key = "AIzaSyBEre7YKax4irpLfr0I2jrkACu_ZiBL3JU";
-const String maps_key = "AIzaSyDM1rM5UcyCqdSD_R-4qEm8wd-K9mLCrFA";
+const String maps_key = "AIzaSyBbz-SI9Kfr203lCvmMBEV3zEu0u9B08T0";
+// const String maps_key = "AIzaSyDM1rM5UcyCqdSD_R-4qEm8wd-K9mLCrFA"; // Phuc
 LatLng schoolLocation = // FPT daigaku
     const LatLng(10.841809162754405, 106.8097469445683);
 
