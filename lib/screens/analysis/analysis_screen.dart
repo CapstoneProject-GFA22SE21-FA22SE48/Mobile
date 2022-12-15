@@ -299,14 +299,14 @@ class AnalysisScreen extends StatelessWidget {
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold)),
                     )
-                  : controller.boxes.isNotEmpty
+                  : controller.suggestBoxes.isNotEmpty
                       ? ListView(
                           scrollDirection: Axis.horizontal,
-                          children: List.generate(controller.boxes.length,
-                              (int index) {
+                          children: List.generate(
+                              controller.suggestBoxes.length, (int index) {
                             // var name = "102";
                             var name = ac.mapData![int.parse(controller
-                                    .boxes[index][0]
+                                    .suggestBoxes[index][0]
                                     .replaceAll(".0", ""))]
                                 .toString();
                             return InkWell(

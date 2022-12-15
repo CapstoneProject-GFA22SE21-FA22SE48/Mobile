@@ -17,6 +17,7 @@ import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
+import 'package:vnrdn_tai/screens/minimap/components/customize-notification/customize_notification_screen.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/services/NotificationService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -362,6 +363,20 @@ class _MinimapState extends State<MinimapScreen> {
                   width: 70.w,
                   offset: 0,
                 ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: IconButton(
+                      color: mc.listNotiSigns.isNotEmpty
+                          ? Colors.blueAccent
+                          : Colors.grey,
+                      splashColor: Colors.white,
+                      splashRadius: 10,
+                      padding: const EdgeInsets.all(kDefaultPaddingValue),
+                      onPressed: () =>
+                          Get.to(() => const CustomizeNotificationScreen()),
+                      icon: const Icon(Icons.dashboard_customize_rounded)),
+                )
               ],
             ),
     );

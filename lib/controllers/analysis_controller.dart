@@ -15,7 +15,6 @@ class AnalysisController extends GetxController {
 
   late FlutterVision vision;
 
-
   late bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
 
@@ -48,6 +47,9 @@ class AnalysisController extends GetxController {
 
   late List<List<dynamic>> _boxes = [];
   List<List<dynamic>> get boxes => _boxes;
+
+  late List<List<dynamic>> _suggestBoxes = [];
+  List<List<dynamic>> get suggestBoxes => _suggestBoxes;
 
   late YamlMap? _mapData;
   YamlMap? get mapData => _mapData;
@@ -195,6 +197,7 @@ class AnalysisController extends GetxController {
 
       // _detected = res;
       List<List<dynamic>> b = [];
+      List<List<dynamic>> b2 = [];
       if (res != "[]" && res != "") {
         res = res
             .replaceAll("[", "")
@@ -212,12 +215,14 @@ class AnalysisController extends GetxController {
           }
         }
         for (var element in arrForPreprocess) {
-          if (b.firstWhereOrNull((e) => e[0] == element[0]) == null) {
-            b.add(element);
+          b.add(element);
+          if (b2.firstWhereOrNull((e) => e[0] == element[0]) == null) {
+            b2.add(element);
           }
         }
       }
       _boxes = b;
+      _suggestBoxes = b2;
       // update();
       // stopImageStream();
 
@@ -321,7 +326,6 @@ class AnalysisController extends GetxController {
   updateCameraImage(val) {
     _cameraImage = val;
   }
-
 
   updateZoomLevel(value) async {
     var zl = double.parse(value.toStringAsFixed(1));
