@@ -57,7 +57,6 @@ class ContainerScreen extends GetView<GlobalController> {
       return const SearchSignScreen();
     }
     if (v == TABS.MINIMAP) {
-      MapsController mapsController = Get.put(MapsController());
       return const MinimapScreen();
     }
   }
@@ -66,19 +65,15 @@ class ContainerScreen extends GetView<GlobalController> {
     switch (v) {
       case TABS.SEARCH:
         return IconButton(
+          icon: const Icon(Icons.receipt),
           onPressed: () {
-            Get.to(AnalysisScreen());
+            Get.to(() => const CartPage(), preventDuplicates: false);
           },
-          icon: IconButton(
-              icon: const Icon(Icons.receipt),
-              onPressed: () {
-                Get.to(() => const CartPage(), preventDuplicates: false);
-              }),
         );
       case TABS.ANALYSIS:
         return IconButton(
           onPressed: () {
-            Get.to(AnalysisScreen());
+            Get.to(AnalysisScreen(), preventDuplicates: false);
           },
           icon: const Icon(
             Icons.camera_alt_rounded,
@@ -95,6 +90,7 @@ class ContainerScreen extends GetView<GlobalController> {
                           child: FeedbacksScreen(
                         type: '',
                       )),
+                      preventDuplicates: false,
                     );
                   },
                   icon: const Icon(
@@ -105,6 +101,7 @@ class ContainerScreen extends GetView<GlobalController> {
                   onPressed: () {
                     Get.to(
                       () => LoaderOverlay(child: CreateGpssignScreen()),
+                      preventDuplicates: false,
                     );
                   },
                   icon: const Icon(
@@ -137,7 +134,6 @@ class ContainerScreen extends GetView<GlobalController> {
   @override
   Widget build(BuildContext context) {
     AuthController ac = Get.put(AuthController());
-    CartController cc = Get.put(CartController());
     String title = 'VNRDnTAI';
     final MyTabController _tabx = Get.put(MyTabController());
 

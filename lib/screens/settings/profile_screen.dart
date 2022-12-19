@@ -33,8 +33,8 @@ class _ProfileState extends State<ProfileScreen> {
   String lastImageUrl = '';
   String newImageUrl = '';
 
-  GlobalController gc = Get.put(GlobalController());
-  AuthController ac = Get.put(AuthController());
+  GlobalController gc = Get.find<GlobalController>();
+  AuthController ac = Get.find<AuthController>();
 
   final imagePicker = ImagePicker();
   PlatformFile? pickedFile;
@@ -71,7 +71,7 @@ class _ProfileState extends State<ProfileScreen> {
 
   Future<String> uploadTempImage() async {
     if (pickedFile != null) {
-      GlobalController gc = Get.put(GlobalController());
+      GlobalController gc = Get.find<GlobalController>();
       final ext = pickedFile!.name.split('.').last;
       final path =
           'images/avatar/temp/${gc.userId.value}_${DateTime.now().toUtc()}.$ext';
@@ -96,7 +96,7 @@ class _ProfileState extends State<ProfileScreen> {
 
   Future<String> uploadImage() async {
     if (pickedFile != null && newImageUrl.isNotEmpty) {
-      GlobalController gc = Get.put(GlobalController());
+      GlobalController gc = Get.find<GlobalController>();
       final ext = pickedFile!.name.split('.').last;
       final path =
           'images/avatar/${gc.userId.value}_${DateTime.now().toUtc()}.$ext';
@@ -117,49 +117,44 @@ class _ProfileState extends State<ProfileScreen> {
 
   void handleUpdateProfile() async {
     context.loaderOverlay.show();
-    String imageUrl = ac.avatar.value;
-    if (imageUrl.isNotEmpty) {
-      await UserService()
-          .updateProfile(
-              imageUrl, emailController.text, displayNameController.text)
-          .then((value) {
-        context.loaderOverlay.hide();
-        if (value.isNotEmpty) {
-          if (value.toLowerCase().contains('thay đổi')) {
-            // deleteOldImage();
-            DialogUtil.showAwesomeDialog(
-                context,
-                DialogType.success,
-                "Thành công",
-                "Thông tin của bạn đã được thay đổi thành công!",
-                () => Get.off(() => const SettingsScreen()),
-                null);
-          } else {
-            DialogUtil.showAwesomeDialog(
-                context,
-                DialogType.error,
-                "Thất bại",
-                value.isNotEmpty
-                    ? value
-                    : 'Có lỗi xảy ra.\nVui lòng thử lại sau.',
-                () {},
-                null);
-          }
+    String imageUrl =
+        ac.avatar.value.isNotEmpty ? ac.avatar.value : defaultAvatarUrl;
+    await UserService()
+        .updateProfile(
+            imageUrl, emailController.text, displayNameController.text)
+        .then((value) {
+      context.loaderOverlay.hide();
+      if (value.isNotEmpty) {
+        if (value.toLowerCase().contains('thay đổi')) {
+          // deleteOldImage();
+          DialogUtil.showAwesomeDialog(
+              context,
+              DialogType.success,
+              "Thành công",
+              "Thông tin của bạn đã được thay đổi thành công!",
+              () => Get.off(() => const SettingsScreen()),
+              null);
         } else {
           DialogUtil.showAwesomeDialog(
               context,
               DialogType.error,
               "Thất bại",
-              value.isNotEmpty ? value : 'Thông tin người dùng không đúng.',
+              value.isNotEmpty
+                  ? value
+                  : 'Có lỗi xảy ra.\nVui lòng thử lại sau.',
               () {},
               null);
         }
-      });
-    } else {
-      context.loaderOverlay.hide();
-      DialogUtil.showAwesomeDialog(context, DialogType.error, "Thất bại",
-          "Có lỗi xảy ra.\nVui lòng thử lại sau.", () {}, null);
-    }
+      } else {
+        DialogUtil.showAwesomeDialog(
+            context,
+            DialogType.error,
+            "Thất bại",
+            value.isNotEmpty ? value : 'Thông tin người dùng không đúng.',
+            () {},
+            null);
+      }
+    });
   }
 
   handleCancel() async {

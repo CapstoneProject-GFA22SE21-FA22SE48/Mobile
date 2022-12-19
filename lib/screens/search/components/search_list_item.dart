@@ -208,7 +208,7 @@ class SearchListItem extends StatelessWidget {
                         CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
                   ), //show progress  while loading image
                   errorWidget: (context, url, error) =>
-                      Image.asset("assets/images/alt_image.png"),
+                      Image.asset("assets/images/alt_img.png"),
                   //show no iamge availalbe image on error laoding
                 ),
                 // searchSignDTO!.imageUrl != null ?

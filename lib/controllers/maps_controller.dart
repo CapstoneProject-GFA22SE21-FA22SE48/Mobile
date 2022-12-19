@@ -6,8 +6,8 @@ import 'package:vnrdn_tai/models/GPSSign.dart';
 class MapsController extends GetxController {
   static MapsController instance = Get.find();
   Location location = Location();
-  var listSigns = [].obs;
-  var listNotiSigns = [].obs;
+  final listSigns = [].obs;
+  final listNotiSigns = [].obs;
   final zoom = 18.0.obs;
 
   @override

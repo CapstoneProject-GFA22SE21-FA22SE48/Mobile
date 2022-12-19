@@ -3,6 +3,7 @@ import 'package:jwt_decode/jwt_decode.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/controllers/maps_controller.dart';
 
 class IOUtils {
   static Future initialize() async {
@@ -127,5 +128,27 @@ class IOUtils {
     ac.updateStatus(5);
     ac.updateAvatar('');
     ac.updateDisplayName('');
+  }
+
+  static Future<void> saveNotiList(
+      List<dynamic> selectedNotiList, MapsController mc) async {
+    print(selectedNotiList.length);
+    mc.updateListNotiSigns(selectedNotiList.toList());
+    print('----- ${mc.listNotiSigns.length}');
+    await saveToStorage('notiList', mc.listNotiSigns.join(';;'));
+
+    // if (selectedNotiList.isNotEmpty) {
+    //   // await saveToStorage('notiList', selectedNotiList.join(";;"));
+    // } else {
+    //   await removeData('notiList');
+    // }
+  }
+
+  static void getNotiList(MapsController mc) {
+    getFromStorage('notiList').then((list) {
+      List<String> tmp = list.split(';;').toList();
+      mc.updateListNotiSigns(
+          tmp.where((element) => element.isNotEmpty).toList());
+    });
   }
 }

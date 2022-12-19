@@ -57,10 +57,12 @@ class AnalysisScreen extends StatelessWidget {
             onTap: () {
               ac.stopImageStream();
               if (isAddGps) {
-                Get.off(() => CreateGpssignScreen(
-                      imagePath: ac.imagePathScan ?? "",
-                      signNumber: name,
-                      adminId: adminId,
+                Get.to(() => LoaderOverlay(
+                      child: CreateGpssignScreen(
+                        imagePath: ac.imagePathScan ?? "",
+                        signNumber: name,
+                        adminId: adminId,
+                      ),
                     ));
               } else {
                 SearchController sc = Get.put(SearchController());
@@ -113,7 +115,10 @@ class AnalysisScreen extends StatelessWidget {
                 onPressed: (() {
                   ac.stopImageStream();
                   if (isAddGps) {
-                    Get.off(() => CreateGpssignScreen());
+                    Get.off(() => LoaderOverlay(
+                            child: CreateGpssignScreen(
+                          adminId: adminId,
+                        )));
                   } else {
                     Get.offAll(() => const ContainerScreen());
                   }
@@ -313,10 +318,12 @@ class AnalysisScreen extends StatelessWidget {
                               onTap: () {
                                 ac.stopImageStream();
                                 if (isAddGps) {
-                                  Get.off(() => CreateGpssignScreen(
-                                      adminId: adminId,
-                                      imagePath: ac.imagePathScan ?? "",
-                                      signNumber: name));
+                                  Get.off(() => LoaderOverlay(
+                                        child: CreateGpssignScreen(
+                                            adminId: adminId,
+                                            imagePath: ac.imagePathScan ?? "",
+                                            signNumber: name),
+                                      ));
                                 } else {
                                   SearchController sc =
                                       Get.put(SearchController());
@@ -384,7 +391,7 @@ class AnalysisScreen extends StatelessWidget {
   void handleFeedbackContent(BuildContext context) async {
     GlobalController gc = Get.put(GlobalController());
     if (gc.userId.value.isNotEmpty) {
-      Get.to(() => const LoaderOverlay(
+      Get.off(() => const LoaderOverlay(
             child: SignContentFeedbackScreen(),
           ));
     } else {

@@ -15,7 +15,7 @@ class LoginScreen extends StatelessWidget {
 
   void onInit() {
     // need call shared pref instead
-    GlobalController gc = Get.put(GlobalController());
+    GlobalController gc = Get.find<GlobalController>();
 
     // String token = IOUtils.getFromStorage("token") as String;
 

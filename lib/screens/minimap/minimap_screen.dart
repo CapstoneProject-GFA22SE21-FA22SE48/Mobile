@@ -34,13 +34,13 @@ class MinimapScreen extends StatefulWidget {
 }
 
 class _MinimapState extends State<MinimapScreen> {
-  GlobalController gc = Get.put(GlobalController());
-  AuthController ac = Get.put(AuthController());
+  GlobalController gc = Get.find<GlobalController>();
+  AuthController ac = Get.find<AuthController>();
   final Completer<GoogleMapController> gmapController = Completer();
   final CustomInfoWindowController _infoWindowcontroller =
       CustomInfoWindowController();
   late final NotificationService notificationService;
-  MapsController mc = Get.put(MapsController());
+  MapsController mc = Get.find<MapsController>();
 
   late List<GPSSign> gpsSigns = [];
   final List<Marker> _markers = <Marker>[].obs;
@@ -54,12 +54,25 @@ class _MinimapState extends State<MinimapScreen> {
     _markers.clear();
 
     for (var s in list) {
-      String sFullName = 'Biển ';
+      String sFullName = '';
       sFullName += (s.signName != null
           ? s.signName!.split(" \"").last.split("\"").first
-          : 'không xác định');
-      String sName =
-          sFullName.length > 30 ? sFullName.substring(1, 30) : sFullName;
+          : 'Biển không xác định');
+      int splitIndex = sFullName.length > 20
+          ? sFullName.substring(19).contains(' ')
+              ? sFullName.substring(19).indexOf(' ') + 19
+              : -1
+          : -1;
+      String sName = sFullName.length > 20
+          ? splitIndex > 0
+              ? sFullName.substring(0, splitIndex)
+              : sFullName
+          : sFullName;
+      String sName2 = sFullName.length > 40
+          ? '${sFullName.substring(splitIndex, 40)}...'
+          : splitIndex > 0
+              ? sFullName.substring(splitIndex)
+              : '';
       var testImagePath =
           ImageUtil.getLocalImagePathFromUrl(s.imageUrl!, mc.zoom.value);
       var bytes = (await rootBundle.load(testImagePath!)).buffer.asUint8List();
@@ -116,7 +129,7 @@ class _MinimapState extends State<MinimapScreen> {
                                   const CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
                             ), //show progress  while loading image
                             errorWidget: (context, url, error) =>
-                                Image.asset("assets/images/alt_image.png"),
+                                Image.asset("assets/images/alt_img.png"),
                             //show no iamge availalbe image on error laoding
                           ),
                         ),
@@ -134,6 +147,22 @@ class _MinimapState extends State<MinimapScreen> {
                             ),
                           ],
                         ),
+                        sName2.isNotEmpty
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    sName2,
+                                    style: const TextStyle(
+                                      color: Colors.black54,
+                                      fontSize: FONTSIZES.textLarge,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container(),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: kDefaultPaddingValue / 2),
@@ -210,7 +239,7 @@ class _MinimapState extends State<MinimapScreen> {
         } else {
           count++;
         }
-        print(count);
+        // print(count);
       } else {
         count++;
         currentLocation = newLoc;
@@ -220,7 +249,8 @@ class _MinimapState extends State<MinimapScreen> {
         count = 0;
         getSignsList(currentLocation!);
       }
-      if (distance.round() > 1) {
+      if (distance.round() > 0) {
+        print('accessed');
         getRangeFromUser(newLoc);
       }
       if (mounted) {
@@ -230,19 +260,32 @@ class _MinimapState extends State<MinimapScreen> {
   }
 
   getRangeFromUser(LocationData userLocation) async {
+    MapsController mc = Get.find<MapsController>();
     if (mc.listSigns.isNotEmpty) {
-      for (var sign in mc.listSigns.value) {
+      for (var sign in mc.listSigns) {
         var distance = LocationUtil.distanceInM(
             LatLng(userLocation.latitude!, userLocation.longitude!),
             LatLng(sign.latitude, sign.longitude));
         if (distance.round() <= 5) {
-          await notificationService.showLocalNotification(
-              id: 0,
-              title: "Cảnh báo!!!",
-              image: sign.imageUrl!,
-              body:
-                  "Bạn đang tới gần biển số ${sign.imageUrl!.split("%2F")[2].split(".png")[0]}",
-              payload: "Redirecting...");
+          if (mc.listNotiSigns.isNotEmpty) {
+            if (mc.listNotiSigns.toList().firstWhereOrNull(
+                    (notiSign) => notiSign == sign.signName) !=
+                null) {
+              await notificationService.showLocalNotification(
+                  id: 0,
+                  title: "Cảnh báo!!!",
+                  image: sign.imageUrl!,
+                  body: "Bạn đang tới gần biển ${sign.signName}",
+                  payload: "Redirecting...");
+            }
+          } else {
+            await notificationService.showLocalNotification(
+                id: 0,
+                title: "Cảnh báo!!!",
+                image: sign.imageUrl!,
+                body: "Bạn đang tới gần biển ${sign.signName}",
+                payload: "Redirecting...");
+          }
         }
       }
     }
@@ -283,7 +326,7 @@ class _MinimapState extends State<MinimapScreen> {
 
   void listenToNotificationStream() {
     notificationService.behaviorSubject.listen((payload) {
-      print('[MINIMAP] listening notifications');
+      // print('[MINIMAP] listening notifications');
       // gc.updateTab(3);
       // Get.to(() => const ContainerScreen());
     });
@@ -364,18 +407,32 @@ class _MinimapState extends State<MinimapScreen> {
                   offset: 0,
                 ),
                 Positioned(
-                  bottom: 0,
-                  left: 0,
-                  child: IconButton(
-                      color: mc.listNotiSigns.isNotEmpty
-                          ? Colors.blueAccent
-                          : Colors.grey,
-                      splashColor: Colors.white,
-                      splashRadius: 10,
-                      padding: const EdgeInsets.all(kDefaultPaddingValue),
-                      onPressed: () =>
-                          Get.to(() => const CustomizeNotificationScreen()),
-                      icon: const Icon(Icons.dashboard_customize_rounded)),
+                  top: kDefaultPaddingValue * 6 + 6,
+                  left: kDefaultPaddingValue,
+                  child: Opacity(
+                    opacity: 0.8,
+                    child: Material(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(kDefaultPaddingValue / 2),
+                      shadowColor: Colors.grey.shade300,
+                      elevation: 1,
+                      child: InkWell(
+                        borderRadius:
+                            BorderRadius.circular(kDefaultPaddingValue / 2),
+                        onTap: () => Get.to(() => const LoaderOverlay(
+                              child: CustomizeNotificationScreen(),
+                            )),
+                        child: const Padding(
+                          padding: EdgeInsets.all(kDefaultPaddingValue / 2),
+                          child: Icon(
+                            Icons.dashboard_customize_rounded,
+                            color: Color.fromARGB(221, 26, 26, 26),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 )
               ],
             ),

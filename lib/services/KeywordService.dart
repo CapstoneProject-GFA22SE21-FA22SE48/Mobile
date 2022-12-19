@@ -15,7 +15,6 @@ class KeywordSerivce {
       final res = await http
           .get(Uri.parse("${url}Keywords"))
           .timeout(const Duration(seconds: TIME_OUT));
-      print(res.body);
       if (res.statusCode == 200) {
         return parseKeywords(res.body);
       } else {

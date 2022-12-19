@@ -61,13 +61,6 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
           DropdownMenuItem(
             value: sign.name,
             child: Row(children: [
-              // Image.asset(
-              //   ImageUtil.getLocalImagePathFromUrl(sign.imageUrl!, 0.0)!,
-              //   scale: 1,
-              //   errorBuilder: (context, error, stackTrace) {
-              //     return Image.asset('assets/images/alt_img.png');
-              //   },
-              // ),
               CachedNetworkImage(
                 imageUrl: sign.imageUrl!.split('&token').first,
                 imageBuilder: (context, imageProvider) => Container(
@@ -85,7 +78,7 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
                       const CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
                 ), //show progress  while loading image
                 errorWidget: (context, url, error) =>
-                    Image.asset("assets/images/alt_image.png"),
+                    Image.asset("assets/images/alt_img.png"),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: kDefaultPaddingValue),
@@ -142,9 +135,7 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
 
     setState(() {
       pickedFile = PlatformFile(
-          name: captured.path.split('/').last,
-          path: captured.path,
-          size: 1024 * 1024 * 30);
+          name: captured.path.split('/').last, path: captured.path, size: 1024);
     });
   }
 
@@ -152,19 +143,24 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
     // final captured = await imagePicker.getImage(source: ImageSource.camera);
     // if (captured == null) return;
     setState(() {
-      pickedFile = PlatformFile(
-          name: path.split('/').last, path: path, size: 1024 * 1024 * 30);
+      pickedFile =
+          PlatformFile(name: path.split('/').last, path: path, size: 1024);
     });
   }
 
-  Future uploadImage(BuildContext context) async {
+  Future submitCreate(BuildContext context) async {
+    print(context.loaderOverlay);
     context.loaderOverlay.show();
+
+    print('Size before: ${pickedFile!.size}');
+    print('Size actual: ${File(pickedFile!.path!).lengthSync()}');
+
     GlobalController gc = Get.put(GlobalController());
     // final oldFile = widget.imageUrl.split('user-feedbacks/sign-position/').last;
     final ext = pickedFile!.name.split('.').last;
     final path =
         'user-feedbacks/sign-position/confirmed_${gc.userId.value}_${DateTime.now().toUtc()}.$ext';
-    final file = File(pickedFile!.path!);
+    final file = await compressFile(File(pickedFile!.path!));
 
     final ref = FirebaseStorage.instance.ref().child(path);
     uploadTask = ref.putFile(file);
@@ -226,7 +222,7 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
           _listDropdownAdmin.firstWhere((e) => e.value == rom.adminId).value,
       "createdDate": rom.createdDate,
       "subjectType": "GPSSign",
-      "relatedDescription": "GPS của biển số $name...",
+      "relatedDescription": "GPS của biển số...",
       "action": action,
       "isRead": false
     });
@@ -255,8 +251,8 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
       if (widget.imagePath != "") {
         setImage(widget.imagePath);
       }
+      context.loaderOverlay.hide();
       if (mounted) {
-        context.loaderOverlay.hide();
         setState(() {});
       }
     });
@@ -265,245 +261,254 @@ class _CreateGpssignState extends State<CreateGpssignScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        elevation: 0,
-        title: const Text('Tạo biển báo tại đây'),
-      ),
-      body: KeyboardVisibilityBuilder(
-        builder: (kContext, isKeyboardVisible) {
-          return SingleChildScrollView(
-            padding: kDefaultPadding,
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text(
-                  'Gửi yêu cầu tới:',
-                  style: TextStyle(
-                    fontSize: FONTSIZES.textPrimary,
-                    color: Colors.blueAccent,
-                    fontWeight: FontWeight.bold,
+    return WillPopScope(
+      onWillPop: () async {
+        Get.offAll(() => ContainerScreen());
+        return await true;
+      },
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+          elevation: 0,
+          title: const Text('Tạo biển báo tại đây'),
+        ),
+        body: KeyboardVisibilityBuilder(
+          builder: (kContext, isKeyboardVisible) {
+            return SingleChildScrollView(
+              padding: kDefaultPadding,
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Gửi yêu cầu tới:',
+                    style: TextStyle(
+                      fontSize: FONTSIZES.textPrimary,
+                      color: Colors.blueAccent,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: kDefaultPaddingValue / 2),
-                DropdownButtonHideUnderline(
-                  child: GFDropdown(
-                    hint: const Text('Chọn quản trị viên'),
-                    padding: const EdgeInsets.all(kDefaultPaddingValue / 2),
-                    borderRadius: BorderRadius.circular(5),
-                    border: const BorderSide(color: Colors.grey, width: 1),
-                    dropdownButtonColor: Colors.white,
-                    value: adminId,
-                    onChanged: (newValue) {
-                      if (mounted) {
-                        setState(() {
-                          adminId = newValue;
-                        });
-                      }
-                    },
-                    items: _listDropdownAdmin,
-                    isExpanded: true,
+                  const SizedBox(height: kDefaultPaddingValue / 2),
+                  DropdownButtonHideUnderline(
+                    child: GFDropdown(
+                      hint: const Text('Chọn quản trị viên'),
+                      padding: const EdgeInsets.all(kDefaultPaddingValue / 2),
+                      borderRadius: BorderRadius.circular(5),
+                      border: const BorderSide(color: Colors.grey, width: 1),
+                      dropdownButtonColor: Colors.white,
+                      value: adminId,
+                      onChanged: (newValue) {
+                        if (mounted) {
+                          setState(() {
+                            adminId = newValue;
+                          });
+                        }
+                      },
+                      items: _listDropdownAdmin,
+                      isExpanded: true,
+                    ),
                   ),
-                ),
-                const SizedBox(height: kDefaultPaddingValue),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Biển báo:',
-                      style: TextStyle(
-                        fontSize: FONTSIZES.textPrimary,
-                        color: Colors.blueAccent,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: kDefaultPaddingValue / 2),
-                    DropdownButtonHideUnderline(
-                      child: DropdownButton2(
-                        isExpanded: true,
-                        buttonOverlayColor:
-                            MaterialStateProperty.all(Colors.white),
-                        buttonPadding: const EdgeInsets.symmetric(
-                            horizontal: kDefaultPaddingValue / 2),
-                        buttonDecoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(color: Colors.grey, width: 1),
+                  const SizedBox(height: kDefaultPaddingValue),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Biển báo:',
+                        style: TextStyle(
+                          fontSize: FONTSIZES.textPrimary,
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.bold,
                         ),
-                        hint: const Text(
-                          'Chọn biển báo',
-                          style: TextStyle(
-                            fontSize: FONTSIZES.textPrimary,
-                            color: kDisabledTextColor,
-                          ),
-                        ),
-
-                        items: _listDropdownSigns.isNotEmpty
-                            ? _listDropdownSigns.toList()
-                            : [
-                                DropdownMenuItem(
-                                  alignment: Alignment.centerLeft,
-                                  child: Transform.scale(
-                                    scale: 0.6,
-                                    child: loadingScreen(),
-                                  ),
-                                )
-                              ],
-                        value: selectedSign,
-                        onChanged: (value) {
-                          if (mounted) {
-                            setState(() {
-                              selectedSign = value as String;
-                            });
-                          }
-                        },
-                        scrollbarAlwaysShow: true,
-                        scrollbarRadius:
-                            const Radius.circular(kDefaultPaddingValue),
-                        buttonHeight: selectedSign == null ? 5.h : 8.h,
-                        buttonWidth: 100.w,
-                        itemHeight: 8.h,
-                        buttonElevation: 10,
-                        dropdownElevation: 2,
-                        dropdownMaxHeight: 50.h,
-                        dropdownDecoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                bottomRight:
-                                    Radius.circular(kDefaultPaddingValue),
-                                bottomLeft:
-                                    Radius.circular(kDefaultPaddingValue))),
-
-                        searchController: searchSignController,
-                        searchInnerWidget: Padding(
-                          padding: const EdgeInsets.only(
-                            top: 8,
-                            bottom: 4,
-                            right: 8,
-                            left: 8,
-                          ),
-                          child: TextFormField(
-                            controller: searchSignController,
-                            decoration: InputDecoration(
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: kDefaultPaddingValue / 2,
-                                vertical: kDefaultPaddingValue,
-                              ),
-                              hintText: 'Tìm biển báo...',
-                              hintStyle: const TextStyle(fontSize: 18),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(
-                                    kDefaultPaddingValue / 2),
-                              ),
-                            ),
-                          ),
-                        ),
-                        searchMatchFn: (item, searchValue) {
-                          return (item.value.toString().contains(searchValue));
-                        },
-                        //This to clear the search value when you close the menu
-                        onMenuStateChange: (isOpen) {
-                          if (!isOpen) {
-                            searchSignController.clear();
-                          }
-                        },
                       ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: kDefaultPaddingValue),
-                Row(
-                  children: [
-                    const Text(
-                      'Hình ảnh xác nhận:',
-                      style: TextStyle(
-                        fontSize: FONTSIZES.textPrimary,
-                        color: Colors.blueAccent,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Spacer(),
-                    ElevatedButton(
-                      onPressed: () => Get.off(() =>
-                          AnalysisScreen(isAddGps: true, adminId: adminId)),
-                      child: const RotatedBox(
-                          quarterTurns: 1, child: Icon(Icons.flip_rounded)),
-                    ),
-                    SizedBox(width: 1.w),
-                    ElevatedButton(
-                      onPressed: captureImage,
-                      child: const Icon(Icons.camera_alt_rounded),
-                    ),
-                    SizedBox(width: 1.w),
-                    ElevatedButton(
-                      onPressed: selectImage,
-                      child: const Icon(Icons.upload_rounded),
-                    ),
-                  ],
-                ),
-                Container(
-                  height: pickedFile != null ? 50.h : 30.h,
-                  width: 100.w,
-                  margin: const EdgeInsets.only(top: kDefaultPaddingValue / 2),
-                  child: pickedFile != null
-                      ? Container(
-                          height: 15.h,
-                          width: 80.w,
-                          decoration: BoxDecoration(
+                      const SizedBox(height: kDefaultPaddingValue / 2),
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton2(
+                          isExpanded: true,
+                          buttonOverlayColor:
+                              MaterialStateProperty.all(Colors.white),
+                          buttonPadding: const EdgeInsets.symmetric(
+                              horizontal: kDefaultPaddingValue / 2),
+                          buttonDecoration: BoxDecoration(
                             color: Colors.white,
-                            border: Border.all(
-                              color: Colors.grey,
-                              style: BorderStyle.solid,
-                              width: 3,
-                            ),
-                            borderRadius: BorderRadius.circular(
-                              kDefaultPaddingValue / 2,
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(color: Colors.grey, width: 1),
+                          ),
+                          hint: const Text(
+                            'Chọn biển báo',
+                            style: TextStyle(
+                              fontSize: FONTSIZES.textPrimary,
+                              color: kDisabledTextColor,
                             ),
                           ),
-                          child: Center(
-                            child: Image.file(
-                              File(pickedFile!.path!),
-                              fit: BoxFit.contain,
+
+                          items: _listDropdownSigns.isNotEmpty
+                              ? _listDropdownSigns.toList()
+                              : [
+                                  DropdownMenuItem(
+                                    alignment: Alignment.centerLeft,
+                                    child: Transform.scale(
+                                      scale: 0.6,
+                                      child: loadingScreen(),
+                                    ),
+                                  )
+                                ],
+                          value: selectedSign,
+                          onChanged: (value) {
+                            if (mounted) {
+                              setState(() {
+                                selectedSign = value as String;
+                              });
+                            }
+                          },
+                          scrollbarAlwaysShow: true,
+                          scrollbarRadius:
+                              const Radius.circular(kDefaultPaddingValue),
+                          buttonHeight: selectedSign == null ? 5.h : 8.h,
+                          buttonWidth: 100.w,
+                          itemHeight: 8.h,
+                          buttonElevation: 10,
+                          dropdownElevation: 2,
+                          dropdownMaxHeight: 50.h,
+                          dropdownDecoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  bottomRight:
+                                      Radius.circular(kDefaultPaddingValue),
+                                  bottomLeft:
+                                      Radius.circular(kDefaultPaddingValue))),
+
+                          searchController: searchSignController,
+                          searchInnerWidget: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8,
+                              bottom: 4,
+                              right: 8,
+                              left: 8,
+                            ),
+                            child: TextFormField(
+                              controller: searchSignController,
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: kDefaultPaddingValue / 2,
+                                  vertical: kDefaultPaddingValue,
+                                ),
+                                hintText: 'Tìm biển báo...',
+                                hintStyle: const TextStyle(fontSize: 18),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      kDefaultPaddingValue / 2),
+                                ),
+                              ),
                             ),
                           ),
-                        )
-                      : Container(
-                          height: 10.h,
-                          width: 100.w,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Colors.grey,
-                              style: BorderStyle.solid,
-                              width: 3,
-                            ),
-                            borderRadius: BorderRadius.circular(
-                              kDefaultPaddingValue / 2,
-                            ),
-                          ),
+                          searchMatchFn: (item, searchValue) {
+                            return (item.value
+                                .toString()
+                                .contains(searchValue));
+                          },
+                          //This to clear the search value when you close the menu
+                          onMenuStateChange: (isOpen) {
+                            if (!isOpen) {
+                              searchSignController.clear();
+                            }
+                          },
                         ),
-                ),
-                const SizedBox(
-                  height: kDefaultPaddingValue,
-                ),
-                ElevatedButton(
-                  onPressed: pickedFile != null &&
-                          adminId != null &&
-                          selectedSign != null
-                      ? () => uploadImage(context)
-                      : null,
-                  child: Padding(
-                    padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),
-                    child: const Text('Gửi Xác nhận'),
+                      )
+                    ],
                   ),
-                ),
-              ],
-            ),
-          );
-        },
+                  const SizedBox(height: kDefaultPaddingValue),
+                  Row(
+                    children: [
+                      const Text(
+                        'Hình ảnh xác nhận:',
+                        style: TextStyle(
+                          fontSize: FONTSIZES.textPrimary,
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: () => Get.off(() =>
+                            AnalysisScreen(isAddGps: true, adminId: adminId)),
+                        child: const RotatedBox(
+                            quarterTurns: 1, child: Icon(Icons.flip_rounded)),
+                      ),
+                      SizedBox(width: 1.w),
+                      ElevatedButton(
+                        onPressed: captureImage,
+                        child: const Icon(Icons.camera_alt_rounded),
+                      ),
+                      SizedBox(width: 1.w),
+                      ElevatedButton(
+                        onPressed: selectImage,
+                        child: const Icon(Icons.upload_rounded),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    height: pickedFile != null ? 50.h : 30.h,
+                    width: 100.w,
+                    margin:
+                        const EdgeInsets.only(top: kDefaultPaddingValue / 2),
+                    child: pickedFile != null
+                        ? Container(
+                            height: 15.h,
+                            width: 80.w,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.grey,
+                                style: BorderStyle.solid,
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                kDefaultPaddingValue / 2,
+                              ),
+                            ),
+                            child: Center(
+                              child: Image.file(
+                                File(pickedFile!.path!),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            height: 10.h,
+                            width: 100.w,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.grey,
+                                style: BorderStyle.solid,
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                kDefaultPaddingValue / 2,
+                              ),
+                            ),
+                          ),
+                  ),
+                  const SizedBox(
+                    height: kDefaultPaddingValue,
+                  ),
+                  ElevatedButton(
+                    onPressed: pickedFile != null &&
+                            adminId != null &&
+                            selectedSign != null
+                        ? () => submitCreate(context)
+                        : null,
+                    child: Padding(
+                      padding: EdgeInsets.all((kDefaultPaddingValue / 8).h),
+                      child: const Text('Gửi Xác nhận'),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
