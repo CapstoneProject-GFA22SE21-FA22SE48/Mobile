@@ -59,7 +59,7 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    QuestionController qnController = Get.put(QuestionController());
+    QuestionController qnController = Get.find<QuestionController>();
 
     return WillPopScope(
       onWillPop: () async {
@@ -99,7 +99,7 @@ class _BodyState extends State<Body> {
                                 if (qnController
                                     .testCategoryId.value.isNotEmpty) {
                                   await saveStudyResultLocal(qnController);
-                                  Get.offAll(() => TestSetScreen(
+                                  Get.off(() => TestSetScreen(
                                         categoryName:
                                             qnController.testCategoryName.value,
                                         categoryId:
