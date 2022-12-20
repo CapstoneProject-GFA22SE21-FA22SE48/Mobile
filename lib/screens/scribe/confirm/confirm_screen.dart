@@ -11,6 +11,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/dropdown/gf_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:sizer/sizer.dart';
@@ -241,7 +242,7 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
       "subjectId": rom.modifyingGpssignId,
       "relatedDescription": "GPS của biển số...",
       "action": action,
-      "createdDate": DateTime.now().toLocal().toString(),
+      "createdDate": "${DateFormat('EEE MMM dd yyyy HH:mm:ss').format(DateTime.now())} GMT+0700 (Indochina Time)",
       "isRead": false
     });
     return true;

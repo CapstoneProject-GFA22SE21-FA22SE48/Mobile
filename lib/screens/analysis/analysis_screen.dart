@@ -391,7 +391,7 @@ class AnalysisScreen extends StatelessWidget {
   void handleFeedbackContent(BuildContext context) async {
     GlobalController gc = Get.put(GlobalController());
     if (gc.userId.value.isNotEmpty) {
-      Get.off(() => const LoaderOverlay(
+      Get.to(() => const LoaderOverlay(
             child: SignContentFeedbackScreen(),
           ));
     } else {
