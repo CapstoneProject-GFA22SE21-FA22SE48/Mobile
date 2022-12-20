@@ -73,35 +73,38 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void handleGLogin(BuildContext context) async {
-    FocusManager.instance.primaryFocus?.unfocus();
-    widget.parentContext.loaderOverlay.show();
-    // context.loaderOverlay.show();
-    await FirebaseAuthService().signInWithGoogle().then((value) {
-      AuthService()
-          .loginWithGmail(FirebaseAuthService().user.email!)
-          .then(((token) {
-        if (token.length > 1) {
-          afterLoggedIn(context, token);
-        } else {
-          widget.parentContext.loaderOverlay.hide();
-          isLoading(false);
-          // context.loaderOverlay.hide();
-          DialogUtil.showAwesomeDialog(
-              context,
-              DialogType.error,
-              "Đăng nhập thất bại",
-              "Có lỗi xảy ra!\nVui lòng thử lại sau",
-              () {},
-              null);
-        }
-      }));
-    });
+    if (!isLoading.value) {
+      FocusManager.instance.primaryFocus?.unfocus();
+      widget.parentContext.loaderOverlay.show();
+      context.loaderOverlay.show();
+      await FirebaseAuthService().signInWithGoogle().then((value) {
+        AuthService()
+            .loginWithGmail(FirebaseAuthService().user.email!)
+            .then(((token) {
+          if (token.length > 1) {
+            afterLoggedIn(context, token);
+          } else {
+            widget.parentContext.loaderOverlay.hide();
+            isLoading(false);
+            context.loaderOverlay.hide();
+            DialogUtil.showAwesomeDialog(
+                context,
+                DialogType.error,
+                "Đăng nhập thất bại",
+                "Có lỗi xảy ra!\nVui lòng thử lại sau",
+                () {},
+                null);
+          }
+        }));
+      });
+    }
   }
 
   // do after logged in
   void afterLoggedIn(BuildContext context, String token) async {
     await IOUtils.saveToStorage('token', token);
     widget.parentContext.loaderOverlay.hide();
+    context.loaderOverlay.hide();
     isLoading(false);
     // context.loaderOverlay.hide();
     IOUtils.setUserInfoController(token)
@@ -194,16 +197,6 @@ class _LoginFormState extends State<LoginForm> {
                   onPressed: isLoading.isFalse
                       ? () {
                           if (loginFormKey.currentState!.validate()) {
-                            // ScaffoldMessenger.of(context).showSnackBar(
-                            //   SnackBar(
-                            //     content: Row(
-                            //       children: const [
-                            //         // CircularProgressIndicator()
-                            //         Text('Đang xử lý'),
-                            //       ],
-                            //     ),
-                            //   ),
-                            // );
                             isKeyboardVisible = false;
                             handleLogin(context);
                           }

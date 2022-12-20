@@ -111,11 +111,7 @@ class _SearchLawDetailScreen extends State<SearchLawDetailScreen> {
                                           physics:
                                               const BouncingScrollPhysics(),
                                           child: SizedBox(
-                                            height: widget.searchLawDto!
-                                                        .additionalPenalty !=
-                                                    ""
-                                                ? 80.h
-                                                : 60.h,
+                                            height: 100.h,
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(

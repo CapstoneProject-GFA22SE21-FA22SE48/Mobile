@@ -225,7 +225,7 @@ class _ListRomScreenState extends State<ListRomScreen> {
                                                   errorWidget: (context, url,
                                                           error) =>
                                                       Image.asset(
-                                                          "assets/images/alt_image.png"),
+                                                          "assets/images/alt_img.png"),
                                                 ),
                                               ),
                                               const SizedBox(

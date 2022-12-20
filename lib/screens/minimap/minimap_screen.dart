@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,7 @@ import 'package:vnrdn_tai/models/GPSSign.dart';
 import 'package:vnrdn_tai/screens/auth/login_screen.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/screens/feedbacks/feedbacks_screen.dart';
+import 'package:vnrdn_tai/screens/minimap/components/customize-notification/customize_notification_screen.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
 import 'package:vnrdn_tai/services/NotificationService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -32,16 +34,17 @@ class MinimapScreen extends StatefulWidget {
 }
 
 class _MinimapState extends State<MinimapScreen> {
-  GlobalController gc = Get.put(GlobalController());
-  AuthController ac = Get.put(AuthController());
+  GlobalController gc = Get.find<GlobalController>();
+  AuthController ac = Get.find<AuthController>();
   final Completer<GoogleMapController> gmapController = Completer();
   final CustomInfoWindowController _infoWindowcontroller =
       CustomInfoWindowController();
   late final NotificationService notificationService;
-  MapsController mc = Get.put(MapsController());
+  MapsController mc = Get.find<MapsController>();
 
   late List<GPSSign> gpsSigns = [];
   final List<Marker> _markers = <Marker>[].obs;
+  int count = 0;
 
   LocationData? currentLocation;
   LocationData? lastFetchLocation;
@@ -51,7 +54,25 @@ class _MinimapState extends State<MinimapScreen> {
     _markers.clear();
 
     for (var s in list) {
-      String sName = s.imageUrl!.split("%2F")[2].split(".png")[0];
+      String sFullName = '';
+      sFullName += (s.signName != null
+          ? s.signName!.split(" \"").last.split("\"").first
+          : 'Biển không xác định');
+      int splitIndex = sFullName.length > 20
+          ? sFullName.substring(19).contains(' ')
+              ? sFullName.substring(19).indexOf(' ') + 19
+              : -1
+          : -1;
+      String sName = sFullName.length > 20
+          ? splitIndex > 0
+              ? sFullName.substring(0, splitIndex)
+              : sFullName
+          : sFullName;
+      String sName2 = sFullName.length > 40
+          ? '${sFullName.substring(splitIndex, 40)}...'
+          : splitIndex > 0
+              ? sFullName.substring(splitIndex)
+              : '';
       var testImagePath =
           ImageUtil.getLocalImagePathFromUrl(s.imageUrl!, mc.zoom.value);
       var bytes = (await rootBundle.load(testImagePath!)).buffer.asUint8List();
@@ -79,7 +100,7 @@ class _MinimapState extends State<MinimapScreen> {
                       borderRadius: BorderRadius.circular(kDefaultPaddingValue),
                       boxShadow: const [
                         BoxShadow(
-                          color: Colors.grey,
+                          color: Color(0xFFE0E0E0),
                           blurRadius: 4,
                           spreadRadius: 2,
                         ),
@@ -89,23 +110,62 @@ class _MinimapState extends State<MinimapScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        Expanded(
+                          child: CachedNetworkImage(
+                            imageUrl: s.imageUrl as String,
+                            imageBuilder: (context, imageProvider) => Container(
+                              width: 25.w,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  //image size fill
+                                  image: imageProvider,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                            placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              child:
+                                  const CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
+                            ), //show progress  while loading image
+                            errorWidget: (context, url, error) =>
+                                Image.asset("assets/images/alt_img.png"),
+                            //show no iamge availalbe image on error laoding
+                          ),
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              'Biển số: $sName',
+                              sName,
                               style: const TextStyle(
                                 color: Colors.black54,
-                                fontSize: FONTSIZES.textLarger,
+                                fontSize: FONTSIZES.textLarge,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
                         ),
+                        sName2.isNotEmpty
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    sName2,
+                                    style: const TextStyle(
+                                      color: Colors.black54,
+                                      fontSize: FONTSIZES.textLarge,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container(),
                         Padding(
-                          padding: const EdgeInsets.only(
-                              top: kDefaultPaddingValue / 2),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: kDefaultPaddingValue / 2),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -173,14 +233,24 @@ class _MinimapState extends State<MinimapScreen> {
         currentLocation = newLoc;
 
         if (distanceToFetch > 500) {
+          count = 0;
           lastFetchLocation = newLoc;
           getSignsList(currentLocation!);
+        } else {
+          count++;
         }
+        // print(count);
       } else {
+        count++;
         currentLocation = newLoc;
         lastFetchLocation = newLoc;
       }
+      if (count > 5) {
+        count = 0;
+        getSignsList(currentLocation!);
+      }
       if (distance.round() > 0) {
+        print('accessed');
         getRangeFromUser(newLoc);
       }
       if (mounted) {
@@ -190,19 +260,32 @@ class _MinimapState extends State<MinimapScreen> {
   }
 
   getRangeFromUser(LocationData userLocation) async {
+    MapsController mc = Get.find<MapsController>();
     if (mc.listSigns.isNotEmpty) {
-      for (var sign in mc.listSigns.value) {
+      for (var sign in mc.listSigns) {
         var distance = LocationUtil.distanceInM(
             LatLng(userLocation.latitude!, userLocation.longitude!),
             LatLng(sign.latitude, sign.longitude));
-        if (distance <= 10) {
-          await notificationService.showLocalNotification(
-              id: 0,
-              title: "Cảnh báo!!!",
-              image: sign.imageUrl!,
-              body:
-                  "Bạn đang tới gần biển số ${sign.imageUrl!.split("%2F")[2].split(".png")[0]}",
-              payload: "Redirecting...");
+        if (distance.round() <= 5) {
+          if (mc.listNotiSigns.isNotEmpty) {
+            if (mc.listNotiSigns.toList().firstWhereOrNull(
+                    (notiSign) => notiSign == sign.signName) !=
+                null) {
+              await notificationService.showLocalNotification(
+                  id: 0,
+                  title: "Cảnh báo!!!",
+                  image: sign.imageUrl!,
+                  body: "Bạn đang tới gần biển ${sign.signName}",
+                  payload: "Redirecting...");
+            }
+          } else {
+            await notificationService.showLocalNotification(
+                id: 0,
+                title: "Cảnh báo!!!",
+                image: sign.imageUrl!,
+                body: "Bạn đang tới gần biển ${sign.signName}",
+                payload: "Redirecting...");
+          }
         }
       }
     }
@@ -214,7 +297,7 @@ class _MinimapState extends State<MinimapScreen> {
           .GetNearbySigns(
         curLocation.latitude!,
         curLocation.longitude!,
-        100,
+        1,
       )
           .then((signs) {
         if (signs.isNotEmpty) {
@@ -226,29 +309,39 @@ class _MinimapState extends State<MinimapScreen> {
     }
   }
 
-  @override
-  void initState() {
-    notificationService = NotificationService();
-    listenToNotificationStream();
-    notificationService.initializePlatformNotifications();
+  Future<bool> grantPermissionLocation() async {
+    if (await Permission.location.isGranted) {
+      return true;
+    } else {
+      var pLocation = await Permission.location.request();
 
-    Permission.location.request().then((value) {
-      if (value.isGranted) {
-        getCurrentLocation().then((value) {
-          onLocationChanged();
-        });
+      if (pLocation.isPermanentlyDenied || pLocation.isDenied) {
+        openAppSettings();
+        return false;
       } else {
-        gc.updateTab(TABS.SEARCH);
+        return true;
       }
-    });
-
-    super.initState();
+    }
   }
 
   void listenToNotificationStream() {
     notificationService.behaviorSubject.listen((payload) {
-      gc.updateTab(3);
-      Get.to(() => const ContainerScreen());
+      // print('[MINIMAP] listening notifications');
+      // gc.updateTab(3);
+      // Get.to(() => const ContainerScreen());
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    grantPermissionLocation().then((value) {
+      if (value) {
+        notificationService = NotificationService();
+        listenToNotificationStream();
+        notificationService.initializePlatformNotifications();
+        getCurrentLocation().then((value) => onLocationChanged());
+      }
     });
   }
 
@@ -309,10 +402,38 @@ class _MinimapState extends State<MinimapScreen> {
                 ),
                 CustomInfoWindow(
                   controller: _infoWindowcontroller,
-                  height: 12.h,
-                  width: 48.w,
-                  offset: 1.h,
+                  height: 24.h,
+                  width: 70.w,
+                  offset: 0,
                 ),
+                Positioned(
+                  top: kDefaultPaddingValue * 6 + 6,
+                  left: kDefaultPaddingValue,
+                  child: Opacity(
+                    opacity: 0.8,
+                    child: Material(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(kDefaultPaddingValue / 2),
+                      shadowColor: Colors.grey.shade300,
+                      elevation: 1,
+                      child: InkWell(
+                        borderRadius:
+                            BorderRadius.circular(kDefaultPaddingValue / 2),
+                        onTap: () => Get.to(() => const LoaderOverlay(
+                              child: CustomizeNotificationScreen(),
+                            )),
+                        child: const Padding(
+                          padding: EdgeInsets.all(kDefaultPaddingValue / 2),
+                          child: Icon(
+                            Icons.dashboard_customize_rounded,
+                            color: Color.fromARGB(221, 26, 26, 26),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
               ],
             ),
     );

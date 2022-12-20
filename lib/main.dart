@@ -7,6 +7,7 @@ import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
+import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/shared/bindings.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -39,6 +40,10 @@ class MyApp extends StatelessWidget {
 
   getAllData(BuildContext context) async {
     GlobalController gc = Get.put(GlobalController());
+
+    MapsController mapsController = Get.put(MapsController());
+
+    IOUtils.getNotiList(mapsController);
     if (gc.userId.isEmpty) {
       var token = await IOUtils.getFromStorage('token');
       if (token.isNotEmpty) {
@@ -50,7 +55,7 @@ class MyApp extends StatelessWidget {
   }
 
   getPermission() async {
-    GlobalController gc = Get.put(GlobalController());
+    GlobalController gc = Get.find<GlobalController>();
     await Permission.notification.request().then((value) {
       if (value.isGranted) {
         gc.updatePushNotiMode(true);

@@ -57,10 +57,12 @@ class AnalysisScreen extends StatelessWidget {
             onTap: () {
               ac.stopImageStream();
               if (isAddGps) {
-                Get.off(() => CreateGpssignScreen(
-                      imagePath: ac.imagePathScan ?? "",
-                      signNumber: name,
-                      adminId: adminId,
+                Get.to(() => LoaderOverlay(
+                      child: CreateGpssignScreen(
+                        imagePath: ac.imagePathScan ?? "",
+                        signNumber: name,
+                        adminId: adminId,
+                      ),
                     ));
               } else {
                 SearchController sc = Get.put(SearchController());
@@ -113,7 +115,10 @@ class AnalysisScreen extends StatelessWidget {
                 onPressed: (() {
                   ac.stopImageStream();
                   if (isAddGps) {
-                    Get.off(() => CreateGpssignScreen());
+                    Get.off(() => LoaderOverlay(
+                            child: CreateGpssignScreen(
+                          adminId: adminId,
+                        )));
                   } else {
                     Get.offAll(() => const ContainerScreen());
                   }
@@ -299,24 +304,26 @@ class AnalysisScreen extends StatelessWidget {
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold)),
                     )
-                  : controller.boxes.isNotEmpty
+                  : controller.suggestBoxes.isNotEmpty
                       ? ListView(
                           scrollDirection: Axis.horizontal,
-                          children: List.generate(controller.boxes.length,
-                              (int index) {
+                          children: List.generate(
+                              controller.suggestBoxes.length, (int index) {
                             // var name = "102";
                             var name = ac.mapData![int.parse(controller
-                                    .boxes[index][0]
+                                    .suggestBoxes[index][0]
                                     .replaceAll(".0", ""))]
                                 .toString();
                             return InkWell(
                               onTap: () {
                                 ac.stopImageStream();
                                 if (isAddGps) {
-                                  Get.off(() => CreateGpssignScreen(
-                                      adminId: adminId,
-                                      imagePath: ac.imagePathScan ?? "",
-                                      signNumber: name));
+                                  Get.off(() => LoaderOverlay(
+                                        child: CreateGpssignScreen(
+                                            adminId: adminId,
+                                            imagePath: ac.imagePathScan ?? "",
+                                            signNumber: name),
+                                      ));
                                 } else {
                                   SearchController sc =
                                       Get.put(SearchController());
@@ -384,7 +391,7 @@ class AnalysisScreen extends StatelessWidget {
   void handleFeedbackContent(BuildContext context) async {
     GlobalController gc = Get.put(GlobalController());
     if (gc.userId.value.isNotEmpty) {
-      Get.to(() => const LoaderOverlay(
+      Get.off(() => const LoaderOverlay(
             child: SignContentFeedbackScreen(),
           ));
     } else {

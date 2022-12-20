@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/components/loader/gf_loader.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:path/path.dart';
+// ignore: depend_on_referenced_packages
 import 'package:async/async.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -14,7 +13,7 @@ import 'package:vnrdn_tai/shared/constants.dart';
 Future<File> compressFile(File file) async {
   final filePath = file.absolute.path;
 
-  final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+  final lastIndex = filePath.lastIndexOf(RegExp(r'.jp'));
   final splitted = filePath.substring(0, (lastIndex));
   final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
   var result = (await FlutterImageCompress.compressAndGetFile(
@@ -22,7 +21,7 @@ Future<File> compressFile(File file) async {
     minWidth: 640,
     file.absolute.path,
     outPath,
-    // quality: 50,
+    quality: 60,
   ))!;
 
   print(file.lengthSync());

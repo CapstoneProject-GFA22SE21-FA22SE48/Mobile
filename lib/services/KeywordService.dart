@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:vnrdn_tai/models/Keyword.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
@@ -16,7 +15,6 @@ class KeywordSerivce {
       final res = await http
           .get(Uri.parse("${url}Keywords"))
           .timeout(const Duration(seconds: TIME_OUT));
-      print(res.body);
       if (res.statusCode == 200) {
         return parseKeywords(res.body);
       } else {

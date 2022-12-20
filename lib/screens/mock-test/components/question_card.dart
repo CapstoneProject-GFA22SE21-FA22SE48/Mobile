@@ -42,7 +42,7 @@ class QuestionCard extends StatelessWidget {
                   const CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
             ), //show progress  while loading image
             errorWidget: (context, url, error) =>
-                Image.asset("assets/images/alt_image.png"),
+                Image.asset("assets/images/alt_img.png"),
           ),
           // Image.network(
           //   question.imageUrl as String,

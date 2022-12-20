@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -10,13 +11,18 @@ import 'package:get/get.dart';
 import 'package:getwidget/components/dropdown/gf_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/models/GPSSign.dart';
+import 'package:vnrdn_tai/models/SignModificationRequest.dart';
+import 'package:vnrdn_tai/models/dtos/GPSSignManipulateDTO.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
 import 'package:vnrdn_tai/services/FeedbackService.dart';
 import 'package:vnrdn_tai/services/GPSSignService.dart';
+import 'package:vnrdn_tai/services/SignModificationRequestService.dart';
+import 'package:vnrdn_tai/services/UserService.dart';
 import 'package:vnrdn_tai/shared/constants.dart';
 import 'package:vnrdn_tai/utils/dialog_util.dart';
 
@@ -37,7 +43,10 @@ class FeedbacksScreen extends StatefulWidget {
 class _FeedbackClassState extends State<FeedbacksScreen> {
   final imagePicker = ImagePicker();
   List<DropdownMenuItem<String>> _listDropdown = [];
+  late List<DropdownMenuItem> _listDropdownAdmin = [];
+  dynamic adminId;
   dynamic reason;
+  dynamic selectedSign;
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
 
@@ -90,47 +99,109 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
       MapsController mapsController = Get.put(MapsController());
 
       mapsController.location.getLocation().then((location) {
-        GPSSignService()
-            .AddGpsSign(
-                widget.sign != null ? widget.sign!.signId : null,
-                widget.sign != null
-                    ? widget.sign!.latitude
-                    : location.latitude!,
-                widget.sign != null
-                    ? widget.sign!.longitude
-                    : location.longitude!,
-                reason == 'noSignHere' ? true : false)
-            .then((newSign) {
-          FeedbackService()
-              .createGpsSignsModificationRequest(
-            reason,
-            url.split('&token').first,
-            widget.sign,
-            newSign,
-          )
-              .then((value) {
+        AuthController ac = Get.find<AuthController>();
+
+        if (ac.role.value == 1) {
+          SignModificationRequestService()
+              .scribeRequestManipulateGpsSign(
+                  url.split('&token').first,
+                  widget.sign != null ? widget.sign!.id : null,
+                  adminId,
+                  GPSSignManipulateDTO(
+                    widget.sign != null ? widget.sign!.signId : null,
+                    location.latitude!,
+                    location.longitude!,
+                    reason == 'noSignHere' ? true : false,
+                  ),
+                  reason == 'noSignHere' ? 2 : 1)
+              .then((request) {
             context.loaderOverlay.hide();
-            if (value != null) {
+            if (request != null) {
               DialogUtil.showAwesomeDialog(
                   context,
                   DialogType.success,
-                  "Phản hồi thành công",
-                  "Cảm ơn về phản hồi của bạn!\nChúng tôi sẽ kiểm tra và chỉnh sửa sớm nhất có thể.",
-                  () => Get.to(() => const ContainerScreen()),
+                  "Thành công",
+                  "Yêu cầu sửa đổi thành công",
+                  () => Get.off(() => const ContainerScreen()),
                   null);
+
+              createNotification(request).then((sent) => print(sent));
             } else {
               DialogUtil.showAwesomeDialog(
                   context,
                   DialogType.error,
-                  "Phản hồi thất bại",
-                  "Có lỗi xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
+                  "Thất bại",
+                  "Có lỗi xảy ra.\nVui lòng thử lại sau",
                   () {},
                   null);
             }
           });
-        });
+        } else {
+          GPSSignService()
+              .AddGpsSign(
+                  widget.sign != null ? widget.sign!.signId : null,
+                  widget.sign != null
+                      ? widget.sign!.latitude
+                      : location.latitude!,
+                  widget.sign != null
+                      ? widget.sign!.longitude
+                      : location.longitude!,
+                  reason == 'noSignHere' ? true : false)
+              .then((newSign) {
+            FeedbackService()
+                .createGpsSignsModificationRequest(
+              reason,
+              url.split('&token').first,
+              widget.sign,
+              newSign,
+            )
+                .then((value) {
+              context.loaderOverlay.hide();
+              if (value != null) {
+                DialogUtil.showAwesomeDialog(
+                    context,
+                    DialogType.success,
+                    "Phản hồi thành công",
+                    "Cảm ơn về phản hồi của bạn!\nChúng tôi sẽ kiểm tra và chỉnh sửa sớm nhất có thể.",
+                    () => Get.off(() => const ContainerScreen()),
+                    null);
+              } else {
+                DialogUtil.showAwesomeDialog(
+                    context,
+                    DialogType.error,
+                    "Phản hồi thất bại",
+                    "Có lỗi xảy ra.\nChúng tôi đang khắc phục sớm nhất có thể.",
+                    () {},
+                    null);
+              }
+            });
+          });
+        }
       });
     });
+  }
+
+  Future<bool> createNotification(SignModificationRequest rom) async {
+    GlobalController gc = Get.put(GlobalController());
+    DatabaseReference ref = FirebaseDatabase.instance.ref('notifications');
+
+    String action =
+        'đề xuất ${reason == 'noSignHere' ? 'loại bỏ' : 'chỉnh sửa'}';
+    String name = rom.imageUrl.split("%2F").last.split(".").first;
+    await ref.push().set({
+      "senderId": gc.userId.value,
+      "senderUsername": gc.username.value,
+      "receiverId": rom.adminId,
+      "subjectId": rom.modifyingGpssignId ?? '',
+      "receiverUsername":
+          _listDropdownAdmin.firstWhere((e) => e.value == rom.adminId).value,
+      "createdDate": rom.createdDate,
+      "subjectType": "GPSSign",
+      "relatedDescription": "GPS của biển số $name...",
+      "action": action,
+      "isRead": false
+    });
+    return true;
   }
 
   @override
@@ -153,6 +224,18 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
               overflow: TextOverflow.ellipsis),
         ),
       ];
+      UserService().getAdmins().then((list) {
+        if (list.isNotEmpty) {
+          list.forEach((element) {
+            _listDropdownAdmin.add(DropdownMenuItem<String>(
+              value: element.id,
+              child: Text(element.displayName ?? element.username),
+            ));
+          });
+        }
+        setState(() {});
+        context.loaderOverlay.hide();
+      });
     } else {
       _listDropdown = <DropdownMenuItem<String>>[
         const DropdownMenuItem<String>(
@@ -166,6 +249,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AuthController ac = Get.find<AuthController>();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -188,13 +272,41 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text(
-                    '',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: FONTSIZES.textHuge,
-                    ),
-                  ),
+                  ac.role.value == 1
+                      ? const Text(
+                          'Gửi yêu cầu tới:',
+                          style: TextStyle(
+                            fontSize: FONTSIZES.textPrimary,
+                            color: Colors.blueAccent,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : Container(),
+                  ac.role.value == 1
+                      ? const SizedBox(height: kDefaultPaddingValue / 2)
+                      : Container(),
+                  ac.role.value == 1
+                      ? DropdownButtonHideUnderline(
+                          child: GFDropdown(
+                            hint: const Text('Chọn quản trị viên'),
+                            padding:
+                                const EdgeInsets.all(kDefaultPaddingValue / 2),
+                            borderRadius: BorderRadius.circular(5),
+                            border:
+                                const BorderSide(color: Colors.grey, width: 1),
+                            dropdownButtonColor: Colors.white,
+                            value: adminId,
+                            onChanged: (newValue) {
+                              setState(() {
+                                adminId = newValue;
+                              });
+                            },
+                            items: _listDropdownAdmin,
+                            isExpanded: true,
+                          ),
+                        )
+                      : Container(),
+                  const SizedBox(height: kDefaultPaddingValue),
                   const Text(
                     'Nguyên nhân:',
                     style: TextStyle(
@@ -245,7 +357,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
                     ],
                   ),
                   Container(
-                    height: 50.h,
+                    height: 40.h,
                     width: 100.w,
                     margin:
                         const EdgeInsets.only(top: kDefaultPaddingValue / 2),

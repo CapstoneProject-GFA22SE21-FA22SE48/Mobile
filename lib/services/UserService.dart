@@ -50,9 +50,9 @@ class UserService {
   Future<String> updateProfile(
       String avatar, String email, String displayName) async {
     try {
-      GlobalController gc = Get.put(GlobalController());
+      GlobalController gc = Get.find<GlobalController>();
 
-      if (gc.userId.value != '') {
+      if (gc.userId.value.isNotEmpty) {
         final res = await http
             .put(
               Uri.parse("${url}Users/${gc.userId.value}/UpdateProfile"),
@@ -63,12 +63,14 @@ class UserService {
               body: jsonEncode(ProfileDTO(email, avatar, displayName)),
             )
             .timeout(const Duration(seconds: TIME_OUT));
+
+        print(res.body);
         if (res.statusCode == 200) {
           String token = AuthService().parseToken(res.body);
           IOUtils.setUserInfoController(token);
           IOUtils.saveToStorage('token', token);
           return "Thông tin đã được thay đổi";
-        } else if (res.statusCode == 500) {
+        } else if (res.statusCode == 500 || res.statusCode == 409) {
           return res.body;
         }
       }

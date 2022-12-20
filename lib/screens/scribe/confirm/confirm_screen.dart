@@ -95,7 +95,7 @@ class _ConfirmEvidenceState extends State<ConfirmEvidenceScreen> {
                       const CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
                 ), //show progress  while loading image
                 errorWidget: (context, url, error) =>
-                    Image.asset("assets/images/alt_image.png"),
+                    Image.asset("assets/images/alt_img.png"),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: kDefaultPaddingValue),

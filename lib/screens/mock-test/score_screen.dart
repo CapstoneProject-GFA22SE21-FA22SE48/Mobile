@@ -77,7 +77,8 @@ class ScoreScreen extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          shadowColor: Colors.grey,
+          elevation: 0,
+          backgroundColor: Theme.of(context).backgroundColor,
           title: const Text("Kết thúc bài thi"),
           centerTitle: true,
           automaticallyImplyLeading: false,
