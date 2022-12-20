@@ -115,7 +115,7 @@ class ScoreScreen extends StatelessWidget {
                                       fontWeight: FontWeight.bold)),
                             },
                             text:
-                                'Bạn đã trả lời đúng <bold>${_qnController.numberOfCorrectAns}</bold> trên <bold>$_numOfQuestion</bold> câu',
+                                'Bạn đã trả lời đúng <bold>${_qnController.numberOfCorrectAns > _numOfQuestion ? _numOfQuestion : _qnController.numberOfCorrectAns}</bold> trên <bold>$_numOfQuestion</bold> câu',
                             style: const TextStyle(
                               color: Colors.blueAccent,
                               fontSize: FONTSIZES.textLarge,
