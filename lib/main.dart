@@ -6,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vnrdn_tai/controllers/cart_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
 import 'package:vnrdn_tai/controllers/maps_controller.dart';
 import 'package:vnrdn_tai/screens/container_screen.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
 
   getAllData(BuildContext context) async {
     GlobalController gc = Get.put(GlobalController());
+    CartController cc = Get.put(CartController());
 
     MapsController mapsController = Get.put(MapsController());
 

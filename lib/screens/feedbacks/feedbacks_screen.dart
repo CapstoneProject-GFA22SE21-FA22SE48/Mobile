@@ -10,6 +10,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/dropdown/gf_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:vnrdn_tai/controllers/auth_controller.dart';
 import 'package:vnrdn_tai/controllers/global_controller.dart';
@@ -195,7 +196,7 @@ class _FeedbackClassState extends State<FeedbacksScreen> {
       "subjectId": rom.modifyingGpssignId ?? '',
       "receiverUsername":
           _listDropdownAdmin.firstWhere((e) => e.value == rom.adminId).value,
-      "createdDate": rom.createdDate,
+      "createdDate": "${DateFormat('EEE MMM dd yyyy HH:mm:ss').format(DateTime.now())} GMT+0700 (Indochina Time)",
       "subjectType": "GPSSign",
       "relatedDescription": "GPS của biển số $name...",
       "action": action,
